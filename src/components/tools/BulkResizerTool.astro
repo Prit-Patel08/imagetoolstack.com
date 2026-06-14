@@ -1,0 +1,429 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="bulk-resizer-tool-root" class="w-full flex flex-col items-center">
+  <div class="w-full bg-green-50/50 border border-green-200/60 rounded-xl p-4 mb-8 text-center">
+    <p class="text-green-800 text-sm font-medium">
+      Unlike other bulk resizers, your images never leave your computer. Everything runs locally in your browser.
+    </p>
+  </div>
+
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 hover:border-link transition-colors cursor-pointer group">
+    <div class="mb-4 h-16 w-16 rounded-full bg-canvas flex items-center justify-center text-link border border-hairline group-hover:border-link transition-colors shadow-sm">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-xl font-bold text-ink mb-2">Drag & Drop Multiple Images Here</p>
+      <p class="text-sm text-body">Or click to browse your files. Process up to 100 images at once.</p>
+      <p class="text-xs text-mute mt-4 bg-canvas-soft inline-block px-3 py-1 rounded-full border border-hairline">Supported: JPG, PNG, WebP</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" multiple />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-hairline">
+        <h3 class="text-xl font-bold text-ink">Batch Resize Settings</h3>
+        <span id="file-count-badge" class="text-sm font-bold text-link bg-blue-50 px-3 py-1 rounded-full border border-blue-100">0 files selected</span>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Settings -->
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-semibold text-ink mb-3">Target Maximum Dimensions</label>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-mute mb-1">Max Width (px)</label>
+                <input type="number" id="max-width" value="1920" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-2 text-sm text-ink outline-none focus:border-link transition-colors" />
+              </div>
+              <div>
+                <label class="block text-xs text-mute mb-1">Max Height (px)</label>
+                <input type="number" id="max-height" value="1080" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-2 text-sm text-ink outline-none focus:border-link transition-colors" />
+              </div>
+            </div>
+            <p class="text-xs text-body mt-3 leading-relaxed">
+              Images will be scaled down proportionally to fit within these bounds. Smaller images will not be upscaled.
+            </p>
+          </div>
+          
+          <div class="p-4 bg-green-50 rounded-lg border border-green-100">
+            <h4 class="text-xs font-bold text-green-800 uppercase tracking-wide mb-1">Performance Boost Active</h4>
+            <p class="text-xs text-green-700">Multi-threading enabled. Images will process in the background without freezing your browser.</p>
+          </div>
+        </div>
+
+        <!-- File List -->
+        <div class="flex flex-col h-full max-h-64 border border-hairline rounded-lg overflow-hidden">
+          <div class="bg-canvas-soft px-4 py-2 border-b border-hairline flex justify-between items-center">
+            <span class="text-xs font-bold text-ink uppercase tracking-wide">Queue</span>
+            <button id="clear-queue-btn" class="text-xs text-error hover:underline font-medium">Clear All</button>
+          </div>
+          <ul id="file-list" class="flex-grow overflow-y-auto bg-canvas divide-y divide-hairline">
+            <!-- Populated via JS -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-8 flex gap-4 pt-6 border-t border-hairline">
+        <button id="start-btn" class="flex-1 btn-primary text-lg py-3 shadow-md">Start Processing Batch</button>
+        <button id="cancel-btn" class="px-6 py-3 border border-hairline rounded-lg text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="w-full max-w-md bg-canvas border border-hairline rounded-xl p-8 shadow-sm text-center">
+      <div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-link">
+        <svg class="h-8 w-8 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-ink mb-2">Processing Your Images</h3>
+      <p id="progress-text" class="text-sm text-body mb-6">Optimizing 0 of 0 files...</p>
+      
+      <div class="w-full bg-canvas-soft rounded-full h-3 border border-hairline overflow-hidden shadow-inner">
+        <div id="progress-bar" class="bg-link h-3 rounded-full transition-all duration-300 relative overflow-hidden" style="width: 0%">
+          <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-20 w-20 bg-green-50 border-2 border-green-200 text-green-500 rounded-full flex items-center justify-center mb-2 shadow-sm">
+      <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-2xl font-bold text-ink">Batch Processing Complete!</h3>
+      <p id="result-summary" class="text-base text-body mt-2">All files have been resized and packed into a ZIP archive.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-6 w-full max-w-sm">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer text-lg py-4 shadow-md flex items-center justify-center gap-2">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Download ZIP Archive
+      </a>
+      <button id="reset-btn" class="text-sm font-medium text-mute hover:text-ink hover:underline transition-colors mt-2">Process another batch</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const fileCountBadge = document.getElementById('file-count-badge');
+    const fileList = document.getElementById('file-list');
+    const clearQueueBtn = document.getElementById('clear-queue-btn');
+    const maxWidthInput = document.getElementById('max-width') as HTMLInputElement;
+    const maxHeightInput = document.getElementById('max-height') as HTMLInputElement;
+    const startBtn = document.getElementById('start-btn') as HTMLButtonElement;
+    const cancelBtn = document.getElementById('cancel-btn');
+    
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const resultSummary = document.getElementById('result-summary');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let selectedFiles: File[] = [];
+
+    // --- Worker Setup ---
+    // We create a web worker using a blob URL so it's fully inline and avoids pathing issues in Astro
+    const workerCode = `
+      self.onmessage = async (e) => {
+        const { id, file, maxWidth, maxHeight } = e.data;
+        try {
+          // createImageBitmap is fully supported in workers and handles decoding fast
+          const bitmap = await createImageBitmap(file);
+          let width = bitmap.width;
+          let height = bitmap.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+
+          const canvas = new OffscreenCanvas(width, height);
+          const ctx = canvas.getContext('2d');
+          
+          // Draw with high quality smoothing
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(bitmap, 0, 0, width, height);
+          
+          let type = file.type;
+          if(type !== 'image/png' && type !== 'image/webp') type = 'image/jpeg';
+          
+          const blob = await canvas.convertToBlob({ type, quality: 0.85 });
+          
+          self.postMessage({ id, blob, success: true });
+        } catch (err) {
+          self.postMessage({ id, success: false, error: err.message });
+        }
+      };
+    `;
+    const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(workerBlob);
+    let worker: Worker | null = null;
+
+    if (!dropZone || !fileInput) return;
+
+    // --- Drag and Drop ---
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+    
+    dropZone.addEventListener('dragenter', () => dropZone.classList.add('border-link', 'bg-blue-50/50'));
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-link', 'bg-blue-50/50'));
+    dropZone.addEventListener('drop', (e) => {
+      dropZone.classList.remove('border-link', 'bg-blue-50/50');
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFiles(Array.from(files));
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFiles(Array.from(fileInput.files));
+      fileInput.value = ''; // reset so same files can be selected again if needed
+    });
+
+    clearQueueBtn?.addEventListener('click', () => {
+      selectedFiles = [];
+      updateUI();
+    });
+
+    function handleFiles(files: File[]) {
+      const validFiles = files.filter(f => f.type.startsWith('image/'));
+      if (validFiles.length === 0) {
+        alert("No valid images selected.");
+        return;
+      }
+      
+      // Append to existing, up to 100 max
+      const newTotal = selectedFiles.length + validFiles.length;
+      if (newTotal > 100) {
+        alert("Maximum 100 images allowed per batch. We have capped your queue at 100.");
+        const remainingSlots = 100 - selectedFiles.length;
+        selectedFiles = [...selectedFiles, ...validFiles.slice(0, remainingSlots)];
+      } else {
+        selectedFiles = [...selectedFiles, ...validFiles];
+      }
+
+      updateUI();
+      showState('settings');
+    }
+
+    function formatBytes(bytes: number) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function updateUI() {
+      fileCountBadge!.textContent = `${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'} selected`;
+      
+      if (selectedFiles.length === 0) {
+        showState('upload');
+        return;
+      }
+
+      startBtn.disabled = selectedFiles.length === 0;
+
+      if (fileList) {
+        fileList.innerHTML = '';
+        selectedFiles.forEach((f, i) => {
+          const li = document.createElement('li');
+          li.className = "flex items-center justify-between px-4 py-2 text-sm text-body hover:bg-canvas-soft transition-colors";
+          li.innerHTML = `
+            <div class="truncate flex-1 pr-4">
+              <span class="font-medium text-ink truncate block">${f.name}</span>
+              <span class="text-xs text-mute">${formatBytes(f.size)}</span>
+            </div>
+            <button class="text-mute hover:text-error transition-colors p-1" data-index="${i}" title="Remove file">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          `;
+          fileList.appendChild(li);
+        });
+
+        // Add remove listeners
+        fileList.querySelectorAll('button[data-index]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = parseInt((e.currentTarget as HTMLButtonElement).dataset.index || '0');
+            selectedFiles.splice(idx, 1);
+            updateUI();
+          });
+        });
+      }
+    }
+
+    // --- Processing ---
+    startBtn?.addEventListener('click', async () => {
+      if (selectedFiles.length === 0) return;
+      
+      showState('processing');
+      const maxW = parseInt(maxWidthInput.value) || 1920;
+      const maxH = parseInt(maxHeightInput.value) || 1080;
+      
+      const zip = new JSZip();
+      const total = selectedFiles.length;
+      let completed = 0;
+      updateProgress(0, total);
+
+      worker = new Worker(workerUrl);
+
+      // We process sequentially or with limited concurrency to avoid blowing up memory.
+      // For simplicity and stability, we'll do 4 at a time (simple pool).
+      const poolSize = 4;
+      let currentIndex = 0;
+
+      const processNext = () => {
+        if (currentIndex >= total) return;
+        const indexToProcess = currentIndex++;
+        const file = selectedFiles[indexToProcess];
+        
+        worker!.postMessage({ id: indexToProcess, file, maxWidth: maxW, maxHeight: maxH });
+      };
+
+      // Start initial batch
+      for(let i=0; i < Math.min(poolSize, total); i++) {
+        processNext();
+      }
+
+      worker.onmessage = async (e) => {
+        const { id, blob, success, error } = e.data;
+        const file = selectedFiles[id];
+        
+        if (success && blob) {
+          const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+          const baseName = file.name.replace(/\.[^/.]+$/, "");
+          zip.file(`${baseName}-resized.${ext}`, blob);
+        } else {
+          console.error(`Worker failed to resize ${file.name}`, error);
+        }
+
+        completed++;
+        updateProgress(completed, total);
+
+        if (completed === total) {
+          // Finished all
+          worker?.terminate();
+          worker = null;
+          
+          progressText!.textContent = "Packaging ZIP archive...";
+          progressBar!.classList.add('animate-pulse');
+          
+          // Yield to UI briefly before intensive zip generation
+          setTimeout(async () => {
+            const zipContent = await zip.generateAsync({ type: 'blob' }, (metadata) => {
+              if(progressBar && metadata.percent) {
+                 progressBar.style.width = `${metadata.percent}%`;
+              }
+            });
+            const zipUrl = URL.createObjectURL(zipContent);
+            
+            downloadBtn.href = zipUrl;
+            downloadBtn.download = `imagetoolstack-bulk-resized-${Date.now()}.zip`;
+            
+            resultSummary!.textContent = `Successfully resized ${completed} images.`;
+            progressBar!.classList.remove('animate-pulse');
+            showState('result');
+          }, 100);
+        } else {
+          processNext();
+        }
+      };
+    });
+
+    function updateProgress(current: number, total: number) {
+      if (!progressBar || !progressText) return;
+      const pct = Math.round((current / total) * 100);
+      progressBar.style.width = `${pct}%`;
+      progressText.textContent = `Optimizing ${current} of ${total} files...`;
+    }
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      if(worker) {
+        worker.terminate();
+        worker = null;
+      }
+      fileInput.value = '';
+      selectedFiles = [];
+      if (progressBar) progressBar.style.width = '0%';
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>
+
+<!-- SEO Content Section -->
+<div class="mt-24 pt-16 border-t border-hairline max-w-4xl mx-auto w-full text-left pb-16">
+  <div class="prose prose-vercel max-w-none text-body">
+    <h2 class="text-3xl font-bold text-ink mb-6">How to Bulk Resize Images Without Losing Quality</h2>
+    <p>
+      Whether you are preparing hundreds of product photos for your Shopify store, compressing large galleries for a photography portfolio, or just freeing up space on your hard drive, finding a reliable <strong>bulk image resizer</strong> is essential. 
+    </p>
+    <p>
+      However, most online tools force you to upload your personal photos to their servers. This takes forever on slow connections and poses a serious privacy risk. That's why we built the fastest, 100% private batch image resizer that runs entirely inside your browser.
+    </p>
+
+    <h3 class="text-2xl font-bold text-ink mt-8 mb-4">The Best Bulk Image Resizer for Shopify and E-commerce</h3>
+    <p>
+      If you run a Shopify, WooCommerce, or Etsy store, visual consistency is key. Uploading a mix of massive 4K photos from your iPhone and small 800px images from suppliers will completely break your website's grid layout and slow down your page loading speed. 
+    </p>
+    <p>
+      By using our tool, you can drop up to 100 product images at once and set a strict "Target Maximum Dimension" (e.g., 1080px). The tool will intelligently scale down massive files while ignoring images that are already small enough. This ensures your entire catalog is perfectly uniform without ever stretching or pixelating low-resolution images.
+    </p>
+
+    <div class="bg-canvas-soft border-l-4 border-link p-6 my-8 rounded-r-lg">
+      <h4 class="text-lg font-bold text-ink mb-2">Why Your Images Never Leave Your Device</h4>
+      <p class="m-0 text-sm">
+        Traditional tools force you to upload a 50MB folder of images, wait for a server to process them, and then download them back. Our tool uses modern Web Worker technology to process images directly on your device's CPU. This means <strong>no uploading, no waiting in server queues, and absolute privacy.</strong> This is why we can process your batch 10x faster than cloud-based competitors.
+      </p>
+    </div>
+
+    <h3 class="text-2xl font-bold text-ink mt-8 mb-4">How to Batch Resize Images (Step-by-Step)</h3>
+    <ol class="list-decimal pl-6 space-y-4">
+      <li><strong>Select Multiple Files:</strong> Drag and drop a folder of JPG, PNG, or WebP files into the drop zone above. You can select up to 100 images at a single time.</li>
+      <li><strong>Set Dimensions:</strong> Enter your maximum width or height. (e.g., 1920x1080 for HD web delivery). The tool will automatically preserve the aspect ratio of each individual photo.</li>
+      <li><strong>Process Locally:</strong> Click "Start Batch Processing". Our multi-threaded engine will instantly optimize the batch in the background without freezing your browser.</li>
+      <li><strong>Download ZIP:</strong> Once finished, click the download button to receive a neatly packaged ZIP archive containing all your newly resized images.</li>
+    </ol>
+  </div>
+</div>

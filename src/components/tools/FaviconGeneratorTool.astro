@@ -1,0 +1,240 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="favicon-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select a logo image</p>
+      <p class="mt-1 text-sm text-body">Supports PNG, JPG, SVG. Square images are best.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/png,image/jpeg,image/svg+xml" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex items-center justify-center overflow-hidden min-h-[300px]">
+      <img id="image-preview" class="max-w-[200px] max-h-[200px] object-contain shadow-sm bg-[url('/checker.svg')]" src="" alt="Preview" />
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm text-center">
+      <h3 class="text-lg font-semibold text-ink mb-4">Favicon Generator</h3>
+      <p class="text-sm text-body mb-6">We will instantly generate a ZIP file containing <code class="bg-canvas-soft px-1 rounded">favicon.ico</code> (32x32) and <code class="bg-canvas-soft px-1 rounded">apple-touch-icon.png</code> (180x180).</p>
+      
+      <div class="mt-8 flex gap-4">
+        <button id="start-btn" class="flex-1 btn-primary">Generate Favicon ZIP</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p class="text-sm font-mono text-mute uppercase tracking-widest">Building Package...</p>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-16 w-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-2">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-bold text-ink">Package Ready!</h3>
+      <p class="text-sm text-body mt-2">Your favicon.zip is ready to download.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download ZIP</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Generate another</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const imagePreview = document.getElementById('image-preview') as HTMLImageElement;
+    
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let originalFile: File | null = null;
+    let originalImage: HTMLImageElement | null = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target?.result as string;
+        
+        originalImage = new Image();
+        originalImage.src = e.target?.result as string;
+        
+        showState('settings');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function createIco(img: HTMLImageElement, size: number): Promise<ArrayBuffer> {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error("Could not get canvas context");
+      
+      const scale = Math.min(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = (size - w) / 2;
+      const y = (size - h) / 2;
+      
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, x, y, w, h);
+      
+      const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'));
+      if (!blob) throw new Error("Canvas toBlob failed");
+      
+      const pngBuffer = await blob.arrayBuffer();
+      const pngData = new Uint8Array(pngBuffer);
+      
+      const buffer = new ArrayBuffer(22 + pngData.length);
+      const view = new DataView(buffer);
+      
+      view.setUint16(0, 0, true);
+      view.setUint16(2, 1, true);
+      view.setUint16(4, 1, true);
+      
+      let wHeader = size; if (wHeader === 256) wHeader = 0;
+      let hHeader = size; if (hHeader === 256) hHeader = 0;
+      
+      view.setUint8(6, wHeader);
+      view.setUint8(7, hHeader);
+      view.setUint8(8, 0);
+      view.setUint8(9, 0);
+      view.setUint16(10, 1, true);
+      view.setUint16(12, 32, true);
+      view.setUint32(14, pngData.length, true);
+      view.setUint32(18, 22, true);
+      
+      const outputBytes = new Uint8Array(buffer);
+      outputBytes.set(pngData, 22);
+      
+      return buffer;
+    }
+
+    async function createPng(img: HTMLImageElement, size: number): Promise<Blob> {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error("Could not get canvas context");
+      
+      const scale = Math.min(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = (size - w) / 2;
+      const y = (size - h) / 2;
+      
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, x, y, w, h);
+      
+      const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'));
+      if (!blob) throw new Error("Canvas toBlob failed");
+      return blob;
+    }
+
+    startBtn?.addEventListener('click', async () => {
+      if (!originalFile || !originalImage) return;
+      showState('processing');
+      
+      try {
+        await new Promise(r => setTimeout(r, 50));
+        
+        const zip = new JSZip();
+        
+        const icoBuffer = await createIco(originalImage, 32);
+        zip.file("favicon.ico", icoBuffer);
+        
+        const appleTouchBlob = await createPng(originalImage, 180);
+        zip.file("apple-touch-icon.png", appleTouchBlob);
+        
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const dataUrl = URL.createObjectURL(zipBlob);
+        
+        downloadBtn.href = dataUrl;
+        downloadBtn.download = `favicon.zip`;
+        
+        showState('result');
+        
+      } catch (e) {
+        console.error('ZIP generation error', e);
+        alert('An error occurred. Check console for details.');
+        showState('settings');
+      }
+    });
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      imagePreview.src = '';
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

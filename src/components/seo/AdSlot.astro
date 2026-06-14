@@ -1,0 +1,30 @@
+---
+interface Props {
+  id: string;
+  className?: string;
+  layout?: "horizontal" | "vertical" | "rectangle";
+}
+
+const { id, className = "", layout = "horizontal" } = Astro.props;
+
+// Toggle this variable to true when you want ads to render
+const ADS_ENABLED = false;
+---
+
+{ADS_ENABLED ? (
+  <div class={`ad-container ${className}`}>
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+      data-ad-slot={id}
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+    <script is:inline>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+) : (
+  <div class={`text-center text-xs text-mute py-4 border-y border-hairline/50 bg-canvas-soft/30 rounded flex items-center justify-center ${className}`} style={{ minHeight: layout === 'vertical' ? '250px' : '90px' }}>
+    <span class="text-[10px] uppercase tracking-widest opacity-50">Advertisement Space ({layout})</span>
+  </div>
+)}

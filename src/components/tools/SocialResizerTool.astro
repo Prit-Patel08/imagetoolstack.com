@@ -1,0 +1,179 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+
+// Determine target dimensions based on the tool slug
+let targetWidth = 1080;
+let targetHeight = 1080;
+let platformName = "Image";
+
+if (toolId === 'passport-photo-maker') {
+  targetWidth = 600;
+  targetHeight = 600;
+  platformName = "Passport Photo";
+} else if (toolId === 'instagram-resizer') {
+  targetWidth = 1080;
+  targetHeight = 1350; // 4:5 portrait is best for IG
+  platformName = "Instagram";
+} else if (toolId === 'twitter-header-maker') {
+  targetWidth = 1500;
+  targetHeight = 500;
+  platformName = "Twitter Header";
+} else if (toolId === 'youtube-thumbnail') {
+  targetWidth = 1280;
+  targetHeight = 720;
+  platformName = "YouTube Thumbnail";
+} else if (toolId === 'linkedin-banner') {
+  targetWidth = 1584;
+  targetHeight = 396;
+  platformName = "LinkedIn Banner";
+} else if (toolId === 'facebook-cover') {
+  targetWidth = 820;
+  targetHeight = 312;
+  platformName = "Facebook Cover";
+}
+
+const targetRatio = targetWidth / targetHeight;
+---
+
+<div id="social-resizer-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select a photo for {platformName}</p>
+      <p class="mt-1 text-sm text-body">It will be automatically resized to exactly {targetWidth}x{targetHeight}.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex flex-col items-center justify-center overflow-hidden min-h-[300px] relative">
+      <canvas id="preview-canvas" class="max-w-full max-h-[500px] object-contain shadow-sm bg-[url('/checker.svg')]"></canvas>
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm text-center">
+      <h3 class="text-lg font-semibold text-ink mb-2">{platformName} Ready</h3>
+      <p class="text-sm text-body mb-6">Your image has been perfectly cropped and resized to {targetWidth}x{targetHeight} pixels.</p>
+      
+      <div class="mt-8 flex gap-4">
+        <button id="download-btn" class="flex-1 btn-primary">Download JPG</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ targetWidth, targetHeight, targetRatio }}>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const settingsZone = document.getElementById('settings-zone');
+    
+    const previewCanvas = document.getElementById('preview-canvas');
+    const downloadBtn = document.getElementById('download-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    let originalFile = null;
+    let originalImage = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage = new Image();
+        originalImage.onload = () => {
+          renderCanvas();
+          dropZone.classList.add('hidden');
+          settingsZone.classList.remove('hidden');
+        };
+        originalImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderCanvas() {
+      if (!originalImage || !previewCanvas) return;
+      
+      previewCanvas.width = targetWidth;
+      previewCanvas.height = targetHeight;
+      const ctx = previewCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      // Calculate object-fit: cover logic
+      const imgRatio = originalImage.width / originalImage.height;
+      let drawW, drawH, drawX, drawY;
+      
+      if (imgRatio > targetRatio) {
+        // Image is wider than target
+        drawH = targetHeight;
+        drawW = originalImage.width * (targetHeight / originalImage.height);
+        drawX = (targetWidth - drawW) / 2;
+        drawY = 0;
+      } else {
+        // Image is taller than target
+        drawW = targetWidth;
+        drawH = originalImage.height * (targetWidth / originalImage.width);
+        drawX = 0;
+        drawY = (targetHeight - drawH) / 2;
+      }
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetWidth, targetHeight);
+      ctx.drawImage(originalImage, drawX, drawY, drawW, drawH);
+    }
+
+    downloadBtn?.addEventListener('click', () => {
+      if (!previewCanvas || !originalFile) return;
+      
+      const dataUrl = previewCanvas.toDataURL('image/jpeg', 0.95);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+      a.download = `${baseName}-${targetWidth}x${targetHeight}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      settingsZone.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+    });
+  })();
+</script>

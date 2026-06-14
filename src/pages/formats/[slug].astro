@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  const formats = await getCollection('formats');
+  return formats.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+import { render } from 'astro:content';
+const { Content } = await render(entry);
+
+// Find tools related to this format
+const relatedTools = toolsData.tools.filter(t => t.slug.includes(entry.id));
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": entry.data.title,
+  "description": entry.data.description,
+  "datePublished": entry.data.pubDate.toISOString(),
+  "author": {
+    "@type": "Organization",
+    "name": "Image Tool Stack"
+  }
+};
+---
+<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1200px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/articles" class="hover:text-ink transition-colors">Formats</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink truncate">{entry.data.title}</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1200px] px-6 py-12 lg:px-8 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      
+      <!-- Content -->
+      <article class="lg:col-span-8">
+        <header class="mb-12">
+          <div class="inline-flex items-center justify-center h-16 w-16 rounded-xl bg-canvas-soft font-mono text-xl font-bold text-ink border border-hairline shadow-sm mb-6 uppercase">
+            {entry.id}
+          </div>
+          <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{entry.data.title}</h1>
+          <p class="text-xl text-body leading-relaxed">{entry.data.description}</p>
+        </header>
+
+        <div class="prose prose-lg max-w-none text-body prose-headings:text-ink prose-a:text-link hover:prose-a:text-link-hover prose-strong:text-ink">
+          <Content />
+        </div>
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-4 space-y-8">
+        <div class="lg:sticky lg:top-24 space-y-8">
+          
+          <!-- Related Tools -->
+          <div class="card-marketing p-6">
+            <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">{entry.id.toUpperCase()} Tools</h4>
+            <ul class="space-y-2">
+              {relatedTools.length > 0 ? relatedTools.map((rt) => (
+                <li>
+                  <a href={`/tools/${rt.slug}`} class="flex items-center justify-between p-2 rounded-md text-sm text-ink hover:text-link hover:bg-canvas-soft transition-all group">
+                    <span>{rt.name}</span>
+                    <svg class="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+                  </a>
+                </li>
+              )) : (
+                <li class="text-sm text-mute">No specific tools found.</li>
+              )}
+            </ul>
+          </div>
+          
+          <!-- Comparisons -->
+          <div class="card-marketing p-6">
+            <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">Compare {entry.id.toUpperCase()}</h4>
+            <a href="/compare" class="text-sm text-link hover:underline">View all format comparisons &rarr;</a>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
+</Layout>

@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+    error: unknown;
+}
+---
+
+<Layout title="500: Server Error">
+  <Navbar />
+  
+  <main class="flex-1 flex flex-col items-center justify-center min-h-[60vh] py-32 px-6 text-center">
+    <div class="h-24 w-24 rounded-3xl bg-canvas border border-hairline flex items-center justify-center mb-8 shadow-sm">
+      <svg class="h-10 w-10 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    
+    <h1 class="text-6xl font-semibold tracking-tight text-ink mb-4">500</h1>
+    <h2 class="text-2xl font-semibold text-body mb-6">Internal Server Error</h2>
+    <p class="text-mute max-w-md mx-auto mb-10 leading-relaxed">
+      Something went wrong on our end. Our servers encountered an unexpected condition that prevented it from fulfilling the request.
+    </p>
+    
+    <a href="/" class="btn-primary">
+      Return to Homepage
+    </a>
+  </main>
+
+  <Footer />
+</Layout>

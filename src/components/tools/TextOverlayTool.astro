@@ -1,0 +1,202 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+const isMeme = toolId === 'meme-generator';
+---
+
+<div id="text-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select an image to add text</p>
+      <p class="mt-1 text-sm text-body">Supports JPG, PNG, and WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex flex-col items-center justify-center overflow-hidden min-h-[300px] relative">
+      <canvas id="editor-canvas" class="max-w-full max-h-[500px] object-contain shadow-sm cursor-text"></canvas>
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <h3 class="text-lg font-semibold text-ink mb-4 text-center">{isMeme ? 'Meme Text' : 'Text Overlay'}</h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1">Top Text</label>
+          <input type="text" id="top-text" class="w-full px-3 py-2 bg-canvas border border-hairline rounded text-ink focus:outline-none focus:border-link transition-colors" placeholder="TOP TEXT" value="TOP TEXT">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1">Bottom Text</label>
+          <input type="text" id="bottom-text" class="w-full px-3 py-2 bg-canvas border border-hairline rounded text-ink focus:outline-none focus:border-link transition-colors" placeholder="BOTTOM TEXT" value="BOTTOM TEXT">
+        </div>
+      </div>
+      
+      <p class="text-xs text-body text-center mt-6">Text is drawn perfectly centered at high resolution.</p>
+
+      <div class="mt-6 flex gap-4">
+        <button id="download-btn" class="flex-1 btn-primary">Download Image</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ isMeme }}>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const settingsZone = document.getElementById('settings-zone');
+    
+    const editorCanvas = document.getElementById('editor-canvas');
+    const topTextInput = document.getElementById('top-text');
+    const bottomTextInput = document.getElementById('bottom-text');
+    
+    const downloadBtn = document.getElementById('download-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    let originalFile = null;
+    let originalImage = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage = new Image();
+        originalImage.onload = () => {
+          renderCanvas();
+          dropZone.classList.add('hidden');
+          settingsZone.classList.remove('hidden');
+        };
+        originalImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderCanvas() {
+      if (!originalImage || !editorCanvas) return;
+      
+      editorCanvas.width = originalImage.width;
+      editorCanvas.height = originalImage.height;
+      const ctx = editorCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      // Draw image
+      ctx.drawImage(originalImage, 0, 0);
+      
+      // Setup text styles
+      const fontSize = Math.floor(originalImage.height / 10);
+      ctx.font = `bold ${fontSize}px ${isMeme ? 'Impact, Arial Black, sans-serif' : 'Inter, sans-serif'}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = 'white';
+      
+      if (isMeme) {
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = Math.max(2, Math.floor(fontSize / 15));
+      }
+      
+      const topText = topTextInput.value.toUpperCase();
+      const bottomText = bottomTextInput.value.toUpperCase();
+      
+      // Draw Top Text
+      if (topText) {
+        const lines = wrapText(ctx, topText, originalImage.width - 40);
+        let y = 20;
+        lines.forEach(line => {
+          if (isMeme) ctx.strokeText(line, originalImage.width / 2, y);
+          ctx.fillText(line, originalImage.width / 2, y);
+          y += fontSize * 1.1;
+        });
+      }
+      
+      // Draw Bottom Text
+      if (bottomText) {
+        ctx.textBaseline = 'bottom';
+        const lines = wrapText(ctx, bottomText, originalImage.width - 40);
+        let y = originalImage.height - 20;
+        // Draw from bottom up
+        for (let i = lines.length - 1; i >= 0; i--) {
+          if (isMeme) ctx.strokeText(lines[i], originalImage.width / 2, y);
+          ctx.fillText(lines[i], originalImage.width / 2, y);
+          y -= fontSize * 1.1;
+        }
+      }
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = words[0];
+
+      for (let i = 1; i < words.length; i++) {
+        const word = words[i];
+        const width = ctx.measureText(currentLine + " " + word).width;
+        if (width < maxWidth) {
+          currentLine += " " + word;
+        } else {
+          lines.push(currentLine);
+          currentLine = word;
+        }
+      }
+      lines.push(currentLine);
+      return lines;
+    }
+
+    topTextInput?.addEventListener('input', renderCanvas);
+    bottomTextInput?.addEventListener('input', renderCanvas);
+
+    downloadBtn?.addEventListener('click', () => {
+      const dataUrl = editorCanvas.toDataURL('image/jpeg', 0.95);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+      a.download = `${baseName}-${isMeme ? 'meme' : 'text'}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      settingsZone.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+    });
+  })();
+</script>

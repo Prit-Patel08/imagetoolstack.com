@@ -1,0 +1,201 @@
+---
+import BeforeAfterSlider from "./BeforeAfterSlider.astro";
+
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="converter-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone-wrapper" class="w-full flex flex-col items-center">
+    <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline-strong rounded-xl bg-canvas hover:bg-canvas-soft hover:border-link transition-all cursor-pointer group shadow-sm">
+      <div class="mb-6 h-16 w-16 rounded-full bg-canvas-soft-2 flex items-center justify-center text-ink border border-hairline group-hover:bg-link/10 group-hover:border-link/30 group-hover:text-link group-hover:scale-110 transition-all duration-300">
+        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" /></svg>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-bold text-ink mb-2">Click to upload or drag & drop</p>
+        <p class="text-sm text-body">Supports JPG, PNG, WebP, SVG and more.</p>
+      </div>
+      <input type="file" id="file-input" class="hidden" accept="image/*,.svg" />
+    </div>
+    
+    <div class="mt-6">
+      <button id="sample-btn" class="text-xs font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-4 py-2 rounded-full transition-colors flex items-center gap-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        Don't have an image? Try a sample
+      </button>
+    </div>
+  </div>
+
+  <!-- Processing State (hidden initially) -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <p class="text-sm font-mono text-mute uppercase tracking-widest">Processing Image…</p>
+  </div>
+
+  <!-- Result State (hidden initially) -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <BeforeAfterSlider />
+    
+    <div class="flex flex-col items-center gap-2">
+      <span id="result-info" class="text-xs font-mono text-mute"></span>
+      <a id="download-btn" class="btn-primary">Download Image</a>
+      <button id="reset-btn" class="text-xs font-medium text-body hover:text-ink transition-colors mt-2">Process another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { injectBrandingMetadata } from "../../utils/metadata-injector";
+
+  // Scoped to avoid conflicts
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    const previewImgOrig = document.getElementById('ba-original') as HTMLImageElement;
+    const previewImgOpt = document.getElementById('ba-optimized') as HTMLImageElement;
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+    const resultInfo = document.getElementById('result-info');
+
+    const toolId = window.location.pathname.split('/').pop() || '';
+
+    if (!dropZone || !fileInput) return;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    // Sample Button Logic
+    const sampleBtn = document.getElementById('sample-btn');
+    sampleBtn?.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      showState('processing');
+      try {
+        // Fetch a tiny sample 1px white image as fallback if no real URL
+        const base64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
+        const res = await fetch(base64);
+        const blob = await res.blob();
+        const file = new File([blob], "sample-image.png", { type: "image/png" });
+        handleFile(file);
+      } catch (err) {
+        console.error("Failed to load sample", err);
+      }
+    });
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file: File) {
+      // Fire Google Analytics Event
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Image Tool',
+          'event_label': toolId,
+          'value': 1
+        });
+      }
+
+      showState('processing');
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const img = new Image();
+        img.onload = async () => {
+          let processedBlob = await processImage(img, file.type, toolId);
+          if (processedBlob) {
+            processedBlob = await injectBrandingMetadata(processedBlob, processedBlob.type);
+            const url = URL.createObjectURL(processedBlob);
+            previewImgOrig.src = e.target?.result as string;
+            previewImgOpt.src = url;
+            downloadBtn.href = url;
+            downloadBtn.download = `output-${Date.now()}.${getExt(toolId)}`;
+            resultInfo!.textContent = `${file.name} → ${(processedBlob.size / 1024).toFixed(1)} KB`;
+            showState('result');
+          }
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function processImage(img: HTMLImageElement, originalType: string, id: string): Promise<Blob | null> {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      ctx.drawImage(img, 0, 0);
+
+      let targetType = originalType;
+      let quality = 0.9;
+
+      switch (id) {
+        case 'png-to-jpg':
+          targetType = 'image/jpeg';
+          // Fill background white for transparent PNG to JPG
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          break;
+        case 'jpg-to-png':
+          targetType = 'image/png';
+          break;
+        case 'webp-to-png':
+        case 'svg-to-png':
+          targetType = 'image/png';
+          break;
+        case 'png-to-webp':
+          targetType = 'image/webp';
+          break;
+        case 'image-compressor':
+          targetType = originalType === 'image/png' ? 'image/png' : 'image/jpeg';
+          quality = 0.7;
+          break;
+      }
+
+      return new Promise(resolve => {
+        canvas.toBlob(blob => resolve(blob), targetType, quality);
+      });
+    }
+
+    function showState(state: 'upload' | 'processing' | 'result') {
+      const wrapper = document.getElementById('drop-zone-wrapper');
+      wrapper?.classList.toggle('hidden', state !== 'upload');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+
+    function getExt(id: string) {
+      if (id.includes('to-jpg')) return 'jpg';
+      if (id.includes('to-png')) return 'png';
+      if (id.includes('to-webp')) return 'webp';
+      if (id === 'image-compressor') return 'jpg'; // simplified fallback
+      return 'png';
+    }
+
+    resetBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      showState('upload');
+    });
+  })();
+</script>

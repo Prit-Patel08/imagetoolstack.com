@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+import AdSlot from "../components/seo/AdSlot.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="antialiased text-ink bg-canvas h-full selection:bg-link/20">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} - Embedded by ImageToolStack</title>
+    <!-- Prevent indexing of embed routes to avoid duplicate content penalties -->
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="min-h-screen flex flex-col font-sans bg-transparent">
+    <main class="flex-grow p-4 flex flex-col justify-center items-center">
+      <slot />
+    </main>
+    <footer class="w-full text-center py-3 px-4 bg-canvas border-t border-hairline mt-auto">
+      <p class="text-[11px] font-medium text-mute tracking-wide flex items-center justify-center gap-1.5">
+        <svg class="h-3 w-3 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Powered by <a href="https://imagetoolstack.com" target="_blank" rel="noopener" class="text-link hover:text-link-hover transition-colors font-semibold">ImageToolStack</a>
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,253 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "HEIC vs JPG: Which Format is Better for iPhones? (2026)";
+const seoDescription = "HEIC or JPG? We compare Apple's modern HEIC format against the classic JPG. Learn the exact differences in file size, quality, and why you might need to convert them to share with Windows or Android users.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does my iPhone save photos as HEIC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Apple switched to HEIC as the default camera format in iOS 11 because it uses advanced HEVC video compression. This allows your iPhone to store photographs in roughly half the file size of a JPG without losing any visual quality, saving massive amounts of iCloud storage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Windows or Android open HEIC files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Modern Android devices and newer Windows computers (with the HEVC extension installed) can open HEIC files. However, compatibility is still very poor compared to JPG. Many older devices, smart TVs, and websites will simply refuse to open a HEIC file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format has better quality: HEIC or JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HEIC is technically superior. It supports 16-bit color (allowing for vastly better dynamic range and HDR) whereas JPG is limited to 8-bit color. HEIC also captures details with fewer compression artifacts."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-vs-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">HEIC vs JPG: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          If you own an iPhone, you have likely encountered the HEIC format. It is a modern marvel of compression technology that saves massive amounts of storage space. But is it worth the compatibility headaches when trying to share photos with non-Apple users? Here is everything you need to know about HEIC vs JPG.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use HEIC for:</strong> Storing photographs on your iPhone and Mac to save 50% of your iCloud disk space while maintaining maximum HDR quality.</p>
+          <p><strong class="text-ink">Use JPG for:</strong> Sending photos to Windows computers, Android phones, uploading to web forms, or delivering final client galleries.</p>
+        </div>
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Real-World Tests: Storage Space Savings</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          The primary reason Apple switched to HEIC is disk space. We took a standard 12-megapixel photograph using an iPhone and compared the file sizes.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- HEIC Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Winner for Storage</div>
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg mb-1">HEIC Format</span>
+              <span class="text-indigo-900/60 text-xs">High Efficiency</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">1.8 MB</h3>
+            <p class="text-sm text-body flex-grow">Incredibly small file size. Allows you to store twice as many photos on your phone before running out of iCloud space.</p>
+          </div>
+          
+          <!-- JPG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg mb-1">JPG Format</span>
+              <span class="text-red-900/60 text-xs">Legacy Format</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">3.9 MB</h3>
+            <p class="text-sm text-body flex-grow">Takes up more than double the space for the exact same visual quality. Fills up your camera roll incredibly fast.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a HEIC?</h2>
+        <p>
+          HEIC stands for High Efficiency Image Container. It is a variant of the HEIF (High Efficiency Image Format) standard, which was created by the Moving Picture Experts Group (MPEG). Apple adopted it as the default format in iOS 11.
+        </p>
+        <p>
+          Unlike JPG, which was created in 1992, HEIC relies on modern <strong>HEVC video compression</strong>. Essentially, a HEIC file is just a single frame of a highly compressed video file. Because video compression math has advanced so drastically over the last 30 years, HEIC can store the exact same pixel data as a JPG in roughly half the bytes.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">More Than Just Compression</h3>
+        <p>
+          The word "Container" in HEIC is key. A HEIC file can hold multiple images inside a single file. This is exactly how Apple's <strong>Live Photos</strong> feature works—it stores the high-quality still image and the short burst of video all wrapped inside a single HEIC file.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">HEIC Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Half the File Size:</strong> Dramatically reduces storage costs.</li>
+          <li><strong>16-Bit Color Depth:</strong> Supports vastly more colors and better dynamic range (HDR) than JPG's 8-bit limit.</li>
+          <li><strong>Live Photos & Depth Maps:</strong> Can contain image bursts, audio, and Portrait Mode depth data.</li>
+          <li><strong>Transparency Support:</strong> Unlike JPG, HEIC can actually store transparent backgrounds (similar to PNG).</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">HEIC Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Poor Compatibility:</strong> Many older Windows PCs, Android devices, and Smart TVs cannot open them.</li>
+          <li><strong>Web Unfriendly:</strong> Very few web browsers can natively display a HEIC file. It almost always needs to be converted before uploading to a website.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a JPG (or JPEG)?</h2>
+        <p>
+          JPEG stands for Joint Photographic Experts Group, the committee that created the standard in 1992. It is undeniably the most widely used image format in the history of the internet.
+        </p>
+        <p>
+          JPG relies on older lossy compression math (Discrete Cosine Transform) to discard visual data the human eye cannot easily detect. While the compression is not as efficient as HEIC, it is "good enough" for almost all standard web and print purposes.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">The Undisputed King of Compatibility</h3>
+        <p>
+          The absolute greatest strength of the JPG format is that it is universally supported. You can send a JPG to a printer, upload it to a government portal from 1998, email it to an Android phone, or open it on a smart TV, and it will always work.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Compatibility:</strong> Works everywhere, all the time, without exception.</li>
+          <li><strong>Fast Decoding:</strong> Older devices can open JPGs much faster than decoding complex HEIC files.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">JPG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Bloated File Sizes:</strong> Takes up significantly more disk space than modern formats like HEIC or WebP.</li>
+          <li><strong>Generation Loss:</strong> Every time you open, edit, and re-save a JPG, it permanently destroys a bit more data.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why does my iPhone save photos as HEIC?</h3>
+            <p class="text-body leading-relaxed">Apple switched to HEIC as the default camera format in iOS 11 because it uses advanced HEVC video compression. This allows your iPhone to store photographs in roughly half the file size of a JPG without losing any visual quality, saving massive amounts of iCloud storage space.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can Windows or Android open HEIC files?</h3>
+            <p class="text-body leading-relaxed">Modern Android devices and newer Windows computers (with the HEVC extension installed) can open HEIC files. However, compatibility is still very poor compared to JPG. Many older devices, smart TVs, and websites will simply refuse to open a HEIC file.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format has better quality: HEIC or JPG?</h3>
+            <p class="text-body leading-relaxed">HEIC is technically superior. It supports 16-bit color (allowing for vastly better dynamic range and HDR) whereas JPG is limited to 8-bit color. HEIC also captures fine details with fewer blocky compression artifacts.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to send a HEIC photo to an Android user?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly convert your iPhone's HEIC photos into universal JPGs.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name} Tool
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Image Tool Stack logo</title>
+  <desc id="desc">Layered image frames forming the Image Tool Stack mark.</desc>
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <rect x="116" y="108" width="244" height="244" rx="34" fill="#38bdf8" opacity=".9"/>
+  <rect x="152" y="148" width="244" height="244" rx="34" fill="#ffffff"/>
+  <path d="M188 326l62-70 44 47 31-34 45 57H188z" fill="#0ea5e9"/>
+  <circle cx="221" cy="205" r="28" fill="#14b8a6"/>
+  <path d="M344 116l52 52M396 116l-52 52" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+</svg>

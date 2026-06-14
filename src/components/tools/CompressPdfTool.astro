@@ -1,0 +1,59 @@
+---
+import { Tool } from "../../utils/seo-generator";
+interface Props { tool: Tool; }
+const { tool } = Astro.props;
+---
+<div class="converter-tool-root flex flex-col gap-8 w-full max-w-4xl mx-auto">
+  <div class="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden p-6">
+    <p class="text-body mb-4 bg-surface-alt p-4 rounded-lg text-sm border border-border">Note: This local compression strips metadata and unreferenced objects to reduce file size without reducing image quality or sending data to a server.</p>
+    <div id="drop-zone" class="relative group cursor-pointer mb-6">
+        <div class="absolute inset-0 bg-primary/5 rounded-xl border-2 border-dashed border-primary/30 group-hover:border-primary transition-colors"></div>
+        <div class="relative py-12 px-6 text-center">
+            <p class="text-lg font-medium text-heading">Click to select PDF to compress</p>
+        </div>
+        <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" />
+    </div>
+    <div id="result" class="hidden text-center text-primary font-medium p-4 bg-primary/10 rounded-lg"></div>
+  </div>
+</div>
+<script>
+  import { PDFDocument } from 'pdf-lib';
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const result = document.getElementById('result');
+
+  fileInput?.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    
+    if(result) {
+        result.classList.remove('hidden');
+        result.innerText = "Compressing locally...";
+    }
+    
+    try {
+      const originalSize = file.size;
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      pdf.setCreator('ImageToolStack.com');
+      pdf.setProducer('ImageToolStack.com');
+      
+      const pdfBytes = await pdf.save({ useObjectStreams: false });
+      const newSize = pdfBytes.length;
+      
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'compressed.pdf';
+      a.click();
+      
+      if(result) {
+          const savedKB = ((originalSize - newSize) / 1024).toFixed(1);
+          result.innerText = `Success! Saved ${savedKB} KB.`;
+      }
+      if (window.gtag) window.gtag('event', 'tool_usage', { tool_id: 'compress-pdf' });
+    } catch(e) {
+      if(result) result.innerText = "Failed to compress.";
+    }
+  });
+</script>

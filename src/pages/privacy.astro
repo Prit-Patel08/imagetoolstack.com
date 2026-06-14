@@ -1,0 +1,48 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Privacy Policy">
+  <Navbar />
+  
+  <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">Privacy Policy</h1>
+    
+    <div class="prose prose-vercel text-body leading-relaxed space-y-8">
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Our Commitment</h2>
+        <p>
+          At Image Tool Stack, privacy is not just a feature; it is our foundation. Most online image tools upload your files to a remote server for processing. 
+          We believe your private images should stay private.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Browser-Based Processing</h2>
+        <p>
+          Unlike our competitors, we utilize modern browser APIs (like Canvas and WebAssembly) to process your images locally on your device. 
+          <strong>Your files are never uploaded to our servers.</strong>
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Data Collection</h2>
+        <p>
+          We do not collect personal information. We use anonymous analytics to understand site usage and improve our tools, 
+          but this never includes any data from the images you process.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Cookies</h2>
+        <p>
+          We use minimal cookies for essential site functionality and basic analytics. You can disable these in your browser settings at any time.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

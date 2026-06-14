@@ -1,0 +1,102 @@
+---
+import { Tool } from "../../utils/seo-generator";
+interface Props { tool: Tool; }
+const { tool } = Astro.props;
+---
+<div class="converter-tool-root flex flex-col gap-8 w-full max-w-4xl mx-auto">
+  <div class="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden p-6">
+    <div id="drop-zone" class="relative group cursor-pointer">
+      <div class="absolute inset-0 bg-primary/5 rounded-xl border-2 border-dashed border-primary/30 group-hover:border-primary group-hover:bg-primary/10 transition-colors"></div>
+      <div class="relative py-12 px-6 text-center">
+        <p class="text-lg font-medium text-heading">Click to select multiple PDFs</p>
+        <p class="text-sm text-body mt-1">or drag and drop them here</p>
+      </div>
+      <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" multiple />
+    </div>
+
+    <!-- File List -->
+    <div id="file-list" class="hidden mt-6 flex flex-col gap-3"></div>
+
+    <!-- Actions -->
+    <div id="action-area" class="hidden mt-6 pt-6 border-t border-border flex justify-end">
+      <button id="merge-btn" class="px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors">
+        Merge PDFs
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { PDFDocument } from 'pdf-lib';
+
+  let selectedFiles: File[] = [];
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const fileList = document.getElementById('file-list');
+  const actionArea = document.getElementById('action-area');
+  const mergeBtn = document.getElementById('merge-btn');
+
+  function renderFiles() {
+    if (!fileList || !actionArea) return;
+    if (selectedFiles.length > 0) {
+      fileList.classList.remove('hidden');
+      actionArea.classList.remove('hidden');
+      fileList.innerHTML = selectedFiles.map((f, i) => `<div class="flex justify-between items-center p-3 bg-surface border border-border rounded-lg"><span class="text-sm font-medium text-heading truncate">${f.name}</span><button class="remove-btn text-red-500 text-sm font-medium px-2 py-1 hover:bg-red-50 rounded" data-idx="${i}">Remove</button></div>`).join('');
+      
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt((e.target as HTMLElement).dataset.idx || '0');
+          selectedFiles.splice(idx, 1);
+          renderFiles();
+        });
+      });
+    } else {
+      fileList.classList.add('hidden');
+      actionArea.classList.add('hidden');
+    }
+  }
+
+  fileInput?.addEventListener('change', (e) => {
+    const files = Array.from((e.target as HTMLInputElement).files || []);
+    selectedFiles = [...selectedFiles, ...files];
+    renderFiles();
+  });
+
+  mergeBtn?.addEventListener('click', async () => {
+    if (selectedFiles.length < 2) {
+      alert("Please select at least 2 PDFs to merge.");
+      return;
+    }
+    mergeBtn.innerHTML = "Merging...";
+    mergeBtn.setAttribute('disabled', 'true');
+
+    try {
+      const mergedPdf = await PDFDocument.create();
+      for (const file of selectedFiles) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      mergedPdf.setProducer('ImageToolStack.com');
+      mergedPdf.setCreator('ImageToolStack.com');
+      const pdfBytes = await mergedPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'merged.pdf';
+      a.click();
+      
+      if (window.gtag) {
+        window.gtag('event', 'tool_usage', { tool_id: 'merge-pdf' });
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error merging PDFs.");
+    } finally {
+      mergeBtn.innerHTML = "Merge PDFs";
+      mergeBtn.removeAttribute('disabled');
+    }
+  });
+</script>

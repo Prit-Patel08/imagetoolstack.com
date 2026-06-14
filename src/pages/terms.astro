@@ -1,0 +1,49 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Terms & Conditions">
+  <Navbar />
+  
+  <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">Terms & Conditions</h1>
+    
+    <div class="prose prose-vercel text-body leading-relaxed space-y-8">
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Acceptance of Terms</h2>
+        <p>
+          By accessing and using Image Tool Stack, you accept and agree to be bound by the terms and provision of this agreement. 
+          If you do not agree to abide by these terms, please do not use this service.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Use License</h2>
+        <p>
+          Permission is granted to temporarily use the tools on Image Tool Stack's website for personal or commercial use. 
+          This is the grant of a license, not a transfer of title, and under this license you may not attempt to decompile or reverse engineer any software contained on the website.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Disclaimer</h2>
+        <p>
+          The materials on Image Tool Stack's website are provided on an 'as is' basis. Image Tool Stack makes no warranties, expressed or implied, 
+          and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability.
+        </p>
+      </section>
+      
+      <section>
+        <h2 class="text-xl font-semibold text-ink mb-4">Limitations</h2>
+        <p>
+          In no event shall Image Tool Stack or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) 
+          arising out of the use or inability to use the materials on Image Tool Stack's website.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

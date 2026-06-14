@@ -1,0 +1,279 @@
+---
+import ToolLayout from "../../layouts/ToolLayout.astro";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
+import Base64Converter from "../../components/tools/Base64Converter.astro";
+import ImageResizer from "../../components/tools/ImageResizer.astro";
+import ColorPickerTool from "../../components/tools/ColorPickerTool.astro";
+import MetadataViewerTool from "../../components/tools/MetadataViewerTool.astro";
+import CropperTool from "../../components/tools/CropperTool.astro";
+import HeicToJpgTool from "../../components/tools/HeicToJpgTool.astro";
+import BulkResizerTool from "../../components/tools/BulkResizerTool.astro";
+import RemoveBgTool from "../../components/tools/RemoveBgTool.astro";
+import ImageToPdfTool from "../../components/tools/ImageToPdfTool.astro";
+import PdfToJpgTool from "../../components/tools/PdfToJpgTool.astro";
+import RotateImageTool from "../../components/tools/RotateImageTool.astro";
+import FlipImageTool from "../../components/tools/FlipImageTool.astro";
+import Base64Converter from "../../components/tools/Base64Converter.astro";
+import AddWatermarkTool from "../../components/tools/AddWatermarkTool.astro";
+import GrayscaleFilterTool from "../../components/tools/GrayscaleFilterTool.astro";
+import TiffToJpgTool from "../../components/tools/TiffToJpgTool.astro";
+import Base64ToImageTool from "../../components/tools/Base64ToImageTool.astro";
+import IcoConverterTool from "../../components/tools/IcoConverterTool.astro";
+import FaviconGeneratorTool from "../../components/tools/FaviconGeneratorTool.astro";
+import ImageSharpenerTool from "../../components/tools/ImageSharpenerTool.astro";
+import BlurImageTool from "../../components/tools/BlurImageTool.astro";
+import InvertColorsTool from "../../components/tools/InvertColorsTool.astro";
+import SepiaFilterTool from "../../components/tools/SepiaFilterTool.astro";
+import BrightnessAdjusterTool from "../../components/tools/BrightnessAdjusterTool.astro";
+import ContrastAdjusterTool from "../../components/tools/ContrastAdjusterTool.astro";
+import ImageSplitterTool from "../../components/tools/ImageSplitterTool.astro";
+import CollageMakerTool from "../../components/tools/CollageMakerTool.astro";
+import TextOverlayTool from "../../components/tools/TextOverlayTool.astro";
+import CircleCropTool from "../../components/tools/CircleCropTool.astro";
+import SocialResizerTool from "../../components/tools/SocialResizerTool.astro";
+import ImageDifferenceTool from "../../components/tools/ImageDifferenceTool.astro";
+import MergePdfTool from "../../components/tools/MergePdfTool.astro";
+import SplitPdfTool from "../../components/tools/SplitPdfTool.astro";
+import CompressPdfTool from "../../components/tools/CompressPdfTool.astro";
+import JpgToPdfTool from "../../components/tools/JpgToPdfTool.astro";
+import PdfToPngTool from "../../components/tools/PdfToPngTool.astro";
+import RemovePdfPagesTool from "../../components/tools/RemovePdfPagesTool.astro";
+import RotatePdfTool from "../../components/tools/RotatePdfTool.astro";
+import DefaultTool from "../../components/ImageTool.astro";
+import ImageUpscalerTool from "../../components/tools/ImageUpscalerTool.astro";
+import ImageDenoiserTool from "../../components/tools/ImageDenoiserTool.astro";
+import ImageOcrTool from "../../components/tools/ImageOcrTool.astro";
+import ImageRedactorTool from "../../components/tools/ImageRedactorTool.astro";
+import AvifToPngTool from "../../components/tools/AvifToPngTool.astro";
+import QrGeneratorTool from "../../components/tools/QrGeneratorTool.astro";
+import QrScannerTool from "../../components/tools/QrScannerTool.astro";
+import PdfWatermarkTool from "../../components/tools/PdfWatermarkTool.astro";
+import PdfPasswordProtectTool from "../../components/tools/PdfPasswordProtectTool.astro";
+import UnlockPdfTool from "../../components/tools/UnlockPdfTool.astro";
+import PdfMetadataViewerTool from "../../components/tools/PdfMetadataViewerTool.astro";
+import PdfPageNumberingTool from "../../components/tools/PdfPageNumberingTool.astro";
+import Base64ToPdfTool from "../../components/tools/Base64ToPdfTool.astro";
+import PdfToBase64Tool from "../../components/tools/PdfToBase64Tool.astro";
+import WebpToPdfTool from "../../components/tools/WebpToPdfTool.astro";
+import SvgToPdfTool from "../../components/tools/SvgToPdfTool.astro";
+import PdfToSvgTool from "../../components/tools/PdfToSvgTool.astro";
+import ColorPaletteGeneratorTool from "../../components/tools/ColorPaletteGeneratorTool.astro";
+import DominantColorTool from "../../components/tools/DominantColorTool.astro";
+import ExifRemoverTool from "../../components/tools/ExifRemoverTool.astro";
+import AspectRatioTool from "../../components/tools/AspectRatioTool.astro";
+import DpiCheckerTool from "../../components/tools/DpiCheckerTool.astro";
+import HexViewerTool from "../../components/tools/HexViewerTool.astro";
+import ImageToDataUriTool from "../../components/tools/ImageToDataUriTool.astro";
+import DataUriToImageTool from "../../components/tools/DataUriToImageTool.astro";
+import SpriteGeneratorTool from "../../components/tools/SpriteGeneratorTool.astro";
+import HistogramViewerTool from "../../components/tools/HistogramViewerTool.astro";
+import PixelateImageTool from "../../components/tools/PixelateImageTool.astro";
+import DuotoneFilterTool from "../../components/tools/DuotoneFilterTool.astro";
+import VintageFilterTool from "../../components/tools/VintageFilterTool.astro";
+import VignetteEffectTool from "../../components/tools/VignetteEffectTool.astro";
+import GlitchEffectTool from "../../components/tools/GlitchEffectTool.astro";
+import NoiseGeneratorTool from "../../components/tools/NoiseGeneratorTool.astro";
+import RoundCornersTool from "../../components/tools/RoundCornersTool.astro";
+import DropShadowTool from "../../components/tools/DropShadowTool.astro";
+import ImageSlicerTool from "../../components/tools/ImageSlicerTool.astro";
+import ImageStitcherTool from "../../components/tools/ImageStitcherTool.astro";
+import CmykVisualizerTool from "../../components/tools/CmykVisualizerTool.astro";
+import ColorBlindnessTool from "../../components/tools/ColorBlindnessTool.astro";
+import EdgeDetectionTool from "../../components/tools/EdgeDetectionTool.astro";
+import EmbossFilterTool from "../../components/tools/EmbossFilterTool.astro";
+import PosterizeFilterTool from "../../components/tools/PosterizeFilterTool.astro";
+import SolarizeFilterTool from "../../components/tools/SolarizeFilterTool.astro";
+import ImageSkewTool from "../../components/tools/ImageSkewTool.astro";
+import ImageReflectionTool from "../../components/tools/ImageReflectionTool.astro";
+import VectorizerTool from "../../components/tools/VectorizerTool.astro";
+import toolsData from "../../data/tools.json";
+export async function getStaticPaths() {
+  return toolsData.tools.map((tool) => {
+    const category = toolsData.categories.find((c) => c.id === tool.categoryId);
+    return {
+      params: { slug: tool.slug },
+      props: { tool, category },
+    };
+  });
+}
+
+const { tool, category } = Astro.props;
+
+let ToolComponent = DefaultTool;
+
+const formatConverters = ['png-to-jpg', 'jpg-to-png', 'webp-to-png', 'png-to-webp', 'svg-to-png', 'image-compressor', 'jpg-to-webp', 'gif-to-png', 'bmp-to-jpg', 'png-to-avif', 'webp-to-jpg', 'jpg-to-avif', 'png-to-jpg', 'png-to-jpeg', 'png-to-webp', 'png-to-avif', 'png-to-heic', 'png-to-svg', 'png-to-pdf', 'jpg-to-png', 'jpg-to-jpeg', 'jpg-to-webp', 'jpg-to-avif', 'jpg-to-heic', 'jpg-to-svg', 'jpg-to-pdf', 'jpeg-to-png', 'jpeg-to-webp', 'jpeg-to-avif', 'jpeg-to-pdf', 'webp-to-png', 'webp-to-jpg', 'webp-to-jpeg', 'webp-to-avif', 'webp-to-heic', 'webp-to-svg', 'webp-to-pdf', 'avif-to-png', 'avif-to-jpg', 'avif-to-jpeg', 'avif-to-webp', 'avif-to-pdf', 'heic-to-png', 'heic-to-jpg', 'heic-to-jpeg', 'heic-to-webp', 'heic-to-pdf', 'svg-to-png', 'svg-to-jpg', 'svg-to-jpeg', 'svg-to-webp', 'svg-to-pdf', 'gif-to-png', 'gif-to-jpg', 'gif-to-jpeg', 'gif-to-webp', 'gif-to-pdf', 'pdf-to-png', 'pdf-to-jpg', 'pdf-to-jpeg', 'pdf-to-webp', 'tiff-to-png', 'tiff-to-jpg', 'tiff-to-jpeg', 'tiff-to-webp', 'bmp-to-png', 'bmp-to-jpg', 'bmp-to-jpeg', 'bmp-to-webp'];
+
+if (tool.slug === 'avif-to-png') {
+  ToolComponent = AvifToPngTool;
+} else if (tool.slug === 'image-redactor') {
+  ToolComponent = ImageRedactorTool;
+} else if (['png-to-svg', 'jpg-to-svg', 'webp-to-svg', 'vectorizer'].includes(tool.slug)) {
+  ToolComponent = VectorizerTool;
+} else if (formatConverters.includes(tool.slug)) {
+  ToolComponent = FormatConverter;
+} else if (tool.slug === 'image-to-base64') {
+  ToolComponent = Base64Converter;
+} else if (tool.slug === 'image-resizer') {
+  ToolComponent = ImageResizer;
+} else if (tool.slug === 'color-picker') {
+  ToolComponent = ColorPickerTool;
+} else if (tool.slug === 'metadata-viewer') {
+  ToolComponent = MetadataViewerTool;
+} else if (tool.slug === 'crop-image') {
+  ToolComponent = CropperTool;
+} else if (tool.slug === 'heic-to-jpg') {
+  ToolComponent = HeicToJpgTool;
+} else if (['resize-image-to-20kb', 'resize-image-to-50kb', 'resize-image-to-100kb', 'resize-image-to-200kb', 'resize-image-to-500kb', 'resize-image-to-1mb', 'compress-image-to-20kb', 'compress-image-to-50kb', 'compress-image-to-100kb', 'compress-image-to-200kb', 'compress-image-to-500kb', 'compress-image-to-1mb', 'bulk-image-resizer', 'bulk-image-compressor', 'bulk-image-converter', 'bulk-png-converter', 'bulk-jpg-converter', 'bulk-webp-converter', 'passport-photo-resizer', 'instagram-photo-resizer', 'facebook-photo-resizer', 'linkedin-photo-resizer', 'whatsapp-image-resizer', 'youtube-thumbnail-resizer', 'twitter-image-resizer', 'bulk-resizer'].includes(tool.slug)) {
+  ToolComponent = BulkResizerTool;
+} else if (tool.slug === 'remove-bg') {
+  ToolComponent = RemoveBgTool;
+} else if (tool.slug === 'image-to-pdf' || tool.slug === 'screenshot-to-pdf' || tool.slug.endsWith('-to-pdf')) {
+  ToolComponent = ImageToPdfTool;
+} else if (tool.slug === 'pdf-to-jpg' || tool.slug === 'pdf-to-jpeg') {
+  ToolComponent = PdfToJpgTool;
+} else if (tool.slug === 'rotate-image') {
+  ToolComponent = RotateImageTool;
+} else if (tool.slug === 'flip-image') {
+  ToolComponent = FlipImageTool;
+} else if (tool.slug === 'add-watermark') {
+  ToolComponent = AddWatermarkTool;
+} else if (tool.slug === 'grayscale-filter') {
+  ToolComponent = GrayscaleFilterTool;
+} else if (tool.slug === 'tiff-to-jpg') {
+  ToolComponent = TiffToJpgTool;
+} else if (tool.slug === 'base64-to-image') {
+  ToolComponent = Base64ToImageTool;
+} else if (tool.slug === 'ico-converter') {
+  ToolComponent = IcoConverterTool;
+} else if (tool.slug === 'favicon-generator') {
+  ToolComponent = FaviconGeneratorTool;
+} else if (tool.slug === 'image-sharpener') {
+  ToolComponent = ImageSharpenerTool;
+} else if (tool.slug === 'blur-image') {
+  ToolComponent = BlurImageTool;
+} else if (tool.slug === 'invert-colors') {
+  ToolComponent = InvertColorsTool;
+} else if (tool.slug === 'sepia-filter') {
+  ToolComponent = SepiaFilterTool;
+} else if (tool.slug === 'adjust-brightness') {
+  ToolComponent = BrightnessAdjusterTool;
+} else if (tool.slug === 'adjust-contrast') {
+  ToolComponent = ContrastAdjusterTool;
+} else if (tool.slug === 'image-splitter') {
+  ToolComponent = ImageSplitterTool;
+} else if (tool.slug === 'collage-maker') {
+  ToolComponent = CollageMakerTool;
+} else if (tool.slug === 'meme-generator' || tool.slug === 'add-text-to-image') {
+  ToolComponent = TextOverlayTool;
+} else if (tool.slug === 'circle-crop') {
+  ToolComponent = CircleCropTool;
+} else if (tool.slug === 'passport-photo-maker' || tool.slug === 'instagram-resizer' || tool.slug === 'twitter-header-maker' || tool.slug === 'youtube-thumbnail' || tool.slug === 'linkedin-banner' || tool.slug === 'facebook-cover') {
+  ToolComponent = SocialResizerTool;
+} else if (tool.slug === 'compare-images') {
+  ToolComponent = ImageDifferenceTool;
+} else if (tool.slug === 'merge-pdf') {
+  ToolComponent = MergePdfTool;
+} else if (tool.slug === 'split-pdf') {
+  ToolComponent = SplitPdfTool;
+} else if (tool.slug === 'compress-pdf') {
+  ToolComponent = CompressPdfTool;
+} else if (tool.slug === 'jpg-to-pdf') {
+  ToolComponent = JpgToPdfTool;
+} else if (tool.slug === 'pdf-to-png') {
+  ToolComponent = PdfToPngTool;
+} else if (tool.slug === 'remove-pdf-pages') {
+  ToolComponent = RemovePdfPagesTool;
+} else if (tool.slug === 'image-slicer') {
+  ToolComponent = ImageSlicerTool;
+} else if (tool.slug === 'image-stitcher') {
+  ToolComponent = ImageStitcherTool;
+} else if (tool.slug === 'pixelate-image') {
+  ToolComponent = PixelateImageTool;
+} else if (tool.slug === 'round-corners') {
+  ToolComponent = RoundCornersTool;
+} else if (tool.slug === 'drop-shadow') {
+  ToolComponent = DropShadowTool;
+} else if (tool.slug === 'aspect-ratio') {
+  ToolComponent = AspectRatioTool;
+} else if (tool.slug === 'dpi-checker') {
+  ToolComponent = DpiCheckerTool;
+} else if (tool.slug === 'histogram-viewer') {
+  ToolComponent = HistogramViewerTool;
+} else if (tool.slug === 'hex-viewer') {
+  ToolComponent = HexViewerTool;
+} else if (tool.slug === 'sprite-generator') {
+  ToolComponent = SpriteGeneratorTool;
+} else if (tool.slug === 'image-skew') {
+  ToolComponent = ImageSkewTool;
+} else if (tool.slug === 'image-reflection') {
+  ToolComponent = ImageReflectionTool;
+} else if (tool.slug === 'color-palette-generator') {
+  ToolComponent = ColorPaletteGeneratorTool;
+} else if (tool.slug === 'dominant-color') {
+  ToolComponent = DominantColorTool;
+} else if (tool.slug === 'image-to-data-uri') {
+  ToolComponent = ImageToDataUriTool;
+} else if (tool.slug === 'data-uri-to-image') {
+  ToolComponent = DataUriToImageTool;
+} else if (tool.slug === 'duotone-filter') {
+  ToolComponent = DuotoneFilterTool;
+} else if (tool.slug === 'vintage-filter') {
+  ToolComponent = VintageFilterTool;
+} else if (tool.slug === 'vignette-effect') {
+  ToolComponent = VignetteEffectTool;
+} else if (tool.slug === 'glitch-effect') {
+  ToolComponent = GlitchEffectTool;
+} else if (tool.slug === 'noise-generator') {
+  ToolComponent = NoiseGeneratorTool;
+} else if (tool.slug === 'cmyk-visualizer') {
+  ToolComponent = CmykVisualizerTool;
+} else if (tool.slug === 'color-blindness') {
+  ToolComponent = ColorBlindnessTool;
+} else if (tool.slug === 'edge-detection') {
+  ToolComponent = EdgeDetectionTool;
+} else if (tool.slug === 'emboss-filter') {
+  ToolComponent = EmbossFilterTool;
+} else if (tool.slug === 'posterize-filter') {
+  ToolComponent = PosterizeFilterTool;
+} else if (tool.slug === 'solarize-filter') {
+  ToolComponent = SolarizeFilterTool;
+} else if (tool.slug === 'pdf-watermark') {
+  ToolComponent = PdfWatermarkTool;
+} else if (tool.slug === 'pdf-password-protect') {
+  ToolComponent = PdfPasswordProtectTool;
+} else if (tool.slug === 'unlock-pdf') {
+  ToolComponent = UnlockPdfTool;
+} else if (tool.slug === 'pdf-metadata-viewer') {
+  ToolComponent = PdfMetadataViewerTool;
+} else if (tool.slug === 'pdf-page-numbering') {
+  ToolComponent = PdfPageNumberingTool;
+} else if (tool.slug === 'base64-to-pdf') {
+  ToolComponent = Base64ToPdfTool;
+} else if (tool.slug === 'pdf-to-base64') {
+  ToolComponent = PdfToBase64Tool;
+} else if (tool.slug === 'webp-to-pdf') {
+  ToolComponent = WebpToPdfTool;
+} else if (tool.slug === 'svg-to-pdf') {
+  ToolComponent = SvgToPdfTool;
+} else if (tool.slug === 'pdf-to-svg') {
+  ToolComponent = PdfToSvgTool;
+} else if (tool.slug === 'image-upscaler') {
+  ToolComponent = ImageUpscalerTool;
+} else if (tool.slug === 'image-denoiser') {
+  ToolComponent = ImageDenoiserTool;
+} else if (tool.slug === 'image-ocr') {
+  ToolComponent = ImageOcrTool;
+} else if (tool.slug === 'qr-generator') {
+  ToolComponent = QrGeneratorTool;
+} else if (tool.slug === 'qr-scanner') {
+  ToolComponent = QrScannerTool;
+} else if (tool.slug === 'exif-remover') {
+  ToolComponent = ExifRemoverTool;
+}
+---
+
+<ToolLayout tool={tool} category={category}>
+  <div slot="tool-interface" class="w-full">
+    <ToolComponent toolId={tool.id} />
+  </div>
+</ToolLayout>

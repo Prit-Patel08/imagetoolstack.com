@@ -1,0 +1,250 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "PDF vs PNG: Which Format Should You Use? (2026 Guide)";
+const seoDescription = "PDF or PNG? We break down the exact differences between the global document standard and the transparent web image format. See when to use each for sharing, printing, and web design.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which format is better for printing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PDF is infinitely better for printing. A PDF can contain scalable vector graphics, precise font data, and multiple pages, which print shops require to ensure your document looks exactly the same on paper as it does on screen. PNG is a raster image format and can look pixelated if printed at a large size."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a PNG hold multiple pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A PNG is a single, flat image. If you have a 10-page document, you must save it as 10 separate PNG files. A PDF, however, is a document container that can hold thousands of pages in a single file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I upload my resume as a PDF or PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Always upload your resume as a PDF. Applicant Tracking Systems (ATS) used by employers cannot read the text inside a PNG image. A PDF allows the text to remain highlightable, searchable, and machine-readable."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "pdf-vs-png")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "pdf-to-png");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PDF vs PNG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PDF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">PDF vs PNG: Which Format Should You Use?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Comparing PDF and PNG is like comparing a digital binder to a single photograph. One is a complex document container designed for text and vector layouts, while the other is a flat pixel grid designed for web transparency. Choosing the wrong format can result in unreadable text, massive file sizes, or broken layouts. Here is everything you need to know.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use PDF for:</strong> Resumes, multi-page reports, forms, print materials, and sharing documents where text must remain selectable.</p>
+          <p><strong class="text-ink">Use PNG for:</strong> Logos, icons, transparent web graphics, and single-page screenshots that you need to embed inside a webpage.</p>
+        </div>
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Real-World Tests: The Text Readability Difference</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          The biggest mistake people make is taking a text-heavy document (like an invoice or a resume) and saving it as a PNG. Let's look at why this destroys the document's utility.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- PDF Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Winner for Documents</div>
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg mb-1">PDF (Vector Text)</span>
+              <span class="text-indigo-900/60 text-xs">Searchable & Selectable</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">Infinite Zoom</h3>
+            <p class="text-sm text-body flex-grow">Because a PDF stores text as mathematical vectors and actual font data, you can zoom in 1000% and the text remains razor-sharp. You can also highlight, copy, and paste the text.</p>
+          </div>
+          
+          <!-- PNG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg mb-1">PNG (Rasterized)</span>
+              <span class="text-red-900/60 text-xs">Flattened Pixels</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">Pixelated Text</h3>
+            <p class="text-sm text-body flex-grow">A PNG converts all text into a static grid of colored square pixels. If you zoom in, the text becomes a blurry, jagged mess. You cannot copy or search the text without OCR software.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Deep Dive: PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PDF?</h2>
+        <p>
+          PDF stands for Portable Document Format. It was created by Adobe in 1992 with a singular, revolutionary goal: to allow anyone to capture and view information from any application, on any computer system, and have it look exactly the same.
+        </p>
+        <p>
+          Unlike an image format, a PDF is actually a container. Inside a single PDF file, you can pack text, fonts, vector graphics, raster images (like JPGs and PNGs), interactive form fields, and even video. Because it embeds the exact fonts used to create the document, a PDF will never suffer from the "missing font" errors that plague Word documents.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PDF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Multi-page Support:</strong> A single PDF can hold a 500-page book. A PNG can only hold one single image.</li>
+          <li><strong>Selectable Text:</strong> Search engines and Applicant Tracking Systems (ATS) can instantly read the text inside a PDF.</li>
+          <li><strong>Universal Formatting:</strong> It looks exactly the same on a Mac, Windows PC, iPhone, or printed on a physical piece of paper.</li>
+          <li><strong>Security:</strong> PDFs can be encrypted with passwords and digital signatures to prevent unauthorized editing or printing.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">PDF Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Terrible for Web Design:</strong> You cannot easily embed a PDF directly into a website's layout like you can with a regular image tag. It usually requires an external viewer plugin.</li>
+          <li><strong>Difficult to Edit:</strong> Once a document is exported to PDF, editing the layout or text requires expensive, specialized software like Adobe Acrobat.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PNG?</h2>
+        <p>
+          PNG stands for Portable Network Graphics. It was created in 1995 as a lossless, patent-free replacement for the GIF format.
+        </p>
+        <p>
+          Unlike a PDF, a PNG does not understand what "text" or "fonts" are. A PNG only understands pixels. It is a flat, two-dimensional grid of colors. It uses lossless compression, meaning it retains a perfect, 1-to-1 copy of the original image without any of the blurry compression artifacts found in JPGs.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">The Alpha Channel (Transparency)</h3>
+        <p>
+          The PNG format's superpower is its support for an <strong>Alpha Channel</strong>. This means PNG can handle full transparency and semi-transparency. If you want to put a company logo on top of a colored website header, you must use a format like PNG so the background shows through.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Web Native:</strong> Every browser instantly renders PNGs natively using the standard HTML image tag.</li>
+          <li><strong>Lossless Quality:</strong> Crisp edges for digital art, screenshots, and simple graphics.</li>
+          <li><strong>Alpha Transparency:</strong> Full support for transparent and semi-transparent backgrounds.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">PNG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Single Page Only:</strong> Cannot hold multiple pages or documents.</li>
+          <li><strong>No Selectable Text:</strong> Text is permanently converted to pixels.</li>
+          <li><strong>Large File Sizes:</strong> Lossless perfection comes at the cost of disk space. PNGs are notoriously heavy compared to JPGs or compressed PDFs.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format is better for printing?</h3>
+            <p class="text-body leading-relaxed">PDF is infinitely better for printing. A PDF can contain scalable vector graphics, precise font data, and multiple pages, which print shops require to ensure your document looks exactly the same on paper as it does on screen. A PNG can look pixelated if stretched to a large print size.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can a PNG hold multiple pages?</h3>
+            <p class="text-body leading-relaxed">No. A PNG is a single, flat image. If you have a 10-page document, you must save it as 10 separate PNG files. A PDF, however, is a document container that can hold thousands of pages in a single file.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Should I upload my resume as a PDF or PNG?</h3>
+            <p class="text-body leading-relaxed">Always upload your resume as a PDF. Applicant Tracking Systems (ATS) used by employers cannot read the text inside a PNG image. A PDF allows the text to remain highlightable, searchable, and machine-readable.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to extract pages from a PDF?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly convert your PDF pages into high-quality PNG images.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name} Tool
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

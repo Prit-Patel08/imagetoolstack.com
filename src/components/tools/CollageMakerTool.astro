@@ -1,0 +1,183 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="collage-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select multiple photos (up to 9)</p>
+      <p class="mt-1 text-sm text-body">Supports JPG, PNG, and WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" multiple />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex items-center justify-center overflow-hidden min-h-[300px]">
+      <canvas id="preview-canvas" class="max-w-full max-h-[500px] object-contain shadow-sm bg-white"></canvas>
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <h3 class="text-lg font-semibold text-ink mb-2 text-center">Collage Generated</h3>
+      <p class="text-sm text-body mb-6 text-center" id="photo-count-txt">We automatically arranged your photos into a perfect grid.</p>
+      
+      <div class="mt-8 flex gap-4">
+        <button id="download-btn" class="flex-1 btn-primary">Download Collage</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p class="text-sm font-mono text-mute uppercase tracking-widest">Building Layout...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    
+    const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+    const photoCountTxt = document.getElementById('photo-count-txt');
+    
+    const downloadBtn = document.getElementById('download-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files) handleFiles(Array.from(files));
+    });
+
+    fileInput.addEventListener('change', () => {
+      const files = fileInput.files;
+      if (files) handleFiles(Array.from(files));
+    });
+
+    async function handleFiles(files: File[]) {
+      const validFiles = files.filter(f => f.type.startsWith('image/')).slice(0, 9);
+      if (validFiles.length === 0) {
+        alert("Please select valid image files.");
+        return;
+      }
+      
+      if (photoCountTxt) {
+        photoCountTxt.textContent = `Arranged ${validFiles.length} photo${validFiles.length > 1 ? 's' : ''} into a grid.`;
+      }
+
+      showState('processing');
+      
+      try {
+        // Load all images
+        const images = await Promise.all(validFiles.map(file => {
+          return new Promise<HTMLImageElement>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const img = new Image();
+              img.onload = () => resolve(img);
+              img.onerror = reject;
+              img.src = e.target?.result as string;
+            };
+            reader.readAsDataURL(file);
+          });
+        }));
+        
+        // Calculate grid
+        const n = images.length;
+        let cols = Math.ceil(Math.sqrt(n));
+        let rows = Math.ceil(n / cols);
+        
+        // Find average aspect ratio to make cells uniform
+        const CELL_SIZE = 800; // Master resolution per cell
+        
+        previewCanvas.width = cols * CELL_SIZE;
+        previewCanvas.height = rows * CELL_SIZE;
+        
+        const ctx = previewCanvas.getContext('2d');
+        if (!ctx) throw new Error("Could not get canvas context");
+        
+        // White background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+        
+        // Draw images in grid (cover/crop to fit cell)
+        images.forEach((img, index) => {
+          const col = index % cols;
+          const row = Math.floor(index / cols);
+          
+          const x = col * CELL_SIZE;
+          const y = row * CELL_SIZE;
+          
+          // Calculate object-fit: cover
+          const scale = Math.max(CELL_SIZE / img.width, CELL_SIZE / img.height);
+          const drawW = img.width * scale;
+          const drawH = img.height * scale;
+          const drawX = x + (CELL_SIZE - drawW) / 2;
+          const drawY = y + (CELL_SIZE - drawH) / 2;
+          
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(x, y, CELL_SIZE, CELL_SIZE);
+          ctx.clip();
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          ctx.restore();
+        });
+        
+        showState('settings');
+        
+      } catch (e) {
+        console.error('Collage error', e);
+        alert('Failed to build collage.');
+        showState('upload');
+      }
+    }
+
+    downloadBtn?.addEventListener('click', () => {
+      const dataUrl = previewCanvas.toDataURL('image/jpeg', 0.9);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `photo-collage.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      const ctx = previewCanvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      showState('upload');
+    });
+
+    function showState(state: 'upload' | 'settings' | 'processing') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+    }
+  })();
+</script>

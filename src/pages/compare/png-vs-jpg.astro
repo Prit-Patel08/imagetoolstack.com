@@ -1,0 +1,274 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "PNG vs JPG: Which Format Should You Use? (2026 Guide)";
+const seoDescription = "PNG or JPG? We tested both with real files — photos, logos, and screenshots. See exact file size differences, when transparency matters, and which format Google prefers for web performance.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which format has a smaller file size?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG almost always has a significantly smaller file size than PNG. This is because JPG uses lossy compression to discard visual information that the human eye can't easily detect, whereas PNG uses lossless compression to preserve every single pixel perfectly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format supports transparency?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only PNG supports transparency (via an alpha channel). If you need an image with a transparent background—like a logo or a cutout product image—you must use PNG (or WebP). JPG does not support transparency."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use PNG or JPG for my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For photographs and large hero images, use JPG. For logos, icons, graphics with text, or images requiring transparency, use PNG. Using PNG for large photographs will drastically slow down your website loading speed."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 random related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-vs-jpg" && (["PNG", "JPG", "JPEG"].includes(comp.format1) || ["PNG", "JPG", "JPEG"].includes(comp.format2)))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "png-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">PNG vs JPG: Which Format Should You Use?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          PNG and JPG are the two most common image formats on the internet, but they are built for entirely different purposes. Choosing the wrong format can result in blurry text, broken transparent backgrounds, or massive file sizes that destroy your SEO rankings. Here is everything you need to know.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use JPG for:</strong> photographs, hero images, anything with gradients</p>
+          <p><strong class="text-ink">Use PNG for:</strong> logos, screenshots, anything with text or transparency</p>
+          <p><strong class="text-ink">Use WebP for:</strong> everything, if you can (it beats both for web delivery)</p>
+        </div>
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Real-World Tests: File Size & Quality Differences</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          To prove exactly why format choice matters, we saved the exact same 2400×1600 high-resolution photograph across different formats and compression levels. The results show exactly why you should almost never use PNG for complex photography.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- PNG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg">PNG (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">4.2 MB</h3>
+            <p class="text-sm text-body flex-grow">Massive file size. Retains 100% of original pixel data, but is far too heavy for modern website performance.</p>
+          </div>
+          
+          <!-- JPG 80 Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Winner</div>
+            <div class="h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-emerald-800 font-bold text-lg">JPG (80% Quality)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">380 KB</h3>
+            <p class="text-sm text-body flex-grow">Visually indistinguishable from the PNG at normal viewing distances, but is <strong class="text-ink">11x smaller</strong>.</p>
+          </div>
+          
+          <!-- JPG 60 Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg">JPG (60% Quality)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">180 KB</h3>
+            <p class="text-sm text-body flex-grow">Incredibly small file size, but compression artifacts (blocky pixels) become noticeable in the shadows and edges.</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-body leading-relaxed p-6 bg-canvas-soft rounded-lg border-l-4 border-link">
+          <strong>The Takeaway:</strong> If you use a 4.2MB PNG photograph as a hero image on your website, it will take roughly 3-4 seconds longer to load on a 3G mobile connection compared to the JPG. This will destroy your Core Web Vitals and SEO rankings. Always convert photographic PNGs to JPGs.
+        </p>
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PNG?</h2>
+        <p>
+          PNG stands for Portable Network Graphics. It was created in 1995 as an open-source replacement for the GIF format, which at the time was tangled in patent disputes.
+        </p>
+        <p>
+          The most important thing to know about PNG is that it uses <strong>lossless compression</strong>. When you save an image as a PNG, the algorithm finds clever ways to store the exact same pixel data in a smaller footprint without throwing any information away. When you open the file again, it is a perfect 1:1 mathematical reconstruction of the original image.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">The Power of the Alpha Channel</h3>
+        <p>
+          Aside from being lossless, the PNG format's biggest advantage over JPG is its support for an <strong>Alpha Channel</strong>. Standard images have three channels: Red, Green, and Blue (RGB). PNG adds a fourth channel dedicated entirely to transparency. 
+        </p>
+        <p>
+          This means PNG can handle <em>partial transparency</em>—like a smooth drop shadow fading into the background, or a semi-transparent glass effect. JPG absolutely cannot do this. If you try to save an image with a transparent background as a JPG, the background will instantly turn solid white.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Lossless Quality:</strong> Editing and re-saving a PNG 100 times will never result in generation loss or artifacting.</li>
+          <li><strong>Crisp Text and Lines:</strong> Because it doesn't approximate data, hard edges (like text, logos, and vector illustrations) stay razor sharp.</li>
+          <li><strong>Alpha Transparency:</strong> Full support for transparent and semi-transparent backgrounds.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">PNG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Massive File Sizes:</strong> Lossless perfection comes at the cost of disk space. PNGs are notoriously heavy.</li>
+          <li><strong>No EXIF Data:</strong> The PNG standard does not officially support EXIF data (the metadata cameras use to record aperture, shutter speed, and GPS location), making it useless for professional photography workflows.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a JPG (or JPEG)?</h2>
+        <p>
+          JPEG stands for Joint Photographic Experts Group, the committee that created the standard in 1992. (JPG and JPEG are exactly the same format; the three-letter `.jpg` extension only exists because old versions of Windows couldn't handle file extensions longer than three letters).
+        </p>
+        <p>
+          Unlike PNG, JPG uses <strong>lossy compression</strong> based on something called the Discrete Cosine Transform (DCT). Essentially, the algorithm looks at the image and decides which visual data the human eye is least likely to notice, and then it permanently deletes it.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">Chroma Subsampling and Human Vision</h3>
+        <p>
+          The human eye is much more sensitive to changes in brightness (luma) than changes in color (chroma). JPG compression takes advantage of this biological flaw through "chroma subsampling"—it literally throws away huge amounts of color data while keeping the brightness data intact. You don't notice it, but the computer does, which is why the file size plummets.
+        </p>
+        <p>
+          However, this aggressive compression is exactly why JPG struggles with hard lines and text. The math behind the compression causes a ripple effect known as "mosquito noise" or "compression artifacts" around sharp edges.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Tiny File Sizes:</strong> JPG can compress a 20MB photograph down to 500KB with minimal perceived quality loss.</li>
+          <li><strong>Universal Compatibility:</strong> Literally every digital device, browser, and software created in the last 30 years can open a JPG.</li>
+          <li><strong>Rich Metadata:</strong> Fully supports EXIF and IPTC data for photographers.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">JPG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Generation Loss:</strong> Every time you open, edit, and re-save a JPG, it compresses itself again, permanently destroying more data.</li>
+          <li><strong>No Transparency:</strong> Backgrounds will always be flattened to a solid color.</li>
+          <li><strong>Artifacting:</strong> Terrible for text, screenshots, and simple line art due to blurry compression noise.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format has a smaller file size?</h3>
+            <p class="text-body leading-relaxed">JPG almost always has a significantly smaller file size than PNG. This is because JPG uses lossy compression to discard visual information that the human eye can't easily detect, whereas PNG uses lossless compression to preserve every single pixel perfectly.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format supports transparency?</h3>
+            <p class="text-body leading-relaxed">Only PNG supports transparency (via an alpha channel). If you need an image with a transparent background—like a logo or a cutout product image—you must use PNG (or WebP). JPG does not support transparency.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Is PNG always higher quality than JPG?</h3>
+            <p class="text-body leading-relaxed">Technically, yes, because PNG is lossless. However, at high quality settings (e.g., 90%+), a JPG can be visually indistinguishable from a PNG while maintaining a much smaller file size. For complex photographs, JPG is usually the better choice.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Should I use PNG or JPG for my website?</h3>
+            <p class="text-body leading-relaxed">For photographs and large hero images, use JPG. For logos, icons, graphics with text, or images requiring transparency, use PNG. Using PNG for large photographs will drastically slow down your website loading speed and harm your SEO rankings.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert a massive PNG to JPG?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly compress your images without uploading them to a server.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

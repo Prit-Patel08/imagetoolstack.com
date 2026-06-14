@@ -1,0 +1,26 @@
+---
+interface Props {
+  tool: any;
+}
+const { tool } = Astro.props;
+
+const faqs = tool.faqs || [];
+---
+{faqs.length > 0 && (
+  <section class="mb-16">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Frequently Asked Questions</h2>
+    <div class="space-y-4">
+      {faqs.map((item: any, index: number) => (
+        <details class="group bg-canvas border border-hairline rounded-xl p-4 transition-all hover:border-link" open={index === 0}>
+          <summary class="flex items-center justify-between cursor-pointer font-semibold text-ink list-none">
+            <span class="pr-4">{item.q}</span>
+            <span class="shrink-0 group-open:rotate-180 transition-transform"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></span>
+          </summary>
+          <div class="mt-4 text-sm text-body leading-relaxed border-t border-hairline pt-4">
+            {item.a}
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+)}

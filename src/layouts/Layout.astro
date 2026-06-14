@@ -1,23 +1,137 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	description?: string;
+	keywords?: string;
+}
+
+const { 
+	title, 
+	description = "Fast, privacy-friendly, browser-based image utilities.",
+	keywords
+} = Astro.props;
+
+const siteName = "Image Tool Stack";
+const pageTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+
+// Clean the pathname to produce a clean trailing-slash-free, extension-free URL
+const cleanPathname = Astro.url.pathname
+  .replace(/\/index\.html?$/i, '/')
+  .replace(/\.html?$/i, '')
+  .replace(/\/$/, '');
+
+const canonicalUrl = new URL(cleanPathname || '/', Astro.site || 'https://imagetoolstack.com').href;
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<meta name="apple-mobile-web-app-title" content="imagetool" />
+		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		
+		<!-- Disable forced dark mode extensions (like Dark Reader) to prevent double-inversion -->
+		<meta name="color-scheme" content="light dark" />
+		<meta name="darkreader-lock" />
+		
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			}
+			window.localStorage.setItem('theme', theme);
+		</script>
+
+		<!-- SEO Metadata -->
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		{keywords && <meta name="keywords" content={keywords} />}
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href={canonicalUrl} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL('/og-image.svg', Astro.site || 'https://imagetoolstack.com').href} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalUrl} />
+		<meta property="twitter:title" content={pageTitle} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL('/og-image.svg', Astro.site || 'https://imagetoolstack.com').href} />
+
+		<!-- JSON-LD Schema (Organization & Website) -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"name": "Image Tool Stack",
+				"url": "https://imagetoolstack.com",
+				"logo": "https://imagetoolstack.com/logo.svg"
+			}
+		</script>
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "Image Tool Stack",
+				"url": "https://imagetoolstack.com",
+				"potentialAction": {
+					"@type": "SearchAction",
+					"target": "https://imagetoolstack.com/?q={search_term_string}",
+					"query-input": "required name=search_term_string"
+				}
+			}
+		</script>
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-D21DB6426D"></script>
+		<script is:inline>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-D21DB6426D');
+		</script>
+
+		<!-- Google AdSense -->
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9945105681064336" crossorigin="anonymous"></script>
 	</head>
-	<body>
+	<body class="min-h-screen bg-canvas-soft flex flex-col font-sans w-full overflow-x-hidden">
+
+
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
 	html,
 	body {
 		margin: 0;
 		width: 100%;
-		height: 100%;
 	}
 </style>

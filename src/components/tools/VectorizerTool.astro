@@ -1,0 +1,689 @@
+---
+// VectorizerTool.astro - 100% Client-Side Image to SVG Vectorizer
+interface Props {
+  toolId?: string;
+}
+---
+
+<div id="vectorizer-tool-root" class="w-full max-w-6xl mx-auto flex flex-col gap-8">
+  <!-- Upload State -->
+  <div id="upload-zone" class="w-full min-h-[350px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline-strong rounded-xl bg-canvas hover:bg-canvas-soft hover:border-link transition-all cursor-pointer group shadow-sm">
+    <div class="mb-6 h-16 w-16 rounded-full bg-canvas-soft-2 flex items-center justify-center text-ink border border-hairline group-hover:bg-link/10 group-hover:border-link/30 group-hover:text-link group-hover:scale-110 transition-all duration-300">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    </div>
+    <div class="text-center">
+      <p class="text-xl font-bold text-ink mb-2">Select Image to Vectorize</p>
+      <p class="text-sm text-body">Supports PNG, JPG, JPEG, and WebP. Works 100% locally in your browser.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/png, image/jpeg, image/jpg, image/webp" />
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading-zone" class="hidden w-full flex flex-col items-center justify-center py-16 gap-4">
+    <div class="animate-spin h-10 w-10 border-2 border-link border-t-transparent rounded-full"></div>
+    <p id="loading-status" class="text-sm font-mono text-mute uppercase tracking-widest">Loading Tracing Engines...</p>
+  </div>
+
+  <!-- Workspace State -->
+  <div id="workspace-zone" class="hidden w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left: Preview Workspace (7 Cols) -->
+    <div class="lg:col-span-7 flex flex-col gap-6 w-full">
+      <!-- Workspace Header -->
+      <div class="flex items-center justify-between border-b border-hairline pb-4">
+        <div class="flex items-center gap-3">
+          <button id="reset-btn" class="text-mute hover:text-ink transition-colors p-1.5 hover:bg-canvas-soft-2 rounded-full" title="Upload another image">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <div>
+            <h3 id="file-name-title" class="text-base font-bold text-ink truncate max-w-[200px] sm:max-w-xs">image.png</h3>
+            <span id="file-size-info" class="text-xs text-mute font-mono">0 KB</span>
+          </div>
+        </div>
+
+        <!-- View Mode Toggle -->
+        <div class="flex items-center bg-canvas-soft-2 p-1 rounded-full border border-hairline text-xs font-medium">
+          <button id="view-side-btn" class="px-3 py-1 rounded-full bg-canvas text-ink shadow-sm transition-all">Side-by-Side</button>
+          <button id="view-svg-btn" class="px-3 py-1 rounded-full text-body hover:text-ink transition-all">SVG Vector</button>
+        </div>
+      </div>
+
+      <!-- Comparison Previews -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full" id="preview-grid">
+        <!-- Original Image -->
+        <div class="flex flex-col gap-2 w-full" id="orig-container">
+          <div class="text-xs font-mono text-mute uppercase tracking-wider">Original Raster</div>
+          <div class="aspect-square w-full border border-hairline rounded-lg bg-canvas-soft flex items-center justify-center overflow-hidden p-4">
+            <img id="orig-img" class="max-h-full max-w-full object-contain" />
+          </div>
+        </div>
+
+        <!-- Vector Image -->
+        <div class="flex flex-col gap-2 w-full" id="vector-container">
+          <div class="text-xs font-mono text-mute uppercase tracking-wider">Vector SVG Output</div>
+          <div class="aspect-square w-full border border-hairline rounded-lg bg-canvas-soft flex items-center justify-center overflow-hidden p-4 relative group" style="background-image: radial-gradient(#ebebeb 20%, transparent 20%), radial-gradient(#ebebeb 20%, transparent 20%); background-position: 0 0, 10px 10px; background-size: 20px 20px;">
+            <div id="svg-preview-wrapper" class="w-full h-full flex items-center justify-center">
+              <!-- SVG will be injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG Code Inspector -->
+      <div class="border border-hairline rounded-lg overflow-hidden bg-canvas w-full">
+        <button id="toggle-code-btn" class="w-full flex items-center justify-between p-4 bg-canvas-soft hover:bg-canvas-soft-2 transition-all font-medium text-sm text-ink border-b border-hairline">
+          <span class="flex items-center gap-2">
+            <svg class="h-4 w-4 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+            Inspect SVG Code
+          </span>
+          <span class="flex items-center gap-3">
+            <span id="code-savings-badge" class="text-xs font-mono bg-link/10 text-link px-2 py-0.5 rounded-full hidden">Optimized</span>
+            <svg id="chevron-icon" class="h-4 w-4 text-mute transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+          </span>
+        </button>
+        <div id="code-area" class="hidden p-4 bg-canvas-soft-2">
+          <div class="flex justify-between items-center mb-2">
+            <span id="code-size-label" class="text-xs text-mute font-mono">0 bytes</span>
+            <button id="copy-code-btn" class="text-xs font-semibold text-link hover:underline flex items-center gap-1">
+              Copy to clipboard
+            </button>
+          </div>
+          <textarea id="svg-code-textarea" class="w-full h-36 p-3 bg-canvas border border-hairline rounded-md text-xs font-mono text-ink focus:outline-none resize-none" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Control Panel (5 Cols) -->
+    <div class="lg:col-span-5 flex flex-col gap-6 w-full">
+      <div class="bg-canvas border border-hairline rounded-xl p-6 shadow-sm flex flex-col gap-6">
+        <div>
+          <h4 class="text-sm font-bold text-ink uppercase tracking-wider mb-3">Tracing Parameters</h4>
+          
+          <!-- Mode Toggle -->
+          <div class="grid grid-cols-2 bg-canvas-soft-2 p-1 rounded-lg border border-hairline text-sm font-medium mb-6">
+            <button id="mode-mono-btn" class="py-2 rounded-md bg-primary text-on-primary shadow-sm transition-all">Monochrome</button>
+            <button id="mode-color-btn" class="py-2 rounded-md text-body hover:text-ink transition-all">Colors</button>
+          </div>
+
+          <!-- Monochrome Panel -->
+          <div id="mono-controls" class="flex flex-col gap-5">
+            <!-- Threshold Slider -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Binarization Threshold</span>
+                <span id="mono-threshold-val" class="font-mono text-mute">128</span>
+              </div>
+              <input type="range" id="mono-threshold" min="0" max="255" value="128" class="w-full accent-primary" />
+              <p class="text-xs text-mute">Adjusts light vs dark cutoff. Higher threshold adds more dark pixels.</p>
+            </div>
+
+            <!-- Detail level -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Path Detail / Curve Fitting</span>
+                <span id="mono-detail-val" class="font-mono text-mute">Medium</span>
+              </div>
+              <input type="range" id="mono-detail" min="1" max="3" value="2" class="w-full accent-primary" />
+              <p class="text-xs text-mute">Higher details retain sharp edges but increase SVG path complexity.</p>
+            </div>
+
+            <!-- Speckle Filter -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Speckle Filter (Noise Omit)</span>
+                <span id="mono-speckle-val" class="font-mono text-mute">8 px</span>
+              </div>
+              <input type="range" id="mono-speckle" min="1" max="40" value="8" class="w-full accent-primary" />
+              <p class="text-xs text-mute">Ignores noise speckles smaller than this size.</p>
+            </div>
+
+            <!-- Transparent BG Toggle -->
+            <div class="flex items-center justify-between border-t border-hairline pt-4">
+              <div>
+                <label for="mono-transparent" class="text-sm font-medium text-ink">Transparent Background</label>
+                <p class="text-xs text-mute">Strips the white background path for a transparent SVG.</p>
+              </div>
+              <input type="checkbox" id="mono-transparent" checked class="h-4 w-4 rounded border-hairline text-link focus:ring-link" />
+            </div>
+          </div>
+
+          <!-- Color Panel -->
+          <div id="color-controls" class="hidden flex flex-col gap-5">
+            <!-- Max Colors -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Max Colors</span>
+                <span id="color-count-val" class="font-mono text-mute">8</span>
+              </div>
+              <input type="range" id="color-count" min="2" max="32" value="8" class="w-full accent-primary" />
+              <p class="text-xs text-mute">Controls color quantization limit. More colors increase file size.</p>
+            </div>
+
+            <!-- Preset Selector -->
+            <div class="flex flex-col gap-2">
+              <label for="color-preset" class="text-sm font-medium text-ink">Color Preset</label>
+              <select id="color-preset" class="w-full bg-canvas border border-hairline rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-link">
+                <option value="posterized2">Posterized (Recommended)</option>
+                <option value="detailed">Detailed</option>
+                <option value="grayscale">Grayscale</option>
+                <option value="silhouette">Silhouette</option>
+              </select>
+            </div>
+
+            <!-- Speckle Filter -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Speckle Filter (Noise Omit)</span>
+                <span id="color-speckle-val" class="font-mono text-mute">8 px</span>
+              </div>
+              <input type="range" id="color-speckle" min="1" max="40" value="8" class="w-full accent-primary" />
+            </div>
+
+            <!-- Color Detail -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium text-ink">Curve Fitting Detail</span>
+                <span id="color-detail-val" class="font-mono text-mute">Medium</span>
+              </div>
+              <input type="range" id="color-detail" min="1" max="3" value="2" class="w-full accent-primary" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Common Optimization Settings -->
+        <div class="border-t border-hairline pt-4 flex flex-col gap-4">
+          <!-- SVGO Optimize -->
+          <div class="flex items-center justify-between">
+            <div>
+              <label for="opt-svgo" class="text-sm font-medium text-ink">Optimize Path Data</label>
+              <p class="text-xs text-mute">Compresses coordinates and strips redundant nodes.</p>
+            </div>
+            <input type="checkbox" id="opt-svgo" checked class="h-4 w-4 rounded border-hairline text-link focus:ring-link" />
+          </div>
+
+          <!-- Pre-processing Blur -->
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between text-sm">
+              <span class="font-medium text-ink">Preprocessing Blur</span>
+              <span id="blur-val" class="font-mono text-mute">0 px</span>
+            </div>
+            <input type="range" id="blur-radius" min="0" max="5" value="0" class="w-full accent-primary" />
+            <p class="text-xs text-mute">Blurs input image to smooth out gradients and reduce tracing noise.</p>
+          </div>
+        </div>
+
+        <!-- Execution/Downloads -->
+        <div class="flex flex-col gap-3 pt-4 border-t border-hairline">
+          <button id="download-svg-btn" class="btn-primary w-full gap-2">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download SVG Vector
+          </button>
+          <button id="workspace-reset-btn" class="btn-secondary w-full text-xs py-2 h-auto text-body hover:text-ink">
+            Process Another Image
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="process-canvas" class="hidden"></canvas>
+</div>
+
+<script>
+  let originalFile: File | null = null;
+  let originalImage: HTMLImageElement | null = null;
+  let activeMode: 'mono' | 'color' = 'mono';
+  let processedSvgString = '';
+  let svgoModule: any = null;
+
+  // DOM Elements
+  const uploadZone = document.getElementById('upload-zone')!;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const loadingZone = document.getElementById('loading-zone')!;
+  const loadingStatus = document.getElementById('loading-status')!;
+  const workspaceZone = document.getElementById('workspace-zone')!;
+  
+  const resetBtn = document.getElementById('reset-btn')!;
+  const workspaceResetBtn = document.getElementById('workspace-reset-btn')!;
+  const fileNameTitle = document.getElementById('file-name-title')!;
+  const fileSizeInfo = document.getElementById('file-size-info')!;
+  
+  const viewSideBtn = document.getElementById('view-side-btn')!;
+  const viewSvgBtn = document.getElementById('view-svg-btn')!;
+  const previewGrid = document.getElementById('preview-grid')!;
+  const origContainer = document.getElementById('orig-container')!;
+  const vectorContainer = document.getElementById('vector-container')!;
+  
+  const origImg = document.getElementById('orig-img') as HTMLImageElement;
+  const svgPreviewWrapper = document.getElementById('svg-preview-wrapper')!;
+  
+  const toggleCodeBtn = document.getElementById('toggle-code-btn')!;
+  const codeArea = document.getElementById('code-area')!;
+  const chevronIcon = document.getElementById('chevron-icon')!;
+  const copyCodeBtn = document.getElementById('copy-code-btn')!;
+  const svgCodeTextarea = document.getElementById('svg-code-textarea') as HTMLTextAreaElement;
+  const codeSizeLabel = document.getElementById('code-size-label')!;
+  const codeSavingsBadge = document.getElementById('code-savings-badge')!;
+
+  const modeMonoBtn = document.getElementById('mode-mono-btn')!;
+  const modeColorBtn = document.getElementById('mode-color-btn')!;
+  const monoControls = document.getElementById('mono-controls')!;
+  const colorControls = document.getElementById('color-controls')!;
+
+  // Inputs
+  const monoThreshold = document.getElementById('mono-threshold') as HTMLInputElement;
+  const monoThresholdVal = document.getElementById('mono-threshold-val')!;
+  const monoDetail = document.getElementById('mono-detail') as HTMLInputElement;
+  const monoDetailVal = document.getElementById('mono-detail-val')!;
+  const monoSpeckle = document.getElementById('mono-speckle') as HTMLInputElement;
+  const monoSpeckleVal = document.getElementById('mono-speckle-val')!;
+  const monoTransparent = document.getElementById('mono-transparent') as HTMLInputElement;
+
+  const colorCount = document.getElementById('color-count') as HTMLInputElement;
+  const colorCountVal = document.getElementById('color-count-val')!;
+  const colorPreset = document.getElementById('color-preset') as HTMLSelectElement;
+  const colorSpeckle = document.getElementById('color-speckle') as HTMLInputElement;
+  const colorSpeckleVal = document.getElementById('color-speckle-val')!;
+  const colorDetail = document.getElementById('color-detail') as HTMLInputElement;
+  const colorDetailVal = document.getElementById('color-detail-val')!;
+
+  const optSvgo = document.getElementById('opt-svgo') as HTMLInputElement;
+  const blurRadius = document.getElementById('blur-radius') as HTMLInputElement;
+  const blurVal = document.getElementById('blur-val')!;
+
+  const downloadSvgBtn = document.getElementById('download-svg-btn')!;
+  const processCanvas = document.getElementById('process-canvas') as HTMLCanvasElement;
+  const processCtx = processCanvas.getContext('2d')!;
+
+  // Init Tracing Script Loader
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function initEngines() {
+    showState('loading');
+    try {
+      loadingStatus.textContent = 'Loading Tracing Engine...';
+      await loadScript('https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.js');
+      
+      if (optSvgo.checked && !svgoModule) {
+        loadingStatus.textContent = 'Loading Optimizer...';
+        svgoModule = await import('https://cdn.jsdelivr.net/npm/svgo@4.0.1/+esm');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to load libraries from CDN. Please check your internet connection.');
+      showState('upload');
+    }
+  }
+
+  // File handlers
+  uploadZone.addEventListener('click', () => fileInput.click());
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadZone.addEventListener(eventName, e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  uploadZone.addEventListener('dragover', () => {
+    uploadZone.classList.add('border-link', 'bg-canvas-soft');
+  });
+
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('border-link', 'bg-canvas-soft');
+  });
+
+  uploadZone.addEventListener('drop', (e) => {
+    uploadZone.classList.remove('border-link', 'bg-canvas-soft');
+    const files = e.dataTransfer?.files;
+    if (files?.length) handleFile(files[0]);
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) handleFile(fileInput.files[0]);
+  });
+
+  async function handleFile(file: File) {
+    originalFile = file;
+    fileNameTitle.textContent = file.name;
+    fileSizeInfo.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+
+    await initEngines();
+    showState('loading');
+    loadingStatus.textContent = 'Preparing image...';
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      originalImage = new Image();
+      originalImage.onload = () => {
+        origImg.src = e.target?.result as string;
+        showState('workspace');
+        triggerVectorize();
+      };
+      originalImage.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Mode Switch
+  modeMonoBtn.addEventListener('click', () => {
+    activeMode = 'mono';
+    modeMonoBtn.className = 'py-2 rounded-md bg-primary text-on-primary shadow-sm transition-all';
+    modeColorBtn.className = 'py-2 rounded-md text-body hover:text-ink transition-all';
+    monoControls.classList.remove('hidden');
+    colorControls.classList.add('hidden');
+    triggerVectorize();
+  });
+
+  modeColorBtn.addEventListener('click', () => {
+    activeMode = 'color';
+    modeColorBtn.className = 'py-2 rounded-md bg-primary text-on-primary shadow-sm transition-all';
+    modeMonoBtn.className = 'py-2 rounded-md text-body hover:text-ink transition-all';
+    colorControls.classList.remove('hidden');
+    monoControls.classList.add('hidden');
+    triggerVectorize();
+  });
+
+  // View switch
+  viewSideBtn.addEventListener('click', () => {
+    viewSideBtn.className = 'px-3 py-1 rounded-full bg-canvas text-ink shadow-sm transition-all';
+    viewSvgBtn.className = 'px-3 py-1 rounded-full text-body hover:text-ink transition-all';
+    previewGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 w-full';
+    origContainer.classList.remove('hidden');
+  });
+
+  viewSvgBtn.addEventListener('click', () => {
+    viewSvgBtn.className = 'px-3 py-1 rounded-full bg-canvas text-ink shadow-sm transition-all';
+    viewSideBtn.className = 'px-3 py-1 rounded-full text-body hover:text-ink transition-all';
+    previewGrid.className = 'grid grid-cols-1 gap-4 w-full';
+    origContainer.classList.add('hidden');
+  });
+
+  // Toggle Code Inspector
+  toggleCodeBtn.addEventListener('click', () => {
+    const isHidden = codeArea.classList.contains('hidden');
+    codeArea.classList.toggle('hidden', !isHidden);
+    chevronIcon.classList.toggle('rotate-180', isHidden);
+  });
+
+  // Copy Code
+  copyCodeBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(svgCodeTextarea.value);
+    copyCodeBtn.textContent = 'Copied!';
+    setTimeout(() => {
+      copyCodeBtn.textContent = 'Copy to clipboard';
+    }, 2000);
+  });
+
+  // Reset Trigger
+  const resetHandler = () => {
+    originalFile = null;
+    originalImage = null;
+    processedSvgString = '';
+    fileInput.value = '';
+    svgPreviewWrapper.innerHTML = '';
+    svgCodeTextarea.value = '';
+    codeSavingsBadge.classList.add('hidden');
+    showState('upload');
+  };
+  resetBtn.addEventListener('click', resetHandler);
+  workspaceResetBtn.addEventListener('click', resetHandler);
+
+  // Download Output SVG
+  downloadSvgBtn.addEventListener('click', () => {
+    if (!processedSvgString) return;
+    const blob = new Blob([processedSvgString], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'vector';
+    a.download = `${baseName}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Live Adjustment Controls & Debounce
+  let debounceTimeout: any = null;
+  function triggerVectorize() {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(runVectorize, 200);
+  }
+
+  // Sliders value updates
+  const sliders = [
+    { input: monoThreshold, valEl: monoThresholdVal, suffix: '' },
+    { input: monoSpeckle, valEl: monoSpeckleVal, suffix: ' px' },
+    { input: colorCount, valEl: colorCountVal, suffix: '' },
+    { input: colorSpeckle, valEl: colorSpeckleVal, suffix: ' px' },
+    { input: blurRadius, valEl: blurVal, suffix: ' px' }
+  ];
+
+  sliders.forEach(({ input, valEl, suffix }) => {
+    input.addEventListener('input', () => {
+      valEl.textContent = input.value + suffix;
+      triggerVectorize();
+    });
+  });
+
+  // Dropdown & Checkboxes
+  monoTransparent.addEventListener('change', triggerVectorize);
+  colorPreset.addEventListener('change', triggerVectorize);
+  optSvgo.addEventListener('change', triggerVectorize);
+
+  // Curve details mapping
+  const detailMapping = ['Low', 'Medium', 'High'];
+  const ltresValues = [2.0, 1.0, 0.2]; // Lower ltres = higher detail
+
+  monoDetail.addEventListener('input', () => {
+    const val = parseInt(monoDetail.value);
+    monoDetailVal.textContent = detailMapping[val - 1];
+    triggerVectorize();
+  });
+
+  colorDetail.addEventListener('input', () => {
+    const val = parseInt(colorDetail.value);
+    colorDetailVal.textContent = detailMapping[val - 1];
+    triggerVectorize();
+  });
+
+  // CORE VECTORIZATION PROCESS
+  async function runVectorize() {
+    if (!originalImage || !window.ImageTracer) return;
+
+    // Show temporary overlay or disable button
+    downloadSvgBtn.setAttribute('disabled', 'true');
+    downloadSvgBtn.textContent = 'Updating Vector...';
+
+    // 1. Draw image to canvas with optional blur
+    const width = originalImage.width;
+    const height = originalImage.height;
+    processCanvas.width = width;
+    processCanvas.height = height;
+
+    // Set filter for blur
+    const blur = parseInt(blurRadius.value);
+    if (blur > 0) {
+      processCtx.filter = `blur(${blur}px)`;
+    } else {
+      processCtx.filter = 'none';
+    }
+    processCtx.drawImage(originalImage, 0, 0);
+    processCtx.filter = 'none';
+
+    // Get ImageData
+    const imgData = processCtx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    let traceOptions: any = {};
+
+    if (activeMode === 'mono') {
+      const threshold = parseInt(monoThreshold.value);
+      const detailIndex = parseInt(monoDetail.value);
+      const speckle = parseInt(monoSpeckle.value);
+      
+      // Perform Binarization (Luminance thresholding)
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+        const a = data[i+3];
+
+        if (a < 50) {
+          // Transparent pixel -> turn white
+          data[i] = 255;
+          data[i+1] = 255;
+          data[i+2] = 255;
+          data[i+3] = 255;
+        } else {
+          const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          const val = lum >= threshold ? 255 : 0;
+          data[i] = val;
+          data[i+1] = val;
+          data[i+2] = val;
+          data[i+3] = 255;
+        }
+      }
+
+      // Draw binarized data back to process context so we can trace it
+      processCtx.putImageData(imgData, 0, 0);
+
+      // Setup ImageTracerJS parameters
+      traceOptions = {
+        numberofcolors: 2,
+        pal: [
+          { r: 0, g: 0, b: 0, a: 255 },       // Black
+          { r: 255, g: 255, b: 255, a: 255 }  // White
+        ],
+        colorsampling: 2,
+        blurradius: 0, // already done on canvas if selected
+        pathomit: speckle,
+        ltres: ltresValues[detailIndex - 1],
+        qtres: ltresValues[detailIndex - 1],
+        scale: 1,
+        roundcoords: 2
+      };
+    } else {
+      // Color Mode
+      const colors = parseInt(colorCount.value);
+      const detailIndex = parseInt(colorDetail.value);
+      const speckle = parseInt(colorSpeckle.value);
+      const preset = colorPreset.value;
+
+      traceOptions = {
+        numberofcolors: colors,
+        blurradius: 0, // Pre-blurred on canvas already
+        pathomit: speckle,
+        ltres: ltresValues[detailIndex - 1],
+        qtres: ltresValues[detailIndex - 1],
+        scale: 1,
+        roundcoords: 2,
+        colorsampling: 2
+      };
+    }
+
+    // Run ImageTracerJS
+    // Wait for microtask to avoid freezing UI
+    await new Promise(resolve => setTimeout(resolve, 0));
+    
+    const freshImgData = processCtx.getImageData(0, 0, width, height);
+    let svgString = window.ImageTracer.imagedataToSVG(freshImgData, traceOptions);
+
+    // 2. Apply background transparency for Monochrome mode
+    if (activeMode === 'mono' && monoTransparent.checked) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgString, 'image/svg+xml');
+      
+      // Remove all pure white paths
+      const whitePaths = doc.querySelectorAll('path[fill="#ffffff"], path[fill="rgb(255,255,255)"], path[fill="white"]');
+      whitePaths.forEach(path => path.remove());
+      
+      svgString = new XMLSerializer().serializeToString(doc);
+    }
+
+    // 3. Client-side SVGO Optimization
+    let origSvgSize = svgString.length;
+    if (optSvgo.checked) {
+      if (!svgoModule) {
+        svgoModule = await import('https://cdn.jsdelivr.net/npm/svgo@4.0.1/+esm');
+      }
+      
+      try {
+        const optimized = svgoModule.optimize(svgString, {
+          multipass: true,
+          plugins: [
+            'preset-default',
+            {
+              name: 'cleanupNumericValues',
+              params: { floatPrecision: 1 }
+            },
+            {
+              name: 'convertPathData',
+              params: { floatPrecision: 1 }
+            }
+          ]
+        });
+        if (optimized.data) {
+          svgString = optimized.data;
+        }
+      } catch (err) {
+        console.warn('SVGO optimization failed', err);
+      }
+    }
+
+    processedSvgString = svgString;
+    let finalSvgSize = processedSvgString.length;
+
+    // 4. Update UI Preview
+    svgPreviewWrapper.innerHTML = processedSvgString;
+    const svgEl = svgPreviewWrapper.querySelector('svg');
+    if (svgEl) {
+      svgEl.setAttribute('class', 'max-w-full max-h-full object-contain drop-shadow-sm');
+      svgEl.setAttribute('style', 'width: 100%; height: 100%;');
+    }
+
+    // Update Code Inspector
+    svgCodeTextarea.value = processedSvgString;
+    codeSizeLabel.textContent = `${(finalSvgSize / 1024).toFixed(2)} KB`;
+    
+    // Show savings badge
+    if (finalSvgSize < origSvgSize) {
+      const pct = Math.round((1 - (finalSvgSize / origSvgSize)) * 100);
+      codeSavingsBadge.textContent = `${pct}% compressed`;
+      codeSavingsBadge.classList.remove('hidden');
+    } else {
+      codeSavingsBadge.classList.add('hidden');
+    }
+
+    // Restore download button
+    downloadSvgBtn.removeAttribute('disabled');
+    downloadSvgBtn.innerHTML = `
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Download SVG Vector
+    `;
+  }
+
+  function showState(state: 'upload' | 'loading' | 'workspace') {
+    uploadZone.classList.toggle('hidden', state !== 'upload');
+    loadingZone.classList.toggle('hidden', state !== 'loading');
+    workspaceZone.classList.toggle('hidden', state !== 'workspace');
+  }
+</script>

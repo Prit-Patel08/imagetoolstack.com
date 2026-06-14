@@ -1,0 +1,215 @@
+---
+import Layout from "./Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import RequestToolSection from "../components/RequestToolSection.astro";
+import toolsData from "../data/tools.json";
+import { generateFaqs, generateSeoTitle, generateSeoDescription } from "../utils/seo-generator";
+
+import ToolDescription from "../components/seo/ToolDescription.astro";
+import WhyUseThisTool from "../components/seo/WhyUseThisTool.astro";
+import HowItWorks from "../components/seo/HowItWorks.astro";
+import FaqSection from "../components/seo/FaqSection.astro";
+import RelatedTools from "../components/seo/RelatedTools.astro";
+import ComparisonSection from "../components/seo/ComparisonSection.astro";
+import UseCases from "../components/seo/UseCases.astro";
+import PrivacyFirst from "../components/seo/PrivacyFirst.astro";
+import RelatedGuides from "../components/seo/RelatedGuides.astro";
+import AdSlot from "../components/seo/AdSlot.astro";
+
+interface Props {
+  tool: any;
+  category: any;
+}
+
+const { tool, category } = Astro.props;
+
+const seoTitle = generateSeoTitle(tool);
+const seoDescription = generateSeoDescription(tool);
+const faqs = generateFaqs(tool);
+
+// Build JSON-LD for SoftwareApplication
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": tool.name + " - Image Tool Stack",
+  "url": `https://imagetoolstack.com/tools/${tool.slug}`,
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+
+// Build JSON-LD for BreadcrumbList
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://imagetoolstack.com/" },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` },
+    { "@type": "ListItem", "position": 3, "name": tool.name, "item": `https://imagetoolstack.com/tools/${tool.slug}` }
+  ]
+};
+
+// Build JSON-LD for FAQ 
+const faqSchema = faqs && faqs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((item: any) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+} : null;
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={`/category/${category.slug}`} class="hover:text-ink transition-colors">{category.name}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">{tool.name}</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1400px] px-6 py-12 lg:px-8 lg:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- Main Content Area -->
+        <div class="lg:col-span-8">
+          <!-- Header -->
+          <header class="mb-8">
+            <div class="flex flex-wrap items-center gap-3 mb-2">
+              <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{tool.name}</h1>
+              {tool.communityRequested && <span class="flex items-center gap-1 text-[10px] font-mono font-bold text-link bg-link/10 px-2 py-0.5 rounded-full uppercase tracking-widest"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Requested</span>}
+              <button id="open-embed-modal" class="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-canvas-soft border border-hairline rounded-md text-xs font-semibold text-ink hover:border-link hover:text-link transition-colors" title="Embed this tool on your website">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                Embed
+              </button>
+            </div>
+            
+            <div class="flex items-center gap-3 text-xs font-medium text-mute mb-4">
+
+            </div>
+            
+            <ToolDescription tool={tool} />
+
+            {tool.inputFormats && tool.outputFormats && tool.outputFormats.length > 0 && (
+              <div class="mt-4 flex items-center gap-2 text-xs text-mute font-mono mb-8">
+                <span class="bg-canvas-soft-2 border border-hairline px-2 py-1 rounded">{tool.inputFormats.join(", ")}</span>
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+                <span class="bg-link/10 border border-link/20 text-link px-2 py-1 rounded">{tool.outputFormats.join(", ")}</span>
+              </div>
+            )}
+          </header>
+
+          <!-- Tool Interface -->
+          <div class="card-marketing mb-12 min-h-[400px] flex flex-col items-center justify-center border-dashed border-2 border-hairline-strong bg-canvas-soft/50 p-8 relative overflow-hidden group">
+            <slot name="tool-interface" />
+            
+            <!-- Universal Privacy Messaging Inside Dropzone -->
+            <div class="mt-8 flex items-center justify-center gap-2 text-[11px] font-semibold text-mute bg-canvas px-3 py-1.5 rounded-full border border-hairline relative z-10 group-hover:border-success/30 group-hover:text-success transition-colors">
+              <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              100% Secure & Local. Files never leave your device.
+            </div>
+          </div>
+
+          <!-- Ad Placement A -->
+          <div class="mb-12">
+            <AdSlot id="ad-below-tool" layout="horizontal" />
+          </div>
+
+          <!-- SEO Components -->
+          <HowItWorks tool={tool} />
+          
+          <WhyUseThisTool tool={tool} />
+          
+          <FaqSection tool={tool} />
+
+          <RelatedTools tool={tool} />
+          
+          <ComparisonSection tool={tool} />
+          
+          <RelatedGuides tool={tool} />
+
+          <RequestToolSection source="tool_page" />
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="lg:col-span-4 space-y-8">
+          <div class="lg:sticky lg:top-24 space-y-8">
+            
+            <PrivacyFirst />
+
+            <!-- Ad Placement B: Sidebar -->
+            <AdSlot id="ad-sidebar" layout="vertical" />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Embed Modal -->
+  <dialog id="embed-modal" class="backdrop:bg-ink/50 p-0 rounded-xl border border-hairline shadow-2xl bg-canvas m-auto max-w-lg w-full overflow-hidden">
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h3 class="text-lg font-semibold text-ink">Embed {tool.name}</h3>
+          <p class="text-sm text-mute">Add this tool directly to your website or blog.</p>
+        </div>
+        <button id="close-embed-modal" class="text-mute hover:text-ink transition-colors p-1">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="bg-canvas-soft border border-hairline rounded-md p-4 mb-4 relative group">
+        <pre class="text-xs text-body font-mono overflow-x-auto whitespace-pre-wrap break-all" id="embed-code-text">&lt;iframe src="https://imagetoolstack.com/embed/{tool.slug}" width="100%" height="600" style="border:1px solid #eee; border-radius:8px;"&gt;&lt;/iframe&gt;</pre>
+      </div>
+      <button id="copy-embed-btn" class="w-full py-2.5 bg-ink text-canvas font-semibold rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+        Copy Code Snippet
+      </button>
+    </div>
+  </dialog>
+  
+  <script>
+    const modal = document.getElementById('embed-modal') as HTMLDialogElement;
+    const openBtn = document.getElementById('open-embed-modal');
+    const closeBtn = document.getElementById('close-embed-modal');
+    const copyBtn = document.getElementById('copy-embed-btn');
+    const codeText = document.getElementById('embed-code-text');
+
+    if (modal && openBtn && closeBtn && copyBtn && codeText) {
+      openBtn.addEventListener('click', () => modal.showModal());
+      closeBtn.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.close();
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(codeText.innerText);
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!';
+          setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+        } catch (err) {
+          console.error('Failed to copy', err);
+        }
+      });
+    }
+  </script>
+
+  <Footer />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>}
+</Layout>

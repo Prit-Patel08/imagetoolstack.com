@@ -1,0 +1,44 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+
+const seoTitle = "Image Format Comparisons | Which is Better?";
+const seoDescription = "Deep dive into the technical differences between popular image formats. Compare PNG, JPG, WebP, AVIF, HEIC, and more to find the best format for your needs.";
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <div class="mx-auto max-w-[1400px] px-6 py-16 lg:px-8 lg:py-24">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">Image Format Comparisons</h1>
+        <p class="text-lg text-body leading-relaxed">
+          Not sure which image format to use? We've created deep-dive technical comparisons to help you choose the perfect format for web design, photography, printing, and more.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {comparisonsData.comparisons.map((comp) => (
+          <a href={`/compare/${comp.id}`} class="group flex flex-col p-8 rounded-2xl bg-canvas border border-hairline hover:border-link transition-all hover:shadow-md">
+            <div class="flex items-center gap-4 mb-6">
+              <span class="flex items-center justify-center h-12 w-12 rounded-xl bg-canvas-soft font-mono font-bold text-ink border border-hairline">{comp.format1}</span>
+              <span class="text-mute italic text-sm">vs</span>
+              <span class="flex items-center justify-center h-12 w-12 rounded-xl bg-canvas-soft font-mono font-bold text-ink border border-hairline">{comp.format2}</span>
+            </div>
+            <h2 class="text-xl font-bold text-ink mb-3 group-hover:text-link transition-colors">{comp.title}</h2>
+            <p class="text-sm text-body leading-relaxed flex-grow">{comp.description}</p>
+            <div class="mt-6 flex items-center text-sm font-semibold text-link">
+              Read comparison
+              <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

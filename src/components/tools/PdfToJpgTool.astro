@@ -1,0 +1,246 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="pdf-to-jpg-tool" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select a PDF file</p>
+      <p class="mt-1 text-sm text-body">Each page will be converted into a high-quality JPG image.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="application/pdf" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="w-full max-w-xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-hairline">
+        <h3 class="text-lg font-semibold text-ink">Conversion Settings</h3>
+        <span id="file-name-badge" class="text-xs font-bold text-mute bg-canvas-soft px-2 py-1 rounded border border-hairline truncate max-w-[200px]">document.pdf</span>
+      </div>
+      
+      <div class="space-y-6">
+        <div>
+          <div class="flex justify-between mb-2">
+            <label class="text-sm font-medium text-ink">Image Quality</label>
+            <span id="quality-val" class="text-sm text-body">90%</span>
+          </div>
+          <input type="range" id="quality-slider" min="10" max="100" value="90" class="w-full accent-link cursor-pointer">
+          <p class="text-xs text-mute mt-2">Higher quality increases file size.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex gap-4">
+        <button id="start-btn" class="flex-1 btn-primary">Convert to JPG</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p id="progress-text" class="text-sm font-mono text-mute uppercase tracking-widest">Reading PDF...</p>
+      <div class="w-full h-2 bg-canvas-soft rounded-full mt-4 overflow-hidden">
+        <div id="progress-bar" class="h-full bg-link w-0 transition-all duration-300"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-16 w-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-2">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-bold text-ink">Conversion Complete!</h3>
+      <p id="result-summary" class="text-sm text-body mt-2">Your PDF pages have been converted to JPG.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download Images</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Convert another PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+  import * as pdfjsLib from 'pdfjs-dist';
+
+  // Explicitly set the worker using the CDN to avoid Vite/Astro bundler issues with workers
+  if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  }
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const fileNameBadge = document.getElementById('file-name-badge');
+    const qualitySlider = document.getElementById('quality-slider') as HTMLInputElement;
+    const qualityVal = document.getElementById('quality-val');
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
+    const resultSummary = document.getElementById('result-summary');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let selectedFile: File | null = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    qualitySlider?.addEventListener('input', () => {
+      if (qualityVal) qualityVal.textContent = `${qualitySlider.value}%`;
+    });
+
+    function handleFile(file: File) {
+      if (file.type !== 'application/pdf') {
+        alert("Please select a valid PDF file.");
+        return;
+      }
+      selectedFile = file;
+      fileNameBadge!.textContent = file.name;
+      showState('settings');
+    }
+
+    startBtn?.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      showState('processing');
+      
+      try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        
+        if (progressText) progressText.textContent = `Loading PDF...`;
+        
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        const totalPages = pdf.numPages;
+        
+        const quality = parseInt(qualitySlider.value, 10) / 100;
+        
+        const zip = new JSZip();
+        
+        // Use a hidden canvas to render
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        for (let i = 1; i <= totalPages; i++) {
+          if (progressText) progressText.textContent = `Rendering page ${i} of ${totalPages}...`;
+          if (progressBar) progressBar.style.width = `${((i - 1) / totalPages) * 100}%`;
+          
+          const page = await pdf.getPage(i);
+          
+          // Render at 2x scale for sharp output (approx 144 DPI)
+          const viewport = page.getViewport({ scale: 2.0 });
+          
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          
+          // PDF might have transparent background, fill with white first
+          if (ctx) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+          
+          await page.render({
+            canvasContext: ctx!,
+            viewport: viewport,
+            background: 'white'
+          }).promise;
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          
+          // Strip the "data:image/jpeg;base64," prefix for JSZip
+          const base64Data = dataUrl.split(',')[1];
+          
+          // Add to zip
+          const pageNumStr = i.toString().padStart(totalPages.toString().length, '0');
+          const fileName = `${selectedFile.name.replace(/\.pdf$/i, '')}_page-${pageNumStr}.jpg`;
+          
+          zip.file(fileName, base64Data, { base64: true });
+        }
+        
+        if (progressText) progressText.textContent = `Zipping files...`;
+        if (progressBar) progressBar.style.width = `100%`;
+        
+        let url: string;
+        let downloadName: string;
+        
+        if (totalPages === 1) {
+          // If only 1 page, just download the single JPG instead of a ZIP
+          const content = await zip.file(Object.keys(zip.files)[0])!.async('blob');
+          url = URL.createObjectURL(content);
+          downloadName = Object.keys(zip.files)[0];
+          resultSummary!.textContent = `Extracted 1 image from PDF.`;
+        } else {
+          // Download ZIP
+          const zipBlob = await zip.generateAsync({ type: 'blob' });
+          url = URL.createObjectURL(zipBlob);
+          downloadName = `${selectedFile.name.replace(/\.pdf$/i, '')}_images.zip`;
+          resultSummary!.textContent = `Extracted ${totalPages} images into a ZIP file.`;
+        }
+        
+        downloadBtn.href = url;
+        downloadBtn.download = downloadName;
+        
+        showState('result');
+        
+      } catch (e) {
+        console.error('PDF to JPG error', e);
+        alert('An error occurred while converting the PDF. Check console for details.');
+        showState('settings');
+      }
+    });
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      fileInput.value = '';
+      selectedFile = null;
+      if (progressBar) progressBar.style.width = '0%';
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

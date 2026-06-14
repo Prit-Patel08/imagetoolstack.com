@@ -1,0 +1,288 @@
+---
+// ImageUpscalerTool.astro - Client-side AI super-resolution upscaling using TFJS & UpscalerJS
+interface Props {
+  toolId?: string;
+}
+---
+
+<div id="upscaler-tool-root" class="w-full max-w-4xl mx-auto flex flex-col gap-8">
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-hairline">
+      <div class="h-10 w-10 bg-link/10 text-link rounded-lg flex items-center justify-center">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-ink">AI Image Upscaler</h2>
+        <p class="text-sm text-body">Enhance resolution and restore details client-side via ESRGAN Neural Network</p>
+      </div>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="flex flex-col gap-6">
+      <div id="dropzone" class="border-2 border-dashed border-hairline rounded-xl p-8 sm:p-12 text-center hover:border-link hover:bg-canvas-soft transition-colors cursor-pointer group">
+        <input type="file" id="fileInput" class="hidden" accept="image/png, image/jpeg, image/jpg, image/webp" />
+        <div class="flex flex-col items-center gap-4">
+          <div class="h-16 w-16 bg-canvas-soft rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg class="h-8 w-8 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-base font-semibold text-ink">Select image to upscale</p>
+            <p class="text-sm text-body mt-1">Supports PNG, JPG, and WebP formats</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings UI -->
+      <div id="settingsArea" class="hidden flex flex-col gap-6">
+        <div class="bg-canvas-soft-2 p-6 rounded-xl border border-hairline flex flex-col gap-5">
+          <h3 class="text-sm font-semibold text-ink uppercase tracking-wider mb-2">Upscaler Settings</h3>
+          
+          <div class="flex flex-col gap-3">
+            <label class="block text-sm font-medium text-ink">Scale Multiplier</label>
+            <div class="grid grid-cols-3 gap-3">
+              <button id="scale-2x" class="py-2.5 rounded-lg bg-primary text-on-primary text-sm font-semibold shadow-sm transition-all focus:outline-none">
+                2x Upscale
+              </button>
+              <button id="scale-4x" class="py-2.5 rounded-lg bg-canvas border border-hairline text-body text-sm font-semibold hover:border-hairline-strong transition-all focus:outline-none flex items-center justify-center gap-1 opacity-70 cursor-not-allowed" disabled>
+                4x Upscale
+                <svg class="h-3 w-3 text-warning" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              </button>
+              <button id="scale-8x" class="py-2.5 rounded-lg bg-canvas border border-hairline text-body text-sm font-semibold hover:border-hairline-strong transition-all focus:outline-none flex items-center justify-center gap-1 opacity-70 cursor-not-allowed" disabled>
+                8x Upscale
+                <svg class="h-3 w-3 text-warning" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              </button>
+            </div>
+            <p class="text-xs text-mute">2x is processed locally. 4x and 8x upscale are locked for premium users.</p>
+          </div>
+
+          <div class="p-4 bg-canvas-soft border border-hairline rounded-lg flex flex-col gap-1.5">
+            <p class="text-sm font-semibold text-ink">Running AI Neural Network in browser</p>
+            <p class="text-xs text-mute">The ESRGAN model will be downloaded directly to your browser memory. Processing happens 100% privately and securely on your graphics card.</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-hairline">
+          <button id="processBtn" class="px-6 py-2.5 bg-link hover:bg-link-hover text-white font-medium rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-link focus:ring-offset-2">
+            Execute AI Upscale
+          </button>
+        </div>
+      </div>
+
+      <!-- Processing State -->
+      <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+        <div class="w-full max-w-md">
+          <div class="flex justify-between text-sm mb-2">
+            <span id="status-text" class="font-medium text-ink">Initializing TensorFlow...</span>
+          </div>
+          <div class="w-full bg-canvas-soft border border-hairline rounded-full h-2.5 overflow-hidden relative">
+            <div id="progress-bar" class="bg-link h-2.5 rounded-full w-full animate-pulse"></div>
+          </div>
+          <p class="text-xs text-mute text-center mt-3">This may take 5-15 seconds depending on your hardware.</p>
+        </div>
+      </div>
+
+      <!-- Result Area -->
+      <div id="resultArea" class="hidden flex flex-col gap-4">
+        <div class="p-6 border border-hairline rounded-lg text-center bg-success/5 text-success">
+          <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <h3 class="text-base font-semibold">Image Upscaled via AI!</h3>
+          <p id="savings-text" class="text-xs opacity-90 mt-1 font-mono">200x200 → 400x400</p>
+        </div>
+        
+        <div class="aspect-video w-full rounded-lg border border-hairline overflow-hidden bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8L3N2Zz4=')] flex items-center justify-center p-4">
+          <img id="preview-img" class="max-h-full max-w-full object-contain drop-shadow" />
+        </div>
+        
+        <button id="downloadBtn" class="w-full py-3 bg-success hover:bg-success/90 text-white font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download Cleaned Image
+        </button>
+        <button id="reset-btn-result" class="text-xs font-medium text-body hover:text-ink transition-colors mt-1 text-center">Process another image</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let file: File | null = null;
+  let upscaledDataUrl = '';
+  let upscalerInstance: any = null;
+
+  const dropzone = document.getElementById('dropzone')!;
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  const settingsArea = document.getElementById('settingsArea')!;
+  const processBtn = document.getElementById('processBtn')!;
+  const processingZone = document.getElementById('processing-zone')!;
+  const statusText = document.getElementById('status-text')!;
+  const resultArea = document.getElementById('resultArea')!;
+  const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement;
+  const resetBtnResult = document.getElementById('reset-btn-result')!;
+  const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+  const savingsText = document.getElementById('savings-text')!;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  dropzone.addEventListener('dragover', () => {
+    dropzone.classList.add('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+    if (e.dataTransfer?.files.length) {
+      file = e.dataTransfer.files[0];
+      handleFileSelected();
+    }
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) {
+      file = fileInput.files[0];
+      handleFileSelected();
+    }
+  });
+
+  function handleFileSelected() {
+    if (!file) return;
+    dropzone.classList.add('hidden');
+    settingsArea.classList.remove('hidden');
+  }
+
+  // Script injection utility
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadAIModules() {
+    statusText.textContent = 'Loading TensorFlow.js Engine...';
+    await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
+    
+    statusText.textContent = 'Loading Upscaler.js Pipeline...';
+    await loadScript('https://cdn.jsdelivr.net/npm/upscaler@0.14.0/dist/browser/umd/upscaler.min.js');
+    
+    statusText.textContent = 'Downloading Neural Model (ESRGAN)...';
+    await loadScript('https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@0.5.0/dist/umd/index.min.js');
+  }
+
+  processBtn.addEventListener('click', async () => {
+    if (!file) return;
+    
+    settingsArea.classList.add('hidden');
+    processingZone.classList.remove('hidden');
+
+    try {
+      // Load tfjs and upscaler on-demand to maintain optimal initial loading speeds
+      await loadAIModules();
+
+      statusText.textContent = 'Initializing Neural Network...';
+      if (!upscalerInstance) {
+        upscalerInstance = new (window as any).Upscaler({
+          model: (window as any).DefaultUpscalerJSModel,
+        });
+      }
+
+      statusText.textContent = 'Upscaling Pixels via ESRGAN (AI)...';
+      
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          // run upscale
+          upscaledDataUrl = await upscalerInstance.upscale(img);
+          
+          previewImg.onload = () => {
+            savingsText.textContent = `${img.width}x${img.height} ➔ ${previewImg.naturalWidth}x${previewImg.naturalHeight}`;
+            processingZone.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+          };
+          previewImg.src = upscaledDataUrl;
+        } catch (err) {
+          console.error(err);
+          alert('Upscaling failed. Ensure WebGL/WebGPU is enabled in your browser settings.');
+          resetHandler();
+        }
+      };
+      
+      // Load source file into image element
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+
+    } catch (err) {
+      console.error(err);
+      alert('Failed to run AI upscale. Please check internet connection and WebGL compatibility.');
+      resetHandler();
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if (!upscaledDataUrl) return;
+    const a = document.createElement('a');
+    a.href = upscaledDataUrl;
+    const baseName = file ? file.name.replace(/\.[^/.]+$/, "") : 'upscaled';
+    const ext = file && (file.type === 'image/jpeg' || file.type === 'image/jpg') ? 'jpg' : (file && file.type === 'image/webp' ? 'webp' : 'png');
+    a.download = `${baseName}-upscaled.${ext}`;
+    a.click();
+  });
+
+  const resetHandler = () => {
+    file = null;
+    upscaledDataUrl = '';
+    fileInput.value = '';
+    previewImg.src = '';
+    processingZone.classList.add('hidden');
+    resultArea.classList.add('hidden');
+    dropzone.classList.remove('hidden');
+  };
+  resetBtnResult.addEventListener('click', resetHandler);
+</script>
+
+<!-- SEO Content Section -->
+<div class="mt-24 pt-16 border-t border-hairline max-w-4xl mx-auto">
+  <div class="prose prose-vercel max-w-none text-body">
+    <h2 class="text-3xl font-bold text-ink mb-6 font-sans">How Does AI Image Upscaling Work?</h2>
+    <p class="text-lg leading-relaxed mb-6">
+      Traditional image resizing tools use standard mathematical algorithms like Bilinear or Bicubic interpolation to blow up images. This simple pixel stretching inevitably results in blurry, pixelated edges and a loss of clarity. 
+    </p>
+    <p class="mb-6">
+      Our AI Image Upscaler uses a deep neural network called **ESRGAN (Enhanced Super-Resolution Generative Adversarial Networks)**. Instead of simply stretching pixels, the model intelligently predicts and reconstructs fine textures, sharpens edges, and removes compression artifacts, turning low-resolution photos into high-definition art.
+    </p>
+
+    <h3 class="text-2xl font-bold text-ink mt-12 mb-4 font-sans">100% Local Processing & Privacy-First</h3>
+    <p class="mb-6">
+      Almost every free online AI image upscaler forces you to upload your images to a remote cloud server. This is slow, has queue wait times, and raises serious privacy concerns about where your personal photos are stored.
+    </p>
+    <p class="mb-8">
+      By utilizing **TensorFlow.js**, our tool downloads a highly compressed neural network directly into your browser memory and runs the inference on your local graphics processor (GPU) using WebGL. Your photos **never leave your device**, ensuring complete confidentiality and near-instant processing.
+    </p>
+  </div>
+</div>

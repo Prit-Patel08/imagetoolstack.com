@@ -1,0 +1,21 @@
+---
+import { Tool, generateSeoDescription } from "../../utils/seo-generator";
+
+interface Props {
+  tool: Tool;
+}
+const { tool } = Astro.props;
+
+// Contextual linking helper
+const linkify = (text: string) => {
+  let linked = text;
+  if (tool.id !== 'png-to-jpg') linked = linked.replace(/PNG to JPG/g, '<a href="/tools/png-to-jpg" class="text-link hover:underline">PNG to JPG</a>');
+  if (tool.id !== 'image-compressor') linked = linked.replace(/compress images/gi, '<a href="/tools/image-compressor" class="text-link hover:underline">compress images</a>');
+  return linked;
+};
+
+const desc = generateSeoDescription(tool);
+---
+<div class="prose prose-sm max-w-none text-body leading-relaxed mb-8">
+  <p set:html={linkify(desc)} />
+</div>

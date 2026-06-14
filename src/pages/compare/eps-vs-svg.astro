@@ -1,0 +1,141 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "EPS vs SVG: Vector Formats Explained (2026 Guide)";
+const seoDescription = "What is the difference between EPS and SVG? We compare the two vector formats, their use cases for web design vs print, and which one you should use for your logos.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between EPS and SVG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EPS (Encapsulated PostScript) is an older vector format designed for high-quality professional printing. SVG (Scalable Vector Graphics) is a modern XML-based vector format designed specifically for the web. SVG can be animated and styled with CSS, whereas EPS cannot."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use EPS on my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Web browsers do not support the EPS format. If you try to upload an EPS file to a website, it will either fail to upload or fail to display. You must convert it to an SVG or PNG first."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format is better for logos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on the medium. If you are sending your logo to a manufacturer to be printed on a billboard or t-shirt, they will usually ask for an EPS file. If you are putting the logo in the header of your website, you should use an SVG."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "eps-vs-svg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">EPS vs SVG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">EPS</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">EPS vs SVG: Vector Formats Explained</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Unlike JPEGs and PNGs which are made of pixels, both EPS and SVG are "Vector" formats. This means they are made of mathematical equations and can be scaled to the size of a skyscraper without losing quality. But which one should you use?
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use EPS for:</strong> sending files to professional printers, laser engravers, or manufacturers (clothing, billboards, merchandise).</p>
+          <p><strong class="text-ink">Use SVG for:</strong> everything on the internet. Website logos, UI icons, and interactive web graphics.</p>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">The Difference Between Print and Web</h2>
+        <div class="prose prose-vercel max-w-none text-body">
+          <p>
+            The choice between these two formats simply comes down to where the image will be displayed.
+          </p>
+          
+          <h3 class="text-2xl font-bold text-ink mt-8 mb-4">EPS (Encapsulated PostScript)</h3>
+          <p>
+            EPS was created by Adobe in the 1980s. It was specifically designed to tell high-end printers exactly how to draw the graphic on a piece of paper. Because it is the industry standard for print, almost every graphic design software (like Adobe Illustrator) can export to EPS, and every printing press in the world can read it.
+          </p>
+          <p>
+            However, <strong>web browsers cannot read EPS files</strong>. If you try to upload an EPS logo to your WordPress or Shopify site, it will fail.
+          </p>
+
+          <h3 class="text-2xl font-bold text-ink mt-8 mb-4">SVG (Scalable Vector Graphics)</h3>
+          <p>
+            SVG was created specifically for the internet. It is actually written in XML code, which means it is natively understood by Chrome, Safari, and Firefox. 
+          </p>
+          <p>
+            Because it is essentially just code, SVG is incredibly powerful for web design:
+          </p>
+          <ul class="list-disc pl-6 space-y-4">
+            <li><strong>Tiny File Sizes:</strong> Since it's just text coordinates rather than image data, SVGs are incredibly lightweight and load instantly.</li>
+            <li><strong>Styling:</strong> You can use CSS to change the color of an SVG on hover.</li>
+            <li><strong>Animation:</strong> You can use JavaScript or CSS animations to make parts of the SVG move.</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <Footer />
+</Layout>

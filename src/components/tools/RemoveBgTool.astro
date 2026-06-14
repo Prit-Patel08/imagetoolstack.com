@@ -1,0 +1,134 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="remove-bg-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select image to remove background</p>
+      <p class="mt-1 text-sm text-body">AI model will be downloaded to your browser (~40MB).</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/*" />
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="w-full max-w-md">
+      <div class="flex justify-between text-sm mb-2">
+        <span id="status-text" class="font-medium text-ink">Loading AI Model...</span>
+        <span id="progress-text" class="text-mute font-mono">0%</span>
+      </div>
+      <div class="w-full bg-canvas-soft rounded-full h-2 border border-hairline overflow-hidden">
+        <div id="progress-bar" class="bg-link h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="relative max-w-full overflow-hidden rounded-md border border-hairline bg-canvas p-4 flex items-center justify-center bg-[url('/checker.svg')] bg-repeat">
+      <img id="preview-img" class="max-h-[400px] w-auto object-contain shadow-sm" />
+    </div>
+    
+    <div class="flex flex-col items-center gap-2">
+      <span id="result-info" class="text-xs font-mono text-mute">Background Removed Successfully</span>
+      <a id="download-btn" class="btn-primary">Download Transparent PNG</a>
+      <button id="reset-btn" class="text-xs font-medium text-body hover:text-ink transition-colors mt-2">Process another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+    
+    const statusText = document.getElementById('status-text');
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+
+    async function handleFile(file: File) {
+      showState('processing');
+      
+      try {
+        const { removeBackground } = await import('@imgly/background-removal');
+        
+        const blob = await removeBackground(file, {
+          progress: (key, current, total) => {
+            if (statusText && progressText && progressBar) {
+              const action = key.split(':')[0];
+              statusText.textContent = action === 'fetch' ? 'Downloading Model...' : 'Processing Image...';
+              
+              const pct = total ? Math.round((current / total) * 100) : 100;
+              progressBar.style.width = `${pct}%`;
+              progressText.textContent = `${pct}%`;
+            }
+          }
+        });
+
+        const url = URL.createObjectURL(blob);
+        previewImg.src = url;
+        downloadBtn.href = url;
+        
+        const baseName = file.name.replace(/\.[^/.]+$/, "");
+        downloadBtn.download = `${baseName}-nobg.png`;
+        
+        showState('result');
+
+      } catch (err) {
+        console.error("Background removal failed", err);
+        alert("Failed to remove background. Please try again or check browser console.");
+        showState('upload');
+      }
+    }
+
+    function showState(state: 'upload' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+      
+      if (state === 'upload') {
+        if (progressBar) progressBar.style.width = '0%';
+        if (progressText) progressText.textContent = '0%';
+      }
+    }
+
+    resetBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      showState('upload');
+    });
+  })();
+</script>

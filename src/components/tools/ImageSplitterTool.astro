@@ -1,0 +1,254 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="splitter-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select an image to split into a grid</p>
+      <p class="mt-1 text-sm text-body">Supports JPG, PNG, and WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex flex-col items-center justify-center overflow-hidden min-h-[300px] relative">
+      <img id="image-preview" class="max-w-full max-h-[500px] object-contain shadow-sm" src="" alt="Preview" />
+      <div id="grid-overlay" class="absolute inset-0 m-auto pointer-events-none border border-link/50 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"></div>
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <h3 class="text-lg font-semibold text-ink mb-4 text-center">Grid Settings</h3>
+      
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-ink mb-2">Columns</label>
+          <input type="number" id="cols-input" min="1" max="10" value="3" class="w-full px-3 py-2 bg-canvas border border-hairline rounded text-ink focus:outline-none focus:border-link transition-colors">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-2">Rows</label>
+          <input type="number" id="rows-input" min="1" max="10" value="3" class="w-full px-3 py-2 bg-canvas border border-hairline rounded text-ink focus:outline-none focus:border-link transition-colors">
+        </div>
+      </div>
+      
+      <p class="text-xs text-body text-center mb-6">Images will be sliced and packaged into a ZIP file.</p>
+
+      <div class="mt-4 flex gap-4">
+        <button id="start-btn" class="flex-1 btn-primary">Split & Download ZIP</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p class="text-sm font-mono text-mute uppercase tracking-widest">Slicing Image...</p>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-16 w-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-2">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-bold text-ink">Image Split Successfully!</h3>
+      <p class="text-sm text-body mt-2">Your grid slices are ready to download.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download ZIP</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Split another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const imagePreview = document.getElementById('image-preview') as HTMLImageElement;
+    const gridOverlay = document.getElementById('grid-overlay') as HTMLDivElement;
+    
+    const colsInput = document.getElementById('cols-input') as HTMLInputElement;
+    const rowsInput = document.getElementById('rows-input') as HTMLInputElement;
+    
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let originalFile: File | null = null;
+    let originalImage: HTMLImageElement | null = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function updateGridOverlay() {
+      if (!originalImage) return;
+      const cols = parseInt(colsInput.value, 10) || 1;
+      const rows = parseInt(rowsInput.value, 10) || 1;
+      
+      const rect = imagePreview.getBoundingClientRect();
+      gridOverlay.style.width = `${rect.width}px`;
+      gridOverlay.style.height = `${rect.height}px`;
+      
+      // Draw grid lines using linear gradients
+      const wPercent = 100 / cols;
+      const hPercent = 100 / rows;
+      
+      let bg = '';
+      if (cols > 1) {
+        bg += `repeating-linear-gradient(to right, transparent, transparent calc(${wPercent}% - 1px), rgba(255,255,255,0.7) calc(${wPercent}% - 1px), rgba(255,255,255,0.7) ${wPercent}%)`;
+      }
+      if (rows > 1) {
+        if (bg) bg += ', ';
+        bg += `repeating-linear-gradient(to bottom, transparent, transparent calc(${hPercent}% - 1px), rgba(255,255,255,0.7) calc(${hPercent}% - 1px), rgba(255,255,255,0.7) ${hPercent}%)`;
+      }
+      
+      gridOverlay.style.background = bg;
+    }
+
+    colsInput?.addEventListener('input', updateGridOverlay);
+    rowsInput?.addEventListener('input', updateGridOverlay);
+    window.addEventListener('resize', updateGridOverlay);
+
+    function handleFile(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage = new Image();
+        originalImage.onload = () => {
+          imagePreview.src = originalImage!.src;
+          showState('settings');
+          setTimeout(updateGridOverlay, 50); // wait for render
+        };
+        originalImage.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    startBtn?.addEventListener('click', async () => {
+      if (!originalFile || !originalImage) return;
+      showState('processing');
+      
+      try {
+        await new Promise(r => setTimeout(r, 50));
+        
+        const cols = parseInt(colsInput.value, 10) || 1;
+        const rows = parseInt(rowsInput.value, 10) || 1;
+        
+        const sliceWidth = Math.floor(originalImage.width / cols);
+        const sliceHeight = Math.floor(originalImage.height / rows);
+        
+        const zip = new JSZip();
+        
+        let mimeType = originalFile.type;
+        if (mimeType !== 'image/jpeg' && mimeType !== 'image/webp' && mimeType !== 'image/png') {
+            mimeType = 'image/png';
+        }
+        const ext = mimeType.split('/')[1] === 'jpeg' ? 'jpg' : mimeType.split('/')[1];
+        const baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+        
+        let counter = 1;
+        
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = sliceWidth;
+            canvas.height = sliceHeight;
+            const ctx = canvas.getContext('2d');
+            
+            if (ctx) {
+              ctx.drawImage(
+                originalImage, 
+                x * sliceWidth, y * sliceHeight, sliceWidth, sliceHeight, 
+                0, 0, sliceWidth, sliceHeight
+              );
+              
+              const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, mimeType, 0.95));
+              if (blob) {
+                // Pad counter with leading zeros
+                const num = counter.toString().padStart(2, '0');
+                zip.file(`${baseName}-slice-${num}.${ext}`, blob);
+              }
+            }
+            counter++;
+          }
+        }
+        
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const dataUrl = URL.createObjectURL(zipBlob);
+        
+        downloadBtn.href = dataUrl;
+        downloadBtn.download = `${baseName}-grid.zip`;
+        
+        showState('result');
+        
+      } catch (e) {
+        console.error('Split error', e);
+        alert('An error occurred. Check console for details.');
+        showState('settings');
+      }
+    });
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      imagePreview.src = '';
+      gridOverlay.style.background = 'none';
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

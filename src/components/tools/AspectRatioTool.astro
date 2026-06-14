@@ -1,0 +1,201 @@
+---
+// Generated automatically for Batch 1 Phase 2
+
+interface Props {
+  toolId?: string;
+}
+---
+
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-8">
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-hairline">
+      <div class="h-10 w-10 bg-link/10 text-link rounded-lg flex items-center justify-center">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-ink">Aspect Ratio Calculator</h2>
+        <p class="text-sm text-body">100% Secure & Local Processing</p>
+      </div>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="flex flex-col gap-6">
+      <div id="dropzone" class="border-2 border-dashed border-hairline rounded-xl p-8 sm:p-12 text-center hover:border-link hover:bg-canvas-soft transition-colors cursor-pointer group">
+        <input type="file" id="fileInput" class="hidden" accept="image/*" />
+        <div class="flex flex-col items-center gap-4">
+          <div class="h-16 w-16 bg-canvas-soft rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg class="h-8 w-8 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-base font-semibold text-ink">Click to upload or drag and drop</p>
+            <p class="text-sm text-body mt-1">Supports PNG, JPG, WebP, SVG, and more</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings UI -->
+      <div id="settingsArea" class="hidden flex flex-col gap-6">
+        <div class="bg-canvas-soft-2 p-6 rounded-xl border border-hairline">
+          <h3 class="text-sm font-semibold text-ink uppercase tracking-wider mb-4">Settings</h3>
+          
+      <div class="p-4 bg-canvas-soft border border-hairline rounded-lg mt-4">
+        <p class="text-sm font-semibold text-ink">Detected Ratio: <span id="ratioOutput" class="text-link">Upload image</span></p>
+      </div>
+    
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-hairline">
+          <button id="processBtn" class="px-6 py-2.5 bg-link hover:bg-link-hover text-white font-medium rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-link focus:ring-offset-2">
+            Process Image
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Area -->
+      <div id="resultArea" class="hidden flex flex-col gap-4">
+        <div class="aspect-video w-full rounded-lg border border-hairline overflow-hidden bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8L3N2Zz4=')]">
+          <canvas id="outputCanvas" class="w-full h-full object-contain"></canvas>
+        </div>
+        <button id="downloadBtn" class="w-full py-3 bg-success hover:bg-success/90 text-white font-semibold rounded-lg shadow-sm transition-all">
+          Download Result
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  let file: File | null = null;
+  const dropzone = document.getElementById('dropzone')!;
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  const settingsArea = document.getElementById('settingsArea')!;
+  const processBtn = document.getElementById('processBtn')!;
+  const resultArea = document.getElementById('resultArea')!;
+  const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement;
+  const canvas = document.getElementById('outputCanvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+    if (e.dataTransfer?.files.length) {
+      file = e.dataTransfer.files[0];
+      handleFileSelected();
+    }
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (fileInput.files?.length) {
+      file = fileInput.files[0];
+      handleFileSelected();
+    }
+  });
+
+  function handleFileSelected() {
+    dropzone.classList.add('hidden');
+    settingsArea.classList.remove('hidden');
+    
+    // Automatically trigger DataUriToImage logic if it exists
+    /*
+    document.getElementById('uriInput')?.addEventListener('input', () => {
+      processBtn.click();
+    });
+    */
+  }
+
+  processBtn.addEventListener('click', () => {
+    if (!file && !document.getElementById('uriInput')?.value) return;
+    
+    processBtn.disabled = true;
+    processBtn.textContent = 'Processing...';
+
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // -- CORE TOOL LOGIC --
+      
+      ctx.drawImage(img, 0, 0);
+      function gcd(a, b) { return b == 0 ? a : gcd(b, a % b); }
+      const divisor = gcd(img.width, img.height);
+      const rw = img.width / divisor;
+      const rh = img.height / divisor;
+      document.getElementById('ratioOutput').textContent = `${rw}:${rh} (${img.width}x${img.height})`;
+    
+      // ---------------------
+
+      settingsArea.classList.add('hidden');
+      resultArea.classList.remove('hidden');
+    };
+    
+    if (file) {
+      img.src = URL.createObjectURL(file);
+    } else {
+      img.src = document.getElementById('uriInput')?.value || '';
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `processed_image.png`;
+    a.click();
+  });
+</script>
+
+<!-- SEO Content Section -->
+<div class="mt-24 pt-16 border-t border-hairline max-w-4xl mx-auto">
+  <div class="prose prose-vercel max-w-none text-body">
+    <h2 class="text-3xl font-bold text-ink mb-6">What is an Aspect Ratio?</h2>
+    <p class="text-lg leading-relaxed mb-6">
+      An <strong>aspect ratio</strong> is the proportional relationship between the width and height of an image or video screen. It is always written as two numbers separated by a colon (e.g., 16:9). It doesn't tell you the exact size of the image in pixels, but rather its overall shape—whether it is perfectly square, tall and vertical, or wide and horizontal.
+    </p>
+
+    <h3 class="text-2xl font-bold text-ink mt-12 mb-4">Common Aspect Ratios for Social Media</h3>
+    <p class="mb-6">
+      If you are designing graphics or editing photos for social media, getting the aspect ratio right is critical. If you upload the wrong ratio, platforms will aggressively crop your image and potentially cut off important information.
+    </p>
+    <ul class="list-disc pl-6 space-y-4 mb-8">
+      <li><strong>1:1 (Square):</strong> Perfect for Instagram Grid posts, Facebook Carousels, and profile pictures. Standard resolution is 1080x1080px.</li>
+      <li><strong>4:5 (Vertical):</strong> The maximum vertical size for Instagram Feed posts without getting cropped. Standard resolution is 1080x1350px.</li>
+      <li><strong>9:16 (Full Vertical):</strong> The global standard for Instagram Reels, TikToks, and YouTube Shorts. Standard resolution is 1080x1920px.</li>
+      <li><strong>16:9 (Widescreen):</strong> The standard format for YouTube Thumbnails, cinematic video, and presentation slides. Standard resolution is 1920x1080px.</li>
+    </ul>
+
+    <h3 class="text-2xl font-bold text-ink mt-8 mb-4">How to Calculate Aspect Ratios</h3>
+    <p class="mb-6">
+      To find the aspect ratio of an image, you must find the greatest common divisor (GCD) between its pixel width and pixel height. Then, you divide both the width and the height by that GCD. For example, if you have an image that is 1920 pixels wide and 1080 pixels tall, the GCD is 120. Dividing 1920 by 120 gives you 16, and dividing 1080 by 120 gives you 9. Thus, the aspect ratio is 16:9.
+    </p>
+
+    <div class="bg-link/5 border border-link/20 rounded-xl p-8 mt-12">
+      <h3 class="text-xl font-bold text-ink flex items-center gap-2 mb-4">
+        <svg class="w-6 h-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        Instant Mathematical Detection
+      </h3>
+      <p class="m-0">
+        If you don't want to do the math yourself, our free image ratio calculator will instantly determine the exact geometric aspect ratio of any photo you upload. It runs securely in your own browser using JavaScript to analyze the image dimensions instantly, without uploading your photo to any external servers.
+      </p>
+    </div>
+  </div>
+</div>

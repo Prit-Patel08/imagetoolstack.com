@@ -1,0 +1,212 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  const dedicatedComparisonPages = new Set([
+    "eps-vs-svg",
+    "heic-vs-jpg",
+    "jpeg2000-vs-jpeg",
+    "pdf-vs-png",
+    "png-vs-jpg",
+    "tiff-vs-jpeg",
+    "webp-vs-png",
+  ]);
+
+  return comparisonsData.comparisons.filter((comp) => !dedicatedComparisonPages.has(comp.id)).map((comp) => {
+    return {
+      params: { id: comp.id },
+      props: { comp },
+    };
+  });
+}
+
+const { comp } = Astro.props;
+
+// Find the related tool
+const relatedTool = toolsData.tools.find(t => t.slug === comp.relatedToolSlug);
+
+// Get stable related comparisons that share one format.
+const relatedComparisons = comparisonsData.comparisons
+  .filter(c => c.id !== comp.id && [c.format1, c.format2].some(format => format === comp.format1 || format === comp.format2))
+  .slice(0, 4);
+
+if (relatedComparisons.length < 4) {
+  relatedComparisons.push(
+    ...comparisonsData.comparisons
+      .filter(c => c.id !== comp.id && !relatedComparisons.some(r => r.id === c.id))
+      .slice(0, 4 - relatedComparisons.length)
+  );
+}
+
+const visibleRelatedComparisons = relatedComparisons
+  .slice(0, 4);
+
+// Build schema
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": comp.seoTitle,
+  "description": comp.seoDescription,
+  "author": {
+    "@type": "Organization",
+    "name": "Image Tool Stack"
+  }
+};
+---
+
+<Layout title={comp.seoTitle} description={comp.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">{comp.title}</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">{comp.format1}</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">{comp.format2}</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{comp.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{comp.description}</p>
+      </header>
+
+      <!-- Comparison Table -->
+      <section class="mb-16">
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline">
+                <th class="p-6 text-xl font-bold text-ink w-1/2 border-r border-hairline">{comp.format1}</th>
+                <th class="p-6 text-xl font-bold text-ink w-1/2">{comp.format2}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-6 border-r border-hairline align-top bg-canvas">
+                  <h3 class="text-sm font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Advantages
+                  </h3>
+                  <ul class="space-y-3">
+                    {comp.format1Pros.map((pro: string) => (
+                      <li class="flex items-start gap-2 text-sm text-body">
+                        <span class="text-success mt-0.5">•</span> {pro}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <h3 class="text-sm font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    Disadvantages
+                  </h3>
+                  <ul class="space-y-3">
+                    {comp.format1Cons.map((con: string) => (
+                      <li class="flex items-start gap-2 text-sm text-body">
+                        <span class="text-error mt-0.5">•</span> {con}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                
+                <td class="p-6 align-top bg-canvas">
+                  <h3 class="text-sm font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Advantages
+                  </h3>
+                  <ul class="space-y-3">
+                    {comp.format2Pros.map((pro: string) => (
+                      <li class="flex items-start gap-2 text-sm text-body">
+                        <span class="text-success mt-0.5">•</span> {pro}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <h3 class="text-sm font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    Disadvantages
+                  </h3>
+                  <ul class="space-y-3">
+                    {comp.format2Cons.map((con: string) => (
+                      <li class="flex items-start gap-2 text-sm text-body">
+                        <span class="text-error mt-0.5">•</span> {con}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- The Verdict -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline text-center">
+        <h2 class="text-xs font-bold text-mute uppercase tracking-widest mb-2">The Verdict</h2>
+        <p class="text-2xl font-bold text-ink">{comp.winner}</p>
+      </section>
+
+      <!-- When to Use -->
+      <section class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-link">
+          <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format1}</h2>
+          <p class="text-sm text-body leading-relaxed">{comp.whenToUse1}</p>
+        </div>
+        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-ink">
+          <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format2}</h2>
+          <p class="text-sm text-body leading-relaxed">{comp.whenToUse2}</p>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {visibleRelatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">More Format Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {visibleRelatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Ready to process your images?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to convert or optimize your images instantly.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Go to {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
+</Layout>

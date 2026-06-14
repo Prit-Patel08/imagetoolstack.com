@@ -1,0 +1,117 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import RequestToolSection from "../../components/RequestToolSection.astro";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  return toolsData.categories.map((category) => {
+    const tools = toolsData.tools.filter((t) => t.categoryId === category.id);
+    return {
+      params: { slug: category.slug },
+      props: { category, tools },
+    };
+  });
+}
+
+const { category, tools } = Astro.props;
+
+// Breadcrumb schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://imagetoolstack.com/" },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` }
+  ]
+};
+
+// ItemList schema
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": `${category.name} Tools`,
+  "description": category.description,
+  "itemListElement": tools.map((t, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "url": `https://imagetoolstack.com/tools/${t.slug}`
+  }))
+};
+---
+
+<Layout title={category.seoTitle || category.name} description={category.seoDescription || category.description}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">{category.name}</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1400px] px-6 py-16 lg:px-8 lg:py-24">
+      <header class="mb-16">
+        <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{category.name}</h1>
+        <p class="mt-6 text-xl text-body max-w-3xl leading-relaxed">{category.description}</p>
+        <div class="mt-4 text-sm font-medium text-mute">{tools.length} tools available</div>
+      </header>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {tools.map((tool) => (
+          <a href={`/tools/${tool.slug}`} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8">
+            <div class="h-12 w-12 rounded-lg bg-canvas-soft-2 flex items-center justify-center border border-hairline group-hover:bg-link/5 transition-colors group-hover:border-link/20">
+              <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div class="w-full">
+              <h2 class="text-xl font-semibold tracking-tight text-ink group-hover:text-link transition-colors">{tool.name}</h2>
+              <p class="mt-2 text-sm text-body leading-relaxed">{tool.description}</p>
+              {tool.inputFormats && tool.outputFormats && tool.outputFormats.length > 0 && (
+                <div class="mt-4 flex items-center gap-2 text-[10px] text-mute font-mono">
+                  <span>{tool.inputFormats.join(", ")}</span>
+                  <span>→</span>
+                  <span class="text-link">{tool.outputFormats.join(", ")}</span>
+                </div>
+              )}
+              <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-link">
+                Use Tool <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      
+      <div class="mt-16">
+        <RequestToolSection source="category_page" />
+      </div>
+      
+      <!-- SEO Content -->
+      <section class="mt-24 bg-canvas border border-hairline rounded-xl p-8 lg:p-12 text-body prose prose-vercel !max-w-none">
+        <h2 class="text-2xl font-semibold tracking-tight text-ink mb-6">The Ultimate Suite of {category.name} Tools</h2>
+        <p>When working with digital media, having access to reliable, fast, and secure <strong>{category.name.toLowerCase()}</strong> utilities is absolutely essential. Whether you are a web developer optimizing assets, a photographer managing high-resolution files, or a digital marketer preparing content for social media, our collection of specialized tools is designed to streamline your workflow.</p>
+        
+        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">Why Process Images Locally?</h3>
+        <p>Unlike traditional online services that force you to upload your private files to remote servers, all of our {category.name.toLowerCase()} tools operate exclusively within your web browser. By leveraging advanced WebAssembly technology and the HTML5 Canvas API, we bring desktop-grade processing power directly to your device. This architectural choice provides three massive benefits:</p>
+        <ul class="list-disc pl-5 mt-4 space-y-2">
+          <li><strong>Absolute Privacy:</strong> Because your files never leave your device and are never transmitted over the internet, your sensitive data remains 100% secure.</li>
+          <li><strong>Zero Latency:</strong> Eliminate the frustrating wait times associated with uploading large files to cloud servers and downloading the results. Processing begins instantly.</li>
+          <li><strong>No File Size Limits:</strong> Without the constraints of server bandwidth and storage costs, you can process high-resolution images that other platforms would reject.</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">A Complete Toolkit</h3>
+        <p>The {category.name} category encompasses a wide array of specialized utilities. From simple conversions to complex optimizations, each tool is purpose-built to solve a specific problem efficiently. We continuously update and expand our toolset to ensure compatibility with the latest next-generation image formats like WebP, AVIF, and HEIC, alongside legacy formats like JPEG, PNG, and GIF.</p>
+        <p>Bookmark this page to ensure you always have instant access to a powerful, privacy-first image processing suite whenever you need it.</p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)}></script>
+</Layout>

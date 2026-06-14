@@ -1,0 +1,54 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="About Us">
+  <Navbar />
+  
+  <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-8">The Local-First Image Platform</h1>
+    <p class="text-xl text-body mb-12 leading-relaxed">
+      Image Tool Stack was born from a simple observation: most online utilities are bloated, ad-ridden, and unnecessarily compromise user privacy.
+    </p>
+    
+    <div class="prose prose-vercel text-body leading-relaxed space-y-12">
+      <section>
+        <h2 class="text-2xl font-semibold text-ink mb-4">Our Mission</h2>
+        <p>
+          We aim to provide the fastest, most reliable image tools on the web. By leveraging modern browser capabilities, we eliminate the need for server-side processing for 99% of common image tasks.
+        </p>
+      </section>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-12 border-y border-hairline my-12">
+        <div>
+          <h3 class="font-semibold text-ink mb-2">Privacy focused</h3>
+          <p class="text-sm">Your data never leaves your browser. We don't store your images, and we never will.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-ink mb-2">Performance driven</h3>
+          <p class="text-sm">Built with Astro and minimal JavaScript to ensure every page loads in milliseconds.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-ink mb-2">Developer friendly</h3>
+          <p class="text-sm">Clean exports, optimized formats (WebP/AVIF), and soon-to-be-released API access.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-ink mb-2">Free for everyone</h3>
+          <p class="text-sm">No subscriptions. No hidden fees. Just high-quality tools for common image tasks.</p>
+        </div>
+      </div>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink mb-4">The Stack</h2>
+        <p>
+          Image Tool Stack is built with **Astro** for lightning-fast static generation, **Tailwind CSS v4** for modern styling, 
+          and utilizes **WebAssembly** for heavy-duty image processing tasks directly in your browser.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

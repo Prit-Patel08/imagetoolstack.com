@@ -1,0 +1,215 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="pdf-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select images to convert to PDF</p>
+      <p class="mt-1 text-sm text-body">Multiple images will be merged into one PDF document.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" multiple />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="w-full max-w-xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-hairline">
+        <h3 class="text-lg font-semibold text-ink">PDF Settings</h3>
+        <span id="file-count-badge" class="text-xs font-bold text-mute bg-canvas-soft px-2 py-1 rounded border border-hairline">0 files selected</span>
+      </div>
+      
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-ink mb-2">Page Layout</label>
+          <select id="layout-select" class="w-full bg-canvas-soft border border-hairline rounded px-3 py-2 text-sm text-ink outline-none focus:border-link">
+            <option value="fit">Fit image to page (A4)</option>
+            <option value="original">Original image dimensions</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-8 flex gap-4">
+        <button id="start-btn" class="flex-1 btn-primary">Generate PDF</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p id="progress-text" class="text-sm font-mono text-mute uppercase tracking-widest">Generating PDF (0 / 0)</p>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-16 w-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-2">
+      <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 17h-2.5v-10h3.141c2.259 0 3.359 1.492 3.359 3.161 0 1.956-1.554 2.839-3.359 2.839h-.641v4zm4.5 0h-1.5v-10h4.5v1.5h-3v2.5h2.5v1.5h-2.5v4.5zm-5.141-8.5h-.859v2.5h.859c.983 0 1.641-.606 1.641-1.25 0-.643-.658-1.25-1.641-1.25z"/></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-bold text-ink">PDF Generated!</h3>
+      <p id="result-summary" class="text-sm text-body mt-2">Your document is ready.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download PDF</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Create another PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { jsPDF } from 'jspdf';
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const fileCountBadge = document.getElementById('file-count-badge');
+    const layoutSelect = document.getElementById('layout-select') as HTMLSelectElement;
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    
+    const progressText = document.getElementById('progress-text');
+    const resultSummary = document.getElementById('result-summary');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let selectedFiles: File[] = [];
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFiles(Array.from(files));
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFiles(Array.from(fileInput.files));
+    });
+
+    function handleFiles(files: File[]) {
+      const validFiles = files.filter(f => f.type.startsWith('image/'));
+      if (validFiles.length === 0) {
+        alert("No valid images selected.");
+        return;
+      }
+      selectedFiles = validFiles;
+      fileCountBadge!.textContent = `${selectedFiles.length} file${selectedFiles.length === 1 ? '' : 's'} selected`;
+      showState('settings');
+    }
+
+    startBtn?.addEventListener('click', async () => {
+      showState('processing');
+      const layout = layoutSelect.value;
+      
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const total = selectedFiles.length;
+      
+      for (let i = 0; i < total; i++) {
+        if (progressText) {
+          progressText.textContent = `Generating PDF (${i+1} / ${total})`;
+        }
+        
+        const file = selectedFiles[i];
+        try {
+          const imgData = await fileToBase64(file);
+          const imgProps = doc.getImageProperties(imgData);
+          
+          if (layout === 'fit') {
+            // A4 dimensions: 210 x 297 mm
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const pdfHeight = doc.internal.pageSize.getHeight();
+            const margin = 10;
+            const contentW = pdfWidth - (margin * 2);
+            const contentH = pdfHeight - (margin * 2);
+            
+            const ratio = Math.min(contentW / imgProps.width, contentH / imgProps.height);
+            const w = imgProps.width * ratio;
+            const h = imgProps.height * ratio;
+            
+            const x = (pdfWidth - w) / 2;
+            const y = (pdfHeight - h) / 2;
+            
+            if (i > 0) doc.addPage();
+            doc.addImage(imgData, 'JPEG', x, y, w, h);
+          } else {
+            // Original dimensions (assuming 96 dpi -> mm)
+            const w = imgProps.width * 0.264583;
+            const h = imgProps.height * 0.264583;
+            
+            if (i === 0) {
+              doc.deletePage(1); // Remove default A4 page
+            }
+            doc.addPage([w, h], w > h ? 'l' : 'p');
+            doc.addImage(imgData, 'JPEG', 0, 0, w, h);
+          }
+        } catch (e) {
+          console.error('Failed to process image for PDF', e);
+        }
+      }
+
+      // Generate blob
+      const pdfBlob = doc.output('blob');
+      const url = URL.createObjectURL(pdfBlob);
+      
+      downloadBtn.href = url;
+      downloadBtn.download = `document-${Date.now()}.pdf`;
+      resultSummary!.textContent = `${total} images merged into 1 PDF.`;
+      
+      showState('result');
+    });
+
+    function fileToBase64(file: File): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      fileInput.value = '';
+      selectedFiles = [];
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

@@ -1,0 +1,148 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="image-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Click to upload or drag and drop</p>
+      <p class="mt-1 text-sm text-body">JPG, PNG, or WebP. Max 50MB.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/*" />
+  </div>
+
+  <!-- Processing State (hidden initially) -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <p class="text-sm font-mono text-mute uppercase tracking-widest">Processing Image…</p>
+  </div>
+
+  <!-- Result State (hidden initially) -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="relative max-h-[300px] overflow-hidden rounded-md border border-hairline bg-canvas">
+      <img id="preview-img" class="max-h-[300px] w-auto object-contain" />
+    </div>
+    
+    <div class="flex flex-col items-center gap-2">
+      <span id="result-info" class="text-xs font-mono text-mute"></span>
+      <a id="download-btn" class="btn-primary">Download Image</a>
+      <button id="reset-btn" class="text-xs font-medium text-body hover:text-ink transition-colors mt-2">Process another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Browser-based tool logic
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const processingZone = document.getElementById('processing-zone');
+  const resultZone = document.getElementById('result-zone');
+  const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+  const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+  const resetBtn = document.getElementById('reset-btn');
+  const resultInfo = document.getElementById('result-info');
+
+  // Multi-tool logic based on URL/ID
+  const toolId = window.location.pathname.split('/').pop();
+
+  if (dropZone && fileInput) {
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+  }
+
+  function handleFile(file: File) {
+    showState('processing');
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const img = new Image();
+      img.onload = async () => {
+        const processedBlob = await processImage(img, file.type, toolId);
+        if (processedBlob) {
+          const url = URL.createObjectURL(processedBlob);
+          previewImg.src = url;
+          downloadBtn.href = url;
+          downloadBtn.download = `output-${Date.now()}.${getExt(toolId)}`;
+          resultInfo!.textContent = `${file.name} → ${(processedBlob.size / 1024).toFixed(1)} KB`;
+          showState('result');
+        }
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function processImage(img: HTMLImageElement, originalType: string, id: string): Promise<Blob | null> {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.drawImage(img, 0, 0);
+
+    let targetType = originalType;
+    let quality = 0.9;
+
+    // Tool-specific logic
+    switch (id) {
+      case 'png-to-jpg':
+        targetType = 'image/jpeg';
+        break;
+      case 'jpg-to-png':
+        targetType = 'image/png';
+        break;
+      case 'webp-to-png':
+        targetType = 'image/png';
+        break;
+      case 'image-compressor':
+        quality = 0.7; // Example compression level
+        break;
+    }
+
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(blob), targetType, quality);
+    });
+  }
+
+  function showState(state: 'upload' | 'processing' | 'result') {
+    dropZone?.classList.toggle('hidden', state !== 'upload');
+    processingZone?.classList.toggle('hidden', state !== 'processing');
+    resultZone?.classList.toggle('hidden', state !== 'result');
+  }
+
+  function getExt(id: string) {
+    if (id.includes('to-jpg')) return 'jpg';
+    if (id.includes('to-png')) return 'png';
+    if (id.includes('to-webp')) return 'webp';
+    return 'png';
+  }
+
+  resetBtn?.addEventListener('click', () => {
+    fileInput.value = '';
+    showState('upload');
+  });
+</script>

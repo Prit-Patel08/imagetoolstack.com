@@ -1,0 +1,126 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "TIFF vs JPEG: Which Format Should Photographers Use? (2026 Guide)";
+const seoDescription = "What is the difference between TIFF and JPEG? We compare file sizes, compression artifacts, and printing quality to help you choose the right format for your photography.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between TIFF and JPEG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TIFF is a lossless, uncompressed image format used by professionals to retain maximum image data for editing and printing. JPEG is a compressed format designed to drastically reduce file sizes for web delivery and casual storage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I print photos in TIFF or JPEG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If you are printing large-scale professional photos, art prints, or banners, use TIFF. If you are printing standard 4x6 photos at a local pharmacy, a high-quality JPEG is perfectly fine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is TIFF better quality than JPEG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, absolutely. Because TIFF does not use lossy compression, it preserves 100% of the image data captured by your camera sensor. JPEG discards invisible data to save space, which lowers the overall quality."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "tiff-vs-jpeg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">TIFF vs JPEG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPEG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">TIFF vs JPEG: Which Format Should You Use?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          If you are working with digital photography, you'll eventually need to choose between TIFF and JPEG. One is built for archiving raw, uncompressed quality, while the other is built for fast sharing and web performance. 
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use TIFF for:</strong> professional printing, archiving original photography, and saving intermediate edits in Photoshop without losing data.</p>
+          <p><strong class="text-ink">Use JPEG for:</strong> uploading photos to social media, delivering final photos to clients, and publishing images on your website.</p>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Lossless vs. Lossy Compression</h2>
+        <div class="prose prose-vercel max-w-none text-body">
+          <p>
+            The fundamental difference between these two formats comes down to compression.
+          </p>
+          <p>
+            <strong>TIFF (Tagged Image File Format)</strong> is a <em>lossless</em> format. When you save a TIFF file, your computer preserves exactly 100% of the pixel data that was present in the image. You can open, edit, and resave a TIFF file 100 times, and the quality will remain identical to the original. Because it doesn't compress data, TIFF files are massive (often 50MB to over 100MB per photo).
+          </p>
+          <p>
+            <strong>JPEG</strong> is a <em>lossy</em> format. When you save a JPEG, the algorithm actively looks for data it can throw away to save space (for example, blending two very similar shades of blue in the sky into one single shade). If you open a JPEG, edit it, and save it again, it will re-compress the image, losing more data every single time. However, this compression results in drastically smaller file sizes (usually 2MB to 5MB).
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <Footer />
+</Layout>

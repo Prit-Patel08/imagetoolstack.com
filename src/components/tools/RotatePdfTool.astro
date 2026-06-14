@@ -1,0 +1,70 @@
+---
+import { Tool } from "../../utils/seo-generator";
+interface Props { tool: Tool; }
+const { tool } = Astro.props;
+---
+<div class="converter-tool-root flex flex-col gap-8 w-full max-w-4xl mx-auto">
+  <div class="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden p-6">
+    <div id="drop-zone" class="relative group cursor-pointer mb-6">
+        <div class="absolute inset-0 bg-primary/5 rounded-xl border-2 border-dashed border-primary/30 group-hover:border-primary transition-colors"></div>
+        <div class="relative py-12 px-6 text-center">
+            <p class="text-lg font-medium text-heading">Click to select PDF to rotate</p>
+        </div>
+        <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" />
+    </div>
+
+    <div id="controls" class="hidden flex gap-4">
+      <select id="degrees" class="flex-1 p-3 border border-border rounded-lg bg-surface text-heading">
+        <option value="90">Rotate 90° Clockwise</option>
+        <option value="180">Rotate 180°</option>
+        <option value="270">Rotate 90° Counter-Clockwise</option>
+      </select>
+      <button id="rotate-btn" class="flex-1 px-6 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors">Rotate PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { PDFDocument, degrees } from 'pdf-lib';
+
+  let currentFile: File | null = null;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const controls = document.getElementById('controls');
+  const rotateBtn = document.getElementById('rotate-btn');
+  const degreesSelect = document.getElementById('degrees') as HTMLSelectElement;
+
+  fileInput?.addEventListener('change', (e) => {
+    currentFile = (e.target as HTMLInputElement).files?.[0] || null;
+    if (currentFile) controls?.classList.remove('hidden');
+  });
+
+  rotateBtn?.addEventListener('click', async () => {
+    if (!currentFile) return;
+    rotateBtn.innerHTML = "Rotating...";
+    try {
+      const arrayBuffer = await currentFile.arrayBuffer();
+      const pdf = await PDFDocument.load(arrayBuffer);
+      const deg = parseInt(degreesSelect.value);
+      
+      const pages = pdf.getPages();
+      pages.forEach(p => {
+        const currentRotation = p.getRotation().angle;
+        p.setRotation(degrees(currentRotation + deg));
+      });
+      
+      const pdfBytes = await pdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rotated.pdf';
+      a.click();
+      
+      if (window.gtag) window.gtag('event', 'tool_usage', { tool_id: 'rotate-pdf' });
+    } catch(e) {
+      alert("Failed to rotate");
+    } finally {
+      rotateBtn.innerHTML = "Rotate PDF";
+    }
+  });
+</script>

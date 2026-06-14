@@ -1,0 +1,23 @@
+---
+import type { Tool } from "../../utils/seo-generator";
+
+interface Props {
+  tool: Tool;
+}
+const { tool } = Astro.props;
+
+const bullets = tool.benefits || [];
+---
+<section class="mb-16">
+  <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Why Use This Tool</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    {bullets.map((benefit: string) => (
+      <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas border border-hairline">
+        <div class="mt-1 shrink-0 h-5 w-5 rounded-full bg-success/10 flex items-center justify-center">
+          <svg class="h-3 w-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <span class="text-sm text-body">{benefit}</span>
+      </div>
+    ))}
+  </div>
+</section>

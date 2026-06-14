@@ -1,0 +1,245 @@
+---
+// Custom Implementation for QR Scanner
+
+interface Props {
+  toolId?: string;
+}
+---
+
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-8">
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-hairline">
+      <div class="h-10 w-10 bg-link/10 text-link rounded-lg flex items-center justify-center">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-ink">QR Code Scanner</h2>
+        <p class="text-sm text-body">Scan via Camera or Upload an Image</p>
+      </div>
+    </div>
+
+    <!-- Mode Selection & Upload -->
+    <div class="flex flex-col gap-6" id="setupArea">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Camera Button -->
+        <button id="startCameraBtn" class="flex flex-col items-center justify-center gap-4 border-2 border-hairline rounded-xl p-8 sm:p-12 text-center hover:border-link hover:bg-canvas-soft transition-colors group">
+           <svg class="h-8 w-8 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+           <div>
+             <p class="text-base font-semibold text-ink">Scan with Camera</p>
+             <p class="text-sm text-body mt-1">Use your device's camera</p>
+           </div>
+        </button>
+
+        <!-- Upload Button -->
+        <div id="dropzone" class="border-2 border-dashed border-hairline rounded-xl p-8 sm:p-12 text-center hover:border-link hover:bg-canvas-soft transition-colors cursor-pointer group">
+          <input type="file" id="fileInput" class="hidden" accept="image/*" />
+          <div class="flex flex-col items-center gap-4">
+            <svg class="h-8 w-8 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+            <div>
+              <p class="text-base font-semibold text-ink">Upload Image</p>
+              <p class="text-sm text-body mt-1">Drag & drop or click</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scanner View -->
+    <div id="scannerArea" class="hidden flex flex-col gap-6 items-center">
+      <div class="relative w-full max-w-sm rounded-lg overflow-hidden bg-black aspect-[3/4] sm:aspect-square">
+        <video id="videoPreview" class="w-full h-full object-cover" playsinline></video>
+        <canvas id="cameraCanvas" class="absolute top-0 left-0 w-full h-full object-cover"></canvas>
+        <div class="absolute inset-0 border-4 border-link/50 rounded-lg pointer-events-none"></div>
+      </div>
+      <button id="stopCameraBtn" class="px-6 py-2 bg-danger/10 hover:bg-danger/20 text-danger font-medium rounded-lg transition-colors">
+        Cancel Scanning
+      </button>
+    </div>
+
+    <!-- Result Area -->
+    <div id="resultArea" class="hidden flex flex-col gap-4 mt-4">
+      <div class="p-8 border border-hairline rounded-lg text-center bg-success/10 text-success">
+        <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <h3 class="text-lg font-semibold" id="resultTitle">QR Code Found!</h3>
+      </div>
+      
+      <div class="bg-canvas-soft border border-hairline rounded-lg p-4">
+         <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Scanned Data</label>
+         <textarea id="scannerOutput" class="w-full bg-canvas border border-hairline rounded-lg px-4 py-3 text-sm text-ink h-32 resize-none" readonly></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="copyBtn" class="flex-1 py-3 bg-link hover:bg-link-hover text-white font-semibold rounded-lg shadow-sm transition-all">
+          Copy Text
+        </button>
+        <button id="scanAgainBtn" class="flex-1 py-3 bg-canvas-soft hover:bg-canvas-soft-2 text-ink font-semibold border border-hairline rounded-lg shadow-sm transition-all">
+          Scan Another
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" is:inline></script>
+
+<script>
+  let videoStream = null;
+  let scanning = false;
+  
+  const setupArea = document.getElementById('setupArea');
+  const scannerArea = document.getElementById('scannerArea');
+  const resultArea = document.getElementById('resultArea');
+  const resultTitle = document.getElementById('resultTitle');
+  
+  const startCameraBtn = document.getElementById('startCameraBtn');
+  const stopCameraBtn = document.getElementById('stopCameraBtn');
+  const video = document.getElementById('videoPreview');
+  const canvas = document.getElementById('cameraCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  
+  const scannerOutput = document.getElementById('scannerOutput');
+  const copyBtn = document.getElementById('copyBtn');
+  const scanAgainBtn = document.getElementById('scanAgainBtn');
+
+  // -- UPLOAD LOGIC --
+  dropzone.addEventListener('click', () => fileInput.click());
+  
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-link'); });
+  dropzone.addEventListener('dragleave', (e) => { e.preventDefault(); dropzone.classList.remove('border-link'); });
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-link');
+    if (e.dataTransfer && e.dataTransfer.files.length) {
+      processFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files && fileInput.files.length) {
+      processFile(fileInput.files[0]);
+    }
+  });
+
+  function processFile(file) {
+    if (!file.type.startsWith('image/')) return;
+    
+    const img = new Image();
+    img.onload = () => {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = img.width;
+      tempCanvas.height = img.height;
+      const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+      tempCtx.drawImage(img, 0, 0);
+      
+      const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+      const code = window.jsQR(imageData.data, imageData.width, imageData.height);
+      
+      if (code) {
+        resultTitle.textContent = "QR Code Found!";
+        showResult(code.data);
+      } else {
+        resultTitle.textContent = "Scan Failed";
+        showResult("No QR code found in the image. Please try another one.");
+      }
+    };
+    img.src = URL.createObjectURL(file);
+  }
+
+  // -- CAMERA LOGIC --
+  startCameraBtn.addEventListener('click', async () => {
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      video.srcObject = videoStream;
+      video.setAttribute("playsinline", "true"); // required to tell iOS safari we don't want fullscreen
+      video.play();
+      
+      scanning = true;
+      setupArea.classList.add('hidden');
+      scannerArea.classList.remove('hidden');
+      resultArea.classList.add('hidden');
+      
+      requestAnimationFrame(tick);
+    } catch (err) {
+      alert('Error accessing camera. Please ensure you have granted camera permissions.');
+    }
+  });
+
+  stopCameraBtn.addEventListener('click', stopCamera);
+
+  function stopCamera() {
+    scanning = false;
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+      videoStream = null;
+    }
+    scannerArea.classList.add('hidden');
+    setupArea.classList.remove('hidden');
+  }
+
+  function tick() {
+    if (!scanning) return;
+    
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+      
+      if (code) {
+        drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B30");
+        drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B30");
+        drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B30");
+        drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B30");
+        
+        // Slight delay to show the drawn box
+        setTimeout(() => {
+          stopCamera();
+          resultTitle.textContent = "QR Code Found!";
+          showResult(code.data);
+        }, 300);
+        return;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function drawLine(begin, end, color) {
+    ctx.beginPath();
+    ctx.moveTo(begin.x, begin.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  // -- RESULT UI --
+  function showResult(data) {
+    setupArea.classList.add('hidden');
+    scannerArea.classList.add('hidden');
+    resultArea.classList.remove('hidden');
+    scannerOutput.value = data;
+  }
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(scannerOutput.value);
+    const origText = copyBtn.textContent;
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => { copyBtn.textContent = origText; }, 2000);
+  });
+
+  scanAgainBtn.addEventListener('click', () => {
+    resultArea.classList.add('hidden');
+    setupArea.classList.remove('hidden');
+    scannerOutput.value = '';
+    fileInput.value = '';
+  });
+</script>

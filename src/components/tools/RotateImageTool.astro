@@ -1,0 +1,220 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="rotate-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select an image to rotate</p>
+      <p class="mt-1 text-sm text-body">Supports JPG, PNG, and WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <!-- Image Preview -->
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex items-center justify-center overflow-hidden min-h-[300px]">
+      <img id="image-preview" class="max-w-full max-h-[500px] object-contain shadow-sm transition-transform duration-300" src="" alt="Preview" />
+    </div>
+
+    <!-- Controls -->
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm">
+      <h3 class="text-lg font-semibold text-ink mb-4 text-center">Rotation Controls</h3>
+      
+      <div class="flex flex-wrap justify-center gap-4">
+        <button id="btn-rotate-left" class="px-6 py-3 bg-canvas-soft border border-hairline rounded-lg font-medium text-ink hover:border-link transition-colors flex items-center gap-2">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+          Left 90°
+        </button>
+        <button id="btn-rotate-180" class="px-6 py-3 bg-canvas-soft border border-hairline rounded-lg font-medium text-ink hover:border-link transition-colors flex items-center gap-2">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+          180°
+        </button>
+        <button id="btn-rotate-right" class="px-6 py-3 bg-canvas-soft border border-hairline rounded-lg font-medium text-ink hover:border-link transition-colors flex items-center gap-2">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" /></svg>
+          Right 90°
+        </button>
+      </div>
+
+      <div class="mt-8 flex gap-4">
+        <button id="start-btn" class="flex-1 btn-primary">Apply & Download</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <div class="w-full max-w-md text-center">
+      <p class="text-sm font-mono text-mute uppercase tracking-widest">Processing Image...</p>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-12">
+    <div class="h-16 w-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mb-2">
+      <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-bold text-ink">Image Rotated!</h3>
+      <p class="text-sm text-body mt-2">Your new image is ready to download.</p>
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 mt-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download Image</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Rotate another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const imagePreview = document.getElementById('image-preview') as HTMLImageElement;
+    const btnLeft = document.getElementById('btn-rotate-left');
+    const btnRight = document.getElementById('btn-rotate-right');
+    const btn180 = document.getElementById('btn-rotate-180');
+    
+    const startBtn = document.getElementById('start-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let originalFile: File | null = null;
+    let originalImage: HTMLImageElement | null = null;
+    let currentRotation = 0; // in degrees
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      currentRotation = 0;
+      updatePreviewRotation();
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target?.result as string;
+        
+        originalImage = new Image();
+        originalImage.src = e.target?.result as string;
+        
+        showState('settings');
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function updatePreviewRotation() {
+      // Keep it within 0-359
+      currentRotation = (currentRotation % 360 + 360) % 360;
+      imagePreview.style.transform = `rotate(${currentRotation}deg)`;
+    }
+
+    btnLeft?.addEventListener('click', () => { currentRotation -= 90; updatePreviewRotation(); });
+    btnRight?.addEventListener('click', () => { currentRotation += 90; updatePreviewRotation(); });
+    btn180?.addEventListener('click', () => { currentRotation += 180; updatePreviewRotation(); });
+
+    startBtn?.addEventListener('click', async () => {
+      if (!originalFile || !originalImage) return;
+      showState('processing');
+      
+      try {
+        // Small delay to allow UI to update
+        await new Promise(r => setTimeout(r, 50));
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error("Could not get canvas context");
+        
+        // Calculate new dimensions based on rotation
+        const isRotated90 = currentRotation === 90 || currentRotation === 270;
+        canvas.width = isRotated90 ? originalImage.height : originalImage.width;
+        canvas.height = isRotated90 ? originalImage.width : originalImage.height;
+        
+        // Move to center, rotate, and draw
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(currentRotation * Math.PI / 180);
+        ctx.drawImage(originalImage, -originalImage.width / 2, -originalImage.height / 2);
+        
+        // Get output format
+        let mimeType = originalFile.type;
+        if (mimeType !== 'image/jpeg' && mimeType !== 'image/webp' && mimeType !== 'image/png') {
+            mimeType = 'image/png';
+        }
+        
+        const dataUrl = canvas.toDataURL(mimeType, 1.0);
+        
+        // Create filename
+        const ext = mimeType.split('/')[1] === 'jpeg' ? 'jpg' : mimeType.split('/')[1];
+        const baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+        
+        downloadBtn.href = dataUrl;
+        downloadBtn.download = `${baseName}-rotated.${ext}`;
+        
+        showState('result');
+        
+      } catch (e) {
+        console.error('Rotation error', e);
+        alert('An error occurred. Check console for details.');
+        showState('settings');
+      }
+    });
+
+    cancelBtn?.addEventListener('click', resetTool);
+    resetBtn?.addEventListener('click', resetTool);
+
+    function resetTool() {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      currentRotation = 0;
+      imagePreview.src = '';
+      updatePreviewRotation();
+      showState('upload');
+    }
+
+    function showState(state: 'upload' | 'settings' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      settingsZone?.classList.toggle('hidden', state !== 'settings');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

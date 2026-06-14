@@ -1,0 +1,72 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="mt-auto border-t border-hairline bg-canvas py-16 lg:py-24">
+  <div class="mx-auto max-w-[1400px] px-6 lg:px-8">
+    <div class="grid grid-cols-2 gap-12 md:grid-cols-5">
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">Convert</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href="/tools/png-to-jpg" class="text-sm text-body hover:text-ink transition-colors">PNG to JPG Converter</a></li>
+          <li><a href="/tools/jpg-to-png" class="text-sm text-body hover:text-ink transition-colors">JPG to PNG Converter</a></li>
+          <li><a href="/tools/webp-to-png" class="text-sm text-body hover:text-ink transition-colors">WebP to PNG Converter</a></li>
+          <li><a href="/category/conversion" class="text-sm font-medium text-link hover:opacity-80 transition-opacity">Show all tools →</a></li>
+        </ul>
+      </div>
+      
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">Edit</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href="/tools/image-compressor" class="text-sm text-body hover:text-ink transition-colors">Compressor</a></li>
+          <li><a href="/tools/image-resizer" class="text-sm text-body hover:text-ink transition-colors">Resizer</a></li>
+          <li><a href="/tools/crop-image" class="text-sm text-body hover:text-ink transition-colors">Crop Image</a></li>
+          <li><a href="/category/optimization" class="text-sm font-medium text-link hover:opacity-80 transition-opacity">Show all tools →</a></li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">Tools</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href="/tools/color-picker" class="text-sm text-body hover:text-ink transition-colors">Color Picker</a></li>
+          <li><a href="/tools/metadata-viewer" class="text-sm text-body hover:text-ink transition-colors">Metadata Viewer</a></li>
+          <li><a href="/tools/image-to-base64" class="text-sm text-body hover:text-ink transition-colors">Image to Base64</a></li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">Compare</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href="/compare/png-vs-jpg" class="text-sm text-body hover:text-ink transition-colors">PNG vs JPG</a></li>
+          <li><a href="/compare/webp-vs-png" class="text-sm text-body hover:text-ink transition-colors">WebP vs PNG</a></li>
+          <li><a href="/compare/avif-vs-webp" class="text-sm text-body hover:text-ink transition-colors">AVIF vs WebP</a></li>
+          <li><a href="/compare" class="text-sm font-medium text-link hover:opacity-80 transition-opacity">View all comparisons →</a></li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">Company</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href="/articles" class="text-sm text-body hover:text-ink transition-colors">Articles & Guides</a></li>
+          <li><a href="/about" class="text-sm text-body hover:text-ink transition-colors">About</a></li>
+          <li><a href="/privacy" class="text-sm text-body hover:text-ink transition-colors">Privacy Policy</a></li>
+          <li><a href="/terms" class="text-sm text-body hover:text-ink transition-colors">Terms of Service</a></li>
+          <li><a href="/contact" class="text-sm text-body hover:text-ink transition-colors">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col items-center justify-between gap-4 border-t border-hairline pt-8 md:flex-row">
+      <div class="flex items-center gap-4">
+        <img src="/favicon.svg" alt="Image Tool Stack Logo" class="h-5 w-5" />
+        <span class="text-xs text-mute">&copy; {year} Image Tool Stack. Built for performace and privacy.</span>
+      </div>
+      
+      <div class="flex items-center gap-6">
+        <a href="https://twitter.com" class="text-mute hover:text-ink transition-colors">
+          <span class="sr-only">Twitter</span>
+          <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

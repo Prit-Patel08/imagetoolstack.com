@@ -1,0 +1,374 @@
+---
+// Custom Implementation for QR Generator
+
+interface Props {
+  toolId?: string;
+}
+---
+
+<div class="w-full max-w-5xl mx-auto flex flex-col gap-8">
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-hairline">
+      <div class="h-10 w-10 bg-link/10 text-link rounded-lg flex items-center justify-center">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-ink">QR Code Generator</h2>
+        <p class="text-sm text-body">Create Custom Branded QR Codes Locally</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Settings Panel -->
+      <div class="flex flex-col gap-6" id="settingsArea">
+        
+        <!-- Payload Type -->
+        <div>
+          <label class="block text-sm font-medium text-ink mb-2">QR Code Type</label>
+          <div class="flex gap-2">
+            <button class="type-btn flex-1 py-2 bg-link text-white rounded-lg text-sm font-medium transition-colors" data-type="url">URL / Text</button>
+            <button class="type-btn flex-1 py-2 bg-canvas-soft text-ink rounded-lg text-sm font-medium hover:bg-canvas-soft-2 transition-colors" data-type="wifi">Wi-Fi</button>
+            <button class="type-btn flex-1 py-2 bg-canvas-soft text-ink rounded-lg text-sm font-medium hover:bg-canvas-soft-2 transition-colors" data-type="vcard">vCard</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Inputs -->
+        <div id="inputs-url" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Enter URL or Text</label>
+            <textarea id="qrData" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-3 text-sm text-ink h-24 resize-none focus:border-link focus:ring-1 focus:ring-link outline-none transition-all" placeholder="https://example.com"></textarea>
+          </div>
+        </div>
+
+        <div id="inputs-wifi" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Network Name (SSID)</label>
+            <input type="text" id="wifiSsid" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink focus:border-link focus:ring-1 focus:ring-link outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Password</label>
+            <input type="password" id="wifiPass" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink focus:border-link focus:ring-1 focus:ring-link outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Encryption</label>
+            <select id="wifiEnc" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None</option>
+            </select>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer mt-2">
+            <input type="checkbox" id="wifiHidden" class="rounded border-hairline text-link focus:ring-link">
+            <span class="text-sm text-body">Hidden Network</span>
+          </label>
+        </div>
+
+        <div id="inputs-vcard" class="space-y-4 hidden">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">First Name</label>
+              <input type="text" id="vcardFirst" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none focus:border-link">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Last Name</label>
+              <input type="text" id="vcardLast" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none focus:border-link">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Phone</label>
+            <input type="tel" id="vcardPhone" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none focus:border-link">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Email</label>
+            <input type="email" id="vcardEmail" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none focus:border-link">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-mute uppercase tracking-wider mb-2">Company</label>
+            <input type="text" id="vcardCompany" class="w-full bg-canvas-soft border border-hairline rounded-lg px-4 py-2 text-sm text-ink outline-none focus:border-link">
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-hairline my-2"></div>
+
+        <!-- Design Options -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-semibold text-ink uppercase tracking-wider">Design Options</h3>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-mute mb-1">Foreground Color</label>
+              <input type="color" id="colorDark" value="#000000" class="h-10 w-full rounded cursor-pointer border border-hairline">
+            </div>
+            <div>
+              <label class="block text-xs text-mute mb-1">Background Color</label>
+              <input type="color" id="colorLight" value="#ffffff" class="h-10 w-full rounded cursor-pointer border border-hairline">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs text-mute mb-2">Center Logo (Optional)</label>
+            <div class="flex items-center gap-3">
+              <button id="uploadLogoBtn" class="px-4 py-2 bg-canvas-soft hover:bg-canvas-soft-2 border border-hairline rounded-lg text-sm text-ink font-medium transition-colors">
+                Choose Image
+              </button>
+              <span id="logoStatus" class="text-xs text-mute">No logo uploaded</span>
+              <input type="file" id="logoInput" accept="image/*" class="hidden">
+              <button id="clearLogoBtn" class="hidden text-xs text-danger hover:underline">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button id="processBtn" class="w-full py-3 bg-link hover:bg-link-hover text-white font-semibold rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-link focus:ring-offset-2">
+            Generate QR Code
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Area -->
+      <div id="resultArea" class="flex flex-col gap-4">
+        <div class="aspect-square w-full rounded-2xl border border-hairline overflow-hidden bg-canvas flex items-center justify-center p-8 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8L3N2Zz4=')]">
+          <div id="qrPlaceholder" class="text-mute text-center">
+            <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
+            <p class="text-sm">Enter data to preview</p>
+          </div>
+          <canvas id="outputCanvas" class="w-full h-full object-contain hidden"></canvas>
+        </div>
+        
+        <div id="downloadActions" class="hidden grid grid-cols-2 gap-3">
+          <button id="downloadPngBtn" class="py-3 bg-success hover:bg-success/90 text-white font-semibold rounded-lg shadow-sm transition-all">
+            Download PNG
+          </button>
+          <button id="downloadSvgBtn" class="py-3 bg-canvas-soft hover:bg-canvas-soft-2 text-ink border border-hairline font-semibold rounded-lg shadow-sm transition-all">
+            Download SVG
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" is:inline></script>
+
+<script>
+  let currentType = 'url';
+  let logoImg = null;
+
+  const typeBtns = document.querySelectorAll('.type-btn');
+  const processBtn = document.getElementById('processBtn');
+  const outputCanvas = document.getElementById('outputCanvas');
+  const qrPlaceholder = document.getElementById('qrPlaceholder');
+  const downloadActions = document.getElementById('downloadActions');
+  const ctx = outputCanvas.getContext('2d');
+
+  // Input fields
+  const qrData = document.getElementById('qrData');
+  const wifiSsid = document.getElementById('wifiSsid');
+  const wifiPass = document.getElementById('wifiPass');
+  const wifiEnc = document.getElementById('wifiEnc');
+  const wifiHidden = document.getElementById('wifiHidden');
+  
+  const vcardFirst = document.getElementById('vcardFirst');
+  const vcardLast = document.getElementById('vcardLast');
+  const vcardPhone = document.getElementById('vcardPhone');
+  const vcardEmail = document.getElementById('vcardEmail');
+  const vcardCompany = document.getElementById('vcardCompany');
+
+  // Design inputs
+  const colorDark = document.getElementById('colorDark');
+  const colorLight = document.getElementById('colorLight');
+  const uploadLogoBtn = document.getElementById('uploadLogoBtn');
+  const logoInput = document.getElementById('logoInput');
+  const logoStatus = document.getElementById('logoStatus');
+  const clearLogoBtn = document.getElementById('clearLogoBtn');
+
+  // Type Switching
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Update UI tabs
+      typeBtns.forEach(b => {
+        b.classList.remove('bg-link', 'text-white');
+        b.classList.add('bg-canvas-soft', 'text-ink');
+      });
+      btn.classList.remove('bg-canvas-soft', 'text-ink');
+      btn.classList.add('bg-link', 'text-white');
+
+      // Show/Hide Sections
+      currentType = btn.getAttribute('data-type');
+      document.getElementById('inputs-url').classList.add('hidden');
+      document.getElementById('inputs-wifi').classList.add('hidden');
+      document.getElementById('inputs-vcard').classList.add('hidden');
+      document.getElementById('inputs-' + currentType).classList.remove('hidden');
+    });
+  });
+
+  // Logo Upload
+  uploadLogoBtn.addEventListener('click', () => logoInput.click());
+  logoInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+      logoImg = new Image();
+      logoImg.onload = () => {
+        logoStatus.textContent = file.name;
+        clearLogoBtn.classList.remove('hidden');
+        if (getPayload()) generateQR(); // Auto regenerate if possible
+      };
+      logoImg.src = url;
+    }
+  });
+
+  clearLogoBtn.addEventListener('click', () => {
+    logoImg = null;
+    logoInput.value = '';
+    logoStatus.textContent = 'No logo uploaded';
+    clearLogoBtn.classList.add('hidden');
+    if (getPayload()) generateQR();
+  });
+
+  // Generator Logic
+  function getPayload() {
+    if (currentType === 'url') {
+      return qrData.value.trim();
+    } 
+    else if (currentType === 'wifi') {
+      const ssid = wifiSsid.value.trim();
+      if (!ssid) return '';
+      const enc = wifiEnc.value;
+      const pass = wifiPass.value;
+      const hidden = wifiHidden.checked ? 'true' : 'false';
+      let wifiStr = "WIFI:T:" + enc + ";S:" + ssid + ";";
+      if (enc !== 'nopass') {
+        wifiStr += "P:" + pass + ";";
+      }
+      wifiStr += "H:" + hidden + ";;";
+      return wifiStr;
+    } 
+    else if (currentType === 'vcard') {
+      const fn = vcardFirst.value.trim() + ' ' + vcardLast.value.trim();
+      if (!fn.trim()) return '';
+      let vcard = "BEGIN:VCARD\\nVERSION:3.0\\n";
+      vcard += "FN:" + fn.trim() + "\\n";
+      if (vcardPhone.value) vcard += "TEL:" + vcardPhone.value.trim() + "\\n";
+      if (vcardEmail.value) vcard += "EMAIL:" + vcardEmail.value.trim() + "\\n";
+      if (vcardCompany.value) vcard += "ORG:" + vcardCompany.value.trim() + "\\n";
+      vcard += "END:VCARD";
+      return vcard;
+    }
+    return '';
+  }
+
+  function generateQR() {
+    const payload = getPayload();
+    if (!payload) return;
+
+    // Use a temporary div for qrcode.js that is attached to DOM but hidden
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    document.body.appendChild(tempDiv);
+
+    try {
+      new QRCode(tempDiv, {
+        text: payload,
+        width: 1024,
+        height: 1024,
+        colorDark: colorDark.value,
+        colorLight: colorLight.value,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    } catch (e) {
+      console.error(e);
+      document.body.removeChild(tempDiv);
+      return;
+    }
+
+    // Extract the generated canvas
+    setTimeout(() => {
+      let qrCanvas = tempDiv.querySelector('canvas');
+      
+      // Fallback if it rendered as image
+      if (!qrCanvas) {
+        const qrImg = tempDiv.querySelector('img');
+        if (qrImg && qrImg.src) {
+          qrCanvas = document.createElement('canvas');
+          qrCanvas.width = 1024;
+          qrCanvas.height = 1024;
+          const tCtx = qrCanvas.getContext('2d');
+          tCtx.drawImage(qrImg, 0, 0);
+        }
+      }
+
+      if (qrCanvas) {
+        outputCanvas.width = qrCanvas.width;
+        outputCanvas.height = qrCanvas.height;
+        ctx.fillStyle = colorLight.value;
+        ctx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+        ctx.drawImage(qrCanvas, 0, 0);
+
+        // Draw Logo if exists
+        if (logoImg) {
+          const size = outputCanvas.width * 0.25; // Logo takes up 25% of QR code
+          const x = (outputCanvas.width - size) / 2;
+          const y = (outputCanvas.height - size) / 2;
+
+          // Draw a background behind logo for contrast
+          ctx.fillStyle = colorLight.value;
+          ctx.beginPath();
+          ctx.roundRect(x - 10, y - 10, size + 20, size + 20, 20);
+          ctx.fill();
+
+          // Draw the actual logo
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(x, y, size, size, 10);
+          ctx.clip();
+          ctx.drawImage(logoImg, x, y, size, size);
+          ctx.restore();
+        }
+
+        qrPlaceholder.classList.add('hidden');
+        outputCanvas.classList.remove('hidden');
+        downloadActions.classList.remove('hidden');
+      }
+      
+      // Cleanup
+      document.body.removeChild(tempDiv);
+    }, 100);
+  }
+
+  processBtn.addEventListener('click', () => {
+    if (!getPayload()) {
+      alert("Please fill in the required fields to generate a QR Code.");
+      return;
+    }
+    generateQR();
+  });
+
+  // Auto regenerate on color change
+  colorDark.addEventListener('change', () => { if (getPayload()) generateQR(); });
+  colorLight.addEventListener('change', () => { if (getPayload()) generateQR(); });
+
+  // Downloads
+  document.getElementById('downloadPngBtn').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = outputCanvas.toDataURL('image/png');
+    a.download = 'qrcode.png';
+    a.click();
+  });
+
+  document.getElementById('downloadSvgBtn').addEventListener('click', () => {
+    // Basic SVG wrapper around the raster data since qrcode.js + logo overlay creates a raster canvas
+    const dataUrl = outputCanvas.toDataURL('image/png');
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + outputCanvas.width + '" height="' + outputCanvas.height + '"><image href="' + dataUrl + '" width="100%" height="100%" /></svg>';
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qrcode.svg';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>

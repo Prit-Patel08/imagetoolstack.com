@@ -1,0 +1,193 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="resizer-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select image to resize</p>
+      <p class="mt-1 text-sm text-body">JPG, PNG, or WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/*" />
+  </div>
+
+  <!-- Processing State (hidden initially) -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <p class="text-sm font-mono text-mute uppercase tracking-widest">Processing…</p>
+  </div>
+
+  <!-- Edit/Result State -->
+  <div id="edit-zone" class="hidden w-full flex flex-col lg:flex-row gap-8 py-8">
+    <!-- Preview -->
+    <div class="flex-1">
+      <div class="relative w-full overflow-hidden rounded-md border border-hairline bg-canvas p-4 flex items-center justify-center bg-[url('/checker.svg')] bg-repeat">
+        <img id="preview-img" class="max-w-full max-h-[400px] object-contain shadow-sm" />
+      </div>
+    </div>
+    
+    <!-- Controls -->
+    <div class="w-full lg:w-80 flex flex-col gap-6">
+      <div class="bg-canvas border border-hairline rounded-xl p-5 shadow-sm">
+        <h3 class="text-lg font-semibold text-ink mb-4">Resize Dimensions</h3>
+        
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex-1">
+            <label class="block text-xs font-medium text-mute mb-1">Width (px)</label>
+            <input type="number" id="width-input" class="w-full bg-canvas-soft border border-hairline rounded px-3 py-2 text-sm text-ink outline-none focus:border-link" />
+          </div>
+          <div class="flex items-center justify-center pt-5">
+            <button id="link-ratio" class="text-link hover:opacity-80 transition-opacity" title="Lock Aspect Ratio">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" id="link-icon"/></svg>
+            </button>
+          </div>
+          <div class="flex-1">
+            <label class="block text-xs font-medium text-mute mb-1">Height (px)</label>
+            <input type="number" id="height-input" class="w-full bg-canvas-soft border border-hairline rounded px-3 py-2 text-sm text-ink outline-none focus:border-link" />
+          </div>
+        </div>
+        
+        <button id="apply-btn" class="w-full btn-primary mb-3">Apply & Download</button>
+        <button id="reset-btn" class="w-full text-xs font-medium text-body hover:text-ink transition-colors py-2 border border-transparent hover:border-hairline rounded">Choose different image</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const processingZone = document.getElementById('processing-zone');
+    const editZone = document.getElementById('edit-zone');
+    const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+    
+    const widthInput = document.getElementById('width-input') as HTMLInputElement;
+    const heightInput = document.getElementById('height-input') as HTMLInputElement;
+    const linkRatioBtn = document.getElementById('link-ratio');
+    
+    const applyBtn = document.getElementById('apply-btn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    let originalImg: HTMLImageElement | null = null;
+    let originalType = '';
+    let originalName = '';
+    let aspectRatio = 1;
+    let isLinked = true;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file: File) {
+      showState('processing');
+      originalType = file.type;
+      originalName = file.name;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          originalImg = img;
+          aspectRatio = img.width / img.height;
+          widthInput.value = img.width.toString();
+          heightInput.value = img.height.toString();
+          previewImg.src = img.src;
+          showState('edit');
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    widthInput?.addEventListener('input', () => {
+      if (isLinked && widthInput.value) {
+        heightInput.value = Math.round(parseInt(widthInput.value) / aspectRatio).toString();
+      }
+    });
+
+    heightInput?.addEventListener('input', () => {
+      if (isLinked && heightInput.value) {
+        widthInput.value = Math.round(parseInt(heightInput.value) * aspectRatio).toString();
+      }
+    });
+
+    linkRatioBtn?.addEventListener('click', () => {
+      isLinked = !isLinked;
+      if (isLinked) {
+        linkRatioBtn.classList.remove('text-mute');
+        linkRatioBtn.classList.add('text-link');
+        // Recalculate aspect ratio based on current values when re-linked
+        if (widthInput.value && heightInput.value) {
+          aspectRatio = parseInt(widthInput.value) / parseInt(heightInput.value);
+        }
+      } else {
+        linkRatioBtn.classList.remove('text-link');
+        linkRatioBtn.classList.add('text-mute');
+      }
+    });
+
+    applyBtn?.addEventListener('click', () => {
+      if (!originalImg) return;
+      const targetW = parseInt(widthInput.value);
+      const targetH = parseInt(heightInput.value);
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Draw resized
+      ctx.drawImage(originalImg, 0, 0, targetW, targetH);
+      
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const ext = originalType === 'image/png' ? 'png' : originalType === 'image/webp' ? 'webp' : 'jpg';
+        a.download = `resized-${Date.now()}.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, originalType, 0.9);
+    });
+
+    function showState(state: 'upload' | 'processing' | 'edit') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      editZone?.classList.toggle('hidden', state !== 'edit');
+    }
+
+    resetBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      originalImg = null;
+      showState('upload');
+    });
+  })();
+</script>

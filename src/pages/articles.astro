@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+const articles = await getCollection('articles');
+
+const seoTitle = "Image Formats & Optimization Guides";
+const seoDescription = "Learn everything about image formats, compression, and SEO optimization. Read our comprehensive guides to mastering digital images.";
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <div class="mx-auto max-w-[1400px] px-6 py-16 lg:px-8 lg:py-24">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">Guides & Articles</h1>
+        <p class="text-lg text-body leading-relaxed">
+          Deep-dive guides on image optimization, format comparisons, and SEO best practices to help you get the most out of your digital assets.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {articles.map((article) => (
+          <a href={`/${article.slug}`} class="group flex flex-col p-6 rounded-2xl bg-canvas border border-hairline hover:border-link transition-all hover:shadow-md h-full">
+            <h2 class="text-xl font-bold text-ink mb-3 group-hover:text-link transition-colors">{article.data.title}</h2>
+            <p class="text-sm text-body leading-relaxed flex-grow line-clamp-3">{article.data.description}</p>
+            <div class="mt-6 flex items-center text-sm font-semibold text-link">
+              Read article
+              <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

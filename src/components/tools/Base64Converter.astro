@@ -1,0 +1,111 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="base64-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select image to convert to Base64</p>
+      <p class="mt-1 text-sm text-body">Any image format supported.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/*" />
+  </div>
+
+  <!-- Processing State (hidden initially) -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <p class="text-sm font-mono text-mute uppercase tracking-widest">Generating Base64…</p>
+  </div>
+
+  <!-- Result State (hidden initially) -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="w-full max-w-2xl">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-semibold text-ink">Base64 Output:</span>
+        <span id="char-count" class="text-xs font-mono text-mute"></span>
+      </div>
+      <textarea id="base64-output" readonly class="w-full h-48 p-4 rounded-md border border-hairline bg-canvas font-mono text-xs text-body focus:border-link focus:ring-1 focus:ring-link outline-none resize-none"></textarea>
+    </div>
+    
+    <div class="flex flex-col items-center gap-2">
+      <button id="copy-btn" class="btn-primary">Copy to Clipboard</button>
+      <button id="reset-btn" class="text-xs font-medium text-body hover:text-ink transition-colors mt-2">Convert another image</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    const base64Output = document.getElementById('base64-output') as HTMLTextAreaElement;
+    const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+    const resetBtn = document.getElementById('reset-btn');
+    const charCount = document.getElementById('char-count');
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file: File) {
+      showState('processing');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        base64Output.value = result;
+        charCount!.textContent = `${result.length.toLocaleString()} characters`;
+        showState('result');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showState(state: 'upload' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+      if (state === 'result') {
+        copyBtn.textContent = 'Copy to Clipboard';
+      }
+    }
+
+    copyBtn?.addEventListener('click', () => {
+      navigator.clipboard.writeText(base64Output.value).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = 'Copy to Clipboard'; }, 2000);
+      });
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      base64Output.value = '';
+      showState('upload');
+    });
+  })();
+</script>

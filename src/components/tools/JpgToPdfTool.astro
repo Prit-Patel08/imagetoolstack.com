@@ -1,0 +1,8 @@
+---
+import { Tool } from "../../utils/seo-generator";
+import ImageToPdfTool from "./ImageToPdfTool.astro";
+
+interface Props { tool: Tool; }
+const { tool } = Astro.props;
+---
+<ImageToPdfTool tool={tool} />

@@ -1,0 +1,72 @@
+---
+---
+<before-after-slider class="relative block w-full max-w-full overflow-hidden rounded-md border border-hairline bg-canvas select-none cursor-ew-resize">
+  <!-- Original Image (Bottom) -->
+  <img id="ba-original" class="block w-full max-h-[400px] object-contain" draggable="false" />
+  
+  <!-- Optimized Image (Top) -->
+  <div id="ba-clip" class="absolute top-0 left-0 w-1/2 h-full overflow-hidden border-r-2 border-link shadow-[1px_0_4px_rgba(0,0,0,0.5)]">
+    <img id="ba-optimized" class="block w-full max-h-[400px] object-contain max-w-none" draggable="false" />
+  </div>
+
+  <!-- Drag Handle -->
+  <div id="ba-handle" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 bg-link rounded-full shadow-lg flex items-center justify-center text-white pointer-events-none">
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
+  </div>
+  
+  <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-sm uppercase tracking-widest font-bold">Optimized</div>
+  <div class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-sm uppercase tracking-widest font-bold">Original</div>
+</before-after-slider>
+
+<script>
+  class BeforeAfterSlider extends HTMLElement {
+    constructor() {
+      super();
+      let isDragging = false;
+      const clip = this.querySelector('#ba-clip') as HTMLElement;
+      const handle = this.querySelector('#ba-handle') as HTMLElement;
+      
+      const move = (e: MouseEvent | TouchEvent) => {
+        if (!isDragging) return;
+        const rect = this.getBoundingClientRect();
+        let x = 0;
+        if (window.TouchEvent && e instanceof TouchEvent) {
+          x = e.touches[0].clientX - rect.left;
+        } else if (e instanceof MouseEvent) {
+          x = e.clientX - rect.left;
+        }
+        
+        // constrain
+        x = Math.max(0, Math.min(x, rect.width));
+        const percent = (x / rect.width) * 100;
+        
+        clip.style.width = `${percent}%`;
+        handle.style.left = `${percent}%`;
+      };
+      
+      this.addEventListener('mousedown', () => isDragging = true);
+      this.addEventListener('touchstart', () => isDragging = true, { passive: true });
+      
+      window.addEventListener('mouseup', () => isDragging = false);
+      window.addEventListener('touchend', () => isDragging = false);
+      
+      window.addEventListener('mousemove', move);
+      window.addEventListener('touchmove', move, { passive: true });
+      
+      // Sync image widths on resize so the clipped image doesn't distort
+      const syncWidths = () => {
+        const orig = this.querySelector('#ba-original') as HTMLImageElement;
+        const opt = this.querySelector('#ba-optimized') as HTMLImageElement;
+        if (orig && opt) {
+          opt.style.width = `${orig.clientWidth}px`;
+        }
+      };
+      window.addEventListener('resize', syncWidths);
+      
+      // observer to resync when src changes
+      const observer = new MutationObserver(syncWidths);
+      observer.observe(this.querySelector('#ba-original')!, { attributes: true, attributeFilter: ['src'] });
+    }
+  }
+  customElements.define('before-after-slider', BeforeAfterSlider);
+</script>

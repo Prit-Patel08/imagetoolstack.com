@@ -1,0 +1,138 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+
+// SEO Metadata
+const seoTitle = "WebP vs PNG: Is WebP Really Better? (2026 Guide)";
+const seoDescription = "WebP was created by Google to replace PNG. We test both formats for file size, transparency, and alpha-channels to see if you should make the switch for your website.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between WebP and PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both WebP and PNG support transparent backgrounds (alpha channels) and lossless compression. However, WebP uses a much more advanced compression algorithm developed by Google, allowing it to achieve the exact same visual quality at roughly 26% smaller file sizes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use WebP instead of PNG for my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Google actively rewards websites that use next-gen formats like WebP with faster load times and better SEO rankings. You should convert all heavy PNG assets to WebP for web delivery."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does WebP support transparency?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, WebP fully supports transparency (alpha channels) just like PNG, but typically uses 30% fewer bytes to encode the transparent data."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "webp-vs-png")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">WebP vs PNG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">WebP</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">WebP vs PNG: Is WebP Really Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          For decades, PNG was the undisputed king of web graphics. If you needed a logo, an icon, or any image with a transparent background, you used a PNG. But then Google released WebP. Here is why the entire web is making the switch.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use WebP for:</strong> uploading images to your website, blog, or app to maximize page speed and SEO.</p>
+          <p><strong class="text-ink">Use PNG for:</strong> designing in Figma, saving assets locally, or sending files to people who might have older devices.</p>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">The Transparency Test</h2>
+        <div class="prose prose-vercel max-w-none text-body">
+          <p>
+            The biggest reason people use PNG is for the <strong>Alpha Channel</strong>—the data layer that tells the computer to render the background as transparent instead of a solid white box.
+          </p>
+          <p>
+            For a long time, JPEG couldn't do this. So if you had a complex graphic with transparency, you were forced to use a heavy, uncompressed PNG file. 
+          </p>
+          <p>
+            <strong>WebP fixes this completely.</strong> WebP supports both lossless compression (like PNG) and lossy compression (like JPEG), and it supports full alpha-channel transparency across both modes. 
+          </p>
+          
+          <h3 class="text-2xl font-bold text-ink mt-12 mb-6">File Size Savings</h3>
+          <p>
+            According to Google's own developer data:
+          </p>
+          <ul class="list-disc pl-6 space-y-4">
+            <li>Lossless WebP images are <strong>26% smaller</strong> than PNGs.</li>
+            <li>Lossy WebP images are <strong>25-34% smaller</strong> than comparable JPEG images.</li>
+          </ul>
+          <p>
+            This means you get the best of both worlds: the small file sizes of a JPEG combined with the transparent background features of a PNG. If you run a modern website, converting your PNG assets to WebP is one of the easiest ways to improve your Core Web Vitals score.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <Footer />
+</Layout>

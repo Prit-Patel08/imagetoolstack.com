@@ -1,0 +1,21 @@
+---
+interface Props {
+  tool: any;
+}
+const { tool } = Astro.props;
+
+const cases = tool.useCases || [];
+---
+{cases.length > 0 && (
+  <section class="mb-16">
+    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Common Use Cases</h2>
+    <div class="space-y-4">
+      {cases.map((uc: string) => (
+        <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas-soft border border-hairline hover:border-link transition-colors">
+          <svg class="h-5 w-5 text-link shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <p class="text-sm text-body leading-relaxed">{uc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+)}

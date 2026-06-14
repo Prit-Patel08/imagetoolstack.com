@@ -1,0 +1,46 @@
+---
+interface Props {
+  items: {
+    label: string;
+    href?: string;
+  }[];
+}
+
+const { items } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": items.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.label,
+    "item": item.href ? new URL(item.href, Astro.site).href : undefined
+  }))
+};
+---
+
+<nav aria-label="Breadcrumb" class="w-full flex items-center text-sm mb-6">
+  <ol class="flex items-center space-x-2">
+    {items.map((item, index) => (
+      <li class="flex items-center">
+        {index > 0 && (
+          <svg class="h-4 w-4 text-mute mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {item.href ? (
+          <a href={item.href} class="text-body hover:text-link transition-colors whitespace-nowrap">
+            {item.label}
+          </a>
+        ) : (
+          <span class="text-ink font-medium truncate" aria-current="page">
+            {item.label}
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

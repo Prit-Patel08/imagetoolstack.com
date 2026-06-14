@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  tool?: any;
+}
+const { tool } = Astro.props;
+
+const allArticles = await getCollection('articles');
+
+const articleSlugs = tool?.relatedArticles || [];
+const relatedArticles = allArticles.filter(a => articleSlugs.includes(a.id));
+
+if (relatedArticles.length === 0) return null;
+---
+
+<section class="mb-16">
+  <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Related Guides</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {relatedArticles.map((article) => (
+      <a href={`/${article.id}`} class="p-6 rounded-lg bg-canvas-soft border border-hairline relative overflow-hidden group hover:border-link transition-colors block">
+        <div class="absolute top-0 left-0 w-1 h-full bg-link/50 group-hover:bg-link transition-colors"></div>
+        <h3 class="font-semibold text-ink mb-3 group-hover:text-link transition-colors line-clamp-2">{article.data.title}</h3>
+        <p class="text-sm text-body leading-relaxed line-clamp-3">{article.data.description}</p>
+        <div class="mt-4 text-xs font-semibold text-link flex items-center">
+          Read guide
+          <svg class="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

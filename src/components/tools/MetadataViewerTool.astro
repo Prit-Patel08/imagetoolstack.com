@@ -1,0 +1,233 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="metadata-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select image to view metadata</p>
+      <p class="mt-1 text-sm text-body">JPG, TIFF, or HEIC supported.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/tiff,image/heic,image/png,image/webp" />
+  </div>
+
+  <!-- Processing State -->
+  <div id="processing-zone" class="hidden w-full flex flex-col items-center gap-6 py-12">
+    <div class="animate-spin h-8 w-8 border-2 border-link border-t-transparent rounded-full"></div>
+    <p class="text-sm font-mono text-mute uppercase tracking-widest">Extracting Data…</p>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col gap-8 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Preview -->
+      <div class="w-full lg:w-1/3">
+        <div class="rounded-md border border-hairline bg-canvas overflow-hidden mb-4 p-4">
+          <img id="preview-img" class="w-full h-auto object-contain max-h-[300px]" />
+        </div>
+        <button id="reset-btn" class="w-full btn-primary">Analyze Another Image</button>
+      </div>
+      
+      <!-- Metadata Tables -->
+      <div class="w-full lg:w-2/3 flex flex-col gap-6">
+        <!-- Basic Info -->
+        <div class="bg-canvas border border-hairline rounded-xl overflow-hidden shadow-sm">
+          <div class="bg-canvas-soft px-4 py-3 border-b border-hairline">
+            <h3 class="text-sm font-semibold text-ink uppercase tracking-wider">File Information</h3>
+          </div>
+          <div class="p-4 overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <tbody id="file-info-body" class="divide-y divide-hairline">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- EXIF Info -->
+        <div id="exif-container" class="bg-canvas border border-hairline rounded-xl overflow-hidden shadow-sm hidden">
+          <div class="bg-canvas-soft px-4 py-3 border-b border-hairline">
+            <h3 class="text-sm font-semibold text-ink uppercase tracking-wider">Camera Data (EXIF)</h3>
+          </div>
+          <div class="p-4 overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <tbody id="exif-info-body" class="divide-y divide-hairline">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- GPS Info -->
+        <div id="gps-container" class="bg-canvas border border-hairline rounded-xl overflow-hidden shadow-sm hidden">
+          <div class="bg-canvas-soft px-4 py-3 border-b border-hairline flex items-center gap-2">
+            <svg class="h-4 w-4 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <h3 class="text-sm font-semibold text-ink uppercase tracking-wider">Location Data</h3>
+          </div>
+          <div class="p-4 overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <tbody id="gps-info-body" class="divide-y divide-hairline">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+            <div id="map-link-container" class="mt-4 hidden">
+              <a id="map-link" target="_blank" class="text-xs font-medium text-link hover:underline">View on Google Maps →</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="no-exif-msg" class="hidden text-sm text-mute text-center py-8 border border-dashed border-hairline rounded-xl">
+          No EXIF metadata found in this image. (It may have been stripped).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import exifr from 'exifr';
+
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const processingZone = document.getElementById('processing-zone');
+    const resultZone = document.getElementById('result-zone');
+    const previewImg = document.getElementById('preview-img') as HTMLImageElement;
+    
+    const fileInfoBody = document.getElementById('file-info-body');
+    const exifContainer = document.getElementById('exif-container');
+    const exifInfoBody = document.getElementById('exif-info-body');
+    const gpsContainer = document.getElementById('gps-container');
+    const gpsInfoBody = document.getElementById('gps-info-body');
+    const mapLinkContainer = document.getElementById('map-link-container');
+    const mapLink = document.getElementById('map-link') as HTMLAnchorElement;
+    const noExifMsg = document.getElementById('no-exif-msg');
+    
+    const resetBtn = document.getElementById('reset-btn');
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer?.files;
+      if (files?.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files?.length) handleFile(fileInput.files[0]);
+    });
+
+    async function handleFile(file: File) {
+      showState('processing');
+
+      // 1. File Info (Always available)
+      const fileInfo = [
+        { key: 'File Name', val: file.name },
+        { key: 'File Size', val: (file.size / 1024).toFixed(2) + ' KB' },
+        { key: 'MIME Type', val: file.type || 'Unknown' },
+        { key: 'Last Modified', val: new Date(file.lastModified).toLocaleString() }
+      ];
+      renderTable(fileInfoBody, fileInfo);
+
+      // Setup preview
+      const url = URL.createObjectURL(file);
+      previewImg.src = url;
+
+      // 2. Parse EXIF
+      try {
+        const data = await exifr.parse(file, true); // true = get all segments
+        
+        if (!data || Object.keys(data).length === 0) {
+          exifContainer?.classList.add('hidden');
+          gpsContainer?.classList.add('hidden');
+          noExifMsg?.classList.remove('hidden');
+        } else {
+          noExifMsg?.classList.add('hidden');
+          
+          // Filter out complex objects and arrays for basic display
+          const displayExif: any[] = [];
+          const gpsData: any[] = [];
+
+          for (const [key, value] of Object.entries(data)) {
+            if (key === 'latitude' || key === 'longitude') {
+              gpsData.push({ key, val: value });
+              continue;
+            }
+            if (typeof value !== 'object') {
+              // Format specific keys for readability
+              let formattedVal = value;
+              if (key === 'ExposureTime') formattedVal = `1/${Math.round(1/(value as number))} sec`;
+              if (key === 'FNumber') formattedVal = `f/${value}`;
+              if (key === 'ISO') formattedVal = `ISO ${value}`;
+              if (key === 'FocalLength') formattedVal = `${value} mm`;
+              
+              displayExif.push({ key, val: formattedVal });
+            }
+          }
+
+          if (displayExif.length > 0) {
+            renderTable(exifInfoBody, displayExif);
+            exifContainer?.classList.remove('hidden');
+          } else {
+            exifContainer?.classList.add('hidden');
+          }
+
+          if (gpsData.length === 2 && data.latitude && data.longitude) {
+            renderTable(gpsInfoBody, gpsData);
+            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${data.latitude},${data.longitude}`;
+            mapLinkContainer?.classList.remove('hidden');
+            gpsContainer?.classList.remove('hidden');
+          } else {
+            gpsContainer?.classList.add('hidden');
+          }
+        }
+      } catch (err) {
+        console.error("Error parsing EXIF", err);
+        exifContainer?.classList.add('hidden');
+        gpsContainer?.classList.add('hidden');
+        noExifMsg?.classList.remove('hidden');
+      }
+
+      showState('result');
+    }
+
+    function renderTable(tbody: HTMLElement | null, data: {key: string, val: any}[]) {
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2 pr-4 font-medium text-mute w-1/3">${item.key}</td>
+          <td class="py-2 text-ink break-all">${item.val}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function showState(state: 'upload' | 'processing' | 'result') {
+      dropZone?.classList.toggle('hidden', state !== 'upload');
+      processingZone?.classList.toggle('hidden', state !== 'processing');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+
+    resetBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      showState('upload');
+    });
+  })();
+</script>

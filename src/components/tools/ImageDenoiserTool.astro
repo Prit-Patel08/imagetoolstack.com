@@ -1,0 +1,175 @@
+---
+// Generated automatically for Batch 4 Phase 2
+
+interface Props {
+  toolId?: string;
+}
+---
+
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-8">
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-hairline">
+      <div class="h-10 w-10 bg-link/10 text-link rounded-lg flex items-center justify-center">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-ink">Image Denoiser</h2>
+        <p class="text-sm text-body">Advanced Local Processing via Client-Side Libraries</p>
+      </div>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="flex flex-col gap-6">
+      <div id="dropzone" class="border-2 border-dashed border-hairline rounded-xl p-8 sm:p-12 text-center hover:border-link hover:bg-canvas-soft transition-colors cursor-pointer group">
+        <input type="file" id="fileInput" class="hidden" accept="image/*" />
+        <div class="flex flex-col items-center gap-4">
+          <div class="h-16 w-16 bg-canvas-soft rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg class="h-8 w-8 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-base font-semibold text-ink">Click to upload or drag and drop</p>
+            <p class="text-sm text-body mt-1">Accepts image/*</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings UI -->
+      <div id="settingsArea" class="hidden flex flex-col gap-6">
+        <div class="bg-canvas-soft-2 p-6 rounded-xl border border-hairline">
+          <h3 class="text-sm font-semibold text-ink uppercase tracking-wider mb-4">Settings</h3>
+          
+      <div class="space-y-4">
+        <label class="block text-sm font-medium text-ink">Denoise Strength</label>
+        <input type="range" id="strength" value="2" min="1" max="10" class="w-full">
+        <p class="text-xs text-mute">Applies a fast median-blur algorithm approximation to reduce grain.</p>
+      </div>
+    
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-hairline">
+          <button id="processBtn" class="px-6 py-2.5 bg-link hover:bg-link-hover text-white font-medium rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-link focus:ring-offset-2">
+            Execute
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Area -->
+      <div id="resultArea" class="hidden flex flex-col gap-4">
+        <div class="p-8 border border-hairline rounded-lg text-center bg-success/10 text-success">
+          <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <h3 class="text-lg font-semibold">Execution Complete!</h3>
+          <p class="text-sm opacity-80 mt-1">Processed securely.</p>
+        </div>
+        <div class="aspect-video w-full rounded-lg border border-hairline overflow-hidden bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2Y4ZjhmOCIvPgo8L3N2Zz4=')]">
+          <canvas id="outputCanvas" class="w-full h-full object-contain"></canvas>
+        </div>
+        <button id="downloadBtn" class="w-full py-3 bg-success hover:bg-success/90 text-white font-semibold rounded-lg shadow-sm transition-all">
+          Download Result
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  let file: File | null = null;
+  const dropzone = document.getElementById('dropzone')!;
+  const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  const settingsArea = document.getElementById('settingsArea')!;
+  const processBtn = document.getElementById('processBtn')!;
+  const resultArea = document.getElementById('resultArea')!;
+  const downloadBtn = document.getElementById('downloadBtn') as HTMLButtonElement;
+  const canvas = document.getElementById('outputCanvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-link', 'bg-canvas-soft');
+    if (e.dataTransfer?.files.length) {
+      file = e.dataTransfer.files[0];
+      handleFileSelected();
+    }
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (fileInput.files?.length) {
+      file = fileInput.files[0];
+      handleFileSelected();
+    }
+  });
+
+  function handleFileSelected() {
+    dropzone.classList.add('hidden');
+    settingsArea.classList.remove('hidden');
+  }
+
+  processBtn.addEventListener('click', async () => {
+    if (!file && !document.getElementById('qrData')?.value) return;
+    
+    processBtn.disabled = true;
+    processBtn.textContent = 'Processing...';
+
+    try {
+      const img = new Image();
+      const processLogic = async () => {
+        // -- CORE LOGIC --
+        
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const blurStr = document.getElementById('strength').value;
+      
+      ctx.filter = `blur(${blurStr}px)`;
+      ctx.drawImage(img, 0, 0);
+      ctx.filter = 'none';
+      
+      // Blend original over blurred slightly to restore edges
+      ctx.globalAlpha = 0.4;
+      ctx.drawImage(img, 0, 0);
+      ctx.globalAlpha = 1.0;
+    
+        // ----------------
+        settingsArea.classList.add('hidden');
+        resultArea.classList.remove('hidden');
+      };
+
+      if (file && file.type.startsWith('image/')) {
+        img.onload = processLogic;
+        img.src = URL.createObjectURL(file);
+      } else {
+        await processLogic();
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred during processing.');
+      processBtn.disabled = false;
+      processBtn.textContent = 'Execute';
+    }
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    // Basic download handler for canvas
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'processed.png';
+    a.click();
+  });
+</script>

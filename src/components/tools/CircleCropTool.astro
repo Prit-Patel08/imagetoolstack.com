@@ -1,0 +1,141 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="circle-tool-root" class="w-full flex flex-col items-center">
+  <!-- Upload State -->
+  <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
+    <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors overflow-hidden">
+      <div class="w-full h-full border-[3px] border-link rounded-full"></div>
+    </div>
+    <div class="text-center">
+      <p class="text-base font-semibold text-ink">Select a photo for circle crop</p>
+      <p class="mt-1 text-sm text-body">Supports JPG, PNG, and WebP.</p>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/webp" />
+  </div>
+
+  <!-- Settings State -->
+  <div id="settings-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex items-center justify-center overflow-hidden min-h-[300px] relative">
+      <canvas id="preview-canvas" class="max-w-[300px] max-h-[300px] object-contain shadow-sm bg-[url('/checker.svg')] rounded-full"></canvas>
+    </div>
+
+    <div class="w-full max-w-2xl bg-canvas border border-hairline rounded-xl p-6 shadow-sm text-center">
+      <h3 class="text-lg font-semibold text-ink mb-4">Circle Crop Ready</h3>
+      <p class="text-sm text-body mb-6">We automatically centered and cropped your image into a perfect circle.</p>
+      
+      <div class="mt-8 flex gap-4">
+        <button id="download-btn" class="flex-1 btn-primary">Download Transparent PNG</button>
+        <button id="cancel-btn" class="px-6 py-2 border border-hairline rounded text-sm font-medium text-body hover:text-ink hover:bg-canvas-soft transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const settingsZone = document.getElementById('settings-zone');
+    
+    const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const cancelBtn = document.getElementById('cancel-btn');
+
+    let originalFile: File | null = null;
+    let originalImage: HTMLImageElement | null = null;
+
+    if (!dropZone || !fileInput) return;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert("Please select a valid image file.");
+        return;
+      }
+      originalFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage = new Image();
+        originalImage.onload = () => {
+          renderCanvas();
+          dropZone.classList.add('hidden');
+          settingsZone.classList.remove('hidden');
+        };
+        originalImage.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderCanvas() {
+      if (!originalImage || !previewCanvas) return;
+      
+      // Determine the size of the square (shortest side of the image)
+      const size = Math.min(originalImage.width, originalImage.height);
+      
+      previewCanvas.width = size;
+      previewCanvas.height = size;
+      const ctx = previewCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      // Clear with transparent
+      ctx.clearRect(0, 0, size, size);
+      
+      // Create circular clipping path
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      
+      // Draw image centered in the square
+      const x = (size - originalImage.width) / 2;
+      const y = (size - originalImage.height) / 2;
+      ctx.drawImage(originalImage, x, y);
+    }
+
+    downloadBtn?.addEventListener('click', () => {
+      if (!previewCanvas || !originalFile) return;
+      // Must be PNG to preserve transparency
+      const dataUrl = previewCanvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      const baseName = originalFile.name.substring(0, originalFile.name.lastIndexOf('.')) || originalFile.name;
+      a.download = `${baseName}-circle.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+      fileInput.value = '';
+      originalFile = null;
+      originalImage = null;
+      settingsZone.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+    });
+  })();
+</script>

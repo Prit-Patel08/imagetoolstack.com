@@ -1,0 +1,102 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="b64-img-tool-root" class="w-full flex flex-col items-center">
+  <!-- Input State -->
+  <div id="input-zone" class="w-full max-w-2xl flex flex-col items-center gap-4">
+    <div class="w-full">
+      <label class="block text-sm font-medium text-ink mb-2">Paste Base64 String</label>
+      <textarea id="b64-input" class="w-full h-48 p-4 rounded-md border border-hairline bg-canvas font-mono text-xs text-body focus:border-link focus:ring-1 focus:ring-link outline-none resize-none" placeholder="data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...&#10;&#10;Or just paste the raw Base64 string without the prefix!"></textarea>
+    </div>
+    <button id="decode-btn" class="w-full btn-primary">Decode Image</button>
+  </div>
+
+  <!-- Result State -->
+  <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
+    <div class="w-full max-w-2xl bg-canvas-soft border border-hairline rounded-xl p-4 flex items-center justify-center overflow-hidden min-h-[300px]">
+      <img id="image-preview" class="max-w-full max-h-[500px] object-contain shadow-sm" src="" alt="Decoded Preview" />
+    </div>
+    
+    <div class="flex flex-col items-center gap-4 w-full max-w-xs">
+      <a id="download-btn" class="w-full btn-primary text-center cursor-pointer">Download Image</a>
+      <button id="reset-btn" class="text-sm font-medium text-link hover:underline">Decode another string</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const inputZone = document.getElementById('input-zone');
+    const resultZone = document.getElementById('result-zone');
+    
+    const b64Input = document.getElementById('b64-input') as HTMLTextAreaElement;
+    const decodeBtn = document.getElementById('decode-btn');
+    
+    const imagePreview = document.getElementById('image-preview') as HTMLImageElement;
+    const downloadBtn = document.getElementById('download-btn') as HTMLAnchorElement;
+    const resetBtn = document.getElementById('reset-btn');
+
+    decodeBtn?.addEventListener('click', () => {
+      const rawText = b64Input.value.trim();
+      if (!rawText) {
+        alert("Please paste a Base64 string.");
+        return;
+      }
+      
+      let finalSrc = rawText;
+      let mimeType = 'image/png'; // default fallback
+      let ext = 'png';
+      
+      // Check if it already has the data uri prefix
+      if (rawText.startsWith('data:image/')) {
+        const match = rawText.match(/^data:(image\/[a-zA-Z+]+);base64,/);
+        if (match) {
+          mimeType = match[1];
+          ext = mimeType.split('/')[1];
+          if (ext === 'jpeg') ext = 'jpg';
+          if (ext.includes('+')) ext = ext.split('+')[0]; // svg+xml -> svg
+        }
+      } else {
+        // Try to detect signature from raw base64 or just assume PNG
+        // For a robust tool, we just prepend the data prefix if missing
+        if (rawText.startsWith('/9j/')) { mimeType = 'image/jpeg'; ext = 'jpg'; }
+        else if (rawText.startsWith('iVBORw0KGgo')) { mimeType = 'image/png'; ext = 'png'; }
+        else if (rawText.startsWith('UklGR')) { mimeType = 'image/webp'; ext = 'webp'; }
+        else if (rawText.startsWith('R0lGOD')) { mimeType = 'image/gif'; ext = 'gif'; }
+        else if (rawText.startsWith('PHN2Zy')) { mimeType = 'image/svg+xml'; ext = 'svg'; }
+        
+        finalSrc = `data:${mimeType};base64,${rawText}`;
+      }
+      
+      imagePreview.src = finalSrc;
+      
+      // Wait for image to load to verify it's valid
+      imagePreview.onload = () => {
+        downloadBtn.href = finalSrc;
+        downloadBtn.download = `decoded-image.${ext}`;
+        showState('result');
+      };
+      
+      imagePreview.onerror = () => {
+        alert("Invalid Base64 string. The image could not be decoded.");
+        imagePreview.src = '';
+      };
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      b64Input.value = '';
+      imagePreview.src = '';
+      showState('input');
+    });
+
+    function showState(state: 'input' | 'result') {
+      inputZone?.classList.toggle('hidden', state !== 'input');
+      resultZone?.classList.toggle('hidden', state !== 'result');
+    }
+  })();
+</script>

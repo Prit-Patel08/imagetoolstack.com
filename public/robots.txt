@@ -1,0 +1,19 @@
+# Image Tool Stack - Robots.txt
+# Optimized for Google, Bing, and major search engines
+
+User-agent: *
+Allow: /
+Allow: /tools/
+Allow: /category/
+Allow: /blog/
+Disallow: /cdn-cgi/
+Disallow: /undefined
+
+# Specific blocks for scrapers and low-value bots
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://imagetoolstack.com/sitemap-index.xml
