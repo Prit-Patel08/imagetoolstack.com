@@ -105,37 +105,159 @@ const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
         </div>
       </section>
 
+      <!-- Real World Feature Comparisons -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-8">The Difference Between Print and Web</h2>
-        <div class="prose prose-vercel max-w-none text-body">
-          <p>
-            The choice between these two formats simply comes down to where the image will be displayed.
-          </p>
-          
-          <h3 class="text-2xl font-bold text-ink mt-8 mb-4">EPS (Encapsulated PostScript)</h3>
-          <p>
-            EPS was created by Adobe in the 1980s. It was specifically designed to tell high-end printers exactly how to draw the graphic on a piece of paper. Because it is the industry standard for print, almost every graphic design software (like Adobe Illustrator) can export to EPS, and every printing press in the world can read it.
-          </p>
-          <p>
-            However, <strong>web browsers cannot read EPS files</strong>. If you try to upload an EPS logo to your WordPress or Shopify site, it will fail.
-          </p>
+        <h2 class="text-3xl font-bold text-ink mb-8">EPS vs SVG: Vector Features Compared</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          Since both formats store image information as math coordinates rather than static pixels, they scale infinitely. However, their execution environments couldn't be more different. Here is how they stack up across key capabilities:
+        </p>
 
-          <h3 class="text-2xl font-bold text-ink mt-8 mb-4">SVG (Scalable Vector Graphics)</h3>
-          <p>
-            SVG was created specifically for the internet. It is actually written in XML code, which means it is natively understood by Chrome, Safari, and Firefox. 
-          </p>
-          <p>
-            Because it is essentially just code, SVG is incredibly powerful for web design:
-          </p>
-          <ul class="list-disc pl-6 space-y-4">
-            <li><strong>Tiny File Sizes:</strong> Since it's just text coordinates rather than image data, SVGs are incredibly lightweight and load instantly.</li>
-            <li><strong>Styling:</strong> You can use CSS to change the color of an SVG on hover.</li>
-            <li><strong>Animation:</strong> You can use JavaScript or CSS animations to make parts of the SVG move.</li>
-          </ul>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8 bg-canvas">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline font-bold text-ink">
+                <th class="p-4">Feature</th>
+                <th class="p-4 w-1/3">EPS (Encapsulated PostScript)</th>
+                <th class="p-4 w-1/3">SVG (Scalable Vector Graphics)</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm text-body divide-y divide-hairline">
+              <tr>
+                <td class="p-4 font-bold text-ink">Primary Target</td>
+                <td class="p-4">High-end Print Media & Signage</td>
+                <td class="p-4">Modern Web Pages & Mobile Apps</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Browser Support</td>
+                <td class="p-4 text-error">None (Unsupported in web browsers)</td>
+                <td class="p-4 text-success">Universal (Chrome, Safari, Firefox, Edge)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Code-Based Styling</td>
+                <td class="p-4 text-error">No</td>
+                <td class="p-4 text-success">Yes (Can be styled with CSS and manipulated via JS)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Animation</td>
+                <td class="p-4 text-error">No</td>
+                <td class="p-4 text-success">Yes (CSS animations, SMIL, green-sock scripts)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">File Format Structure</td>
+                <td class="p-4">PostScript language (binary or text)</td>
+                <td class="p-4">XML markup (plain text, easily compressed)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Print Optimization</td>
+                <td class="p-4 text-success">Excellent (Supports CMYK colors natively)</td>
+                <td class="p-4">Good (RGB native, needs conversion for print)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
+
+      <!-- Deep Dive: EPS -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is an EPS File?</h2>
+        <p>
+          EPS stands for Encapsulated PostScript. Developed by Adobe in 1987, it was designed to establish a standard vector format for desktop publishing and professional printing processes.
+        </p>
+        <p>
+          An EPS file is essentially a self-contained PostScript document that describes an image or layout. It contains detailed mathematical instructions for drawing lines, curves, text, and colors. Crucially, it also contains a low-resolution pixel "preview" thumbnail so that design software can render the file on-screen without having to fully decode the PostScript code.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">EPS Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Print Compatibility:</strong> The absolute industry standard for professional offset printing and signage.</li>
+          <li><strong>Perfect CMYK Color Profiles:</strong> Fully supports physical print ink separation matrices (CMYK).</li>
+          <li><strong>Lossless Vector Geometry:</strong> Scales to billboard sizes without any pixelation or dynamic rendering gaps.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">EPS Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Zero Web Presence:</strong> Modern browsers do not support EPS. You cannot render them on a web page.</li>
+          <li><strong>Heavier Files:</strong> Often includes embedded raster previews and PostScript headers, making files bulkier than SVGs.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is an SVG File?</h2>
+        <p>
+          SVG stands for Scalable Vector Graphics. It is an open XML-based specification developed by the W3C (World Wide Web Consortium) starting in 1999 to support vector layouts natively on the internet.
+        </p>
+        <p>
+          Because SVG is written in XML (Extensible Markup Language), it is readable plain text. An SVG graphic is composed of DOM nodes like <code>&lt;rect&gt;</code>, <code>&lt;circle&gt;</code>, and <code>&lt;path&gt;</code>. Web browsers can read these elements and render them instantly just like they render HTML tags.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">SVG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Native Browser Parsing:</strong> Rendered directly by modern web browsers at high speeds.</li>
+          <li><strong>CSS & JS Manipulability:</strong> You can apply hover transitions, click handlers, and dynamically change colors on the fly.</li>
+          <li><strong>Ultra-Lightweight:</strong> Text-based vectors can be compressed using standard Gzip/Brotli, reducing file size to bytes.</li>
+          <li><strong>SEO-Friendly:</strong> Text strings inside SVGs are crawlable and indexable by search engine bots.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">SVG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Limited Print Setup:</strong> Most commercial printing software expects CMYK color spaces, which require extra configuration for RGB-centered SVGs.</li>
+          <li><strong>Browser Security Filters:</strong> Browsers apply strict security guidelines when rendering SVGs to prevent cross-site scripting (XSS) via embedded XML scripts.</li>
+        </ul>
+      </section>
+
+      <!-- HTML FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between EPS and SVG?</h3>
+            <p class="text-body leading-relaxed">EPS (Encapsulated PostScript) is an older vector format designed for high-quality professional printing. SVG (Scalable Vector Graphics) is a modern XML-based vector format designed specifically for the web. SVG can be animated and styled with CSS, whereas EPS cannot.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can I use EPS on my website?</h3>
+            <p class="text-body leading-relaxed">No. Web browsers do not support the EPS format. If you try to upload an EPS file to a website, it will either fail to upload or fail to display. You must convert it to an SVG or PNG first.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format is better for logos?</h3>
+            <p class="text-body leading-relaxed">It depends on the medium. If you are sending your logo to a manufacturer to be printed on a billboard or t-shirt, they will usually ask for an EPS file. If you are putting the logo in the header of your website, you should use an SVG.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert an SVG file for raster delivery?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly render vector SVGs into high-quality PNG images securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
 
     </div>
   </main>
   <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>

@@ -15,6 +15,7 @@ export interface Tool {
   useCases?: { title: string; text: string }[];
   howItWorks?: string[];
   faq?: { q: string; a: string }[];
+  faqs?: { q: string; a: string }[];
 }
 
 export function generateSeoTitle(tool: Tool): string {
@@ -39,7 +40,7 @@ export function generateHowItWorks(tool: Tool): string[] {
 }
 
 export function generateFaqs(tool: Tool): { q: string; a: string }[] {
-  return tool.faqs || [];
+  return tool.faqs || tool.faq || [];
 }
 
 export function generateComparisons(tool: Tool): { title: string; text: string; slug?: string }[] {

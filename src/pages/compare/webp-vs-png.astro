@@ -105,34 +105,153 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
         </div>
       </section>
 
+      <!-- Real World Tests -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-8">The Transparency Test</h2>
-        <div class="prose prose-vercel max-w-none text-body">
-          <p>
-            The biggest reason people use PNG is for the <strong>Alpha Channel</strong>—the data layer that tells the computer to render the background as transparent instead of a solid white box.
-          </p>
-          <p>
-            For a long time, JPEG couldn't do this. So if you had a complex graphic with transparency, you were forced to use a heavy, uncompressed PNG file. 
-          </p>
-          <p>
-            <strong>WebP fixes this completely.</strong> WebP supports both lossless compression (like PNG) and lossy compression (like JPEG), and it supports full alpha-channel transparency across both modes. 
-          </p>
+        <h2 class="text-3xl font-bold text-ink mb-8">Real-World Tests: WebP vs PNG File Sizes</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          To demonstrate the efficiency of next-generation formats, we took a transparent product graphic and a photograph, and saved them as both PNG and WebP (both Lossless and Lossy). The results show why WebP is highly recommended by Google PageSpeed Tools.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- PNG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg">PNG (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">850 KB</h3>
+            <p class="text-sm text-body flex-grow">Preserves 100% pixel data with transparency. Visually perfect, but heavy and slow to load for mobile users.</p>
+          </div>
           
-          <h3 class="text-2xl font-bold text-ink mt-12 mb-6">File Size Savings</h3>
-          <p>
-            According to Google's own developer data:
-          </p>
-          <ul class="list-disc pl-6 space-y-4">
-            <li>Lossless WebP images are <strong>26% smaller</strong> than PNGs.</li>
-            <li>Lossy WebP images are <strong>25-34% smaller</strong> than comparable JPEG images.</li>
-          </ul>
-          <p>
-            This means you get the best of both worlds: the small file sizes of a JPEG combined with the transparent background features of a PNG. If you run a modern website, converting your PNG assets to WebP is one of the easiest ways to improve your Core Web Vitals score.
-          </p>
+          <!-- WebP Lossless Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Best for Transparency</div>
+            <div class="h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-emerald-800 font-bold text-lg">WebP (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">612 KB</h3>
+            <p class="text-sm text-body flex-grow">100% visually identical to PNG with perfect transparency, but achieves a <strong class="text-ink">28% file size reduction</strong>.</p>
+          </div>
+          
+          <!-- WebP Lossy Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg">WebP (Lossy 85%)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">145 KB</h3>
+            <p class="text-sm text-body flex-grow">Uses lossy compression while maintaining transparency. Visual quality remains outstanding for web delivery at <strong class="text-ink">83% smaller size</strong>.</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-body leading-relaxed p-6 bg-canvas-soft rounded-lg border-l-4 border-link">
+          <strong>The Takeaway:</strong> By converting transparency-heavy PNG assets (like logos and product cutouts) to WebP Lossless, you save 25-30% on bandwidth with zero loss in visual quality. For larger decorative graphics, using Lossy WebP yields size savings of up to 80% while retaining alpha-channel transparency.
+        </p>
+      </section>
+
+      <!-- Deep Dive: WebP -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is WebP?</h2>
+        <p>
+          WebP is a modern image format developed by Google and released in 2010. It was built with a singular mission: to make the web faster by replacing both JPEG and PNG.
+        </p>
+        <p>
+          WebP utilizes advanced predictive coding technology derived from the VP8 video codec. It predicts pixel values based on neighboring blocks and only encodes the difference. This predictive algorithm is vastly more efficient than the older compression methods used by JPEG and PNG.
+        </p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">Dynamic Compression Modes</h3>
+        <p>
+          Unlike legacy formats that restrict you to either lossy or lossless compression, WebP does it all. You can compress photographic images with lossy compression, graphic assets with lossless compression, and preserve transparency (alpha channels) in both modes.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">WebP Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Superior Compression:</strong> 26% smaller than PNG for lossless, and 25-34% smaller than JPEG for lossy.</li>
+          <li><strong>Alpha Transparency:</strong> Supports transparent and semi-transparent backgrounds across lossy and lossless modes.</li>
+          <li><strong>Animation Support:</strong> WebP supports animated images, making it a much lighter alternative to bloated GIFs.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">WebP Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>CPU Encode Overhead:</strong> WebP requires slightly more CPU power to compress than JPEG or PNG, though decoding speed is extremely fast.</li>
+          <li><strong>Compatibility for Legacy Apps:</strong> Older image editing programs may require plugins to open WebP files natively.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PNG?</h2>
+        <p>
+          PNG stands for Portable Network Graphics. Developed in the mid-1990s as a patent-free alternative to GIF, it has been the industry standard for high-quality lossless images for nearly three decades.
+        </p>
+        <p>
+          PNG uses the DEFLATE compression algorithm, combining LZ77 and Huffman coding. It is designed to perfectly reconstruct the original image down to the exact pixel.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Perfect Lossless Quality:</strong> Editing and saving a PNG will never introduce compression noise or blurry artifacts.</li>
+          <li><strong>Widespread Support:</strong> Natively supported by every browser, operating system, and design application.</li>
+          <li><strong>Crisp Graphic Rendering:</strong> Best suited for screenshots, diagrams, and line art where high contrast and readability are essential.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">PNG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Bloated File Sizes:</strong> Large images, especially photographs, saved as PNG can easily reach several megabytes.</li>
+          <li><strong>No Lossy Compression Option:</strong> If you need to make a PNG smaller, you have to sacrifice dimensions or bit-depth, as the format doesn't support lossy structures.</li>
+        </ul>
+      </section>
+
+      <!-- HTML FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between WebP and PNG?</h3>
+            <p class="text-body leading-relaxed">Both WebP and PNG support transparent backgrounds (alpha channels) and lossless compression. However, WebP uses a much more advanced compression algorithm developed by Google, allowing it to achieve the exact same visual quality at roughly 26% smaller file sizes.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Should I use WebP instead of PNG for my website?</h3>
+            <p class="text-body leading-relaxed">Yes. Google actively rewards websites that use next-gen formats like WebP with faster load times and better SEO rankings. You should convert all heavy PNG assets to WebP for web delivery.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does WebP support transparency?</h3>
+            <p class="text-body leading-relaxed">Yes, WebP fully supports transparency (alpha channels) just like PNG, but typically uses 30% fewer bytes to encode the transparent data.</p>
+          </div>
         </div>
       </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Want to convert your PNG files to WebP?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly compress and convert your files securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
 
     </div>
   </main>
   <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>

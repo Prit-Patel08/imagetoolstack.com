@@ -4,7 +4,7 @@ interface Props {
 }
 const { tool } = Astro.props;
 
-const faqs = tool.faqs || [];
+const faqs = tool.faqs || tool.faq || [];
 ---
 {faqs.length > 0 && (
   <section class="mb-16">

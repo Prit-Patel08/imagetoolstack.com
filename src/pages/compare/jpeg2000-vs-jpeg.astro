@@ -105,29 +105,158 @@ const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
         </div>
       </section>
 
+      <!-- Real World Feature Comparisons -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-8">The Technical Difference</h2>
-        <div class="prose prose-vercel max-w-none text-body">
-          <p>
-            The original <strong>JPEG</strong> (Joint Photographic Experts Group) was released in 1992. It uses a compression technique called DCT (Discrete Cosine Transform). It works by splitting the image into 8x8 pixel blocks and compressing them individually. This is why highly compressed JPEGs look "blocky."
-          </p>
-          <p>
-            <strong>JPEG2000</strong> (.jp2) was released in 2000. Instead of block-based compression, it uses advanced <em>wavelet technology</em>. This allows the format to compress images as a whole rather than in tiny chunks, resulting in much smoother gradients and no blocky artifacts, even at very low file sizes.
-          </p>
-          
-          <h3 class="text-2xl font-bold text-ink mt-12 mb-6">If JPEG2000 is Better, Why Did It Fail?</h3>
-          <p>
-            Despite being technically superior, JPEG2000 never achieved mainstream adoption for three main reasons:
-          </p>
-          <ul class="list-disc pl-6 space-y-4">
-            <li><strong>Processing Power:</strong> In the year 2000, decoding a JPEG2000 image required significantly more CPU power than a standard JPEG. Most consumer computers and early digital cameras couldn't handle it fast enough.</li>
-            <li><strong>Licensing Issues:</strong> Early on, there were fears regarding patent traps and licensing fees associated with the wavelet technology, making hardware manufacturers hesitant to adopt it.</li>
-            <li><strong>Lack of Browser Support:</strong> Today, JPEG2000 is still completely unsupported by Google Chrome, Mozilla Firefox, and Microsoft Edge. It primarily only works on Apple's Safari browser.</li>
-          </ul>
+        <h2 class="text-3xl font-bold text-ink mb-8">JPEG vs JPEG 2000: Feature Comparisons</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          While JPEG has been the foundation of web photography since the 90s, JPEG 2000 was engineered to address its compression flaws. Here is how the two formats stack up:
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8 bg-canvas">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline font-bold text-ink">
+                <th class="p-4">Capability</th>
+                <th class="p-4 w-1/3">Standard JPEG (.jpg)</th>
+                <th class="p-4 w-1/3">JPEG 2000 (.jp2)</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm text-body divide-y divide-hairline">
+              <tr>
+                <td class="p-4 font-bold text-ink">Compression Math</td>
+                <td class="p-4">Discrete Cosine Transform (DCT) - Block-based (8x8 pixels)</td>
+                <td class="p-4">Wavelet Transform - Continuous frame-wide compression</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Web Browser Support</td>
+                <td class="p-4 text-success">Universal (100% of all browsers on Earth)</td>
+                <td class="p-4 text-error">Extremely Poor (Natively supported only on Safari)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Transparency (Alpha Channel)</td>
+                <td class="p-4 text-error">No (Unsupported)</td>
+                <td class="p-4 text-success">Yes (Supports transparent overlays)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Color Bit-Depth</td>
+                <td class="p-4">8-bit color depth (16.7 million colors)</td>
+                <td class="p-4 text-success">Up to 16-bit color depth (Millions of additional shades)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Visual Artifacts</td>
+                <td class="p-4">Blocky squares at high compression ratios</td>
+                <td class="p-4 text-success">Blurry softening rather than blocky pixelation</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Compute Overhead</td>
+                <td class="p-4 text-success">Very low (Instant render on oldest hardware)</td>
+                <td class="p-4">High (Historically slow decoding speeds)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
+
+      <!-- Deep Dive: JPEG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a Standard JPEG?</h2>
+        <p>
+          JPEG stands for Joint Photographic Experts Group, the committee that standardized the format in 1992. It is by far the most widely adopted format for lossy digital photography across the internet.
+        </p>
+        <p>
+          JPEG compression works by translating RGB pixel blocks into a frequency domain using Discrete Cosine Transform (DCT). It discards high-frequency details that the human eye struggles to perceive, resulting in incredibly small files.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPEG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Compatibility:</strong> Every image viewer, phone, computer, browser, and camera reads JPEG.</li>
+          <li><strong>Fast Decoding:</strong> Decodes almost instantly even on underpowered smart-watches or older systems.</li>
+          <li><strong>Optimized File Sizes:</strong> Drastically lighter than raw or lossless bitmaps.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">JPEG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Blocky compression noise:</strong> Low quality settings yield ugly 8x8 block artifacts.</li>
+          <li><strong>No Transparency Support:</strong> Background pixels are flattened to solid colors.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPEG 2000 -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is JPEG 2000?</h2>
+        <p>
+          Released by the Joint Photographic Experts Group in the year 2000, JPEG 2000 was designed as a modern successor to standard JPEG.
+        </p>
+        <p>
+          JPEG 2000 uses discrete wavelet transform (DWT) technology instead of block-based DCT. DWT compresses the image mathematically as a whole, eliminating blocky artifacts. Furthermore, it supports progressive transmission, allowing browsers to render a low-resolution pass of the image and gradually sharpen it as more bytes stream in.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPEG 2000 Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Wavelet Compression:</strong> Outstanding image quality at low bitrates with zero blocky artifacts.</li>
+          <li><strong>Alpha Channel Support:</strong> Enables transparent backgrounds.</li>
+          <li><strong>High Dynamic Range:</strong> Natively supports 16-bit color depth for high-end photography.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">JPEG 2000 Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Failed Web Adoption:</strong> Completely ignored by Google Chrome, Firefox, and Microsoft Edge, leaving Safari as the only browser rendering it.</li>
+          <li><strong>Complex Compute Math:</strong> Requires significantly more CPU overhead to compress and decode than standard JPEGs.</li>
+        </ul>
+      </section>
+
+      <!-- HTML FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between JPEG and JPEG 2000?</h3>
+            <p class="text-body leading-relaxed">Standard JPEG uses Discrete Cosine Transform (DCT) which compresses images in 8x8 blocks, resulting in blocky artifacts at low quality. JPEG 2000 uses Wavelet compression, which analyzes the entire image, delivering smoother gradients, higher bit-depths, and support for transparency.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why is JPEG 2000 not widely supported?</h3>
+            <p class="text-body leading-relaxed">When JPEG 2000 launched in 2000, it required significant CPU power to decode, and hardware manufacturers feared potential patent licensing traps. Today, it remains unsupported by Chrome, Edge, and Firefox, and next-gen formats like WebP and AVIF have made it obsolete for general web use.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format should I use for my website?</h3>
+            <p class="text-body leading-relaxed">You should use standard JPEG or next-gen formats like WebP/AVIF. Do not use JPEG 2000, as it will fail to load for anyone not browsing on Safari.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to optimize standard JPEG images?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly compress JPEG files securely without uploading to any server.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
 
     </div>
   </main>
   <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>

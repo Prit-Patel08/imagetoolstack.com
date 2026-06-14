@@ -105,22 +105,158 @@ const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
         </div>
       </section>
 
+      <!-- Real World Feature Comparisons -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-8">Lossless vs. Lossy Compression</h2>
-        <div class="prose prose-vercel max-w-none text-body">
-          <p>
-            The fundamental difference between these two formats comes down to compression.
-          </p>
-          <p>
-            <strong>TIFF (Tagged Image File Format)</strong> is a <em>lossless</em> format. When you save a TIFF file, your computer preserves exactly 100% of the pixel data that was present in the image. You can open, edit, and resave a TIFF file 100 times, and the quality will remain identical to the original. Because it doesn't compress data, TIFF files are massive (often 50MB to over 100MB per photo).
-          </p>
-          <p>
-            <strong>JPEG</strong> is a <em>lossy</em> format. When you save a JPEG, the algorithm actively looks for data it can throw away to save space (for example, blending two very similar shades of blue in the sky into one single shade). If you open a JPEG, edit it, and save it again, it will re-compress the image, losing more data every single time. However, this compression results in drastically smaller file sizes (usually 2MB to 5MB).
-          </p>
+        <h2 class="text-3xl font-bold text-ink mb-8">TIFF vs JPEG: Feature Comparisons</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          One is built to capture raw camera details for archiving, while the other is built for fast browser rendering. Here is how TIFF and JPEG compare across key areas:
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8 bg-canvas">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline font-bold text-ink">
+                <th class="p-4">Capability</th>
+                <th class="p-4 w-1/3">TIFF (.tiff / .tif)</th>
+                <th class="p-4 w-1/3">Standard JPEG (.jpg)</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm text-body divide-y divide-hairline">
+              <tr>
+                <td class="p-4 font-bold text-ink">Compression Type</td>
+                <td class="p-4 text-success">Lossless (LZW, ZIP, or Uncompressed)</td>
+                <td class="p-4">Lossy (DCT compression)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Browser Display Support</td>
+                <td class="p-4 text-error">None (Cannot be viewed on web pages)</td>
+                <td class="p-4 text-success">Universal (Natively supported everywhere)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">File Sizes</td>
+                <td class="p-4 text-error">Massive (Usually 20MB to 100MB+)</td>
+                <td class="p-4 text-success">Very Small (Typically 1MB to 5MB)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Layer & Page Support</td>
+                <td class="p-4 text-success">Yes (Can store multiple pages and edit layers)</td>
+                <td class="p-4 text-error">No (Single flat image frame only)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Bit Depth Compatibility</td>
+                <td class="p-4 text-success">Up to 32-bit (Excellent HDR & dynamic details)</td>
+                <td class="p-4">8-bit limit (16.7 million colors)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-bold text-ink">Best Use Case</td>
+                <td class="p-4">Professional Printing & Photo Archiving</td>
+                <td class="p-4">Web Publishing, Emailing & Social Media</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a TIFF?</h2>
+        <p>
+          TIFF stands for Tagged Image File Format. Originally developed by Aldus Corporation (now Adobe) in 1986, it was designed to establish a unified format for desktop scanners and graphic design applications.
+        </p>
+        <p>
+          TIFF is a highly flexible, container-based layout. It can store images using lossless compression algorithms like LZW or ZIP, or remain completely uncompressed. This means that every time you save a TIFF, 100% of the raw color channel information is written to disk, preserving perfect graphic fidelity across multiple edit cycles.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">TIFF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Zero Loss in Quality:</strong> Lossless rendering guarantees no compression noise or fuzzy borders.</li>
+          <li><strong>Layer & Multi-Page Support:</strong> Can store multiple pages or Photoshop layers inside a single file container.</li>
+          <li><strong>Excellent Print Quality:</strong> Perfect translation of color matrices for high-end printing systems.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">TIFF Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Bloated File Storage:</strong> Files are extremely heavy, consuming significant disk space.</li>
+          <li><strong>No Web Rendering:</strong> Web browsers cannot display TIFF files. They must be converted for the web.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPEG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a Standard JPEG?</h2>
+        <p>
+          JPEG (Joint Photographic Experts Group) is the most popular raster format on the web today. Launched in 1992, it was designed to compress photographic images into lightweight files that could easily be transmitted over the internet.
+        </p>
+        <p>
+          Unlike TIFF, JPEG uses lossy compression math. It identifies blocks of color and detail that the human eye is less sensitive to and discards them, resulting in massive file size savings.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPEG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Playback:</strong> Supported by every computer, phone, tablet, and smart TV.</li>
+          <li><strong>Compact footprint:</strong> Incredibly lightweight, allowing pages to load quickly.</li>
+          <li><strong>Rich EXIF data:</strong> Standard for embedding camera parameters and metadata.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">JPEG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Generation Loss:</strong> Repeatedly saving a JPEG causes more details to be lost forever.</li>
+          <li><strong>No Transparency or Layers:</strong> Images are always flat single-frame files.</li>
+        </ul>
+      </section>
+
+      <!-- HTML FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format is better for printing, TIFF or JPEG?</h3>
+            <p class="text-body leading-relaxed">TIFF is the preferred format for professional printing. It uses lossless compression to preserve every detail and color shade perfectly. However, if you are printing standard household photos, a high-quality JPEG is usually sufficient and much faster to upload.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can web browsers display TIFF files?</h3>
+            <p class="text-body leading-relaxed">No. Chrome, Safari, Firefox, and Edge do not support TIFF files natively. If you try to place a TIFF image on a website, it will fail to render. You must convert it to a web-compatible format like JPEG, PNG, or WebP first.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Is TIFF better quality than JPEG?</h3>
+            <p class="text-body leading-relaxed">Yes, TIFF is technically superior in quality because it is a lossless format that does not discard any image data. Standard JPEGs use lossy compression which deletes information to reduce file size, causing slight compression artifacts.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert TIFF images for the web?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly render TIFF files into standard web-ready JPEGs securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
 
     </div>
   </main>
   <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>
