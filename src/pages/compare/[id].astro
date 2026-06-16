@@ -45,16 +45,128 @@ if (relatedComparisons.length < 4) {
 const visibleRelatedComparisons = relatedComparisons
   .slice(0, 4);
 
-// Build schema
-const articleSchema = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": comp.seoTitle,
-  "description": comp.seoDescription,
-  "author": {
-    "@type": "Organization",
-    "name": "Image Tool Stack"
+// Helper function to return format specifications for the capability comparison grid
+const getFormatCapabilities = (format: string) => {
+  const f = format.toUpperCase();
+  const caps = {
+    compression: "Lossy",
+    transparency: "No",
+    animation: "No",
+    vector: "No",
+    browserSupport: "Native (Universal)",
+    idealFor: "Digital Photographs"
+  };
+  
+  if (f === "PNG") {
+    caps.compression = "Lossless (DEFLATE)";
+    caps.transparency = "Yes (Alpha Channel)";
+    caps.idealFor = "Web Graphics, Transparent Logos, Screenshots";
+  } else if (f === "SVG") {
+    caps.compression = "None (Vector Coordinates)";
+    caps.transparency = "Yes (Vector Paths)";
+    caps.vector = "Yes (XML-based)";
+    caps.idealFor = "Icons, Vector Logos, Responsive Illustrations";
+  } else if (f === "WEBP") {
+    caps.compression = "Lossy & Lossless (VP8/VP8L)";
+    caps.transparency = "Yes (Alpha Channel)";
+    caps.animation = "Yes (WebP Animation)";
+    caps.idealFor = "Modern Web Design, Page Speed Optimization";
+  } else if (f === "AVIF") {
+    caps.compression = "Lossy & Lossless (AV1-based)";
+    caps.transparency = "Yes (Alpha Channel)";
+    caps.animation = "Yes (AVIFS)";
+    caps.idealFor = "Next-generation High Efficiency Web Images";
+  } else if (f === "PDF") {
+    caps.compression = "Various (PostScript/Flate/LZW)";
+    caps.transparency = "Yes";
+    caps.vector = "Yes (Hybrid)";
+    caps.idealFor = "Print layouts, Document Sharing, Forms";
+  } else if (f === "TIFF") {
+    caps.compression = "Lossless (LZW/ZIP/Uncompressed)";
+    caps.transparency = "Yes";
+    caps.browserSupport = "Unsupported (Requires Conversion)";
+    caps.idealFor = "High-Quality Master Files, Printing, Archiving";
+  } else if (f === "HEIC") {
+    caps.compression = "Lossy (HEVC/H.265)";
+    caps.transparency = "Yes";
+    caps.browserSupport = "Unsupported (iOS Native Only)";
+    caps.idealFor = "High-efficiency Apple Device Photo Storage";
+  } else if (f === "EPS") {
+    caps.compression = "None (Vector)";
+    caps.transparency = "Yes";
+    caps.vector = "Yes";
+    caps.browserSupport = "Unsupported (Vector Editor Needed)";
+    caps.idealFor = "Vector Graphics, Commercial Printing";
+  } else if (f === "JPG" || f === "JPEG") {
+    caps.compression = "Lossy (DCT)";
+    caps.transparency = "No";
+    caps.idealFor = "Complex Digital Photos, Web Content";
+  } else if (f === "JPEG2000" || f === "JP2") {
+    caps.compression = "Lossy & Lossless (Wavelet)";
+    caps.transparency = "Yes";
+    caps.browserSupport = "Unsupported (Safari Only)";
+    caps.idealFor = "Medical Imaging, Digital Archives";
   }
+  return caps;
+};
+
+// Generate detailed programmatic content blocks for comparison
+const f1 = comp.format1;
+const f2 = comp.format2;
+const cap1 = getFormatCapabilities(f1);
+const cap2 = getFormatCapabilities(f2);
+const compareContent = {
+  intro: `Choosing between ${f1} and ${f2} is one of the most common decisions designers, web developers, and content creators face. Both formats have distinct strengths, and picking the wrong one can result in bloated file sizes, blurry text, or compatibility issues. In this guide, we dive deep into the technical differences, performance characteristics, and practical use cases of ${f1} vs ${f2} to help you select the optimal format for your project.`,
+  
+  fileSize: `File size is a critical factor for web performance, Core Web Vitals, and server storage. ${f1} and ${f2} handle data compression in fundamentally different ways. Typically, if one format is lossless (like PNG or TIFF) and the other is lossy (like JPG or WebP), the lossy format will achieve file sizes that are 70% to 90% smaller. For vector formats like SVG, file sizes depend entirely on coordinate complexity rather than pixel dimensions, making them incredibly lightweight for logos and icons but unsuitable for photographs. When comparing ${f1} to ${f2}, you will generally find that ${f1} excels in situations requiring ${comp.format1Pros[0] || 'high fidelity'}, while ${f2} provides optimization advantages like ${comp.format2Pros[0] || 'portability'}.`,
+
+  quality: `Visual quality and compression artifacts differ significantly between these formats. ${f1} relies on ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'lossless representation, meaning every vector path or pixel color is preserved down to the exact mathematical coordinate or byte' : 'advanced lossy algorithms that discard high-frequency visual details to compress file sizes'}. On the other hand, ${f2} uses ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'lossless representation to ensure pixel-perfect fidelity' : 'lossy structures that compress visual data, which can introduce compression noise or blocky artifacts at lower quality ratios'}. If you require a format that handles sharp text, hard boundaries, and design assets without any distortion, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} is the clear choice. For complex photographs and continuous gradients, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} is highly recommended.`,
+
+  browserSupport: `Browser compatibility and platform accessibility can make or break a user experience. Modern web browsers natively support common formats like JPG, PNG, WebP, AVIF, and SVG. However, legacy or specialized formats like ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'niche extensions'} are completely unsupported by browsers like Chrome, Firefox, and Edge. If you upload an unsupported format directly to a web page, visitors will see a broken image icon. For these formats, a client-side conversion to a standard web-safe format like JPEG or PNG is required before web deployment.`,
+
+  seo: `Google and other search engines directly reward website speed and usability. Core Web Vitals metrics, specifically Largest Contentful Paint (LCP), are heavily influenced by the weight of the images loaded on the page. Using optimized formats like WebP or AVIF instead of legacy PNG or JPG can reduce page load times by seconds. Furthermore, vector formats like SVG are written in XML code, which means any text strings inside the vector coordinates are fully crawlable and indexable by search engine spiders, giving SVG a distinct SEO advantage for logos and illustrations.`,
+
+  faqs: [
+    {
+      q: `What is the main difference between ${f1} and ${f2}?`,
+      a: `The main difference lies in their compression and structure. ${f1} is typically optimized for ${comp.whenToUse1.toLowerCase()} while ${f2} is best suited for ${comp.whenToUse2.toLowerCase()}.`
+    },
+    {
+      q: `Which format is better for website speed and SEO?`,
+      a: `For modern websites, next-gen formats like WebP or AVIF are superior to legacy formats because they offer much smaller file sizes at the same visual quality. If you are comparing a vector format like SVG, it is ideal for icons and logos because it scales infinitely without increasing file size.`
+    },
+    {
+      q: `Can I convert ${f1} to ${f2} directly in my browser?`,
+      a: `Yes! You can use our free, browser-based conversion tools to instantly convert and optimize your files without uploading them to any external servers.`
+    }
+  ]
+};
+
+// Build schema
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": comp.seoTitle,
+      "description": comp.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": compareContent.faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.a
+        }
+      }))
+    }
+  ]
 };
 ---
 
@@ -64,7 +176,7 @@ const articleSchema = {
   <main class="w-full">
     <!-- Breadcrumbs -->
     <div class="border-b border-hairline bg-canvas">
-      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
         <a href="/" class="hover:text-ink transition-colors">Home</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
@@ -73,7 +185,7 @@ const articleSchema = {
       </nav>
     </div>
 
-    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+    <div class="mx-auto max-w-[900px] px-6 py-12 lg:px-8 lg:py-16">
       
       <!-- Header -->
       <header class="text-center mb-16">
@@ -86,8 +198,16 @@ const articleSchema = {
         <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{comp.description}</p>
       </header>
 
-      <!-- Comparison Table -->
+      <!-- Introduction Section -->
+      <section class="mb-12">
+        <p class="text-lg text-body leading-relaxed pl-6 border-l-4 border-link italic bg-canvas-soft p-6 rounded-r-xl border border-hairline">
+          {compareContent.intro}
+        </p>
+      </section>
+
+      <!-- Quick Pros & Cons Comparison -->
       <section class="mb-16">
+        <h2 class="text-2xl font-bold text-ink mb-6">Pros & Cons Comparison</h2>
         <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -99,7 +219,7 @@ const articleSchema = {
             <tbody>
               <tr>
                 <td class="p-6 border-r border-hairline align-top bg-canvas">
-                  <h3 class="text-sm font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <h3 class="text-xs font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     Advantages
                   </h3>
@@ -111,7 +231,7 @@ const articleSchema = {
                     ))}
                   </ul>
                   
-                  <h3 class="text-sm font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
+                  <h3 class="text-xs font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     Disadvantages
                   </h3>
@@ -125,7 +245,7 @@ const articleSchema = {
                 </td>
                 
                 <td class="p-6 align-top bg-canvas">
-                  <h3 class="text-sm font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <h3 class="text-xs font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     Advantages
                   </h3>
@@ -137,7 +257,7 @@ const articleSchema = {
                     ))}
                   </ul>
                   
-                  <h3 class="text-sm font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
+                  <h3 class="text-xs font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     Disadvantages
                   </h3>
@@ -155,21 +275,123 @@ const articleSchema = {
         </div>
       </section>
 
+      <!-- Technical Capabilities Specification Table -->
+      <section class="mb-16">
+        <h2 class="text-2xl font-bold text-ink mb-6">Technical Specification Matrix</h2>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline">
+                <th class="p-4 text-sm font-bold text-ink w-1/3 border-r border-hairline">Feature</th>
+                <th class="p-4 text-sm font-bold text-ink w-1/3 border-r border-hairline">{comp.format1}</th>
+                <th class="p-4 text-sm font-bold text-ink w-1/3">{comp.format2}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline">
+              <tr class="bg-canvas">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Compression Type</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.compression}</td>
+                <td class="p-4 text-sm text-body">{cap2.compression}</td>
+              </tr>
+              <tr class="bg-canvas-soft/30">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Transparency Support</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.transparency}</td>
+                <td class="p-4 text-sm text-body">{cap2.transparency}</td>
+              </tr>
+              <tr class="bg-canvas">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Animation Support</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.animation}</td>
+                <td class="p-4 text-sm text-body">{cap2.animation}</td>
+              </tr>
+              <tr class="bg-canvas-soft/30">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Vector / Scalable</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.vector}</td>
+                <td class="p-4 text-sm text-body">{cap2.vector}</td>
+              </tr>
+              <tr class="bg-canvas">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Web Browser Support</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.browserSupport}</td>
+                <td class="p-4 text-sm text-body">{cap2.browserSupport}</td>
+              </tr>
+              <tr class="bg-canvas-soft/30">
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Primary Use Case</td>
+                <td class="p-4 text-sm text-body border-r border-hairline">{cap1.idealFor}</td>
+                <td class="p-4 text-sm text-body">{cap2.idealFor}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Detailed Analysis Sections -->
+      <section class="mb-16 space-y-12">
+        <div class="border-t border-hairline pt-12">
+          <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
+            <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+            1. File Size & Compression Efficiency
+          </h2>
+          <p class="text-base text-body leading-relaxed">{compareContent.fileSize}</p>
+        </div>
+
+        <div class="border-t border-hairline pt-12">
+          <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
+            <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            2. Rendering Quality & Fidelity
+          </h2>
+          <p class="text-base text-body leading-relaxed">{compareContent.quality}</p>
+        </div>
+
+        <div class="border-t border-hairline pt-12">
+          <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
+            <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            3. Browser Support & Platform Compatibility
+          </h2>
+          <p class="text-base text-body leading-relaxed">{compareContent.browserSupport}</p>
+        </div>
+
+        <div class="border-t border-hairline pt-12">
+          <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
+            <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            4. SEO & Performance (Largest Contentful Paint)
+          </h2>
+          <p class="text-base text-body leading-relaxed">{compareContent.seo}</p>
+        </div>
+      </section>
+
       <!-- The Verdict -->
-      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline text-center">
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline text-center shadow-sm">
         <h2 class="text-xs font-bold text-mute uppercase tracking-widest mb-2">The Verdict</h2>
         <p class="text-2xl font-bold text-ink">{comp.winner}</p>
       </section>
 
       <!-- When to Use -->
       <section class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-link">
+        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-link shadow-sm">
           <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format1}</h2>
           <p class="text-sm text-body leading-relaxed">{comp.whenToUse1}</p>
         </div>
-        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-ink">
+        <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-ink shadow-sm">
           <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format2}</h2>
           <p class="text-sm text-body leading-relaxed">{comp.whenToUse2}</p>
+        </div>
+      </section>
+
+      <!-- FAQ Accordion Section -->
+      <section class="mb-16 border-t border-hairline pt-12">
+        <h2 class="text-2xl font-bold text-ink mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          {compareContent.faqs.map((faq) => (
+            <details class="group rounded-xl border border-hairline bg-canvas p-6 [&_summary::-webkit-details-marker]:hidden shadow-sm">
+              <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-ink font-semibold">
+                <span class="text-base">{faq.q}</span>
+                <span class="relative h-5 w-5 shrink-0">
+                  <svg class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0 text-mute transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <svg class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100 text-link transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+              </summary>
+              <p class="mt-4 text-sm text-body leading-relaxed">{faq.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 
@@ -179,7 +401,7 @@ const articleSchema = {
           <h2 class="text-2xl font-bold text-ink mb-6">More Format Comparisons</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {visibleRelatedComparisons.map((relatedComp) => (
-              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between shadow-sm">
                 <div>
                   <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
                   <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
@@ -208,5 +430,5 @@ const articleSchema = {
 
   <Footer />
   
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>

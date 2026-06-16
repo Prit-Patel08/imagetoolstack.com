@@ -6,14 +6,34 @@ interface Props {
 }
 const { tool } = Astro.props;
 
-// If tool is passed, use its relatedTools. Otherwise fallback to some hardcoded ones or none.
-const requestedSlugs = tool?.relatedTools || [
-  "png-to-jpg",
-  "image-compressor",
-  "crop-image"
-];
+const allTools = toolsData.tools || [];
+const allSlugs = new Set(allTools.map(t => t.slug));
 
-const relatedTools = toolsData.tools.filter(t => requestedSlugs.includes(t.slug));
+let requestedSlugs = (tool?.relatedTools || []).filter((slug: string) => allSlugs.has(slug) && slug !== tool?.slug);
+
+if (!tool) {
+  requestedSlugs = ["png-to-jpg", "image-compressor", "crop-image"].filter(slug => allSlugs.has(slug));
+} else {
+  // If we have less than 4 related tools, find siblings in the same category
+  if (requestedSlugs.length < 4 && tool.categoryId) {
+    const siblings = allTools
+      .filter(t => t.categoryId === tool.categoryId && t.slug !== tool.slug && !requestedSlugs.includes(t.slug))
+      .map(t => t.slug);
+    
+    requestedSlugs = [...requestedSlugs, ...siblings].slice(0, 4);
+  }
+
+  // Fallback to any other tools if still less than 4
+  if (requestedSlugs.length < 4) {
+    const otherTools = allTools
+      .filter(t => t.slug !== tool.slug && !requestedSlugs.includes(t.slug))
+      .map(t => t.slug);
+    
+    requestedSlugs = [...requestedSlugs, ...otherTools].slice(0, 4);
+  }
+}
+
+const relatedTools = allTools.filter(t => requestedSlugs.includes(t.slug));
 ---
 {relatedTools.length > 0 && (
   <div class="card-marketing p-6 mb-8">
