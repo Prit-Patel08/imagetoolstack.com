@@ -39,6 +39,19 @@ const { toolId } = Astro.props;
   <!-- Result State (hidden initially) -->
   <div id="result-zone" class="hidden w-full flex flex-col items-center gap-8 py-8">
     <BeforeAfterSlider />
+
+    <!-- Compressor Settings Slider -->
+    <div id="compressor-settings" class="hidden w-full max-w-[400px] bg-canvas-soft border border-hairline p-5 rounded-xl flex flex-col gap-3 shadow-sm">
+      <div class="flex justify-between items-center">
+        <label for="quality-slider" class="text-sm font-bold text-ink">Compression Quality</label>
+        <span id="quality-val" class="text-sm font-mono font-bold text-link">70%</span>
+      </div>
+      <input type="range" id="quality-slider" min="10" max="100" value="70" class="w-full h-1.5 bg-canvas-soft-2 rounded-lg appearance-none cursor-pointer accent-link" />
+      <div class="text-[10px] text-mute flex justify-between">
+        <span>Max Compression (Smaller File)</span>
+        <span>Best Quality (Larger File)</span>
+      </div>
+    </div>
     
     <div class="flex flex-col items-center gap-2">
       <span id="result-info" class="text-xs font-mono text-mute"></span>
@@ -63,9 +76,16 @@ const { toolId } = Astro.props;
     const resetBtn = document.getElementById('reset-btn');
     const resultInfo = document.getElementById('result-info');
 
+    const qualitySlider = document.getElementById('quality-slider') as HTMLInputElement;
+    const qualityVal = document.getElementById('quality-val');
+    const settingsContainer = document.getElementById('compressor-settings');
+
     const toolId = window.location.pathname.split('/').pop() || '';
 
-    if (!dropZone || !fileInput) return;
+    let currentImg: HTMLImageElement | null = null;
+    let currentFileType = '';
+    let currentFileName = '';
+    let currentFileSize = 0;
 
     if (!dropZone || !fileInput) return;
 
@@ -120,7 +140,33 @@ const { toolId } = Astro.props;
       reader.onload = async (e) => {
         const img = new Image();
         img.onload = async () => {
-          let processedBlob = await processImage(img, file.type, toolId);
+          currentImg = img;
+          currentFileType = file.type;
+          currentFileName = file.name;
+          currentFileSize = file.size;
+
+          // Detect if we should show quality slider
+          const isJpg = toolId.includes('to-jpg') || toolId.includes('to-jpeg') || (toolId === 'image-compressor' && file.type !== 'image/png');
+          const isWebp = toolId.includes('to-webp');
+          const isAvif = toolId.includes('to-avif');
+          const isLossy = toolId === 'image-compressor' || isJpg || isWebp || isAvif;
+
+          if (settingsContainer) {
+            settingsContainer.classList.toggle('hidden', !isLossy);
+          }
+
+          let defaultQuality = 0.9;
+          if (toolId === 'image-compressor') {
+            defaultQuality = 0.7;
+          }
+          if (qualitySlider) {
+            qualitySlider.value = String(Math.round(defaultQuality * 100));
+          }
+          if (qualityVal) {
+            qualityVal.textContent = `${Math.round(defaultQuality * 100)}%`;
+          }
+
+          let processedBlob = await processImage(img, file.type, toolId, defaultQuality);
           if (processedBlob) {
             processedBlob = await injectBrandingMetadata(processedBlob, processedBlob.type);
             const url = URL.createObjectURL(processedBlob);
@@ -146,7 +192,49 @@ const { toolId } = Astro.props;
       reader.readAsDataURL(file);
     }
 
-    async function processImage(img: HTMLImageElement, originalType: string, id: string): Promise<Blob | null> {
+    async function updateQuality(quality: number) {
+      if (!currentImg) return;
+      
+      let processedBlob = await processImage(currentImg, currentFileType, toolId, quality);
+      if (processedBlob) {
+        processedBlob = await injectBrandingMetadata(processedBlob, processedBlob.type);
+        const url = URL.createObjectURL(processedBlob);
+        
+        if (previewImgOpt.src.startsWith('blob:')) {
+          URL.revokeObjectURL(previewImgOpt.src);
+        }
+        
+        previewImgOpt.src = url;
+        downloadBtn.href = url;
+        
+        const origSize = currentFileSize;
+        const optSize = processedBlob.size;
+        const pctSavings = Math.round(((origSize - optSize) / origSize) * 100);
+        
+        if (pctSavings > 0) {
+          resultInfo!.innerHTML = `${currentFileName} (${(origSize / 1024).toFixed(1)} KB) &rarr; <strong>${(optSize / 1024).toFixed(1)} KB</strong> <span class="bg-success/10 text-success text-[10px] font-semibold px-2 py-0.5 rounded ml-2">-${pctSavings}% Saved</span>`;
+        } else {
+          resultInfo!.innerHTML = `${currentFileName} (${(origSize / 1024).toFixed(1)} KB) &rarr; <strong>${(optSize / 1024).toFixed(1)} KB</strong>`;
+        }
+
+        // Force slider width resync
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+
+    let debounceTimer: any;
+    qualitySlider?.addEventListener('input', () => {
+      const val = qualitySlider.value;
+      if (qualityVal) {
+        qualityVal.textContent = `${val}%`;
+      }
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        updateQuality(parseInt(val) / 100);
+      }, 100);
+    });
+
+    async function processImage(img: HTMLImageElement, originalType: string, id: string, customQuality?: number): Promise<Blob | null> {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
@@ -156,30 +244,29 @@ const { toolId } = Astro.props;
       ctx.drawImage(img, 0, 0);
 
       let targetType = originalType;
-      let quality = 0.9;
+      let quality = customQuality !== undefined ? customQuality : 0.9;
 
-      switch (id) {
-        case 'png-to-jpg':
-          targetType = 'image/jpeg';
-          // Fill background white for transparent PNG to JPG
-          ctx.globalCompositeOperation = 'destination-over';
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          break;
-        case 'jpg-to-png':
-          targetType = 'image/png';
-          break;
-        case 'webp-to-png':
-        case 'svg-to-png':
-          targetType = 'image/png';
-          break;
-        case 'png-to-webp':
-          targetType = 'image/webp';
-          break;
-        case 'image-compressor':
-          targetType = originalType === 'image/png' ? 'image/png' : 'image/jpeg';
+      const isJpg = id.includes('to-jpg') || id.includes('to-jpeg') || (id === 'image-compressor' && originalType !== 'image/png');
+      const isWebp = id.includes('to-webp');
+      const isAvif = id.includes('to-avif');
+
+      if (id === 'image-compressor') {
+        targetType = originalType === 'image/png' ? 'image/png' : 'image/jpeg';
+        if (customQuality === undefined) {
           quality = 0.7;
-          break;
+        }
+      } else if (isJpg) {
+        targetType = 'image/jpeg';
+        // Fill background white for transparent PNG to JPG
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (isWebp) {
+        targetType = 'image/webp';
+      } else if (isAvif) {
+        targetType = 'image/avif';
+      } else if (id.includes('to-png')) {
+        targetType = 'image/png';
       }
 
       return new Promise(resolve => {
@@ -204,6 +291,7 @@ const { toolId } = Astro.props;
 
     resetBtn?.addEventListener('click', () => {
       fileInput.value = '';
+      currentImg = null;
       showState('upload');
     });
   })();
