@@ -1,19 +1,37 @@
 # Image Tool Stack - Robots.txt
-# Optimized for Google, Bing, and major search engines
+# Optimized for search engine indexation and blocking AI scrapers
 
 User-agent: *
-Allow: /
-Allow: /tools/
-Allow: /category/
-Allow: /blog/
 Disallow: /cdn-cgi/
 Disallow: /undefined
+Allow: /
 
-# Specific blocks for scrapers and low-value bots
+# Block AI scrapers and crawlers
 User-agent: GPTBot
 Disallow: /
 
+User-agent: ChatGPT-User
+Disallow: /
+
 User-agent: CCBot
+Disallow: /
+
+User-agent: Anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: OMgili
+Disallow: /
+
+User-agent: FacebookBot
 Disallow: /
 
 Sitemap: https://imagetoolstack.com/sitemap-index.xml
