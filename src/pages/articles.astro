@@ -24,7 +24,7 @@ const seoDescription = "Learn everything about image formats, compression, and S
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article) => (
-          <a href={`/${article.slug}`} class="group flex flex-col p-6 rounded-2xl bg-canvas border border-hairline hover:border-link transition-all hover:shadow-md h-full">
+          <a href={`/${article.id}`} class="group flex flex-col p-6 rounded-2xl bg-canvas border border-hairline hover:border-link transition-all hover:shadow-md h-full">
             <h2 class="text-xl font-bold text-ink mb-3 group-hover:text-link transition-colors">{article.data.title}</h2>
             <p class="text-sm text-body leading-relaxed flex-grow line-clamp-3">{article.data.description}</p>
             <div class="mt-6 flex items-center text-sm font-semibold text-link">
