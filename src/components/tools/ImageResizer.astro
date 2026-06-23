@@ -1,12 +1,16 @@
 ---
+import DimensionLinks from "../seo/DimensionLinks.astro";
+
 interface Props {
   toolId: string;
+  targetWidth?: number;
+  targetHeight?: number;
 }
 
-const { toolId } = Astro.props;
+const { toolId, targetWidth, targetHeight } = Astro.props;
 ---
 
-<div id="resizer-tool-root" class="w-full flex flex-col items-center">
+<div id="resizer-tool-root" class="w-full flex flex-col items-center" data-target-width={targetWidth} data-target-height={targetHeight}>
   <!-- Upload State -->
   <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline rounded-md bg-canvas-soft/30 hover:bg-canvas-soft/50 transition-colors cursor-pointer group">
     <div class="mb-4 h-12 w-12 rounded-full bg-canvas flex items-center justify-center text-ink border border-hairline group-hover:border-hairline-strong transition-colors">
@@ -113,8 +117,24 @@ const { toolId } = Astro.props;
         img.onload = () => {
           originalImg = img;
           aspectRatio = img.width / img.height;
-          widthInput.value = img.width.toString();
-          heightInput.value = img.height.toString();
+          
+          const root = document.getElementById('resizer-tool-root');
+          const targetWidth = root?.getAttribute('data-target-width');
+          const targetHeight = root?.getAttribute('data-target-height');
+
+          if (targetWidth && targetHeight) {
+            isLinked = false; // unlink so both can be set independently
+            if (linkRatioBtn) {
+              linkRatioBtn.classList.remove('text-link');
+              linkRatioBtn.classList.add('text-mute');
+            }
+            widthInput.value = targetWidth;
+            heightInput.value = targetHeight;
+          } else {
+            widthInput.value = img.width.toString();
+            heightInput.value = img.height.toString();
+          }
+          
           previewImg.src = img.src;
           showState('edit');
         };
@@ -191,3 +211,5 @@ const { toolId } = Astro.props;
     });
   })();
 </script>
+
+<DimensionLinks />

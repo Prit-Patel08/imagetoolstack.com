@@ -1,14 +1,22 @@
 ---
 import BeforeAfterSlider from "./BeforeAfterSlider.astro";
+import SizeLinks from "../seo/SizeLinks.astro";
 
 interface Props {
   toolId: string;
+  targetKb?: number;
 }
 
-const { toolId } = Astro.props;
+const { toolId, targetKb } = Astro.props;
 ---
 
-<div id="converter-tool-root" class="w-full flex flex-col items-center">
+<div id="converter-tool-root" class="w-full flex flex-col items-center" data-target-kb={targetKb}>
+  {targetKb && (
+    <div class="mb-4 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      Targeting: Compress to {targetKb} KB
+    </div>
+  )}
   <!-- Upload State -->
   <div id="drop-zone-wrapper" class="w-full flex flex-col items-center">
     <div id="drop-zone" class="w-full min-h-[300px] flex flex-col items-center justify-center p-8 border-2 border-dashed border-hairline-strong rounded-xl bg-canvas hover:bg-canvas-soft hover:border-link transition-all cursor-pointer group shadow-sm">
@@ -296,3 +304,5 @@ const { toolId } = Astro.props;
     });
   })();
 </script>
+
+{toolId === 'image-compressor' && <SizeLinks />}

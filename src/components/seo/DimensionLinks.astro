@@ -1,0 +1,33 @@
+---
+import dimensionsData from "../../data/dimensions.json";
+import { getLocalizedPath } from "../../utils/i18n";
+
+const currentPath = Astro.url.pathname;
+const currentLocale = currentPath.split('/')[1];
+const locales = ['es', 'fr', 'de', 'pt', 'id'];
+const locale = locales.includes(currentLocale) ? currentLocale : 'en';
+
+// Sort by size or alphabetical, but let's just use the curated order
+const dimensions = dimensionsData.dimensions;
+---
+
+<div class="mt-12 mb-8 bg-surface border border-hairline rounded-xl p-6">
+  <h3 class="text-lg font-bold text-ink mb-4">Popular Image Resize Dimensions</h3>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+    {dimensions.map(dim => {
+      // Build the canonical URL
+      const path = `/resize-image-to-${dim.width}x${dim.height}`;
+      const localizedPath = getLocalizedPath(path, locale);
+      
+      return (
+        <a 
+          href={localizedPath} 
+          class="text-sm text-link hover:underline truncate"
+          title={`Resize image to ${dim.width}x${dim.height}`}
+        >
+          Resize to {dim.width}x{dim.height}
+        </a>
+      );
+    })}
+  </div>
+</div>

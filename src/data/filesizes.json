@@ -1,0 +1,20 @@
+{
+  "sizes": [
+    { "sizeKb": 10, "label": "10kb", "name": "Compress image to 10kb", "description": "Compress image file size to exactly 10kb or less for extreme web optimization." },
+    { "sizeKb": 20, "label": "20kb", "name": "Compress image to 20kb", "description": "Compress image file size to exactly 20kb or less for official forms." },
+    { "sizeKb": 30, "label": "30kb", "name": "Compress image to 30kb", "description": "Compress image file size to exactly 30kb or less." },
+    { "sizeKb": 40, "label": "40kb", "name": "Compress image to 40kb", "description": "Compress image file size to exactly 40kb or less." },
+    { "sizeKb": 50, "label": "50kb", "name": "Compress image to 50kb", "description": "Compress image file size to exactly 50kb or less for job applications." },
+    { "sizeKb": 100, "label": "100kb", "name": "Compress image to 100kb", "description": "Compress image file size to exactly 100kb or less for fast loading." },
+    { "sizeKb": 150, "label": "150kb", "name": "Compress image to 150kb", "description": "Compress image file size to exactly 150kb or less." },
+    { "sizeKb": 200, "label": "200kb", "name": "Compress image to 200kb", "description": "Compress image file size to exactly 200kb or less for portal uploads." },
+    { "sizeKb": 250, "label": "250kb", "name": "Compress image to 250kb", "description": "Compress image file size to exactly 250kb or less." },
+    { "sizeKb": 300, "label": "300kb", "name": "Compress image to 300kb", "description": "Compress image file size to exactly 300kb or less." },
+    { "sizeKb": 400, "label": "400kb", "name": "Compress image to 400kb", "description": "Compress image file size to exactly 400kb or less." },
+    { "sizeKb": 500, "label": "500kb", "name": "Compress image to 500kb", "description": "Compress image file size to exactly 500kb or less." },
+    { "sizeKb": 1000, "label": "1mb", "name": "Compress image to 1mb", "description": "Compress image file size to 1mb or less for high quality reduction." },
+    { "sizeKb": 2000, "label": "2mb", "name": "Compress image to 2mb", "description": "Compress image file size to 2mb or less." },
+    { "sizeKb": 3000, "label": "3mb", "name": "Compress image to 3mb", "description": "Compress image file size to 3mb or less." },
+    { "sizeKb": 5000, "label": "5mb", "name": "Compress image to 5mb", "description": "Compress image file size to 5mb or less." }
+  ]
+}

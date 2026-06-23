@@ -1,0 +1,33 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+import ImageResizer from "../components/tools/ImageResizer.astro";
+import toolsData from "../data/tools.json";
+import dimensionsData from "../data/dimensions.json";
+
+export async function getStaticPaths() {
+  return dimensionsData.dimensions.map((dim) => {
+    return {
+      params: { dimension: `${dim.width}x${dim.height}` },
+      props: { dim },
+    };
+  });
+}
+
+const { dim, tool: injectedTool, category: injectedCategory } = Astro.props;
+
+// Use the base Image Resizer tool for meta
+const baseTool = toolsData.tools.find((t) => t.slug === 'image-resizer');
+const category = injectedCategory || toolsData.categories.find((c) => c.id === baseTool?.categoryId);
+
+const tool = injectedTool || {
+  ...baseTool,
+  name: `Resize image to ${dim.width}x${dim.height}`,
+  title: `Resize image to ${dim.width}x${dim.height} online - Free Resizer`,
+  description: `Easily resize your image to exactly ${dim.width}x${dim.height} pixels (${dim.name}). Free online tool, no registration, processed instantly in your browser.`,
+  longDescription: `Need an image specifically sized to ${dim.width}x${dim.height} for your ${dim.name}? Use our free online resizer. All processing happens locally in your browser for 100% privacy.`
+};
+---
+
+<ToolLayout tool={tool} category={category}>
+  <ImageResizer toolId="image-resizer" targetWidth={dim.width} targetHeight={dim.height} />
+</ToolLayout>

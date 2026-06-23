@@ -1,0 +1,61 @@
+---
+import filesizesData from "../../data/filesizes.json";
+import RootPage from "../compress-image-to-[size].astro";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  const paths = [];
+  for (const locale of locales) {
+    for (const size of filesizesData.sizes) {
+      paths.push({
+        params: { lang: locale, size: size.label },
+        props: { size, locale },
+      });
+    }
+  }
+  return paths;
+}
+
+const { size, locale } = Astro.props;
+
+// Use the base Image Compressor tool for meta
+const baseTool = toolsData.tools.find((t) => t.slug === 'image-compressor');
+const category = toolsData.categories.find((c) => c.id === baseTool?.categoryId);
+
+let name = `Compress image to ${size.label}`;
+let title = `Compress image to ${size.label} online - Free Image Compressor`;
+let description = `Easily compress your image to exactly ${size.label} or less. ${size.description} Free online tool, no registration, processed instantly in your browser.`;
+let longDescription = `Need to compress an image to meet a ${size.label} upload limit? Use our free online compressor. All processing happens locally in your browser for 100% privacy and maximum speed.`;
+
+if (locale === 'es') {
+  name = `Comprimir imagen a ${size.label}`;
+  title = `Comprimir imagen a ${size.label} online - Gratis`;
+  description = `Comprime tu imagen a exactamente ${size.label} o menos. Herramienta online gratuita, sin registro, procesamiento instantáneo en el navegador.`;
+} else if (locale === 'fr') {
+  name = `Compresser l'image à ${size.label}`;
+  title = `Compresser l'image à ${size.label} en ligne - Gratuit`;
+  description = `Compressez votre image à exactement ${size.label} ou moins. Outil en ligne gratuit, sans inscription.`;
+} else if (locale === 'de') {
+  name = `Bild auf ${size.label} komprimieren`;
+  title = `Bild auf ${size.label} komprimieren online - Kostenlos`;
+  description = `Komprimieren Sie Ihr Bild auf genau ${size.label} oder weniger. Kostenloses Online-Tool, keine Anmeldung, sofortige Verarbeitung.`;
+} else if (locale === 'pt') {
+  name = `Comprimir imagem para ${size.label}`;
+  title = `Comprimir imagem para ${size.label} online - Grátis`;
+  description = `Comprima sua imagem para exatamente ${size.label} ou menos. Ferramenta online gratuita, sem registro.`;
+} else if (locale === 'id') {
+  name = `Kompres gambar menjadi ${size.label}`;
+  title = `Kompres gambar menjadi ${size.label} online - Gratis`;
+  description = `Kompres gambar Anda menjadi tepat ${size.label} atau kurang. Alat online gratis, tanpa pendaftaran, diproses di browser.`;
+}
+
+const tool = {
+  ...baseTool,
+  name,
+  title,
+  description,
+  longDescription
+};
+---
+<RootPage size={size} tool={tool} category={category} />

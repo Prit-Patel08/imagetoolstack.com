@@ -1,0 +1,33 @@
+---
+import ToolLayout from "../layouts/ToolLayout.astro";
+import FormatConverter from "../components/tools/FormatConverter.astro";
+import toolsData from "../data/tools.json";
+import filesizesData from "../data/filesizes.json";
+
+export async function getStaticPaths() {
+  return filesizesData.sizes.map((size) => {
+    return {
+      params: { size: size.label },
+      props: { size },
+    };
+  });
+}
+
+const { size, tool: injectedTool, category: injectedCategory } = Astro.props;
+
+// Use the base Image Compressor tool for meta
+const baseTool = toolsData.tools.find((t) => t.slug === 'image-compressor');
+const category = injectedCategory || toolsData.categories.find((c) => c.id === baseTool?.categoryId);
+
+const tool = injectedTool || {
+  ...baseTool,
+  name: `Compress image to ${size.label}`,
+  title: `Compress image to ${size.label} online - Free Image Compressor`,
+  description: `Easily compress your image to exactly ${size.label} or less. ${size.description} Free online tool, no registration, processed instantly in your browser.`,
+  longDescription: `Need to compress an image to meet a ${size.label} upload limit? Use our free online compressor. All processing happens locally in your browser for 100% privacy and maximum speed.`
+};
+---
+
+<ToolLayout tool={tool} category={category}>
+  <FormatConverter toolId="image-compressor" targetKb={size.sizeKb} />
+</ToolLayout>

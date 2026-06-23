@@ -1,0 +1,63 @@
+---
+import dimensionsData from "../../data/dimensions.json";
+import RootPage from "../resize-image-to-[dimension].astro";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  const paths = [];
+  for (const locale of locales) {
+    for (const dim of dimensionsData.dimensions) {
+      paths.push({
+        params: { lang: locale, dimension: `${dim.width}x${dim.height}` },
+        props: { dim, locale },
+      });
+    }
+  }
+  return paths;
+}
+
+const { dim, locale } = Astro.props;
+
+// Use the base Image Resizer tool for meta
+const baseTool = toolsData.tools.find((t) => t.slug === 'image-resizer');
+const category = toolsData.categories.find((c) => c.id === baseTool?.categoryId);
+
+// Here we can ideally translate the meta title using our i18n helper
+// For now we map it directly with dynamic strings
+let name = `Resize image to ${dim.width}x${dim.height}`;
+let title = `Resize image to ${dim.width}x${dim.height} online - Free Resizer`;
+let description = `Easily resize your image to exactly ${dim.width}x${dim.height} pixels (${dim.name}). Free online tool, no registration, processed instantly in your browser.`;
+let longDescription = `Need an image specifically sized to ${dim.width}x${dim.height} for your ${dim.name}? Use our free online resizer. All processing happens locally in your browser for 100% privacy.`;
+
+if (locale === 'es') {
+  name = `Redimensionar imagen a ${dim.width}x${dim.height}`;
+  title = `Redimensionar imagen a ${dim.width}x${dim.height} online - Gratis`;
+  description = `Redimensiona tu imagen a exactamente ${dim.width}x${dim.height} píxeles (${dim.name}). Herramienta online gratuita, sin registro, procesamiento instantáneo en el navegador.`;
+} else if (locale === 'fr') {
+  name = `Redimensionner l'image à ${dim.width}x${dim.height}`;
+  title = `Redimensionner l'image à ${dim.width}x${dim.height} en ligne - Gratuit`;
+  description = `Redimensionnez votre image à exactement ${dim.width}x${dim.height} pixels (${dim.name}). Outil en ligne gratuit, sans inscription.`;
+} else if (locale === 'de') {
+  name = `Bildgröße auf ${dim.width}x${dim.height} ändern`;
+  title = `Bild auf ${dim.width}x${dim.height} verkleinern online - Kostenlos`;
+  description = `Ändern Sie die Bildgröße auf genau ${dim.width}x${dim.height} Pixel (${dim.name}). Kostenloses Online-Tool, keine Anmeldung, sofortige Verarbeitung.`;
+} else if (locale === 'pt') {
+  name = `Redimensionar imagem para ${dim.width}x${dim.height}`;
+  title = `Redimensionar imagem para ${dim.width}x${dim.height} online - Grátis`;
+  description = `Redimensione sua imagem para exatamente ${dim.width}x${dim.height} pixels (${dim.name}). Ferramenta online gratuita, sem registro.`;
+} else if (locale === 'id') {
+  name = `Ubah ukuran gambar menjadi ${dim.width}x${dim.height}`;
+  title = `Ubah ukuran gambar menjadi ${dim.width}x${dim.height} online - Gratis`;
+  description = `Ubah ukuran gambar Anda menjadi tepat ${dim.width}x${dim.height} piksel (${dim.name}). Alat online gratis, tanpa pendaftaran, diproses di browser.`;
+}
+
+const tool = {
+  ...baseTool,
+  name,
+  title,
+  description,
+  longDescription
+};
+---
+<RootPage dim={dim} tool={tool} category={category} />
