@@ -1,0 +1,237 @@
+{
+  "image-compressor": {
+    "benefits": [
+      {
+        "title": "Boost Website SEO & Speed",
+        "description": "Large images are the #1 cause of slow websites. By compressing your images, you instantly improve your Core Web Vitals, resulting in higher Google rankings and lower bounce rates."
+      },
+      {
+        "title": "Bypass Upload Limits",
+        "description": "Many government portals, job applications, and social media platforms restrict uploads to 2MB or less. Our compressor guarantees your files meet these strict requirements without noticeable quality loss."
+      },
+      {
+        "title": "100% Private & Secure",
+        "description": "Unlike other tools that upload your private photos to external servers, our compressor runs entirely inside your web browser. Your images never leave your device."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Upload your image",
+        "description": "Drag and drop your JPG, PNG, or WebP image into the drop zone, or click to browse your files."
+      },
+      {
+        "step": 2,
+        "title": "Adjust the compression",
+        "description": "Use the interactive slider to balance image quality and file size. We automatically show you the exact KB savings in real-time."
+      },
+      {
+        "step": 3,
+        "title": "Download instantly",
+        "description": "Once you hit your target file size, click Download. The optimized image is saved instantly to your device."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Does compressing an image reduce its quality?",
+        "answer": "We use advanced lossy compression algorithms that strip out hidden metadata and optimize color profiles. While mathematically 'lossy', the visual difference is virtually imperceptible to the human eye, even at 70% compression."
+      },
+      {
+        "question": "What is the maximum file size I can compress?",
+        "answer": "Because our tool processes images locally in your browser using JavaScript, there are no artificial file size limits. You can compress images as large as your device's memory can handle (often 50MB+)."
+      },
+      {
+        "question": "Can I compress images on my iPhone or Android?",
+        "answer": "Yes! Our image compressor is fully responsive and works perfectly on mobile browsers like Safari and Chrome without needing to download an app."
+      }
+    ]
+  },
+  "image-resizer": {
+    "benefits": [
+      {
+        "title": "Pixel-Perfect Precision",
+        "description": "Resize your images to exact pixel dimensions. Whether you need a 1080x1080 Instagram post or a 2560x1440 YouTube banner, get exact results every time."
+      },
+      {
+        "title": "Maintain Aspect Ratio",
+        "description": "Our smart resizer automatically calculates the correct height or width to prevent your image from looking stretched or distorted."
+      },
+      {
+        "title": "Fast & Serverless",
+        "description": "No waiting in queues or uploading to servers. Your image is resized instantly using your browser's native canvas API."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Select your photo",
+        "description": "Upload the image you need to resize. We support all major formats including JPG, PNG, and WebP."
+      },
+      {
+        "step": 2,
+        "title": "Enter target dimensions",
+        "description": "Type in your desired width or height. Leave the 'lock' icon active to maintain the original aspect ratio automatically."
+      },
+      {
+        "step": 3,
+        "title": "Export the result",
+        "description": "Click Apply & Download. The newly sized image is immediately saved to your device."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Will resizing an image make it blurry?",
+        "answer": "If you are reducing the size (downscaling), the image will remain sharp. If you are significantly increasing the size (upscaling) beyond its original resolution, it may become pixelated. We recommend our AI Upscaler tool for large enlargements."
+      },
+      {
+        "question": "What are the best dimensions for Instagram?",
+        "answer": "For Instagram square posts, use 1080x1080 pixels. For portrait posts, use 1080x1350 pixels. For Stories and Reels, use 1080x1920 pixels."
+      },
+      {
+        "question": "Does resizing change the file size?",
+        "answer": "Yes. Reducing the pixel dimensions (width and height) will also significantly reduce the file size in kilobytes (KB)."
+      }
+    ]
+  },
+  "remove-background": {
+    "benefits": [
+      {
+        "title": "AI-Powered Precision",
+        "description": "Our tool uses machine learning models to instantly detect the primary subject (people, cars, products) and separate it from the background with incredible accuracy."
+      },
+      {
+        "title": "Perfect for E-Commerce",
+        "description": "Create clean, professional product photos with transparent backgrounds for your Shopify, Amazon, or Etsy store in seconds."
+      },
+      {
+        "title": "No Photoshop Required",
+        "description": "Save hours of manual editing with the pen tool. Our AI does the heavy lifting automatically, 100% free."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Upload your photo",
+        "description": "Choose an image with a clear subject. Photos with good lighting and contrast work best."
+      },
+      {
+        "step": 2,
+        "title": "Let the AI process",
+        "description": "Our machine learning model analyzes the image and generates a high-quality cutout matrix in just a few seconds."
+      },
+      {
+        "step": 3,
+        "title": "Download as PNG",
+        "description": "Download your image. It is automatically saved as a PNG to preserve the transparent background."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Why is the output always a PNG?",
+        "answer": "The JPG format does not support transparency. To maintain the invisible background, the image must be saved in the PNG or WebP format."
+      },
+      {
+        "question": "Does this work on complex backgrounds?",
+        "answer": "Yes, our AI is trained on millions of images and can handle complex backgrounds, though solid contrast between the subject and background yields the sharpest edges."
+      },
+      {
+        "question": "Is the background removal really free?",
+        "answer": "Absolutely. Unlike other popular services that charge $0.20 per image or require a subscription, our tool is completely free with no usage limits."
+      }
+    ]
+  },
+  "image-upscaler": {
+    "benefits": [
+      {
+        "title": "Enhance Low-Res Photos",
+        "description": "Breathe life into old, pixelated, or heavily compressed photos by using AI to intelligently reconstruct missing details and textures."
+      },
+      {
+        "title": "Ready for Print",
+        "description": "Upscale small graphics up to 4x their original resolution so they can be printed cleanly on posters, canvas, or merchandise without blurriness."
+      },
+      {
+        "title": "Free & Uncapped",
+        "description": "Many AI upscalers charge credits per image. Our local AI model runs entirely in your browser memory, offering unlimited free upscaling forever."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Import image",
+        "description": "Upload any JPG, PNG, or WebP image that needs to be enlarged or clarified."
+      },
+      {
+        "step": 2,
+        "title": "Select scale factor",
+        "description": "Choose whether you want to double (2x) or quadruple (4x) the resolution. Wait for the AI neural network to process the pixels."
+      },
+      {
+        "step": 3,
+        "title": "Save high-res output",
+        "description": "Compare the before-and-after slider, then click Download to get your crystal-clear image."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "How does an AI upscaler work?",
+        "answer": "Unlike traditional resizers that just stretch existing pixels, AI upscalers use neural networks trained on millions of high-res photos to mathematically predict and generate missing details."
+      },
+      {
+        "question": "Why is my browser getting slow during upscaling?",
+        "answer": "Running complex machine learning models requires significant RAM and GPU power. If your device is older, the process may take up to a minute and temporarily slow down your browser."
+      },
+      {
+        "question": "Can I upscale an already large image?",
+        "answer": "It is not recommended. Upscaling is designed for small images (under 1000px). Trying to 4x upscale an image that is already 4K may crash your browser due to memory limits."
+      }
+    ]
+  },
+  "crop-image": {
+    "benefits": [
+      {
+        "title": "Refine Composition",
+        "description": "Instantly cut out distracting background elements and frame your subject perfectly using the rule of thirds."
+      },
+      {
+        "title": "Social Media Presets",
+        "description": "Use predefined aspect ratios (1:1, 16:9, 4:3) to quickly crop photos for Instagram feeds, YouTube thumbnails, and Facebook covers."
+      },
+      {
+        "title": "No Quality Loss",
+        "description": "Cropping simply trims the edges of your image without compressing the remaining pixels, ensuring your photo stays razor-sharp."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Load your photo",
+        "description": "Upload the picture you want to crop from your computer or phone."
+      },
+      {
+        "step": 2,
+        "title": "Drag the bounding box",
+        "description": "Adjust the handles of the crop box to frame your subject. You can lock the aspect ratio if you need a specific shape."
+      },
+      {
+        "step": 3,
+        "title": "Apply and download",
+        "description": "Click the crop button to finalize the cut, then download your perfectly framed image."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is cropping the same as resizing?",
+        "answer": "No. Cropping cuts off parts of the image to change the framing. Resizing scales the entire image down to fit smaller dimensions."
+      },
+      {
+        "question": "Can I crop an image into a circle?",
+        "answer": "This specific tool creates rectangular and square crops. For circular cutouts, try our Round Image Cropper tool."
+      },
+      {
+        "question": "Why does the file size change after cropping?",
+        "answer": "Because you are discarding pixels from the original image, the resulting file will contain less data and naturally have a smaller file size in KB."
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+---
+import toolEnrichmentData from "../../data/tool-enrichment.json";
+
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+const content = (toolEnrichmentData as any)[toolId];
+
+if (!content) {
+  return null;
+}
+---
+
+<div class="w-full mt-16 mb-8 border-t border-hairline pt-12">
+  
+  {/* Benefits Section */}
+  {content.benefits && content.benefits.length > 0 && (
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-ink mb-8 text-center">Why use our tool?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {content.benefits.map((benefit: any) => (
+          <div class="bg-canvas p-6 rounded-2xl border border-hairline shadow-sm">
+            <div class="h-10 w-10 bg-link/10 text-link rounded-xl flex items-center justify-center mb-4">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h3 class="text-lg font-bold text-ink mb-2">{benefit.title}</h3>
+            <p class="text-sm text-body leading-relaxed">{benefit.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* How To Section */}
+  {content.howTo && content.howTo.length > 0 && (
+    <section class="mb-16 bg-surface-alt rounded-3xl p-8 lg:p-12 border border-hairline">
+      <h2 class="text-2xl font-bold text-ink mb-8">How to use it</h2>
+      <div class="flex flex-col md:flex-row gap-6 lg:gap-12">
+        {content.howTo.map((step: any) => (
+          <div class="flex-1 relative">
+            <div class="text-5xl font-black text-ink/5 absolute -top-4 -left-2 z-0">{step.step}</div>
+            <div class="relative z-10">
+              <h3 class="text-lg font-bold text-ink mb-2 flex items-center gap-2">
+                <span class="bg-ink text-canvas text-xs px-2 py-0.5 rounded-full">{step.step}</span>
+                {step.title}
+              </h3>
+              <p class="text-sm text-body leading-relaxed">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* FAQ Section */}
+  {content.faqs && content.faqs.length > 0 && (
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold text-ink mb-8 text-center">Frequently Asked Questions</h2>
+      <div class="max-w-3xl mx-auto flex flex-col gap-4">
+        {content.faqs.map((faq: any) => (
+          <div class="bg-canvas border border-hairline rounded-xl overflow-hidden faq-item cursor-pointer">
+            <div class="px-6 py-4 flex justify-between items-center bg-canvas hover:bg-canvas-soft transition-colors">
+              <h3 class="font-bold text-ink text-sm md:text-base pr-4">{faq.question}</h3>
+              <svg class="h-5 w-5 text-mute transform transition-transform faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div class="px-6 pb-4 hidden faq-answer">
+              <p class="text-sm text-body leading-relaxed pt-2 border-t border-hairline mt-2">{faq.answer}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+</div>
+
+<script>
+  // Simple vanilla JS accordion logic
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const answer = item.querySelector('.faq-answer');
+      const icon = item.querySelector('.faq-icon');
+      
+      if (answer?.classList.contains('hidden')) {
+        answer.classList.remove('hidden');
+        icon?.classList.add('rotate-180');
+      } else {
+        answer?.classList.add('hidden');
+        icon?.classList.remove('rotate-180');
+      }
+    });
+  });
+</script>

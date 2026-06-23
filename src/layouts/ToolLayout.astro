@@ -18,6 +18,7 @@ import PrivacyFirst from "../components/seo/PrivacyFirst.astro";
 import RelatedGuides from "../components/seo/RelatedGuides.astro";
 import AdSlot from "../components/seo/AdSlot.astro";
 import CrossLinkBlock from "../components/seo/CrossLinkBlock.astro";
+import ToolEnrichment from "../components/seo/ToolEnrichment.astro";
 
 interface Props {
   tool: any;
@@ -191,6 +192,8 @@ const faqSchema = faqs && faqs.length > 0 ? {
           <WhyUseThisTool tool={tool} />
           
           <FaqSection tool={tool} />
+
+          <ToolEnrichment toolId={tool.slug} />
 
           <RelatedTools tool={tool} />
           
