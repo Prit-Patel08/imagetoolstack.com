@@ -1,0 +1,18 @@
+---
+import RootCompressPage from "./compress-image-to-[size].astro";
+import filesizesData from "../data/filesizes.json";
+import toolsData from "../data/tools.json";
+
+const size = filesizesData.sizes.find((item) => item.label === "400kb");
+const baseTool = toolsData.tools.find((tool) => tool.slug === "image-compressor");
+const category = toolsData.categories.find((cat) => cat.id === baseTool?.categoryId);
+const tool = {
+  ...baseTool,
+  name: "Resize image to 400KB",
+  seoTitle: "Resize image to 400KB online - Free Image Compressor",
+  description: "Resize image file size to 400KB or less online. Free browser-based compression with no uploads, no signup, and private local processing.",
+  seoDescription: "Resize image file size to 400KB or less online. Free browser-based compression with no uploads, no signup, and private local processing.",
+};
+---
+
+<RootCompressPage size={size} tool={tool} category={category} />

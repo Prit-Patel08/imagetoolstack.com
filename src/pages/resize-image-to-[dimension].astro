@@ -22,8 +22,9 @@ const category = injectedCategory || toolsData.categories.find((c) => c.id === b
 const tool = injectedTool || {
   ...baseTool,
   name: `Resize image to ${dim.width}x${dim.height}`,
-  title: `Resize image to ${dim.width}x${dim.height} online - Free Resizer`,
+  seoTitle: `Resize image to ${dim.width}x${dim.height} online - Free Image Resizer`,
   description: `Easily resize your image to exactly ${dim.width}x${dim.height} pixels (${dim.name}). Free online tool, no registration, processed instantly in your browser.`,
+  seoDescription: `Easily resize your image to exactly ${dim.width}x${dim.height} pixels (${dim.name}). Free online tool, no registration, processed instantly in your browser.`,
   longDescription: `Need an image specifically sized to ${dim.width}x${dim.height} for your ${dim.name}? Use our free online resizer. All processing happens locally in your browser for 100% privacy.`
 };
 ---

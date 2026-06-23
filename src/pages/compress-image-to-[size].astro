@@ -22,8 +22,9 @@ const category = injectedCategory || toolsData.categories.find((c) => c.id === b
 const tool = injectedTool || {
   ...baseTool,
   name: `Compress image to ${size.label}`,
-  title: `Compress image to ${size.label} online - Free Image Compressor`,
+  seoTitle: `Compress image to ${size.label} online - Free Image Compressor`,
   description: `Easily compress your image to exactly ${size.label} or less. ${size.description} Free online tool, no registration, processed instantly in your browser.`,
+  seoDescription: `Easily compress your image to exactly ${size.label} or less. ${size.description} Free online tool, no registration, processed instantly in your browser.`,
   longDescription: `Need to compress an image to meet a ${size.label} upload limit? Use our free online compressor. All processing happens locally in your browser for 100% privacy and maximum speed.`
 };
 ---

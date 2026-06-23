@@ -1,0 +1,16 @@
+---
+import RootToolPage from "./tools/[slug].astro";
+import toolsData from "../data/tools.json";
+
+const baseTool = toolsData.tools.find((tool) => tool.slug === "blur-image");
+const category = toolsData.categories.find((cat) => cat.id === baseTool?.categoryId);
+
+const tool = {
+  ...baseTool,
+  name: "Blur Image Online",
+  seoTitle: "Blur Image Online | Free Browser-Based Photo Blur Tool",
+  seoDescription: "Blur images online for free. Add soft blur effects directly in your browser with no uploads, no signup, and private local processing.",
+};
+---
+
+<RootToolPage tool={tool} category={category} />

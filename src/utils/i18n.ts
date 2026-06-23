@@ -102,7 +102,10 @@ export function translateTool(tool: any, locale: string) {
   localized.description = description;
 
   // 2. Set SEO Title and Meta Description
-  if (tool.categoryId === 'conversion') {
+  if (tool.seoTitle || tool.seoDescription) {
+    localized.seoTitle = tool.seoTitle || localized.seoTitle;
+    localized.seoDescription = tool.seoDescription || localized.seoDescription;
+  } else if (tool.categoryId === 'conversion') {
     const inFmt = tool.inputFormats?.join(', ') || 'Image';
     const outFmt = tool.outputFormats?.join(', ') || 'Image';
     if (cleanLocale === 'es') {
