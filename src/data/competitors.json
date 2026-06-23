@@ -1,0 +1,51 @@
+[
+  {
+    "slug": "tinypng",
+    "name": "TinyPNG",
+    "type": "Image Compressor",
+    "weakness": "Has a strict 5MB file size limit for free users and requires a paid subscription for bulk processing.",
+    "ourAdvantage": "100% free with absolutely no file size limits or paywalls. We compress massive images instantly using browser-based WebAssembly."
+  },
+  {
+    "slug": "iloveimg",
+    "name": "iLoveIMG",
+    "type": "Image Utility Suite",
+    "weakness": "Uploads your sensitive images to their remote backend servers, raising privacy concerns.",
+    "ourAdvantage": "Privacy-first architecture. Your images are processed entirely on your own device (client-side) and are never uploaded to any external servers."
+  },
+  {
+    "slug": "adobe-express",
+    "name": "Adobe Express",
+    "type": "Design Tool",
+    "weakness": "Requires mandatory account creation and login just to resize or convert a simple image.",
+    "ourAdvantage": "No sign-up, no login, no friction. Just drag and drop your image and get the result instantly."
+  },
+  {
+    "slug": "canva",
+    "name": "Canva",
+    "type": "Design Platform",
+    "weakness": "Heavy, bloated interface that is slow to load if you just need to do a quick crop or resize.",
+    "ourAdvantage": "Lightning-fast, purpose-built utility. Our tools load in milliseconds and don't require navigating complex menus."
+  },
+  {
+    "slug": "ezgif",
+    "name": "EZGIF",
+    "type": "GIF Maker & Editor",
+    "weakness": "Outdated interface with strict upload file size limits and slow server-side rendering.",
+    "ourAdvantage": "Modern UI with infinite scaling. We use your device's local CPU to process GIFs and videos natively, resulting in zero upload times."
+  },
+  {
+    "slug": "11zon",
+    "name": "11zon",
+    "type": "Document & Image Tools",
+    "weakness": "Cluttered interface heavily monetized with intrusive pop-up advertisements.",
+    "ourAdvantage": "Clean, premium, ad-light experience built for professionals who value their time and workspace."
+  },
+  {
+    "slug": "compressjpeg",
+    "name": "CompressJPEG",
+    "type": "Format Compressor",
+    "weakness": "Limited format support and batch processing restrictions.",
+    "ourAdvantage": "Universal format support (WebP, AVIF, HEIC) with unlimited batch processing capabilities."
+  }
+]

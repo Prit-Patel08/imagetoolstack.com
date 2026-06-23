@@ -27,6 +27,12 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/embed/'),
+      serialize(item) {
+        item.changefreq = 'monthly';
+        item.lastmod = new Date();
+        item.priority = 0.9;
+        return item;
+      }
     })
   ],
   markdown: {

@@ -5,12 +5,13 @@ export function getTranslations(locale: string) {
   return translations[cleanLocale] || translations[defaultLocale];
 }
 
+export const locales = ['es', 'fr', 'de', 'pt', 'id'];
+
 /**
  * Returns the localized path prefixing the locale, stripping any existing locale first.
  */
 export function getLocalizedPath(path: string, locale: string): string {
   const cleanLocale = locale || defaultLocale;
-  const locales = ['es', 'fr', 'de', 'pt', 'id'];
   
   // 1. Strip .html if present (Cloudflare Pages serves clean URLs)
   let basePath = path.replace(/\.html$/, '');

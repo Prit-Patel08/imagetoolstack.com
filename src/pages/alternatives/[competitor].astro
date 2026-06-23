@@ -1,0 +1,109 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import RequestToolSection from "../../components/RequestToolSection.astro";
+import competitors from "../../data/competitors.json";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  return competitors.map((competitor) => {
+    return {
+      params: { competitor: competitor.slug },
+      props: { competitor },
+    };
+  });
+}
+
+const { competitor } = Astro.props;
+const topTools = toolsData.tools.slice(0, 12); // Feature top tools
+
+const seoTitle = `Best Free ${competitor.name} Alternative in 2026 - No Limits`;
+const seoDescription = `Looking for a free alternative to ${competitor.name}? Image Tool Stack offers 100% free, private, and unlimited ${competitor.type.toLowerCase()} tools that run directly in your browser.`;
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Hero Section */}
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-medium text-sm mb-6 border border-blue-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          100% Free & Private Alternative
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+          The Best Free <span class="text-blue-600">{competitor.name}</span> Alternative
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+          Frustrated by {competitor.name}'s limitations? Image Tool Stack is a next-generation <strong>{competitor.type.toLowerCase()}</strong> that processes files directly in your browser with zero limits.
+        </p>
+        <a href="#tools" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+          Explore Free Tools
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+      </div>
+
+      {/* Comparison Section */}
+      <div class="max-w-5xl mx-auto mb-20">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          
+          <div class="bg-red-50 border border-red-100 rounded-3xl p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 text-red-600">
+              <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xl">✕</div>
+              <h3 class="text-2xl font-bold text-gray-900">The Problem with {competitor.name}</h3>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed relative z-10">
+              {competitor.weakness}
+            </p>
+          </div>
+
+          <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-8 relative overflow-hidden shadow-[0_8px_30px_rgba(16,185,129,0.12)]">
+            <div class="absolute top-0 right-0 p-4 opacity-10 text-emerald-600">
+              <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-xl">✓</div>
+              <h3 class="text-2xl font-bold text-gray-900">Why Choose Us</h3>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed relative z-10">
+              {competitor.ourAdvantage}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Tools Grid */}
+      <div id="tools" class="mb-20 pt-10">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Free Alternative Tools</h2>
+          <p class="text-xl text-gray-600">Everything you need, completely free forever.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {topTools.map((tool) => (
+            <a href={`/tools/${tool.slug}`} class="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-blue-200 transition-all duration-300">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300" set:html={tool.icon} />
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                {tool.name}
+              </h3>
+              <p class="text-sm text-gray-500 line-clamp-2">
+                {tool.description}
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </main>
+  
+  <RequestToolSection />
+  <Footer />
+</Layout>

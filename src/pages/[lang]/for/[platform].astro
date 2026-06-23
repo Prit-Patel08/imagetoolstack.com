@@ -1,0 +1,185 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import RequestToolSection from "../../../components/RequestToolSection.astro";
+import platforms from "../../../data/platforms.json";
+import toolsData from "../../../data/tools.json";
+import { locales } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of locales) {
+    for (const platform of platforms) {
+      paths.push({
+        params: { lang, platform: platform.slug },
+        props: { platform },
+      });
+    }
+  }
+  return paths;
+}
+
+const { platform } = Astro.props;
+const lang = Astro.params.lang as string;
+
+// Find the recommended tool
+const recommendedTool = toolsData.tools.find(t => t.slug === platform.recommendedTool) || toolsData.tools[0];
+
+// Localization Map
+const textMap: Record<string, any> = {
+  en: {
+    builtFor: `Built for ${platform.useCase}`,
+    title: `Optimize Images for <span class="text-indigo-600">${platform.name}</span>`,
+    desc: `Optimize your images for ${platform.name} ${platform.useCase.toLowerCase()}. Automatically meet ${platform.name} requirements like ${platform.idealDimensions} and fast loading times.`,
+    recommended: `Recommended Tool: ${recommendedTool.name}`,
+    perfectTool: `This is the perfect tool to prepare your media for ${platform.name}. It directly addresses the primary requirement for this platform: <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Target Dimensions",
+    startFree: "Start Using for Free",
+    whyMatters: `Why Optimizing for ${platform.name} Matters`,
+    p1: `Every digital platform has its own set of rules when it comes to image processing. If you upload a generic image directly to ${platform.name} without optimizing it first, the platform's internal algorithms will aggressively compress and crop it. This usually results in:`,
+    l1: `<strong>Loss of Quality:</strong> ${platform.name} will compress your file to save server space, often leading to blurry or pixelated artifacts.`,
+    l2: `<strong>Incorrect Cropping:</strong> If you don't use the ideal dimensions (${platform.idealDimensions}), important parts of your image might be cut off.`,
+    l3: `<strong>Slow Load Times:</strong> For platforms like ${platform.name}, unoptimized media can drastically slow down page speed, hurting your user engagement.`,
+    p2: `By using our client-side tools before uploading, you maintain complete control over the final quality and exact dimensions of your media.`
+  },
+  es: {
+    builtFor: `Construido para ${platform.useCase}`,
+    title: `Optimizar imágenes para <span class="text-indigo-600">${platform.name}</span>`,
+    desc: `Optimice sus imágenes para ${platform.name}. Cumpla automáticamente los requisitos de ${platform.name} como ${platform.idealDimensions} y tiempos de carga rápidos.`,
+    recommended: `Herramienta Recomendada: ${recommendedTool.name}`,
+    perfectTool: `Esta es la herramienta perfecta para preparar sus medios para ${platform.name}. Aborda directamente el requisito principal para esta plataforma: <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Dimensiones Objetivo",
+    startFree: "Comenzar a usar gratis",
+    whyMatters: `¿Por qué es importante optimizar para ${platform.name}?`,
+    p1: `Cada plataforma digital tiene su propio conjunto de reglas en lo que respecta al procesamiento de imágenes. Si sube una imagen genérica directamente a ${platform.name} sin optimizarla primero, los algoritmos internos de la plataforma la comprimirán y recortarán agresivamente. Esto suele dar como resultado:`,
+    l1: `<strong>Pérdida de calidad:</strong> ${platform.name} comprimirá su archivo para ahorrar espacio en el servidor, lo que a menudo genera artefactos borrosos.`,
+    l2: `<strong>Recorte incorrecto:</strong> Si no utiliza las dimensiones ideales (${platform.idealDimensions}), se pueden cortar partes importantes.`,
+    l3: `<strong>Tiempos de carga lentos:</strong> Para plataformas como ${platform.name}, los medios no optimizados pueden ralentizar drásticamente la velocidad.`,
+    p2: `Al usar nuestras herramientas antes de subir sus archivos, usted mantiene el control completo sobre la calidad final y las dimensiones exactas de sus medios.`
+  },
+  fr: {
+    builtFor: `Conçu pour ${platform.useCase}`,
+    title: `Optimiser les images pour <span class="text-indigo-600">${platform.name}</span>`,
+    desc: `Optimisez vos images pour ${platform.name}. Répondez automatiquement aux exigences de ${platform.name} comme ${platform.idealDimensions} et aux temps de chargement rapides.`,
+    recommended: `Outil Recommandé : ${recommendedTool.name}`,
+    perfectTool: `C'est l'outil parfait pour préparer vos médias pour ${platform.name}. Il répond directement à l'exigence principale de cette plateforme : <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Dimensions Cibles",
+    startFree: "Commencer à utiliser gratuitement",
+    whyMatters: `Pourquoi l'optimisation pour ${platform.name} est importante`,
+    p1: `Chaque plateforme numérique a son propre ensemble de règles. Si vous téléchargez une image générique directement sur ${platform.name} sans l'optimiser d'abord, les algorithmes compresseront agressivement.`,
+    l1: `<strong>Perte de Qualité :</strong> ${platform.name} compressera votre fichier pour économiser de l'espace serveur.`,
+    l2: `<strong>Cadrage Incorrect :</strong> Si vous n'utilisez pas les dimensions idéales (${platform.idealDimensions}).`,
+    l3: `<strong>Temps de Chargement Lents :</strong> Les médias non optimisés peuvent ralentir considérablement la vitesse.`,
+    p2: `En utilisant nos outils avant le téléchargement, vous gardez un contrôle total sur la qualité finale et les dimensions exactes.`
+  },
+  de: {
+    builtFor: `Gebaut für ${platform.useCase}`,
+    title: `Bilder für <span class="text-indigo-600">${platform.name}</span> optimieren`,
+    desc: `Optimieren Sie Ihre Bilder für ${platform.name}. Erfüllen Sie automatisch Anforderungen wie ${platform.idealDimensions} und schnelle Ladezeiten.`,
+    recommended: `Empfohlenes Werkzeug: ${recommendedTool.name}`,
+    perfectTool: `Dies ist das perfekte Werkzeug, um Ihre Medien für ${platform.name} vorzubereiten. Es adressiert direkt die Hauptanforderung: <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Zielabmessungen",
+    startFree: "Kostenlos nutzen",
+    whyMatters: `Warum die Optimierung für ${platform.name} wichtig ist`,
+    p1: `Jede digitale Plattform hat ihre eigenen Regeln. Wenn Sie ein allgemeines Bild direkt bei ${platform.name} hochladen, ohne es vorher zu optimieren, werden die Algorithmen es aggressiv komprimieren.`,
+    l1: `<strong>Qualitätsverlust:</strong> ${platform.name} komprimiert Ihre Datei, um Serverplatz zu sparen.`,
+    l2: `<strong>Falscher Zuschnitt:</strong> Wenn Sie nicht die idealen Abmessungen (${platform.idealDimensions}) verwenden.`,
+    l3: `<strong>Langsame Ladezeiten:</strong> Nicht optimierte Medien können die Geschwindigkeit drastisch verlangsamen.`,
+    p2: `Wenn Sie unsere Werkzeuge vor dem Hochladen verwenden, behalten Sie die volle Kontrolle über die endgültige Qualität.`
+  },
+  pt: {
+    builtFor: `Construído para ${platform.useCase}`,
+    title: `Otimizar imagens para <span class="text-indigo-600">${platform.name}</span>`,
+    desc: `Otimize suas imagens para ${platform.name}. Cumpra automaticamente os requisitos do ${platform.name} como ${platform.idealDimensions} e tempos de carregamento rápidos.`,
+    recommended: `Ferramenta Recomendada: ${recommendedTool.name}`,
+    perfectTool: `Esta é a ferramenta perfeita para preparar seus arquivos para ${platform.name}. Ela atende diretamente ao requisito principal desta plataforma: <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Dimensões Alvo",
+    startFree: "Comece a usar grátis",
+    whyMatters: `Por que otimizar para ${platform.name} é importante`,
+    p1: `Cada plataforma digital tem seu próprio conjunto de regras. Se você enviar uma imagem genérica diretamente para o ${platform.name} sem otimizá-la primeiro, os algoritmos a comprimirão agressivamente.`,
+    l1: `<strong>Perda de Qualidade:</strong> O ${platform.name} comprimirá seu arquivo para economizar espaço no servidor.`,
+    l2: `<strong>Corte Incorreto:</strong> Se você não usar as dimensões ideais (${platform.idealDimensions}).`,
+    l3: `<strong>Tempos de Carregamento Lentos:</strong> Mídia não otimizada pode desacelerar drasticamente a velocidade.`,
+    p2: `Ao usar nossas ferramentas antes de enviar, você mantém controle total sobre a qualidade final.`
+  },
+  id: {
+    builtFor: `Dibuat untuk ${platform.useCase}`,
+    title: `Optimalkan Gambar untuk <span class="text-indigo-600">${platform.name}</span>`,
+    desc: `Optimalkan gambar Anda untuk ${platform.name}. Secara otomatis penuhi persyaratan ${platform.name} seperti ${platform.idealDimensions} dan waktu muat yang cepat.`,
+    recommended: `Alat yang Direkomendasikan: ${recommendedTool.name}`,
+    perfectTool: `Ini adalah alat yang sempurna untuk menyiapkan media Anda untuk ${platform.name}. Ini secara langsung menangani persyaratan utama untuk platform ini: <strong>${platform.keyRequirement}</strong>.`,
+    targetDim: "Dimensi Target",
+    startFree: "Mulai Menggunakan Gratis",
+    whyMatters: `Mengapa Mengoptimalkan untuk ${platform.name} Itu Penting`,
+    p1: `Setiap platform digital memiliki peraturannya sendiri. Jika Anda mengunggah gambar langsung ke ${platform.name} tanpa mengoptimalkannya terlebih dahulu, algoritme internal akan mengompresnya secara agresif.`,
+    l1: `<strong>Kehilangan Kualitas:</strong> ${platform.name} akan mengompres file Anda untuk menghemat ruang server.`,
+    l2: `<strong>Pemotongan yang Salah:</strong> Jika Anda tidak menggunakan dimensi ideal (${platform.idealDimensions}).`,
+    l3: `<strong>Waktu Muat Lambat:</strong> Media yang tidak dioptimalkan dapat memperlambat kecepatan halaman secara drastis.`,
+    p2: `Dengan menggunakan alat kami sebelum mengunggah, Anda mempertahankan kendali penuh atas kualitas akhir.`
+  }
+};
+
+const texts = textMap[lang] || textMap['en'];
+const seoTitle = `${texts.title.replace(/<[^>]+>/g, '')} - Optimize & Resize`;
+const seoDescription = texts.desc;
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Hero Section */}
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium text-sm mb-6 border border-indigo-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          {texts.builtFor}
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6" set:html={texts.title} />
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+          {texts.desc}
+        </p>
+      </div>
+
+      {/* Recommended Tool Section */}
+      <div class="max-w-4xl mx-auto mb-20">
+        <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-8 sm:p-12 text-center shadow-lg">
+          <div class="w-20 h-20 mx-auto bg-white rounded-2xl flex items-center justify-center text-indigo-600 mb-6 shadow-sm" set:html={recommendedTool.icon} />
+          
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">{texts.recommended}</h2>
+          <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto" set:html={texts.perfectTool} />
+          
+          <div class="bg-white/80 rounded-xl p-4 inline-block mb-8">
+            <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider block mb-1">{texts.targetDim}</span>
+            <span class="text-xl font-bold text-indigo-900">{platform.idealDimensions}</span>
+          </div>
+          
+          <div>
+            <a href={`/${lang}/tools/${recommendedTool.slug}`} class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+              {texts.startFree}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m-7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Context Section */}
+      <div class="max-w-3xl mx-auto prose prose-indigo prose-lg text-gray-600">
+        <h2>{texts.whyMatters}</h2>
+        <p>{texts.p1}</p>
+        <ul>
+          <li set:html={texts.l1} />
+          <li set:html={texts.l2} />
+          <li set:html={texts.l3} />
+        </ul>
+        <p>{texts.p2}</p>
+      </div>
+
+    </div>
+  </main>
+  
+  <RequestToolSection />
+  <Footer />
+</Layout>

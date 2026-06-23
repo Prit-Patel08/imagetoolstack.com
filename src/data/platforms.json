@@ -1,0 +1,82 @@
+[
+  {
+    "slug": "shopify",
+    "name": "Shopify",
+    "useCase": "E-commerce",
+    "keyRequirement": "Fast loading WebP images (under 100KB) to improve Core Web Vitals, reduce bounce rates, and increase sales.",
+    "recommendedTool": "image-compressor",
+    "idealDimensions": "2048 x 2048 pixels"
+  },
+  {
+    "slug": "instagram",
+    "name": "Instagram",
+    "useCase": "Social Media",
+    "keyRequirement": "Perfect 1:1 or 4:5 aspect ratios to prevent algorithmic cropping and maintain feed aesthetic.",
+    "recommendedTool": "crop-image-online",
+    "idealDimensions": "1080 x 1080 pixels or 1080 x 1350 pixels"
+  },
+  {
+    "slug": "discord",
+    "name": "Discord",
+    "useCase": "Gaming & Communities",
+    "keyRequirement": "Strict 25MB file size limits for free users when sharing memes, videos, and high-res screenshots.",
+    "recommendedTool": "image-compressor",
+    "idealDimensions": "Under 25MB"
+  },
+  {
+    "slug": "wordpress",
+    "name": "WordPress",
+    "useCase": "Blogging & SEO",
+    "keyRequirement": "Next-Gen format support (AVIF or WebP) with embedded alt-text for maximum Google Search visibility.",
+    "recommendedTool": "image-converter",
+    "idealDimensions": "1200 x 630 pixels (Featured Image)"
+  },
+  {
+    "slug": "facebook",
+    "name": "Facebook",
+    "useCase": "Social Marketing",
+    "keyRequirement": "Optimized Open Graph (OG) images to ensure link previews look professional and clickable.",
+    "recommendedTool": "resize-image-online",
+    "idealDimensions": "1200 x 630 pixels"
+  },
+  {
+    "slug": "twitter",
+    "name": "Twitter / X",
+    "useCase": "Microblogging",
+    "keyRequirement": "High-contrast, fast-loading media that stands out in a rapidly scrolling timeline.",
+    "recommendedTool": "image-compressor",
+    "idealDimensions": "1200 x 675 pixels"
+  },
+  {
+    "slug": "linkedin",
+    "name": "LinkedIn",
+    "useCase": "B2B Networking",
+    "keyRequirement": "Professional, unpixelated corporate banners and sharp headshots for professional branding.",
+    "recommendedTool": "resize-image-online",
+    "idealDimensions": "1584 x 396 pixels (Banner)"
+  },
+  {
+    "slug": "youtube",
+    "name": "YouTube",
+    "useCase": "Video Thumbnails",
+    "keyRequirement": "High-saturation JPGs under 2MB that drive high Click-Through Rates (CTR).",
+    "recommendedTool": "image-converter",
+    "idealDimensions": "1280 x 720 pixels"
+  },
+  {
+    "slug": "twitch",
+    "name": "Twitch",
+    "useCase": "Live Streaming",
+    "keyRequirement": "Transparent PNGs and GIFs with exact dimensions for emotes, badges, and stream overlays.",
+    "recommendedTool": "remove-background-online",
+    "idealDimensions": "112 x 112 pixels (Emotes)"
+  },
+  {
+    "slug": "tiktok",
+    "name": "TikTok",
+    "useCase": "Short-form Video",
+    "keyRequirement": "Vertical 9:16 aspect ratio formatting to natively fit mobile screens.",
+    "recommendedTool": "resize-image-online",
+    "idealDimensions": "1080 x 1920 pixels"
+  }
+]

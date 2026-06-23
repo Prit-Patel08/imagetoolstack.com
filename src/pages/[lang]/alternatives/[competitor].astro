@@ -1,0 +1,174 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import RequestToolSection from "../../../components/RequestToolSection.astro";
+import competitors from "../../../data/competitors.json";
+import toolsData from "../../../data/tools.json";
+import { locales } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of locales) {
+    for (const competitor of competitors) {
+      paths.push({
+        params: { lang, competitor: competitor.slug },
+        props: { competitor },
+      });
+    }
+  }
+  return paths;
+}
+
+const { competitor } = Astro.props;
+const lang = Astro.params.lang as string;
+const topTools = toolsData.tools.slice(0, 12); // Use top 12 tools
+
+// Localization Map for Alternative strings
+const textMap: Record<string, any> = {
+  en: {
+    freePrivate: "100% Free & Private Alternative",
+    bestAlternative: `The Best Free <span class="text-blue-600">${competitor.name}</span> Alternative`,
+    frustrated: `Frustrated by ${competitor.name}'s limitations? Image Tool Stack is a next-generation <strong>${competitor.type.toLowerCase()}</strong> that processes files directly in your browser with zero limits.`,
+    explore: "Explore Free Tools",
+    problem: `The Problem with ${competitor.name}`,
+    whyChooseUs: "Why Choose Us",
+    ourAlternative: "Our Free Alternative Tools",
+    everything: "Everything you need, completely free forever."
+  },
+  es: {
+    freePrivate: "Alternativa 100% Gratuita y Privada",
+    bestAlternative: `La Mejor Alternativa Gratis a <span class="text-blue-600">${competitor.name}</span>`,
+    frustrated: `¿Frustrado por las limitaciones de ${competitor.name}? Image Tool Stack es una herramienta de próxima generación que procesa archivos directamente en su navegador sin límites.`,
+    explore: "Explorar Herramientas Gratis",
+    problem: `El Problema con ${competitor.name}`,
+    whyChooseUs: "Por Qué Elegirnos",
+    ourAlternative: "Nuestras Herramientas Alternativas Gratuitas",
+    everything: "Todo lo que necesita, completamente gratis para siempre."
+  },
+  fr: {
+    freePrivate: "Alternative 100% Gratuite et Privée",
+    bestAlternative: `La Meilleure Alternative Gratuite à <span class="text-blue-600">${competitor.name}</span>`,
+    frustrated: `Frustré par les limitations de ${competitor.name} ? Image Tool Stack est un outil de nouvelle génération qui traite les fichiers directement dans votre navigateur sans aucune limite.`,
+    explore: "Explorer les Outils Gratuits",
+    problem: `Le Problème avec ${competitor.name}`,
+    whyChooseUs: "Pourquoi Nous Choisir",
+    ourAlternative: "Nos Outils Alternatifs Gratuits",
+    everything: "Tout ce dont vous avez besoin, entièrement gratuit pour toujours."
+  },
+  de: {
+    freePrivate: "100% Kostenlose & Private Alternative",
+    bestAlternative: `Die beste kostenlose <span class="text-blue-600">${competitor.name}</span> Alternative`,
+    frustrated: `Frustriert von den Einschränkungen von ${competitor.name}? Image Tool Stack ist ein Tool der nächsten Generation, das Dateien direkt in Ihrem Browser ohne Limits verarbeitet.`,
+    explore: "Kostenlose Werkzeuge entdecken",
+    problem: `Das Problem mit ${competitor.name}`,
+    whyChooseUs: "Warum uns wählen",
+    ourAlternative: "Unsere kostenlosen alternativen Werkzeuge",
+    everything: "Alles, was Sie brauchen, für immer völlig kostenlos."
+  },
+  pt: {
+    freePrivate: "Alternativa 100% Gratuita e Privada",
+    bestAlternative: `A Melhor Alternativa Gratuita ao <span class="text-blue-600">${competitor.name}</span>`,
+    frustrated: `Frustrado com as limitações do ${competitor.name}? O Image Tool Stack é uma ferramenta de próxima geração que processa arquivos diretamente no seu navegador, com zero limites.`,
+    explore: "Explorar Ferramentas Gratuitas",
+    problem: `O Problema com o ${competitor.name}`,
+    whyChooseUs: "Por Que Nos Escolher",
+    ourAlternative: "Nossas Ferramentas Alternativas Gratuitas",
+    everything: "Tudo o que você precisa, completamente grátis para sempre."
+  },
+  id: {
+    freePrivate: "Alternatif 100% Gratis & Pribadi",
+    bestAlternative: `Alternatif <span class="text-blue-600">${competitor.name}</span> Gratis Terbaik`,
+    frustrated: `Frustrasi dengan batasan ${competitor.name}? Image Tool Stack adalah alat generasi berikutnya yang memproses file langsung di browser Anda tanpa batas.`,
+    explore: "Jelajahi Alat Gratis",
+    problem: `Masalah dengan ${competitor.name}`,
+    whyChooseUs: "Mengapa Memilih Kami",
+    ourAlternative: "Alat Alternatif Gratis Kami",
+    everything: "Semua yang Anda butuhkan, sepenuhnya gratis selamanya."
+  }
+};
+
+const texts = textMap[lang] || textMap['en'];
+
+const seoTitle = `${texts.bestAlternative.replace(/<[^>]+>/g, '')} - No Limits`;
+const seoDescription = `${texts.frustrated.replace(/<[^>]+>/g, '')}`;
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Hero Section */}
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-medium text-sm mb-6 border border-blue-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          {texts.freePrivate}
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6" set:html={texts.bestAlternative} />
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed" set:html={texts.frustrated} />
+        <a href="#tools" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+          {texts.explore}
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+      </div>
+
+      {/* Comparison Section */}
+      <div class="max-w-5xl mx-auto mb-20">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          
+          <div class="bg-red-50 border border-red-100 rounded-3xl p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 text-red-600">
+              <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xl">✕</div>
+              <h3 class="text-2xl font-bold text-gray-900">{texts.problem}</h3>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed relative z-10">
+              {competitor.weakness} {/* Intentionally leaving English for weakness/advantage for SEO entity matching */}
+            </p>
+          </div>
+
+          <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-8 relative overflow-hidden shadow-[0_8px_30px_rgba(16,185,129,0.12)]">
+            <div class="absolute top-0 right-0 p-4 opacity-10 text-emerald-600">
+              <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-xl">✓</div>
+              <h3 class="text-2xl font-bold text-gray-900">{texts.whyChooseUs}</h3>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed relative z-10">
+              {competitor.ourAdvantage}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Tools Grid */}
+      <div id="tools" class="mb-20 pt-10">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">{texts.ourAlternative}</h2>
+          <p class="text-xl text-gray-600">{texts.everything}</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {topTools.map((tool) => (
+            <a href={`/${lang}/tools/${tool.slug}`} class="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-blue-200 transition-all duration-300">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300" set:html={tool.icon} />
+              <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                {tool.name}
+              </h3>
+            </a>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </main>
+  
+  <RequestToolSection />
+  <Footer />
+</Layout>

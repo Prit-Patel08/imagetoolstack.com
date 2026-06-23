@@ -1,0 +1,182 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import RequestToolSection from "../../components/RequestToolSection.astro";
+import formats from "../../data/formats.json";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  return formats.map((format) => {
+    return {
+      params: { ext: format.slug },
+      props: { format },
+    };
+  });
+}
+
+const { format } = Astro.props;
+
+// Find tools that can handle this format (e.g. output to it, or input from it)
+const relatedTools = toolsData.tools.filter(t => 
+  (t.outputFormats && t.outputFormats.includes(format.name.toUpperCase())) ||
+  (t.inputFormats && t.inputFormats.includes(format.name.toUpperCase()))
+).slice(0, 8);
+
+const seoTitle = `What is a ${format.name} file? - Image Format Glossary`;
+const seoDescription = `Learn everything you need to know about the ${format.fullName} (${format.name}) file format. Understand compression, use-cases, pros, and cons.`;
+
+// Build FAQ schema for Rich Snippets
+const faqs = [
+  { q: `What does ${format.name} stand for?`, a: `${format.name} stands for ${format.fullName}.` },
+  { q: `Is ${format.name} lossy or lossless?`, a: `The ${format.name} format utilizes ${format.compression.toLowerCase()} compression.` },
+  { q: `Does ${format.name} support transparency?`, a: format.transparency ? `Yes, ${format.name} supports alpha-channel transparency.` : `No, ${format.name} does not support transparency.` }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((item) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+};
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Hero Section */}
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-medium text-sm mb-6 border border-purple-100 uppercase tracking-widest">
+          {format.type} Image Format
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+          What is a <span class="text-purple-600">{format.name}</span> file?
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+          {format.fullName}
+        </p>
+      </div>
+
+      {/* Main Content Grid */}
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+        
+        {/* Left Column: Technical Specs */}
+        <div class="lg:col-span-4 space-y-6">
+          <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+            <h3 class="font-bold text-gray-900 mb-4 text-lg border-b border-gray-200 pb-2">Technical Specifications</h3>
+            
+            <dl class="space-y-4 text-sm">
+              <div class="flex justify-between border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">Developer</dt>
+                <dd class="font-medium text-gray-900">{format.developedBy}</dd>
+              </div>
+              <div class="flex justify-between border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">Release Year</dt>
+                <dd class="font-medium text-gray-900">{format.releaseYear}</dd>
+              </div>
+              <div class="flex justify-between border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">Compression</dt>
+                <dd class="font-medium text-gray-900">{format.compression}</dd>
+              </div>
+              <div class="flex justify-between border-b border-gray-100 pb-2">
+                <dt class="text-gray-500">Transparency</dt>
+                <dd class="font-medium text-gray-900 flex items-center gap-1">
+                  {format.transparency ? <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>}
+                  {format.transparency ? "Supported" : "Not Supported"}
+                </dd>
+              </div>
+              <div class="flex justify-between pb-2">
+                <dt class="text-gray-500">Animation</dt>
+                <dd class="font-medium text-gray-900 flex items-center gap-1">
+                  {format.animation ? <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>}
+                  {format.animation ? "Supported" : "Not Supported"}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+            <h3 class="font-bold text-gray-900 mb-2 text-lg">Browser Support</h3>
+            <p class="text-sm text-gray-700">{format.browserSupport}</p>
+          </div>
+        </div>
+
+        {/* Right Column: Deep Dive */}
+        <div class="lg:col-span-8 prose prose-lg prose-purple text-gray-600">
+          <h2>Overview</h2>
+          <p>{format.description}</p>
+
+          <div class="grid sm:grid-cols-2 gap-8 my-10 not-prose">
+            <div class="bg-emerald-50 rounded-xl p-6 border border-emerald-100">
+              <h4 class="font-bold text-emerald-900 flex items-center gap-2 mb-4">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m-7-7H3"/></svg>
+                Advantages
+              </h4>
+              <ul class="space-y-3">
+                {format.pros.map((pro) => (
+                  <li class="flex gap-2 text-emerald-800 text-sm">
+                    <span class="mt-0.5 text-emerald-500">•</span> {pro}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100">
+              <h4 class="font-bold text-red-900 flex items-center gap-2 mb-4">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Disadvantages
+              </h4>
+              <ul class="space-y-3">
+                {format.cons.map((con) => (
+                  <li class="flex gap-2 text-red-800 text-sm">
+                    <span class="mt-0.5 text-red-500">•</span> {con}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <h2>Common Use Cases</h2>
+          <ul>
+            {format.useCases.map((useCase) => (
+              <li>{useCase}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Tools Grid */}
+      {relatedTools.length > 0 && (
+        <div class="mb-20 border-t border-gray-200 pt-16">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Tools for {format.name} Files</h2>
+            <p class="text-xl text-gray-600">Convert, resize, and optimize your {format.name} images for free.</p>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedTools.map((tool) => (
+              <a href={`/tools/${tool.slug}`} class="group bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-purple-200 transition-all duration-300 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300" set:html={tool.icon} />
+                <h3 class="text-sm font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                  {tool.name}
+                </h3>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  </main>
+  
+  <RequestToolSection />
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</Layout>

@@ -1,0 +1,92 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import RequestToolSection from "../../components/RequestToolSection.astro";
+import platforms from "../../data/platforms.json";
+import toolsData from "../../data/tools.json";
+
+export async function getStaticPaths() {
+  return platforms.map((platform) => {
+    return {
+      params: { platform: platform.slug },
+      props: { platform },
+    };
+  });
+}
+
+const { platform } = Astro.props;
+
+// Find the recommended tool
+const recommendedTool = toolsData.tools.find(t => t.slug === platform.recommendedTool) || toolsData.tools[0];
+
+const seoTitle = `Best Free Image Tools for ${platform.name} - Optimize & Resize`;
+const seoDescription = `Optimize your images for ${platform.name} ${platform.useCase.toLowerCase()}. Automatically meet ${platform.name} requirements like ${platform.idealDimensions} and fast loading times.`;
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Hero Section */}
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium text-sm mb-6 border border-indigo-100">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          Built for {platform.useCase}
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+          Optimize Images for <span class="text-indigo-600">{platform.name}</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+          {seoDescription}
+        </p>
+      </div>
+
+      {/* Recommended Tool Section */}
+      <div class="max-w-4xl mx-auto mb-20">
+        <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-8 sm:p-12 text-center shadow-lg">
+          <div class="w-20 h-20 mx-auto bg-white rounded-2xl flex items-center justify-center text-indigo-600 mb-6 shadow-sm" set:html={recommendedTool.icon} />
+          
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">Recommended Tool: {recommendedTool.name}</h2>
+          <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto">
+            This is the perfect tool to prepare your media for {platform.name}. It directly addresses the primary requirement for this platform: <strong>{platform.keyRequirement}</strong>.
+          </p>
+          
+          <div class="bg-white/80 rounded-xl p-4 inline-block mb-8">
+            <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider block mb-1">Target Dimensions</span>
+            <span class="text-xl font-bold text-indigo-900">{platform.idealDimensions}</span>
+          </div>
+          
+          <div>
+            <a href={`/tools/${recommendedTool.slug}`} class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+              Start Using for Free
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m-7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Context Section */}
+      <div class="max-w-3xl mx-auto prose prose-indigo prose-lg text-gray-600">
+        <h2>Why Optimizing for {platform.name} Matters</h2>
+        <p>
+          Every digital platform has its own set of rules when it comes to image processing. If you upload a generic image directly to {platform.name} without optimizing it first, the platform's internal algorithms will aggressively compress and crop it. This usually results in:
+        </p>
+        <ul>
+          <li><strong>Loss of Quality:</strong> {platform.name} will compress your file to save server space, often leading to blurry or pixelated artifacts.</li>
+          <li><strong>Incorrect Cropping:</strong> If you don't use the ideal dimensions ({platform.idealDimensions}), important parts of your image might be cut off.</li>
+          <li><strong>Slow Load Times:</strong> For platforms like {platform.name}, unoptimized media can drastically slow down page speed, hurting your user engagement.</li>
+        </ul>
+        <p>
+          By using our client-side tools before uploading, you maintain complete control over the final quality and exact dimensions of your media.
+        </p>
+      </div>
+
+    </div>
+  </main>
+  
+  <RequestToolSection />
+  <Footer />
+</Layout>
