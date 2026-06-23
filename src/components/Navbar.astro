@@ -201,11 +201,13 @@ const searchIndex = [
       dropdown.classList.add('flex');
     });
 
-    document.addEventListener('click', (e) => {
-      if (!container.contains(e.target)) {
-        dropdown.classList.add('hidden');
-        dropdown.classList.remove('flex');
-      }
+    ['click', 'touchstart'].forEach(evt => {
+      document.addEventListener(evt, (e) => {
+        if (!container.contains(e.target)) {
+          dropdown.classList.add('hidden');
+          dropdown.classList.remove('flex');
+        }
+      });
     });
     
     input.addEventListener('focus', () => {
@@ -264,11 +266,13 @@ const searchIndex = [
       langDropdown.classList.toggle('flex');
     });
 
-    document.addEventListener('click', (e) => {
-      if (!langContainer.contains(e.target)) {
-        langDropdown.classList.add('hidden');
-        langDropdown.classList.remove('flex');
-      }
+    ['click', 'touchstart'].forEach(evt => {
+      document.addEventListener(evt, (e) => {
+        if (!langContainer.contains(e.target)) {
+          langDropdown.classList.add('hidden');
+          langDropdown.classList.remove('flex');
+        }
+      });
     });
   }
 </script>

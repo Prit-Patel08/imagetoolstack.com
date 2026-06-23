@@ -12,17 +12,19 @@ export function getLocalizedPath(path: string, locale: string): string {
   const cleanLocale = locale || defaultLocale;
   const locales = ['es', 'fr', 'de', 'pt', 'id'];
   
-  // 1. Strip any existing locale prefix
-  let basePath = path;
+  // 1. Strip .html if present (Cloudflare Pages serves clean URLs)
+  let basePath = path.replace(/\.html$/, '');
+
+  // 2. Strip any existing locale prefix
   const localeRegex = new RegExp(`^\\/(${locales.join('|')})($|\\/)`);
   const matchedLocale = basePath.match(localeRegex);
   if (matchedLocale) {
     basePath = basePath.replace(localeRegex, '/');
   }
   
-  // 2. Add the new locale prefix if it's not the default one
+  // 3. Add the new locale prefix if it's not the default one
   if (cleanLocale === defaultLocale) {
-    return basePath;
+    return basePath === '' ? '/' : basePath;
   }
   
   const cleanBasePath = basePath.replace(/^\//, '').replace(/\/$/, '');
