@@ -86,11 +86,6 @@ const seoTitle = generateSeoTitle(tool);
 const seoDescription = generateSeoDescription(tool);
 const faqs = generateFaqs(tool);
 
-// Stable hash for rating (between 4.5 and 4.9)
-const hash = tool.slug.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-const ratingValue = (4.5 + (hash % 5) * 0.1).toFixed(1);
-const ratingCount = 120 + (hash % 800);
-
 // Build JSON-LD for SoftwareApplication
 const softwareSchema = {
   "@context": "https://schema.org",
@@ -99,11 +94,6 @@ const softwareSchema = {
   "url": `https://imagetoolstack.com${getLocalizedPath(`/tools/${tool.slug}`, locale)}`,
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Web Browser",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": ratingValue,
-    "ratingCount": ratingCount
-  },
   "offers": {
     "@type": "Offer",
     "price": "0",
