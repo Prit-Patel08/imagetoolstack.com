@@ -13,8 +13,6 @@
 /de/index.html /de 301
 /pt/index.html /pt 301
 /id/index.html /id 301
-/index.html / 301
-
 # Canonical clean URLs (Astro builds as .html files)
 /*.html /:splat 301
 
