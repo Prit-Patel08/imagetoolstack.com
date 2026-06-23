@@ -25,12 +25,29 @@ export async function getStaticPaths() {
   });
 }
 
+import { getCollection, render } from "astro:content";
 import { translateComparison, translateCapabilityValue, translateTool, getLocalizedPath } from "../../utils/i18n";
 
 const { comp: rawComp } = Astro.props;
 const locale = Astro.currentLocale || 'en';
 const comp = translateComparison(rawComp, locale);
 
+const allFormats = await getCollection("formats");
+const format1Entry = allFormats.find(f => f.id.toLowerCase() === comp.format1.toLowerCase());
+const format2Entry = allFormats.find(f => f.id.toLowerCase() === comp.format2.toLowerCase());
+
+let Format1Content = null;
+let Format2Content = null;
+
+if (format1Entry) {
+  const rendered = await render(format1Entry);
+  Format1Content = rendered.Content;
+}
+
+if (format2Entry) {
+  const rendered = await render(format2Entry);
+  Format2Content = rendered.Content;
+}
 const homeText = locale === 'es' ? 'Inicio' :
                  locale === 'fr' ? 'Accueil' :
                  locale === 'de' ? 'Startseite' :
@@ -607,6 +624,32 @@ const schema = {
           <p class="text-sm text-body leading-relaxed">{comp.whenToUse2}</p>
         </div>
       </section>
+
+      <!-- Format Deep Dive Content -->
+      {(Format1Content || Format2Content) && (
+        <section class="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 border-t border-hairline pt-12">
+          {Format1Content && (
+            <div>
+              <div class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-canvas-soft font-mono text-sm font-bold text-ink border border-hairline shadow-sm mb-6 uppercase">
+                {comp.format1}
+              </div>
+              <div class="prose prose-sm max-w-none text-body prose-headings:text-ink prose-a:text-link hover:prose-a:text-link-hover prose-strong:text-ink">
+                <Format1Content />
+              </div>
+            </div>
+          )}
+          {Format2Content && (
+            <div>
+              <div class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-canvas-soft font-mono text-sm font-bold text-ink border border-hairline shadow-sm mb-6 uppercase">
+                {comp.format2}
+              </div>
+              <div class="prose prose-sm max-w-none text-body prose-headings:text-ink prose-a:text-link hover:prose-a:text-link-hover prose-strong:text-ink">
+                <Format2Content />
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       <!-- FAQ Accordion Section -->
       <section class="mb-16 border-t border-hairline pt-12">
