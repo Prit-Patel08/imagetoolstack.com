@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import { defaultLocale } from "../../data/translations";
+
+export function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  return locales.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const articles = await getCollection('articles');
+
+// Basic localized SEO strings (could use i18n dictionary if wanted)
+let seoTitle = "Image Formats & Optimization Guides";
+let seoDescription = "Learn everything about image formats, compression, and SEO optimization. Read our comprehensive guides to mastering digital images.";
+let heading = "Guides & Articles";
+let subheading = "Deep-dive guides on image optimization, format comparisons, and SEO best practices to help you get the most out of your digital assets.";
+let readArticleStr = "Read article";
+
+if (lang === 'es') {
+  seoTitle = "Guías de Formatos de Imagen y Optimización";
+  seoDescription = "Aprenda todo sobre formatos de imagen, compresión y optimización SEO. Lea nuestras guías completas para dominar las imágenes digitales.";
+  heading = "Guías y Artículos";
+  subheading = "Guías detalladas sobre optimización de imágenes, comparaciones de formatos y mejores prácticas de SEO.";
+  readArticleStr = "Leer artículo";
+} else if (lang === 'fr') {
+  seoTitle = "Guides des Formats d'Image et Optimisation";
+  seoDescription = "Apprenez tout sur les formats d'image, la compression et l'optimisation SEO.";
+  heading = "Guides et Articles";
+  subheading = "Guides approfondis sur l'optimisation des images et les meilleures pratiques SEO.";
+  readArticleStr = "Lire l'article";
+} else if (lang === 'de') {
+  seoTitle = "Bildformate & Optimierungsleitfäden";
+  seoDescription = "Erfahren Sie alles über Bildformate, Komprimierung und SEO-Optimierung.";
+  heading = "Leitfäden & Artikel";
+  subheading = "Ausführliche Leitfäden zur Bildoptimierung, Formatvergleichen und SEO-Best-Practices.";
+  readArticleStr = "Artikel lesen";
+} else if (lang === 'pt') {
+  seoTitle = "Guias de Formatos de Imagem e Otimização";
+  seoDescription = "Aprenda tudo sobre formatos de imagem, compressão e otimização SEO.";
+  heading = "Guias e Artigos";
+  subheading = "Guias detalhados sobre otimização de imagens, comparações de formatos e melhores práticas de SEO.";
+  readArticleStr = "Ler artigo";
+} else if (lang === 'id') {
+  seoTitle = "Panduan Format Gambar & Optimasi";
+  seoDescription = "Pelajari semua tentang format gambar, kompresi, dan optimasi SEO.";
+  heading = "Panduan & Artikel";
+  subheading = "Panduan mendalam tentang optimasi gambar, perbandingan format, dan praktik terbaik SEO.";
+  readArticleStr = "Baca artikel";
+}
+
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <div class="mx-auto max-w-[1400px] px-6 py-16 lg:px-8 lg:py-24">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{heading}</h1>
+        <p class="text-lg text-body leading-relaxed">
+          {subheading}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {articles.map((article) => (
+          <a href={`/${lang}/${article.id}`} class="group flex flex-col p-6 rounded-2xl bg-canvas border border-hairline hover:border-link transition-all hover:shadow-md h-full">
+            <h2 class="text-xl font-bold text-ink mb-3 group-hover:text-link transition-colors">{article.data.title}</h2>
+            <p class="text-sm text-body leading-relaxed flex-grow line-clamp-3">{article.data.description}</p>
+            <div class="mt-6 flex items-center text-sm font-semibold text-link">
+              {readArticleStr}
+              <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
