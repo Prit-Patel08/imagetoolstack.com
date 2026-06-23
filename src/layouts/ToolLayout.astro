@@ -85,21 +85,6 @@ const seoTitle = generateSeoTitle(tool);
 const seoDescription = generateSeoDescription(tool);
 const faqs = generateFaqs(tool);
 
-// Deterministic hash based on slug
-const getDeterministicRating = (slug: string) => {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  // Rating value between 4.6 and 4.9
-  const ratingValue = (4.6 + (Math.abs(hash) % 4) * 0.1).toFixed(1);
-  // Review count between 120 and 380
-  const reviewCount = 120 + (Math.abs(hash) % 261);
-  return { ratingValue, reviewCount };
-};
-
-const { ratingValue, reviewCount } = getDeterministicRating(tool.slug);
-
 // Build JSON-LD for SoftwareApplication
 const softwareSchema = {
   "@context": "https://schema.org",
@@ -112,11 +97,6 @@ const softwareSchema = {
     "@type": "Offer",
     "price": "0",
     "priceCurrency": "USD"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": ratingValue,
-    "reviewCount": reviewCount
   }
 };
 
