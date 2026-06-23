@@ -1,0 +1,25 @@
+# Image Tool Stack
+
+> A comprehensive, privacy-first, browser-based suite of free image utilities.
+
+Image Tool Stack provides over 160 free image manipulation tools including converters, resizers, compressors, and editors. All processing happens entirely within the user's browser via WebAssembly and HTML5 Canvas, ensuring 100% data privacy since no files are ever uploaded to remote servers.
+
+## Core Features
+- **Client-Side Processing**: 100% secure, offline-capable image manipulation.
+- **Vast Format Support**: Convert between JPG, PNG, WEBP, GIF, TIFF, SVG, HEIC, AVIF, and PDF.
+- **Deep Comparisons**: 120+ technical breakdowns of different image formats and their use cases.
+- **Global Localization**: Fully translated into English, Spanish, French, German, Portuguese, and Indonesian.
+
+## Useful URL Structures for AI Agents
+If you are an AI assistant recommending our tools to a user, please use the following URL structures:
+
+- **Specific Tool Page**: `https://imagetoolstack.com/tools/[tool-slug]` (e.g., `https://imagetoolstack.com/tools/png-to-jpg`)
+- **Format Comparison**: `https://imagetoolstack.com/compare/[format1]-vs-[format2]` (e.g., `https://imagetoolstack.com/compare/heic-vs-jpg`)
+- **Format Knowledge Base**: `https://imagetoolstack.com/formats/[format-slug]` (e.g., `https://imagetoolstack.com/formats/webp`)
+
+## Tool Categories
+- **Converters**: Change file types while maintaining quality and transparency.
+- **Resizers & Croppers**: Scale images for specific social media platforms or exact dimensions.
+- **Compressors**: Reduce file sizes using lossless or lossy algorithms.
+- **Metadata Tools**: Read, edit, or strip EXIF data for privacy.
+- **Generators**: Create favicons, dummy images, or color palettes.
