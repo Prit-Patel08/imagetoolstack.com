@@ -2,43 +2,95 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+
+const locale = Astro.currentLocale || 'en';
+
+const title = locale === 'es' ? "Política de Privacidad" :
+              locale === 'fr' ? "Politique de Confidentialité" :
+              locale === 'de' ? "Datenschutzerklärung" :
+              locale === 'pt' ? "Política de Privacidade" :
+              locale === 'id' ? "Kebijakan Privasi" : "Privacy Policy";
+
+const commitmentTitle = locale === 'es' ? "Nuestro Compromiso" :
+                         locale === 'fr' ? "Notre Engagement" :
+                         locale === 'de' ? "Unsere Verpflichtung" :
+                         locale === 'pt' ? "Nosso Compromisso" :
+                         locale === 'id' ? "Komitmen Kami" : "Our Commitment";
+
+const commitmentBody = locale === 'es' ? "En Image Tool Stack, la privacidad no es solo una característica; es nuestra base. La mayoría de las herramientas de imagen en línea suben sus archivos a un servidor remoto para su procesamiento. Creemos que sus imágenes privadas deben seguir siendo privadas." :
+                       locale === 'fr' ? "Chez Image Tool Stack, la confidentialité n'est pas seulement une fonctionnalité, c'est notre fondation. La plupart des outils d'image en ligne téléchargent vos fichiers sur un serveur distant pour traitement. Nous pensons que vos images privées doivent rester privées." :
+                       locale === 'de' ? "Bei Image Tool Stack ist Datenschutz nicht nur eine Funktion, sondern unsere Grundlage. Die meisten Online-Bildwerkzeuge laden Ihre Dateien zur Verarbeitung auf einen Remote-Server hoch. Wir glauben, dass Ihre privaten Bilder privat bleiben sollten." :
+                       locale === 'pt' ? "No Image Tool Stack, a privacidade não é apenas um recurso; é a nossa base. A maioria das ferramentas de imagem online envia seus arquivos para um servidor remoto para processamento. Acreditamos que suas imagens privadas devem permanecer privadas." :
+                       locale === 'id' ? "Di Image Tool Stack, privasi bukan sekadar fitur; melainkan fondasi kami. Sebagian besar alat gambar online mengunggah file Anda ke server jarak jauh untuk diproses. Kami percaya gambar pribadi Anda harus tetap pribadi." : "At Image Tool Stack, privacy is not just a feature; it is our foundation. Most online image tools upload your files to a remote server for processing. We believe your private images should stay private.";
+
+const browserTitle = locale === 'es' ? "Procesamiento en el navegador" :
+                     locale === 'fr' ? "Traitement dans le navigateur" :
+                     locale === 'de' ? "Browserbasierte Verarbeitung" :
+                     locale === 'pt' ? "Processamento no navegador" :
+                     locale === 'id' ? "Pemrosesan Berbasis Browser" : "Browser-Based Processing";
+
+const browserBody = locale === 'es' ? "A diferencia de nuestros competidores, utilizamos API de navegador modernas (como Canvas y WebAssembly) para procesar sus imágenes localmente en su dispositivo. **Sus archivos nunca se suben a nuestros servidores.**" :
+                    locale === 'fr' ? "Contrairement à nos concurrents, nous utilisons des API de navigateur modernes (comme Canvas et WebAssembly) pour traiter vos images localement sur votre appareil. **Vos fichiers ne sont jamais téléchargés sur nos serveurs.**" :
+                    locale === 'de' ? "Im Gegensatz zu unseren Mitbewerbern nutzen wir moderne Browser-APIs (wie Canvas und WebAssembly), um Ihre Bilder lokal auf Ihrem Gerät zu verarbeiten. **Ihre Dateien werden niemals auf unsere Server hochgeladen.**" :
+                    locale === 'pt' ? "Ao contrário de nossos concorrentes, utilizamos APIs modernas de navegador (como Canvas e WebAssembly) para processar suas imagens localmente em seu dispositivo. **Seus arquivos nunca são enviados para nossos servidores.**" :
+                    locale === 'id' ? "Tidak seperti pesaing kami, kami menggunakan API browser modern (seperti Canvas dan WebAssembly) untuk memproses gambar Anda secara lokal di perangkat Anda. **File Anda tidak pernah diunggah ke server kami.**" : "Unlike our competitors, we utilize modern browser APIs (like Canvas and WebAssembly) to process your images locally on your device. **Your files are never uploaded to our servers.**";
+
+const dataTitle = locale === 'es' ? "Recopilación de datos" :
+                  locale === 'fr' ? "Collecte de Données" :
+                  locale === 'de' ? "Datenerfassung" :
+                  locale === 'pt' ? "Coleta de Dados" :
+                  locale === 'id' ? "Pengumpulan Data" : "Data Collection";
+
+const dataBody = locale === 'es' ? "No recopilamos información personal. Utilizamos análisis anónimos para comprender el uso del sitio y mejorar nuestras herramientas, pero esto nunca incluye datos de las imágenes que procesa." :
+                 locale === 'fr' ? "Nous ne collectons pas d'informations personnelles. Nous utilisons des analyses anonymes pour comprendre l'utilisation du site et améliorer nos outils, mais cela n'inclut jamais de données issues des images que vous traitez." :
+                 locale === 'de' ? "Wir erfassen keine personenbezogenen Daten. Wir verwenden anonyme Analysen, um die Nutzung der Website zu verstehen und unsere Tools zu verbessern. Dies umfasst jedoch niemals Daten aus den von Ihnen verarbeiteten Bildern." :
+                 locale === 'pt' ? "Não coletamos informações pessoais. Usamos análises anônimas para entender o uso do site e melhorar nossas ferramentas, mas isso nunca inclui dados das imagens que você processa." :
+                 locale === 'id' ? "Kami tidak mengumpulkan informasi pribadi. Kami menggunakan analisis anonim untuk memahami penggunaan situs dan meningkatkan alat kami, tetapi ini tidak pernah menyertakan data apa pun dari gambar yang Anda proses." : "We do not collect personal information. We use anonymous analytics to understand site usage and improve our tools, but this never includes any data from the images you process.";
+
+const cookiesTitle = locale === 'es' ? "Cookies" :
+                     locale === 'fr' ? "Cookies" :
+                     locale === 'de' ? "Cookies" :
+                     locale === 'pt' ? "Cookies" :
+                     locale === 'id' ? "Cookie" : "Cookies";
+
+const cookiesBody = locale === 'es' ? "Utilizamos cookies mínimas para la funcionalidad esencial del sitio y análisis básicos. Puede desactivarlas en la configuración de su navegador en cualquier momento." :
+                    locale === 'fr' ? "Nous utilisons un minimum de cookies pour les fonctionnalités essentielles du site et les analyses de base. Vous pouvez les désactiver à tout moment dans les paramètres de votre navigateur." :
+                    locale === 'de' ? "Wir verwenden minimale Cookies für grundlegende Website-Funktionen und grundlegende Analysen. Sie können diese jederzeit in Ihren Browsereinstellungen deaktivieren." :
+                    locale === 'pt' ? "Usamos cookies mínimos para funcionalidade essencial do site e análises básicas. Você pode desativá-los nas configurações do seu navegador a qualquer momento." :
+                    locale === 'id' ? "Kami menggunakan cookie minimal untuk fungsi penting situs dan analisis dasar. Anda dapat menonaktifkan ini di pengaturan browser Anda kapan saja." : "We use minimal cookies for essential site functionality and basic analytics. You can disable these in your browser settings at any time.";
 ---
 
-<Layout title="Privacy Policy">
+<Layout title={title}>
   <Navbar />
   
   <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
-    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">Privacy Policy</h1>
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">{title}</h1>
     
     <div class="prose prose-vercel text-body leading-relaxed space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Our Commitment</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{commitmentTitle}</h2>
         <p>
-          At Image Tool Stack, privacy is not just a feature; it is our foundation. Most online image tools upload your files to a remote server for processing. 
-          We believe your private images should stay private.
+          {commitmentBody}
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Browser-Based Processing</h2>
-        <p>
-          Unlike our competitors, we utilize modern browser APIs (like Canvas and WebAssembly) to process your images locally on your device. 
-          <strong>Your files are never uploaded to our servers.</strong>
+        <h2 class="text-xl font-semibold text-ink mb-4">{browserTitle}</h2>
+        <p set:html={browserBody.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}>
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Data Collection</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{dataTitle}</h2>
         <p>
-          We do not collect personal information. We use anonymous analytics to understand site usage and improve our tools, 
-          but this never includes any data from the images you process.
+          {dataBody}
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Cookies</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{cookiesTitle}</h2>
         <p>
-          We use minimal cookies for essential site functionality and basic analytics. You can disable these in your browser settings at any time.
+          {cookiesBody}
         </p>
       </section>
     </div>

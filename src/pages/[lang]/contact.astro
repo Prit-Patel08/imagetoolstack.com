@@ -1,0 +1,11 @@
+---
+import RootContactPage from "../contact.astro";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  return locales.map((locale) => ({
+    params: { lang: locale },
+  }));
+}
+---
+<RootContactPage />

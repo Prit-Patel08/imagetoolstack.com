@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import RequestToolSection from "../../components/RequestToolSection.astro";
 import toolsData from "../../data/tools.json";
+import { translateCategory, translateTool, getLocalizedPath } from "../../utils/i18n";
 
 export async function getStaticPaths() {
   return toolsData.categories.map((category) => {
@@ -15,15 +16,113 @@ export async function getStaticPaths() {
   });
 }
 
-const { category, tools } = Astro.props;
+const { category: rawCategory, tools: rawTools } = Astro.props;
+const locale = Astro.currentLocale || 'en';
+const category = translateCategory(rawCategory, locale);
+const tools = rawTools.map((t) => translateTool(t, locale));
+
+const homeText = locale === 'es' ? 'Inicio' :
+                 locale === 'fr' ? 'Accueil' :
+                 locale === 'de' ? 'Startseite' :
+                 locale === 'pt' ? 'Início' :
+                 locale === 'id' ? 'Beranda' : 'Home';
+
+const useToolText = locale === 'es' ? 'Usar Herramienta' :
+                    locale === 'fr' ? 'Utiliser l\'outil' :
+                    locale === 'de' ? 'Werkzeug benutzen' :
+                    locale === 'pt' ? 'Usar ferramenta' :
+                    locale === 'id' ? 'Gunakan Alat' : 'Use Tool';
+
+const toolsAvailableText = locale === 'es' ? 'herramientas disponibles' :
+                           locale === 'fr' ? 'outils disponibles' :
+                           locale === 'de' ? 'Werkzeuge verfügbar' :
+                           locale === 'pt' ? 'ferramentas disponíveis' :
+                           locale === 'id' ? 'alat tersedia' : 'tools available';
+
+const seoContent = {
+  en: {
+    heading: `The Ultimate Suite of ${category.name} Tools`,
+    p1: `When working with digital media, having access to reliable, fast, and secure <strong>${category.name.toLowerCase()}</strong> utilities is absolutely essential. Whether you are a web developer optimizing assets, a photographer managing high-resolution files, or a digital marketer preparing content for social media, our collection of specialized tools is designed to streamline your workflow.`,
+    h2: "Why Process Images Locally?",
+    p2: `Unlike traditional online services that force you to upload your private files to remote servers, all of our ${category.name.toLowerCase()} tools operate exclusively within your web browser. By leveraging advanced WebAssembly technology and the HTML5 Canvas API, we bring desktop-grade processing power directly to your device. This architectural choice provides three massive benefits:`,
+    b1: "<strong>Absolute Privacy:</strong> Because your files never leave your device and are never transmitted over the internet, your sensitive data remains 100% secure.",
+    b2: "<strong>Zero Latency:</strong> Eliminate the frustrating wait times associated with uploading large files to cloud servers and downloading the results. Processing begins instantly.",
+    b3: "<strong>No File Size Limits:</strong> Without the constraints of server bandwidth and storage costs, you can process high-resolution images that other platforms would reject.",
+    h3: "A Complete Toolkit",
+    p3: `The ${category.name} category encompasses a wide array of specialized utilities. From simple conversions to complex optimizations, each tool is purpose-built to solve a specific problem efficiently. We continuously update and expand our toolset to ensure compatibility with the latest next-generation image formats like WebP, AVIF, and HEIC, alongside legacy formats like JPEG, PNG, and GIF.`,
+    p4: "Bookmark this page to ensure you always have instant access to a powerful, privacy-first image processing suite whenever you need it."
+  },
+  es: {
+    heading: `La suite definitiva de herramientas de ${category.name}`,
+    p1: `Cuando se trabaja con medios digitales, tener acceso a utilidades de <strong>${category.name.toLowerCase()}</strong> confiables, rápidas y seguras es absolutamente esencial. Tanto si es un desarrollador web que optimiza recursos, un fotógrafo que administra archivos de alta resolución o un especialista en marketing digital que prepara contenido para redes sociales, nuestra colección de herramientas especializadas está diseñada para optimizar su flujo de trabajo.`,
+    h2: "¿Por qué procesar imágenes localmente?",
+    p2: `A diferencia de los servicios en línea tradicionales que le obligan a subir sus archivos privados a servidores remotos, todas nuestras herramientas de ${category.name.toLowerCase()} funcionan exclusivamente en su navegador web. Al aprovechar la tecnología WebAssembly avanzada y la API HTML5 Canvas, llevamos la potencia de procesamiento de nivel de escritorio directamente a su dispositivo. Esta elección arquitectónica proporciona tres beneficios masivos:`,
+    b1: "<strong>Privacidad absoluta:</strong> debido a que sus archivos nunca salen de su dispositivo y nunca se transmiten por Internet, sus datos sensibles permanecen 100% seguros.",
+    b2: "<strong>Latencia cero:</strong> elimine los frustrantes tiempos de espera asociados con la subida de archivos grandes a servidores en la nube y la descarga de resultados. El procesamiento comienza al instante.",
+    b3: "<strong>Sin límites de tamaño de archivo:</strong> sin las limitaciones de ancho de banda del servidor y los costos de almacenamiento, puede procesar imágenes de alta resolución que otras plataformas rechazarían.",
+    h3: "Un kit de herramientas completo",
+    p3: `La categoría de ${category.name} abarca una amplia gama de utilidades especializadas. Desde conversiones simples hasta optimizaciones complejas, cada herramienta está diseñada específicamente para resolver un problema particular de manera eficiente. Actualizamos y ampliamos continuamente nuestro conjunto de herramientas para garantizar la compatibilidad con los últimos formatos de imagen de próxima generación como WebP, AVIF y HEIC, junto con formatos heredados como JPEG, PNG y GIF.`,
+    p4: "Guarde esta página en sus marcadores para asegurarse de tener siempre acceso instantáneo a una suite de procesamiento de imágenes potente y que prioriza la privacidad cuando la necesite."
+  },
+  fr: {
+    heading: `La suite ultime d'outils de ${category.name}`,
+    p1: `Lorsque vous travaillez avec des médias numériques, il est absolument essentiel d'avoir accès à des utilitaires de <strong>${category.name.toLowerCase()}</strong> fiables, rapides et sécurisés. Que vous soyez un développeur Web optimisant des ressources, un photographe gérant des fichiers haute résolution ou un spécialiste du marketing numérique préparant du contenu pour les réseaux sociaux, notre collection d'outils spécialisés est conçue pour simplifier votre flux de travail.`,
+    h2: "Pourquoi traiter les images localement ?",
+    p2: `Contrairement aux services en ligne traditionnels qui vous obligent à télécharger vos fichiers privés vers des serveurs distants, tous nos outils de ${category.name.toLowerCase()} fonctionnent exclusivement dans votre navigateur Web. En tirant parti de la technologie WebAssembly avancée et de l'API HTML5 Canvas, nous apportons une puissance de traitement de qualité professionnelle directement sur votre appareil. Ce choix architectural offre trois avantages majeurs :`,
+    b1: "<strong>Confidentialité absolue :</strong> comme vos fichiers ne quittent jamais votre appareil et ne sont jamais transmis sur Internet, vos données sensibles restent sécurisées à 100%.",
+    b2: "<strong>Latence zéro :</strong> éliminez les temps d'attente frustrants associés à l'envoi de fichiers volumineux vers des serveurs cloud et au téléchargement des résultats. Le traitement commence instantanément.",
+    b3: "<strong>Aucune limite de taille de fichier :</strong> sans les contraintes de bande passante du serveur et de coûts de stockage, vous pouvez traiter des images haute résolution que d'autres plateformes rejetteraient.",
+    h3: "Une boîte à outils complète",
+    p3: `La catégorie ${category.name} comprend une large gamme d'utilitaires spécialisés. Des conversions simples aux optimisations complexes, chaque outil est conçu pour résoudre efficacement un problème spécifique. Nous mettons à jour et élargissons continuellement notre ensemble d'outils pour garantir la compatibilité avec les derniers formats d'image de nouvelle génération comme WebP, AVIF et HEIC, ainsi qu'avec les formats hérités comme JPEG, PNG et GIF.`,
+    p4: "Ajoutez cette page à vos favoris pour vous assurer d'avoir toujours un accès instantané à une suite de traitement d'images puissante et respectueuse de la vie privée chaque fois que vous en avez besoin."
+  },
+  de: {
+    heading: `Die ultimative Suite von ${category.name}-Werkzeugen`,
+    p1: `Bei der Arbeit mit digitalen Medien ist der Zugriff auf zuverlässige, schnelle und sichere Dienstprogramme für die <strong>${category.name.toLowerCase()}</strong> absolut unerlässlich. Egal, ob Sie ein Webentwickler sind, der Assets optimiert, ein Fotograf, der hochauflösende Dateien verwaltet, oder ein digitaler Vermarkter, der Inhalte für soziale Medien vorbereitet – unsere Sammlung spezialisierter Tools ist darauf ausgelegt, Ihren Arbeitsablauf zu rationalisieren.`,
+    h2: "Warum Bilder lokal verarbeiten?",
+    p2: `Im Gegensatz zu herkömmlichen Online-Diensten, bei denen Sie Ihre privaten Dateien auf Remote-Server hochladen müssen, arbeiten alle unsere ${category.name.toLowerCase()}-Tools ausschließlich in Ihrem Webbrowser. Durch die Nutzung fortschrittlicher WebAssembly-Technologie und der HTML5-Canvas-API bringen wir Verarbeitungsleistung auf Desktop-Niveau direkt auf Ihr Gerät. Diese architektonische Entscheidung bietet drei enorme Vorteile:`,
+    b1: "<strong>Absolute Privatsphäre:</strong> Da Ihre Dateien Ihr Gerät niemals verlassen und niemals über das Internet übertragen werden, bleiben Ihre sensiblen Daten zu 100% sicher.",
+    b2: "<strong>Keine Latenz:</strong> Vermeiden Sie frustrierende Wartezeiten beim Hochladen großer Dateien auf Cloud-Server und beim Herunterladen der Ergebnisse. Die Verarbeitung beginnt sofort.",
+    b3: "<strong>Keine Dateigrößenbeschränkungen:</strong> Ohne die Einschränkungen von Serverbandbreite und Speicherkosten können Sie hochauflösende Bilder verarbeiten, die andere Plattformen ablehnen würden.",
+    h3: "Ein komplettes Toolkit",
+    p3: `Die Kategorie ${category.name} umfasst eine breite Palette spezialisierter Dienstprogramme. Von einfachen Konvertierungen bis hin zu komplexen Optimierungen ist jedes Tool speziell darauf ausgelegt, ein bestimmtes Problem effizient zu lösen. Wir aktualisieren und erweitern unser Toolset kontinuierlich, um die Kompatibilität mit den neuesten Bildformaten der nächsten Generation wie WebP, AVIF und HEIC sowie älteren Formaten wie JPEG, PNG und GIF sicherzustellen.`,
+    p4: "Setzen Sie ein Lesezeichen für diese Seite, um sicherzustellen, dass Sie immer sofortigen Zugriff auf eine leistungsstarke, datenschutzfreundliche Bildverarbeitungssuite haben, wenn Sie diese benötigen."
+  },
+  pt: {
+    heading: `A suíte definitiva de ferramentas de ${category.name}`,
+    p1: `Ao trabalhar com mídia digital, ter acesso a utilitários de <strong>${category.name.toLowerCase()}</strong> confiáveis, rápidos e seguros é absolutamente essencial. Seja você um desenvolvedor web otimizando recursos, um fotógrafo gerenciando arquivos de alta resolução ou um profissional de marketing digital preparando conteúdo para mídias sociais, nossa coleção de ferramentas especializadas foi projetada para otimizar seu fluxo de trabalho.`,
+    h2: "Por que processar imagens localmente?",
+    p2: `Ao contrário dos serviços online tradicionais que forçam você a enviar seus arquivos privados para servidores remotos, todas as nossas ferramentas de ${category.name.toLowerCase()} operam exclusivamente no seu navegador web. Ao aproveitar a tecnologia avançada WebAssembly e a API HTML5 Canvas, trazemos poder de processamento de nível desktop diretamente para o seu dispositivo. Esta escolha arquitetônica oferece três grandes benefícios:`,
+    b1: "<strong>Privacidade absoluta:</strong> como seus arquivos nunca saem do seu dispositivo e nunca são transmitidos pela internet, seus dados confidenciais permanecem 100% seguros.",
+    b2: "<strong>Latência zero:</strong> elimine os tempos de espera frustrantes associados ao upload de arquivos grandes para servidores em nuvem e download de resultados. O processamento começa instantaneamente.",
+    b3: "<strong>Sem limites de tamanho de arquivo:</strong> sem as restrições de largura de banda do servidor e custos de armazenamento, você dapat memproses imagens de alta resolução que outras plataformas rejeitariam.",
+    h3: "Um kit de ferramentas completo",
+    p3: `A categoria ${category.name} abrange uma ampla gama de utilitários especializados. De conversões simples a otimizações complexas, cada ferramenta é criada com o objetivo de resolver um problema específico de forma eficiente. Atualizamos e expandimos continuamente nosso conjunto de ferramentas para garantir a compatibilidade com os formatos de imagem mais recentes de última geração, como WebP, AVIF e HEIC, além de formatos legados como JPEG, PNG e GIF.`,
+    p4: "Adicione esta página aos seus favoritos para garantir que você sempre tenha acesso instantâneo a uma suíte de processamento de imagens poderosa e que prioriza a privacidade sempre que precisar."
+  },
+  id: {
+    heading: `Paket Lengkap Alat ${category.name}`,
+    p1: `Saat bekerja dengan media digital, memiliki akses ke utilitas <strong>${category.name.toLowerCase()}</strong> yang andal, cepat, dan aman sangatlah penting. Baik Anda seorang pengembang web yang mengoptimalkan aset, fotografer yang mengelola file resolusi tinggi, atau pemasar digital yang mempersiapkan konten untuk media sosial, koleksi alat khusus kami dirancang untuk menyederhanakan alur kerja Anda.`,
+    h2: "Mengapa Memproses Gambar Secara Lokal?",
+    p2: `Tidak seperti layanan online tradisional yang memaksa Anda mengunggah file pribadi ke server jarak jauh, semua alat ${category.name.toLowerCase()} kami beroperasi secara eksklusif di dalam browser web Anda. Dengan memanfaatkan teknologi WebAssembly modern dan HTML5 Canvas API, kami menghadirkan kekuatan pemrosesan tingkat desktop langsung ke perangkat Anda. Pilihan arsitektur ini memberikan tiga manfaat besar:`,
+    b1: "<strong>Privasi Mutlak:</strong> Karena file Anda tidak pernah meninggalkan perangkat dan tidak pernah dikirimkan melalui internet, data sensitif Anda tetap 100% aman.",
+    b2: "<strong>Nol Latensi:</strong> Hilangkan waktu tunggu yang membuat frustrasi saat mengunggah file besar ke server cloud dan mengunduh hasilnya. Pemrosesan dimulai secara instan.",
+    b3: "<strong>Tanpa Batas Ukuran File:</strong> Tanpa kendala bandwidth server dan biaya penyimpanan, Anda dapat memproses gambar beresolusi tinggi yang akan ditolak oleh platform lain.",
+    h3: "Alat yang Lengkap",
+    p3: `Kategori ${category.name} mencakup berbagai utilitas khusus. Dari konversi sederhana hingga pengoptimalan kompleks, setiap alat dibuat khusus untuk menyelesaikan masalah tertentu secara efisien. Kami terus memperbarui dan memperluas kumpulan alat kami untuk memastikan kompatibilitas dengan format gambar generasi berikutnya seperti WebP, AVIF, dan HEIC, di samping format warisan seperti JPEG, PNG, dan GIF.`,
+    p4: "Tandai halaman ini untuk memastikan Anda selalu memiliki akses instan ke suite pemrosesan gambar yang tangguh dan mengutamakan privasi kapan pun Anda membutuhkannya."
+  }
+};
+
+const seo = seoContent[locale as keyof typeof seoContent] || seoContent.en;
 
 // Breadcrumb schema
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://imagetoolstack.com/" },
-    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` }
+    { "@type": "ListItem", "position": 1, "name": homeText, "item": `https://imagetoolstack.com${getLocalizedPath("/", locale)}` },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com${getLocalizedPath(`/category/${category.slug}`, locale)}` }
   ]
 };
 
@@ -36,7 +135,7 @@ const itemListSchema = {
   "itemListElement": tools.map((t, index) => ({
     "@type": "ListItem",
     "position": index + 1,
-    "url": `https://imagetoolstack.com/tools/${t.slug}`
+    "url": `https://imagetoolstack.com${getLocalizedPath(`/tools/${t.slug}`, locale)}`
   }))
 };
 ---
@@ -48,7 +147,7 @@ const itemListSchema = {
     <!-- Breadcrumbs -->
     <div class="border-b border-hairline bg-canvas">
       <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
-        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{homeText}</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-ink">{category.name}</span>
       </nav>
@@ -58,12 +157,12 @@ const itemListSchema = {
       <header class="mb-16">
         <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{category.name}</h1>
         <p class="mt-6 text-xl text-body max-w-3xl leading-relaxed">{category.description}</p>
-        <div class="mt-4 text-sm font-medium text-mute">{tools.length} tools available</div>
+        <div class="mt-4 text-sm font-medium text-mute">{tools.length} {toolsAvailableText}</div>
       </header>
 
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (
-          <a href={`/tools/${tool.slug}`} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8">
+          <a href={getLocalizedPath(`/tools/${tool.slug}`, locale)} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8">
             <div class="h-12 w-12 rounded-lg bg-canvas-soft-2 flex items-center justify-center border border-hairline group-hover:bg-link/5 transition-colors group-hover:border-link/20">
               <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -80,7 +179,7 @@ const itemListSchema = {
                 </div>
               )}
               <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-link">
-                Use Tool <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+                {useToolText} <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
               </div>
             </div>
           </a>
@@ -93,20 +192,20 @@ const itemListSchema = {
       
       <!-- SEO Content -->
       <section class="mt-24 bg-canvas border border-hairline rounded-xl p-8 lg:p-12 text-body prose prose-vercel !max-w-none">
-        <h2 class="text-2xl font-semibold tracking-tight text-ink mb-6">The Ultimate Suite of {category.name} Tools</h2>
-        <p>When working with digital media, having access to reliable, fast, and secure <strong>{category.name.toLowerCase()}</strong> utilities is absolutely essential. Whether you are a web developer optimizing assets, a photographer managing high-resolution files, or a digital marketer preparing content for social media, our collection of specialized tools is designed to streamline your workflow.</p>
+        <h2 class="text-2xl font-semibold tracking-tight text-ink mb-6">{seo.heading}</h2>
+        <p set:html={seo.p1} />
         
-        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">Why Process Images Locally?</h3>
-        <p>Unlike traditional online services that force you to upload your private files to remote servers, all of our {category.name.toLowerCase()} tools operate exclusively within your web browser. By leveraging advanced WebAssembly technology and the HTML5 Canvas API, we bring desktop-grade processing power directly to your device. This architectural choice provides three massive benefits:</p>
+        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">{seo.h2}</h3>
+        <p set:html={seo.p2} />
         <ul class="list-disc pl-5 mt-4 space-y-2">
-          <li><strong>Absolute Privacy:</strong> Because your files never leave your device and are never transmitted over the internet, your sensitive data remains 100% secure.</li>
-          <li><strong>Zero Latency:</strong> Eliminate the frustrating wait times associated with uploading large files to cloud servers and downloading the results. Processing begins instantly.</li>
-          <li><strong>No File Size Limits:</strong> Without the constraints of server bandwidth and storage costs, you can process high-resolution images that other platforms would reject.</li>
+          <li set:html={seo.b1} />
+          <li set:html={seo.b2} />
+          <li set:html={seo.b3} />
         </ul>
 
-        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">A Complete Toolkit</h3>
-        <p>The {category.name} category encompasses a wide array of specialized utilities. From simple conversions to complex optimizations, each tool is purpose-built to solve a specific problem efficiently. We continuously update and expand our toolset to ensure compatibility with the latest next-generation image formats like WebP, AVIF, and HEIC, alongside legacy formats like JPEG, PNG, and GIF.</p>
-        <p>Bookmark this page to ensure you always have instant access to a powerful, privacy-first image processing suite whenever you need it.</p>
+        <h3 class="text-xl font-semibold tracking-tight text-ink mt-8 mb-4">{seo.h3}</h3>
+        <p set:html={seo.p3} />
+        <p set:html={seo.p4} />
       </section>
     </div>
   </main>

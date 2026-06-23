@@ -2,44 +2,96 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+
+const locale = Astro.currentLocale || 'en';
+
+const title = locale === 'es' ? "Términos y Condiciones" :
+              locale === 'fr' ? "Conditions Générales" :
+              locale === 'de' ? "Allgemeine Geschäftsbedingungen" :
+              locale === 'pt' ? "Termos e Condições" :
+              locale === 'id' ? "Syarat & Ketentuan" : "Terms & Conditions";
+
+const acceptanceTitle = locale === 'es' ? "Aceptación de los términos" :
+                        locale === 'fr' ? "Acceptation des Conditions" :
+                        locale === 'de' ? "Akzeptanz der Bedingungen" :
+                        locale === 'pt' ? "Aceitação dos Termos" :
+                        locale === 'id' ? "Penerimaan Ketentuan" : "Acceptance of Terms";
+
+const acceptanceBody = locale === 'es' ? "Al acceder y utilizar Image Tool Stack, usted acepta y se compromete a cumplir los términos y disposiciones de este acuerdo. Si no está de acuerdo con estos términos, no utilice este servicio." :
+                       locale === 'fr' ? "En accédant et en utilisant Image Tool Stack, vous acceptez d'être lié par les termes de cet accord. Si vous n'acceptez pas de respecter ces termes, veuillez ne pas utiliser ce service." :
+                       locale === 'de' ? "Durch den Zugriff auf und die Nutzung von Image Tool Stack erklären Sie sich mit den Bedingungen dieser Vereinbarung einverstanden. Wenn Sie diesen Bedingungen nicht zustimmen, nutzen Sie diesen Service bitte nicht." :
+                       locale === 'pt' ? "Ao acessar e usar o Image Tool Stack, você aceita e concorda em cumprir os termos e disposições deste contrato. Se você não concorda em cumprir estes termos, por favor, não use este serviço." :
+                       locale === 'id' ? "Dengan mengakses dan menggunakan Image Tool Stack, Anda menerima dan menyetujui untuk terikat oleh syarat dan ketentuan dalam perjanjian ini. Jika Anda tidak menyetujui ketentuan ini, harap jangan menggunakan layanan ini." : "By accessing and using Image Tool Stack, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by these terms, please do not use this service.";
+
+const licenseTitle = locale === 'es' ? "Licencia de uso" :
+                     locale === 'fr' ? "Licence d'Utilisation" :
+                     locale === 'de' ? "Nutzungslizenz" :
+                     locale === 'pt' ? "Licença de Uso" :
+                     locale === 'id' ? "Lisensi Penggunaan" : "Use License";
+
+const licenseBody = locale === 'es' ? "Se concede permiso para utilizar temporalmente las herramientas del sitio web de Image Tool Stack para uso personal o comercial. Esta es la concesión de una licencia, no una transferencia de título, y bajo esta licencia no puede intentar descompilar o realizar ingeniería inversa de cualquier software contenido en el sitio web." :
+                    locale === 'fr' ? "L'autorisation est accordée d'utiliser temporairement les outils du site Web d'Image Tool Stack à des fins personnelles ou commerciales. Il s'agit de l'octroi d'une licence, non d'un transfert de titre, et sous cette licence, vous ne pouvez pas tenter de décompiler ou de désosser tout logiciel contenu sur le site Web." :
+                    locale === 'de' ? "Es wird die Erlaubnis erteilt, die Tools auf der Website von Image Tool Stack vorübergehend für den persönlichen oder kommerziellen Gebrauch zu nutzen. Dies ist die Gewährung einer Lizenz, kein Eigentumsübergang, und unter dieser Lizenz dürfen Sie nicht versuchen, auf der Website enthaltene Software zu dekompilieren oder zurückzuentwickeln." :
+                    locale === 'pt' ? "É concedida permissão para usar temporariamente as ferramentas no site do Image Tool Stack para uso pessoal ou comercial. Esta é a concessão de uma licença, não uma transferência de título, e sob esta licença você não pode tentar descompilar ou fazer engenharia reversa de qualquer software contido no site." :
+                    locale === 'id' ? "Izin diberikan untuk menggunakan alat di situs web Image Tool Stack untuk penggunaan pribadi atau komersial secara sementara. Ini adalah pemberian lisensi, bukan pengalihan hak milik, dan di bawah lisensi ini Anda tidak boleh mencoba mendekompilasi atau merekayasa balik perangkat lunak apa pun yang ada di situs web." : "Permission is granted to temporarily use the tools on Image Tool Stack's website for personal or commercial use. This is the grant of a license, not a transfer of title, and under this license you may not attempt to decompile or reverse engineer any software contained on the website.";
+
+const disclaimerTitle = locale === 'es' ? "Descargo de responsabilidad" :
+                        locale === 'fr' ? "Clause de Non-Responsabilité" :
+                        locale === 'de' ? "Haftungsausschluss" :
+                        locale === 'pt' ? "Isenção de Responsabilidade" :
+                        locale === 'id' ? "Penafian" : "Disclaimer";
+
+const disclaimerBody = locale === 'es' ? "Los materiales del sitio web de Image Tool Stack se proporcionan 'tal cual'. Image Tool Stack no ofrece garantías, expresas o implícitas, y por la presente descarta y niega todas las demás garantías, incluidas, sin limitación, las garantías implícitas o las condiciones de comerciabilidad." :
+                       locale === 'fr' ? "Les éléments du site Web d'Image Tool Stack sont fournis « tels quels ». Image Tool Stack n'offre aucune garantie, expresse ou implique, et rejette et annule par la présente toutes les autres garanties, y compris, sans s'y limiter, les garanties impliquées ou les conditions de qualité marchande." :
+                       locale === 'de' ? "Die Materialien auf der Website von Image Tool Stack werden ohne Mängelgewähr bereitgestellt. Image Tool Stack gibt keine ausdrücklichen oder stillschweigenden Garantien und lehnt hiermit alle anderen Garantien ab, einschließlich, aber nicht beschränkt auf stillschweigende Garantien oder Bedingungen der Marktgängigkeit." :
+                       locale === 'pt' ? "Os materiais no site do Image Tool Stack são fornecidos 'como estão'. O Image Tool Stack não oferece garantias, expressas ou implícitas, e por este meio isenta e nega todas as outras garantias, incluindo, sem limitação, garantias implícitas ou condições de comercialização." :
+                       locale === 'id' ? "Materi di situs web Image Tool Stack disediakan apa adanya. Image Tool Stack tidak membuat jaminan, baik tersurat maupun tersirat, dan dengan ini menolak dan meniadakan semua jaminan lainnya termasuk, tanpa batasan, jaminan tersirat atau ketentuan kelayakan jual." : "The materials on Image Tool Stack's website are provided on an 'as is' basis. Image Tool Stack makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability.";
+
+const limitationsTitle = locale === 'es' ? "Limitaciones" :
+                         locale === 'fr' ? "Limites" :
+                         locale === 'de' ? "Einschränkungen" :
+                         locale === 'pt' ? "Limitamentos" :
+                         locale === 'id' ? "Batasan" : "Limitations";
+
+const limitationsBody = locale === 'es' ? "En ningún caso Image Tool Stack o sus proveedores serán responsables de ningún daño (incluidos, sin limitación, daños por pérdida de datos o ganancias, o debido a la interrupción del negocio) que surja del uso o la imposibilidad de usar los materiales en el sitio web de Image Tool Stack." :
+                        locale === 'fr' ? "En aucun cas Image Tool Stack ou ses fournisseurs ne pourront être tenus responsables de tout dommage (y compris, sans s'y limiter, les dommages pour perte de données ou de profit, ou dus à une interruption d'activité) découlant de l'utilisation ou de l'impossibilité d'utiliser les éléments du site Web." :
+                        locale === 'de' ? "In keinem Fall haften Image Tool Stack oder seine Lieferanten für Schäden (einschließlich, aber nicht beschränkt auf damages für Daten- oder Gewinnverlust oder aufgrund von Betriebsunterbrechungen), die sich aus der Nutzung oder der Unfähigkeit zur Nutzung der Materialien auf der Website von Image Tool Stack ergeben." :
+                        locale === 'pt' ? "Em nenhum caso o Image Tool Stack ou seus fornecedores serão responsáveis por quaisquer danos (incluindo, sem limitação, danos por perda de dados ou lucro, ou devido à interrupção dos negócios) decorrentes do uso ou da incapacidade de usar os materiais no site." :
+                        locale === 'id' ? "Dalam keadaan apa pun Image Tool Stack atau pemasoknya tidak bertanggung jawab atas kerusakan apa pun (termasuk, tanpa batasan, kerusakan karena hilangnya data atau keuntungan, atau karena gangguan bisnis) yang timbul dari penggunaan atau ketidakmampuan untuk menggunakan materi di situs web Image Tool Stack." : "In no event shall Image Tool Stack or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Image Tool Stack's website.";
 ---
 
-<Layout title="Terms & Conditions">
+<Layout title={title}>
   <Navbar />
   
   <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
-    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">Terms & Conditions</h1>
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-12">{title}</h1>
     
     <div class="prose prose-vercel text-body leading-relaxed space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Acceptance of Terms</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{acceptanceTitle}</h2>
         <p>
-          By accessing and using Image Tool Stack, you accept and agree to be bound by the terms and provision of this agreement. 
-          If you do not agree to abide by these terms, please do not use this service.
+          {acceptanceBody}
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Use License</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{licenseTitle}</h2>
         <p>
-          Permission is granted to temporarily use the tools on Image Tool Stack's website for personal or commercial use. 
-          This is the grant of a license, not a transfer of title, and under this license you may not attempt to decompile or reverse engineer any software contained on the website.
+          {licenseBody}
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Disclaimer</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{disclaimerTitle}</h2>
         <p>
-          The materials on Image Tool Stack's website are provided on an 'as is' basis. Image Tool Stack makes no warranties, expressed or implied, 
-          and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability.
+          {disclaimerBody}
         </p>
       </section>
       
       <section>
-        <h2 class="text-xl font-semibold text-ink mb-4">Limitations</h2>
+        <h2 class="text-xl font-semibold text-ink mb-4">{limitationsTitle}</h2>
         <p>
-          In no event shall Image Tool Stack or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) 
-          arising out of the use or inability to use the materials on Image Tool Stack's website.
+          {limitationsBody}
         </p>
       </section>
     </div>

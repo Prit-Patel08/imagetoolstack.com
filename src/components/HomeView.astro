@@ -1,0 +1,493 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "./Navbar.astro";
+import Footer from "./Footer.astro";
+import RequestToolSection from "./RequestToolSection.astro";
+import toolsData from "../data/tools.json";
+import comparisonsData from "../data/comparisons.json";
+import { getTranslations, getLocalizedPath, translateTool } from "../utils/i18n";
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = 'en' } = Astro.props;
+const t = getTranslations(locale);
+
+// 1. Localize popular and recent tools list
+const popularTools = toolsData.tools.slice(0, 6).map(tool => translateTool(tool, locale));
+const recentTools = [...toolsData.tools].reverse().slice(0, 6).map(tool => translateTool(tool, locale));
+const popularComparisons = comparisonsData.comparisons.slice(0, 6);
+
+// 2. Localize categories and count tools inside them
+const categoriesWithTools = toolsData.categories.map(cat => {
+  const localizedCatName = t.categories[cat.id as keyof typeof t.categories]?.name || cat.name;
+  const localizedCatDesc = t.categories[cat.id as keyof typeof t.categories]?.description || cat.description;
+  return {
+    ...cat,
+    name: localizedCatName,
+    description: localizedCatDesc,
+    tools: toolsData.tools.filter(t => t.categoryId === cat.id).map(tool => translateTool(tool, locale))
+  };
+});
+
+// 3. Localize hero highlights
+const heroToolsSlugs = ['png-to-jpg', 'jpg-to-png', 'image-compressor', 'image-resizer', 'crop-image', 'webp-to-png'];
+const heroTools = heroToolsSlugs
+  .map(slug => toolsData.tools.find(t => t.slug === slug))
+  .filter(Boolean)
+  .map(tool => translateTool(tool, locale));
+
+// 4. Localize statistics labels
+const stats = [
+  { label: t.home.stats.freeTools, value: toolsData.tools.length.toString() },
+  { label: t.home.stats.supportedFormats, value: "12" },
+  { label: t.home.stats.browserBased, value: "100%" },
+  { label: t.home.stats.fileUploads, value: "0" }
+];
+
+// 5. Localized Trust Table Text
+const tableLabels = {
+  feature: locale === 'es' ? 'Característica' : locale === 'fr' ? 'Fonctionnalité' : locale === 'de' ? 'Funktion' : locale === 'pt' ? 'Recurso' : locale === 'id' ? 'Fitur' : 'Feature',
+  us: locale === 'es' ? 'Nosotros' : locale === 'fr' ? 'Nous' : locale === 'de' ? 'Wir' : locale === 'pt' ? 'Nós' : locale === 'id' ? 'Kami' : 'Us',
+  browserBased: locale === 'es' ? 'Basado en Navegador' : locale === 'fr' ? 'Basé sur Navigateur' : locale === 'de' ? 'Browserbasiert' : locale === 'pt' ? 'No Navegador' : locale === 'id' ? 'Berbasis Browser' : 'Browser Based',
+  noUploads: locale === 'es' ? 'Sin Subidas de Archivos' : locale === 'fr' ? 'Sans Transferts' : locale === 'de' ? 'Keine Uploads' : locale === 'pt' ? 'Sem Uploads' : locale === 'id' ? 'Tanpa Unggah' : 'No Uploads',
+  free: locale === 'es' ? 'Totalmente Gratis' : locale === 'fr' ? 'Gratuit' : locale === 'de' ? 'Kostenlos' : locale === 'pt' ? 'Gratuito' : locale === 'id' ? 'Gratis' : 'Free',
+  worksOffline: locale === 'es' ? 'Funciona sin Conexión' : locale === 'fr' ? 'Fonctionne Hors Ligne' : locale === 'de' ? 'Funktioniert Offline' : locale === 'pt' ? 'Funciona Offline' : locale === 'id' ? 'Berjalan Offline' : 'Works Offline',
+  limited: locale === 'es' ? 'Limitado' : locale === 'fr' ? 'Limité' : locale === 'de' ? 'Limitiert' : locale === 'pt' ? 'Limitado' : locale === 'id' ? 'Terbatas' : 'Limited',
+  whyChooseTitle: locale === 'es' ? '¿Por qué elegir Image Tool Stack?' : locale === 'fr' ? 'Pourquoi choisir Image Tool Stack ?' : locale === 'de' ? 'Warum Image Tool Stack wählen?' : locale === 'pt' ? 'Por que escolher o Image Tool Stack?' : locale === 'id' ? 'Mengapa memilih Image Tool Stack?' : 'Why choose Image Tool Stack?',
+  trending: locale === 'es' ? 'Tendencia' : locale === 'fr' ? 'Tendance' : locale === 'de' ? 'Beliebt' : locale === 'pt' ? 'Tendência' : locale === 'id' ? 'Tren' : 'Trending',
+  newLabel: locale === 'es' ? 'Nuevo' : locale === 'fr' ? 'Nouveau' : locale === 'de' ? 'Neu' : locale === 'pt' ? 'Novo' : locale === 'id' ? 'Baru' : 'New',
+  tryNow: locale === 'es' ? 'Probar ahora' : locale === 'fr' ? 'Essayer maintenant' : locale === 'de' ? 'Jetzt testen' : locale === 'pt' ? 'Testar agora' : locale === 'id' ? 'Coba sekarang' : 'Try it now',
+  launchTool: locale === 'es' ? 'Iniciar herramienta' : locale === 'fr' ? 'Lancer l\'outil' : locale === 'de' ? 'Tool starten' : locale === 'pt' ? 'Iniciar ferramenta' : locale === 'id' ? 'Mulai Alat' : 'Launch Tool',
+  readGuide: locale === 'es' ? 'Leer guía' : locale === 'fr' ? 'Lire le guide' : locale === 'de' ? 'Leitfaden lesen' : locale === 'pt' ? 'Ler guia' : locale === 'id' ? 'Baca Panduan' : 'Read Guide'
+};
+
+// 6. Localized How It Works Steps
+const stepDetails = locale === 'es' ? [
+  { title: "Elija una herramienta", desc: "Seleccione de nuestra suite de utilidades especializadas adaptadas a sus necesidades específicas." },
+  { title: "Cargue la imagen localmente", desc: "Arrastre y suelte su archivo. Nunca sale de su dispositivo y nunca se envía a ningún servidor." },
+  { title: "Procesamiento en navegador", desc: "Nuestro motor WebAssembly procesa su imagen al instante utilizando la potencia de su ordenador." },
+  { title: "Descargue el resultado", desc: "Guarde su imagen optimizada, convertida o editada en su dispositivo con cero pérdida de calidad." }
+] : locale === 'fr' ? [
+  { title: "Choisir un outil", desc: "Sélectionnez parmi notre suite d'utilitaires d'image spécialisés adaptés à vos besoins." },
+  { title: "Charger l'image en local", desc: "Glissez-déposez votre fichier. Il ne quitte jamais votre appareil et n'est envoyé à aucun serveur." },
+  { title: "Traitement dans le navigateur", desc: "Notre moteur WebAssembly traite votre image instantanément en utilisant la puissance de votre ordinateur." },
+  { title: "Télécharger le résultat", desc: "Enregistrez votre image optimisée, convertie ou modifiée sur votre appareil sans aucune perte de qualité." }
+] : locale === 'de' ? [
+  { title: "Tool auswählen", desc: "Wählen Sie aus unserer Suite spezialisierter Bildwerkzeuge das passende Tool für Ihre Bedürfnisse." },
+  { title: "Bild lokal laden", desc: "Ziehen Sie Ihre Datei per Drag-and-Drop. Sie verlässt Ihr Gerät nie und wird nicht an Server gesendet." },
+  { title: "Verarbeitung im Browser", desc: "Unsere WebAssembly-Engine verarbeitet Ihr Bild sofort mit der Leistung Ihres Computers." },
+  { title: "Ergebnis herunterladen", desc: "Speichern Sie Ihr optimiertes, konvertiertes oder bearbeitetes Bild ohne Qualitätsverlust auf Ihrem Gerät." }
+] : locale === 'pt' ? [
+  { title: "Escolha uma ferramenta", desc: "Selecione na nossa suite de utilitários de imagem especializados para suas necessidades exatas." },
+  { title: "Carregue a imagem localmente", desc: "Arraste e solte seu arquivo. Ele nunca sai do seu dispositivo e nunca é enviado para servidores." },
+  { title: "Processamento no navegador", desc: "Nosso motor WebAssembly processa sua imagem instantaneamente usando o poder do seu computador." },
+  { title: "Baixe o resultado", desc: "Salve sua imagem otimizada, convertida ou editada de volta no seu dispositivo com zero perda de qualidade." }
+] : locale === 'id' ? [
+  { title: "Pilih alat", desc: "Pilih dari rangkaian utilitas gambar khusus kami yang disesuaikan dengan kebutuhan Anda." },
+  { title: "Unggah gambar lokal", desc: "Seret dan letakkan file Anda. File tidak pernah meninggalkan perangkat Anda dan tidak dikirim ke server." },
+  { title: "Pemrosesan di browser", desc: "Mesin WebAssembly canggih kami memproses gambar Anda secara instan menggunakan daya komputer Anda." },
+  { title: "Unduh hasil", desc: "Simpan gambar Anda yang dioptimalkan, dikonversi, atau diedit kembali ke perangkat Anda tanpa kehilangan kualitas." }
+] : [
+  { title: "Choose a tool", desc: "Select from our suite of specialized image utilities tailored to your exact needs." },
+  { title: "Upload image locally", desc: "Drag and drop your file. It never leaves your device and is never sent to any server." },
+  { title: "Processing in browser", desc: "Our advanced WebAssembly engine processes your image instantly using your computer's power." },
+  { title: "Download result", desc: "Save your optimized, converted, or edited image back to your device with zero quality loss." }
+];
+
+// 7. Localized FAQs (6 core high-value questions)
+const faqs = locale === 'es' ? [
+  { q: "¿Qué es un convertidor de imágenes en línea?", a: "Un convertidor de imágenes en línea es una herramienta web que le permite cambiar el formato de archivo de una imagen (por ejemplo, PNG a JPG) directamente en su navegador sin descargar software pesado." },
+  { q: "¿Cómo comprimo imágenes sin perder calidad?", a: "Al usar nuestro Compresor de Imágenes, puede utilizar algoritmos avanzados que reducen el tamaño del archivo manteniendo la fidelidad visual. Esto se conoce como compresión 'sin pérdidas' o 'pérdida eficiente'." },
+  { q: "¿Es seguro usar Image Tool Stack?", a: "Sí, 100%. A diferencia de otros sitios web, procesamos todas las imágenes localmente en su ordenador. Sus archivos nunca se suben a nuestros servidores, garantizando su total privacidad." },
+  { q: "¿Funciona en teléfonos móviles?", a: "Absolutamente. Nuestra plataforma es móvil-first y funciona perfectamente en dispositivos iOS, Android y tabletas." },
+  { q: "¿Es necesario registrarse?", a: "No. Puede utilizar el 100% de nuestras funciones sin crear una cuenta ni proporcionar una dirección de correo electrónico." },
+  { q: "¿Hay límites de tamaño de archivo?", a: "Admitimos archivos de hasta 50MB para procesamiento local, lo que cubre la mayoría de las necesidades de fotografía de alta resolución." }
+] : locale === 'fr' ? [
+  { q: "Qu'est-ce qu'un convertisseur d'images en ligne ?", a: "Un convertisseur d'images en ligne est un outil web qui vous permet de modifier le format de fichier d'une image (par ex. PNG en JPG) directement dans votre navigateur sans télécharger de logiciel lourd." },
+  { q: "Comment compresser des images sans perte de qualité ?", a: "En utilisant notre Compresseur d'Image, vous profitez d'algorithmes avancés qui réduisent la taille du fichier tout en conservant la fidélité visuelle. C'est ce qu'on appelle une compression 'sans perte' ou 'avec perte efficace'." },
+  { q: "Image Tool Stack est-il sûr à utiliser ?", a: "Oui, à 100%. Contrairement à d'autres sites web, nous traitons toutes les images localement sur votre ordinateur. Vos fichiers ne sont jamais transférés sur nos serveurs, garantissant une confidentialité totale." },
+  { q: "Cela fonctionne-t-il sur mobile ?", a: "Absolument. Notre plateforme est conçue pour les mobiles et fonctionne parfaitement sur iOS, Android et tablettes." },
+  { q: "L'inscription est-elle obligatoire ?", a: "Non. Vous pouvez utiliser 100% de nos fonctionnalités sans créer de compte ni fournir d'adresse e-mail." },
+  { q: "Y a-t-il des limites de taille de fichier ?", a: "Nous acceptons les fichiers jusqu'à 50 Mo pour le traitement local, ce qui couvre la plupart des besoins en photographie haute résolution." }
+] : locale === 'de' ? [
+  { q: "Was ist ein Online-Bildkonverter?", a: "Ein Online-Bildkonverter ist ein webbasiertes Tool, mit dem Sie das Dateiformat eines Bildes (z. B. PNG in JPG) direkt in Ihrem Browser ändern können, ohne schwere Software herunterzuladen." },
+  { q: "Wie komprimiere ich Bilder ohne Qualitätsverlust?", a: "Mit unserem Bildkomprimierer können Sie fortschrittliche Algorithmen nutzen, die die Dateigröße reduzieren und gleichzeitig die visuelle Wiedergabetreue beibehalten. Dies wird oft als 'verlustfreie' oder 'effiziente verlustbehaftete' Komprimierung bezeichnet." },
+  { q: "Ist Image Tool Stack sicher zu verwenden?", a: "Ja, zu 100%. Im Gegensatz zu anderen Websites verarbeiten wir alle Bilder lokal auf Ihrem Computer. Ihre Dateien werden niemals auf unsere Server hochgeladen, was Ihre Privatsphäre absolut schützt." },
+  { q: "Funktioniert das auch auf dem Handy?", a: "Absolut. Unsere Plattform ist mobiloptimiert und funktioniert perfekt auf iOS, Android und Tablets." },
+  { q: "Ist eine Registrierung erforderlich?", a: "Nein. Sie können alle Funktionen zu 100% nutzen, ohne ein Konto zu erstellen oder eine E-Mail-Adresse anzugeben." },
+  { q: "Gibt es Dateigrößenbeschränkungen?", a: "Wir unterstützen Dateien bis zu 50MB für die lokale Verarbeitung, was die meisten hochauflösenden fotografischen Anforderungen abdeckt." }
+] : locale === 'pt' ? [
+  { q: "O que é um conversor de imagens online?", a: "Um conversor de imagens online é uma ferramenta web que permite alterar o formato de arquivo de uma imagem (ex: PNG para JPG) diretamente no seu navegador, sem baixar programas pesados." },
+  { q: "Como comprimir imagens sem perder qualidade?", a: "Usando nosso Compressor de Imagem, você utiliza algoritmos avançados que reduzem o tamanho do arquivo mantendo a fidelidade visual. Isso é conhecido como compressão 'sem perdas' ou 'com perdas eficiente'." },
+  { q: "O Image Tool Stack é seguro de usar?", a: "Sim, 100%. Ao contrário de outros sites, processamos todas as imagens localmente no seu computador. Seus arquivos nunca são enviados para nossos servidores, garantindo privacidade total." },
+  { q: "Funciona no celular?", a: "Com certeza. Nossa plataforma é responsiva e funciona perfeitamente em dispositivos iOS, Android e tablets." },
+  { q: "Preciso me registrar?", a: "Não. Você pode usar 100% de nossos recursos sem criar uma conta ou fornecer um endereço de e-mail." },
+  { q: "Existem limites de tamanho de arquivo?", a: "Suportamos arquivos de até 50MB para processamento local, o que atende à maioria das necessidades de fotografia de alta resolução." }
+] : locale === 'id' ? [
+  { q: "Apa itu pengonversi gambar online?", a: "Pengonversi gambar online adalah alat berbasis web yang memungkinkan Anda mengubah format file gambar (misalnya, PNG ke JPG) langsung di browser Anda tanpa mengunduh perangkat lunak berat." },
+  { q: "Bagaimana cara mengompresi gambar tanpa mengurangi kualitas?", a: "Dengan menggunakan Kompresor Gambar kami, Anda dapat menggunakan algoritma canggih yang mengurangi ukuran file dengan tetap mempertahankan ketajaman visual. Ini sering disebut kompresi 'lossless' atau 'lossy efisien'." },
+  { q: "Apakah Image Tool Stack aman digunakan?", a: "Ya, 100%. Berbeda dengan situs web lain, kami memproses semua gambar secara lokal di komputer Anda. File Anda tidak pernah diunggah ke server kami, memastikan privasi Anda sepenuhnya terlindungi." },
+  { q: "Apakah ini berfungsi di ponsel?", a: "Tentu saja. Platform kami adalah mobile-first dan berfungsi sempurna di iOS, Android, serta tablet." },
+  { q: "Apakah perlu mendaftar?", a: "Tidak. Anda dapat menggunakan 100% fitur kami tanpa membuat akun atau memberikan alamat email." },
+  { q: "Apakah ada batasan ukuran file?", a: "Kami mendukung file hingga 50MB untuk pemrosesan lokal, yang mencakup sebagian besar kebutuhan fotografi resolusi tinggi." }
+] : [
+  { q: "What is an online image converter?", a: "An online image converter is a web-based tool that allows you to change the file format of an image (e.g., PNG to JPG) directly in your browser without downloading heavy software." },
+  { q: "How do I compress images without losing quality?", a: "By using our Image Compressor, you can utilize advanced algorithms that reduce file size while maintaining visual fidelity. This is often called 'lossless' or 'efficient lossy' compression." },
+  { q: "Is Image Tool Stack safe to use?", a: "Yes, 100%. Unlike other websites, we process all images locally on your computer. Your files are never uploaded to our servers, ensuring your privacy is completely protected." },
+  { q: "Does this work on mobile?", a: "Absolutely. Our platform is mobile-first and works perfectly on iOS, Android, and tablets." },
+  { q: "Is registration required?", a: "No. You can use all 100% of our features without creating an account or providing an email address." },
+  { q: "Are there any file size limits?", a: "We support files up to 50MB for local processing, which covers most high-resolution photography needs." }
+];
+
+const homeTitle = t.home.heroTitle;
+const homeTitleSpan = t.home.heroTitleSpan;
+---
+<Layout 
+  title={locale === 'en' ? "Free Online Image Tools - Convert, Compress & Edit" : `${t.nav.tools} ${locale === 'es' ? 'en Línea Gratis' : locale === 'fr' ? 'en Ligne Gratuit' : locale === 'de' ? 'online kostenlos' : locale === 'pt' ? 'Online Grátis' : 'Online Gratis'}`}
+  description={t.footer.description}
+>
+  <Navbar />
+  
+  <main class="w-full relative overflow-hidden">
+    <!-- Mesh Gradient Decoration -->
+    <div class="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-full -translate-x-1/2 mesh-gradient opacity-10"></div>
+
+    <!-- Hero Section -->
+    <section class="mx-auto max-w-[1400px] px-6 pb-20 pt-16 lg:px-8 lg:pt-24 text-center relative z-10">
+      <h1 class="mx-auto max-w-5xl text-4xl font-semibold tracking-tight text-ink sm:text-5xl lg:text-6xl leading-[1.1] mb-8">
+        {homeTitle}<span class="bg-gradient-to-r from-link to-link-deep bg-clip-text text-transparent">{homeTitleSpan}</span>
+      </h1>
+
+      <div class="mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-12 text-sm font-medium text-body">
+        <div class="flex items-center gap-1.5"><svg class="h-4 w-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {t.home.noUploads}</div>
+        <div class="flex items-center gap-1.5"><svg class="h-4 w-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {t.home.noRegistration}</div>
+        <div class="flex items-center gap-1.5"><svg class="h-4 w-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {t.home.worksOffline}</div>
+        <div class="flex items-center gap-1.5"><svg class="h-4 w-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {t.home.instantProcessing}</div>
+      </div>
+      
+      <!-- Universal Quick Convert Dropzone -->
+      <div class="mx-auto max-w-3xl mt-12 mb-8">
+        <a href={getLocalizedPath("/tools/image-compressor", locale)} class="group relative flex flex-col items-center justify-center p-12 rounded-2xl bg-canvas border-2 border-dashed border-hairline-strong hover:border-link hover:bg-link/5 transition-all cursor-pointer overflow-hidden shadow-sm hover:shadow-md">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-canvas-soft opacity-50"></div>
+          
+          <div class="h-16 w-16 mb-6 rounded-full bg-canvas-soft-2 border border-hairline flex items-center justify-center group-hover:scale-110 group-hover:bg-link/10 group-hover:border-link/20 transition-all duration-300 relative z-10 shadow-sm">
+            <svg class="h-8 w-8 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          
+          <h3 class="text-2xl font-bold text-ink mb-2 relative z-10">{t.home.quickConvertTitle}</h3>
+          <p class="text-body text-center max-w-md relative z-10">{t.home.quickConvertDesc}</p>
+          
+          <div class="mt-6 flex items-center gap-2 text-xs font-semibold text-mute bg-canvas-soft px-3 py-1.5 rounded-full border border-hairline relative z-10">
+            <svg class="h-3 w-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            {t.home.secureNotice}
+          </div>
+        </a>
+      </div>
+            
+      <!-- SEO Legal Links -->
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-6 text-[13px] font-medium text-mute">
+        <a href={getLocalizedPath("/about", locale)} class="hover:text-link transition-colors">{t.footer.about}</a>
+        <a href={getLocalizedPath("/privacy", locale)} class="hover:text-link transition-colors">{t.footer.privacy}</a>
+        <a href={getLocalizedPath("/terms", locale)} class="hover:text-link transition-colors">{t.footer.terms}</a>
+        <a href={getLocalizedPath("/contact", locale)} class="hover:text-link transition-colors">{t.footer.contact}</a>
+      </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="border-y border-hairline bg-canvas py-12">
+      <div class="mx-auto max-w-[1400px] px-6 lg:px-8">
+        <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+          {stats.map(stat => (
+            <div class="text-center">
+              <div class="text-3xl font-semibold text-ink">{stat.value}</div>
+              <div class="text-sm font-medium text-mute mt-1 uppercase tracking-tighter">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Tools Section -->
+    <section id="tools" class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl font-semibold tracking-tight text-ink">{t.home.popularToolsTitle}</h2>
+          <p class="mt-2 text-body">{t.home.popularToolsDesc}</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {popularTools.map((tool) => (
+          <a href={getLocalizedPath(`/tools/${tool.slug}`, locale)} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8">
+            <div class="h-12 w-12 rounded-lg bg-canvas-soft-2 flex items-center justify-center border border-hairline group-hover:bg-link/5 transition-colors group-hover:border-link/20">
+              <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div class="w-full">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold tracking-tight text-ink">{tool.name}</h3>
+                <span class="text-[10px] font-mono font-bold text-success bg-success/10 px-2 py-0.5 rounded-full uppercase tracking-widest">{tableLabels.trending}</span>
+              </div>
+              <p class="mt-2 text-sm text-body leading-relaxed">{tool.description}</p>
+              <div class="mt-6 flex items-center gap-2 text-xs font-semibold text-link group-hover:translate-x-1 transition-transform">
+                {tableLabels.launchTool} <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7M5 12h16"/></svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Recently Added Tools Section -->
+    <section class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8 bg-canvas-soft-2 border-y border-hairline">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl font-semibold tracking-tight text-ink">{t.home.recentlyAddedTitle}</h2>
+          <p class="mt-2 text-body">{t.home.recentlyAddedDesc}</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {recentTools.map((tool) => (
+          <a href={getLocalizedPath(`/tools/${tool.slug}`, locale)} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8 bg-canvas">
+            <div class="h-12 w-12 rounded-lg bg-canvas-soft flex items-center justify-center border border-hairline group-hover:bg-link/5 transition-colors group-hover:border-link/20">
+              <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <div class="w-full">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold tracking-tight text-ink">{tool.name}</h3>
+                <span class="text-[10px] font-mono font-bold text-link bg-link/10 px-2 py-0.5 rounded-full uppercase tracking-widest">{tableLabels.newLabel}</span>
+              </div>
+              <p class="mt-2 text-sm text-body leading-relaxed">{tool.description}</p>
+              <div class="mt-6 flex items-center gap-2 text-xs font-semibold text-link group-hover:translate-x-1 transition-transform">
+                {tableLabels.tryNow} <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7M5 12h16"/></svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Popular Comparisons Section -->
+    <section class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8 border-y border-hairline">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <h2 class="text-3xl font-semibold tracking-tight text-ink">{t.footer.compare}</h2>
+          <p class="mt-2 text-body">Discover which image format is right for your project.</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {popularComparisons.map((comp) => (
+          <a href={getLocalizedPath(`/compare/${comp.id}`, locale)} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-8">
+            <div class="w-full">
+              <h3 class="text-xl font-semibold tracking-tight text-ink">{comp.title}</h3>
+              <p class="mt-2 text-sm text-body leading-relaxed">{comp.metaDescription}</p>
+              <div class="mt-6 flex items-center gap-2 text-xs font-semibold text-link group-hover:translate-x-1 transition-transform">
+                {tableLabels.readGuide} <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7M5 12h16"/></svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Quick Category Links for Internal Linking -->
+    <section class="mx-auto max-w-[1400px] px-6 pb-24 lg:px-8 pt-12">
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+        {categoriesWithTools.map((cat) => (
+          <a href={getLocalizedPath(`/category/${cat.slug}`, locale)} class="flex items-center gap-2 rounded-full border border-hairline bg-canvas px-5 py-2.5 text-sm font-medium text-ink hover:border-link hover:bg-link/5 hover:text-link transition-all shadow-sm">
+            {cat.name} <span class="text-mute text-xs font-mono">({cat.tools.length})</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Tool Categories Section -->
+    <section id="discovery" class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8 border-t border-hairline">
+      <h2 class="text-center text-3xl font-semibold tracking-tight text-ink mb-16 italic">{locale === 'es' ? 'Catálogo de Herramientas Completo' : locale === 'fr' ? 'Catalogue Complet d\'Outils' : locale === 'de' ? 'Komplettes Werkzeug-Verzeichnis' : locale === 'pt' ? 'Catálogo de Ferramentas Completo' : locale === 'id' ? 'Katalog Alat Lengkap' : 'Complete Tool Stack'}</h2>
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+        {categoriesWithTools.map((cat) => (
+          <div class="flex flex-col gap-6">
+            <div class="flex items-center justify-between border-b border-hairline pb-4">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded bg-canvas-soft-2 border border-hairline flex items-center justify-center">
+                  <svg class="h-4 w-4 text-mute" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                </div>
+                <h3 class="text-xl font-semibold tracking-tight text-ink">{cat.name}</h3>
+              </div>
+              <span class="text-xs font-bold text-mute bg-canvas-soft px-2 py-0.5 rounded border border-hairline">{cat.tools.length} Tools</span>
+            </div>
+            <p class="text-sm text-body">{cat.description}</p>
+            <ul class="space-y-3 pt-2">
+              {cat.tools.map(tool => (
+                <li class="flex items-center gap-2 before:content-[''] before:block before:h-1 before:w-1 before:rounded-full before:bg-hairline-strong">
+                  <a href={getLocalizedPath(`/tools/${tool.slug}`, locale)} class="text-sm font-medium text-body hover:text-link transition-colors">
+                    {tool.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Why Choose Image Tool Stack & Trust Signals -->
+    <section class="bg-canvas-soft py-24 text-ink border-t border-hairline">
+      <div class="mx-auto max-w-[1400px] px-6 lg:px-8">
+        <!-- Trust Signals -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24 text-center">
+          <div class="p-8 rounded-2xl bg-canvas border border-hairline flex flex-col items-center hover:shadow-md transition-all">
+            <svg class="h-10 w-10 text-link mb-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <h3 class="text-xl font-bold text-ink">{locale === 'es' ? '100% Procesado en Navegador' : locale === 'fr' ? 'Traitement 100% Navigateur' : locale === 'de' ? '100% Browser-Verarbeitung' : locale === 'pt' ? 'Processado 100% no Navegador' : locale === 'id' ? '100% Pemrosesan Browser' : '100% Browser Processing'}</h3>
+          </div>
+          <div class="p-8 rounded-2xl bg-canvas border border-hairline flex flex-col items-center hover:shadow-md transition-all">
+            <svg class="h-10 w-10 text-link mb-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <h3 class="text-xl font-bold text-ink">{locale === 'es' ? 'Sus archivos nunca salen del dispositivo' : locale === 'fr' ? 'Vos fichiers ne quittent jamais votre appareil' : locale === 'de' ? 'Ihre Dateien verlassen Ihr Gerät nie' : locale === 'pt' ? 'Seus arquivos nunca saem do dispositivo' : locale === 'id' ? 'File Tidak Pernah Meninggalkan Perangkat Anda' : 'Files Never Leave Your Device'}</h3>
+          </div>
+          <div class="p-8 rounded-2xl bg-canvas border border-hairline flex flex-col items-center hover:shadow-md transition-all">
+            <svg class="h-10 w-10 text-link mb-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <h3 class="text-xl font-bold text-ink">{locale === 'es' ? 'Sin necesidad de registro' : locale === 'fr' ? 'Aucune inscription requise' : locale === 'de' ? 'Keine Registrierung erforderlich' : locale === 'pt' ? 'Sem registro necessário' : locale === 'id' ? 'Tanpa Pendaftaran' : 'No Registration Required'}</h3>
+          </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-3xl font-semibold sm:text-4xl tracking-tight text-center mb-12 text-ink">{tableLabels.whyChooseTitle}</h2>
+          <div class="overflow-hidden rounded-2xl bg-canvas border border-hairline shadow-xl">
+            <table class="w-full text-left border-collapse table-fixed">
+              <thead>
+                <tr class="bg-canvas-soft border-b border-hairline">
+                  <th class="p-6 text-lg font-medium text-ink">{tableLabels.feature}</th>
+                  <th class="p-6 text-lg font-bold text-link border-l border-hairline bg-link/5">{tableLabels.us}</th>
+                  <th class="p-6 text-lg font-medium text-mute border-l border-hairline">TinyPNG</th>
+                  <th class="p-6 text-lg font-medium text-mute border-l border-hairline">Convertio</th>
+                </tr>
+              </thead>
+              <tbody class="text-ink text-lg">
+                <tr class="border-b border-hairline hover:bg-canvas-soft transition-colors">
+                  <td class="p-6 font-medium">{tableLabels.browserBased}</td>
+                  <td class="p-6 border-l border-hairline bg-link/5 text-link font-bold text-center text-2xl">✓</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                </tr>
+                <tr class="border-b border-hairline hover:bg-canvas-soft transition-colors">
+                  <td class="p-6 font-medium">{tableLabels.noUploads}</td>
+                  <td class="p-6 border-l border-hairline bg-link/5 text-link font-bold text-center text-2xl">✓</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                </tr>
+                <tr class="border-b border-hairline hover:bg-canvas-soft transition-colors">
+                  <td class="p-6 font-medium">{tableLabels.free}</td>
+                  <td class="p-6 border-l border-hairline bg-link/5 text-link font-bold text-center text-2xl">✓</td>
+                  <td class="p-6 border-l border-hairline text-body text-center text-sm font-medium">{tableLabels.limited}</td>
+                  <td class="p-6 border-l border-hairline text-body text-center text-sm font-medium">{tableLabels.limited}</td>
+                </tr>
+                <tr class="hover:bg-canvas-soft transition-colors">
+                  <td class="p-6 font-medium">{tableLabels.worksOffline}</td>
+                  <td class="p-6 border-l border-hairline bg-link/5 text-link font-bold text-center text-2xl">✓</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                  <td class="p-6 border-l border-hairline text-mute text-center text-xl font-bold">✗</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8">
+      <div class="text-center mb-20">
+        <h2 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{locale === 'es' ? 'Cómo Funciona' : locale === 'fr' ? 'Comment ça marche' : locale === 'de' ? 'Wie es funktioniert' : locale === 'pt' ? 'Como Funciona' : locale === 'id' ? 'Cara Kerja' : 'How It Works'}</h2>
+        <p class="mt-4 text-lg text-body max-w-2xl mx-auto">{locale === 'es' ? 'Cuatro sencillos pasos para procesar sus imágenes de forma segura y al instante.' : locale === 'fr' ? 'Quatre étapes simples pour traiter vos images de manière sécurisée et instantanée.' : locale === 'de' ? 'Vier einfache Schritte, um Ihre Bilder sicher und sofort zu verarbeiten.' : locale === 'pt' ? 'Quatro passos simples para processar suas imagens de forma segura e instantânea.' : locale === 'id' ? 'Empat langkah sederhana untuk memproses gambar Anda secara aman dan instan.' : 'Four simple steps to process your images securely and instantly.'}</p>
+      </div>
+      
+      <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 relative">
+        {stepDetails.map((step, idx) => (
+          <div class="relative flex flex-col items-center text-center">
+            <div class="h-24 w-24 rounded-3xl bg-canvas border border-hairline flex items-center justify-center mb-6 relative z-10 shadow-sm">
+              <span class="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-link text-white font-bold flex items-center justify-center text-sm shadow-md ring-4 ring-canvas">{idx + 1}</span>
+              <svg class="h-8 w-8 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-ink mb-3">{step.title}</h3>
+            <p class="text-sm text-body leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- SEO Content Section -->
+    <section class="bg-canvas py-24 lg:py-32 border-t border-hairline">
+      <div class="mx-auto max-w-[900px] px-6 lg:px-8 text-body space-y-6 text-base leading-relaxed">
+        <h2 class="text-3xl font-semibold tracking-tight text-ink mb-8">{locale === 'es' ? 'Herramientas de imagen privadas para el trabajo diario' : locale === 'fr' ? 'Outils d\'image privés pour le travail quotidien' : locale === 'de' ? 'Private Bildwerkzeuge für die tägliche Arbeit' : locale === 'pt' ? 'Ferramentas de imagem privadas para o trabalho diário' : locale === 'id' ? 'Alat Gambar Privat untuk Pekerjaan Sehari-hari' : 'Private Image Tools For Everyday Work'}</h2>
+        <p><strong>Image Tool Stack</strong> {t.footer.description} {locale === 'es' ? 'Las herramientas se ejecutan en su navegador, por lo que sus archivos permanecen en su dispositivo en lugar de cargarse en un servidor.' : locale === 'fr' ? 'Les outils s\'exécutent dans votre navigateur, de sorte que vos fichiers restent sur votre appareil au lieu d\'être transférés vers un serveur.' : locale === 'de' ? 'Die Werkzeuge laufen in Ihrem Browser, sodass Ihre Dateien auf Ihrem Gerät verbleiben, anstatt auf einen Server hochgeladen zu werden.' : locale === 'pt' ? 'As ferramentas são executadas no seu navegador, portanto, seus arquivos permanecem no seu dispositivo em vez de serem carregados em um servidor.' : locale === 'id' ? 'Alat ini berjalan di browser Anda, sehingga file Anda tetap berada di perangkat Anda, bukan diunggah ke server.' : 'The tools run in your browser, so your files stay on your device instead of being uploaded to a server.'}</p>
+      </div>
+    </section>
+
+    <!-- All Tools Directory -->
+    <section id="all-tools" class="mx-auto max-w-[1400px] px-6 py-24 lg:px-8 border-t border-hairline">
+      <h2 class="text-3xl font-semibold tracking-tight text-ink mb-12 text-center">{locale === 'es' ? 'Directorio Completo de Herramientas A-Z' : locale === 'fr' ? 'Répertoire Complet des Outils A-Z' : locale === 'de' ? 'Komplettes Werkzeug-Verzeichnis A-Z' : locale === 'pt' ? 'Diretório Completo de Ferramentas A-Z' : locale === 'id' ? 'Direktori Alat Lengkap A-Z' : 'All Tools A-Z Directory'}</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {toolsData.tools.sort((a, b) => a.name.localeCompare(b.name)).map(tool => {
+          const lTool = translateTool(tool, locale);
+          return (
+            <a href={getLocalizedPath(`/tools/${lTool.slug}`, locale)} class="text-xs font-semibold text-mute hover:text-link transition-colors p-2 rounded hover:bg-canvas-soft border border-transparent hover:border-hairline truncate" title={lTool.name}>
+              {lTool.name}
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Massive FAQ Section -->
+    <section class="bg-canvas-soft-2 py-24 lg:py-32 border-t border-hairline">
+      <div class="mx-auto max-w-[900px] px-6 lg:px-8">
+        <h2 class="text-4xl font-semibold tracking-tight text-ink mb-16 text-center">{t.home.faqsTitle}</h2>
+        <div class="prose prose-vercel !max-w-none">
+          <div class="space-y-4">
+            {faqs.map((faq, index) => (
+              <details class="group bg-canvas border border-hairline rounded-xl p-4 transition-all hover:border-link" open={index === 0}>
+                <summary class="flex items-center justify-between cursor-pointer font-semibold text-ink list-none">
+                  {faq.q}
+                  <span class="group-open:rotate-180 transition-transform"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></span>
+                </summary>
+                <div class="mt-4 text-sm text-body leading-relaxed border-t border-hairline pt-4">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- JSON-LD FAQ Schema -->
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqs.map(f => ({
+            "@type": "Question",
+            "name": f.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": f.a
+            }
+          }))
+        })}></script>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-[900px] px-6 lg:px-8 mb-16">
+      <RequestToolSection source="homepage" />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

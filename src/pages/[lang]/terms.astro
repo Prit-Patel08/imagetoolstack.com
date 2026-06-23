@@ -1,0 +1,11 @@
+---
+import RootTermsPage from "../terms.astro";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  return locales.map((locale) => ({
+    params: { lang: locale },
+  }));
+}
+---
+<RootTermsPage />

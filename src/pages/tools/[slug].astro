@@ -87,6 +87,7 @@ import ImageSkewTool from "../../components/tools/ImageSkewTool.astro";
 import ImageReflectionTool from "../../components/tools/ImageReflectionTool.astro";
 import VectorizerTool from "../../components/tools/VectorizerTool.astro";
 import toolsData from "../../data/tools.json";
+import { translateTool, translateCategory } from "../../utils/i18n";
 export async function getStaticPaths() {
   return toolsData.tools.map((tool) => {
     const category = toolsData.categories.find((c) => c.id === tool.categoryId);
@@ -97,7 +98,10 @@ export async function getStaticPaths() {
   });
 }
 
-const { tool, category } = Astro.props;
+const { tool: rawTool, category: rawCategory } = Astro.props;
+const locale = Astro.currentLocale || 'en';
+const tool = translateTool(rawTool, locale);
+const category = translateCategory(rawCategory, locale);
 
 let ToolComponent = DefaultTool;
 

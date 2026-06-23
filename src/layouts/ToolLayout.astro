@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import RequestToolSection from "../components/RequestToolSection.astro";
 import toolsData from "../data/tools.json";
+import { getLocalizedPath } from "../utils/i18n";
 import { generateFaqs, generateSeoTitle, generateSeoDescription } from "../utils/seo-generator";
 
 import ToolDescription from "../components/seo/ToolDescription.astro";
@@ -23,6 +24,62 @@ interface Props {
 }
 
 const { tool, category } = Astro.props;
+
+const locale = Astro.currentLocale || 'en';
+
+const homeText = locale === 'es' ? 'Inicio' :
+                 locale === 'fr' ? 'Accueil' :
+                 locale === 'de' ? 'Startseite' :
+                 locale === 'pt' ? 'Início' :
+                 locale === 'id' ? 'Beranda' : 'Home';
+
+const embedText = locale === 'es' ? 'Insertar' :
+                  locale === 'fr' ? 'Intégrer' :
+                  locale === 'de' ? 'Einbetten' :
+                  locale === 'pt' ? 'Incorporar' :
+                  locale === 'id' ? 'Sematkan' : 'Embed';
+
+const embedTitle = locale === 'es' ? 'Insertar esta herramienta en su sitio web' :
+                   locale === 'fr' ? 'Intégrer cet outil sur votre site Web' :
+                   locale === 'de' ? 'Dieses Werkzeug auf Ihrer Website einbetten' :
+                   locale === 'pt' ? 'Incorporar esta ferramenta no seu site' :
+                   locale === 'id' ? 'Sematkan alat ini di situs web Anda' : 'Embed this tool on your website';
+
+const embedHeading = locale === 'es' ? `Insertar ${tool.name}` :
+                     locale === 'fr' ? `Intégrer ${tool.name}` :
+                     locale === 'de' ? `${tool.name} einbetten` :
+                     locale === 'pt' ? `Incorporar ${tool.name}` :
+                     locale === 'id' ? `Sematkan ${tool.name}` : `Embed ${tool.name}`;
+
+const embedDesc = locale === 'es' ? 'Agregue esta herramienta directamente a su sitio web o blog.' :
+                  locale === 'fr' ? 'Ajoutez cet outil directement sur votre site Web ou votre blog.' :
+                  locale === 'de' ? 'Fügen Sie dieses Werkzeug direkt zu Ihrer Website oder Ihrem Blog hinzu.' :
+                  locale === 'pt' ? 'Adicione esta ferramenta diretamente ao seu site ou blog.' :
+                  locale === 'id' ? 'Tambahkan alat ini langsung ke situs web atau blog Anda.' : 'Add this tool directly to your website or blog.';
+
+const copyCodeText = locale === 'es' ? 'Copiar fragmento de código' :
+                     locale === 'fr' ? 'Copier le fragment de code' :
+                     locale === 'de' ? 'Code-Auszug kopieren' :
+                     locale === 'pt' ? 'Copiar trecho de código' :
+                     locale === 'id' ? 'Salin Cuplikan Kode' : 'Copy Code Snippet';
+
+const copiedText = locale === 'es' ? '¡Copiado!' :
+                   locale === 'fr' ? 'Copié !' :
+                   locale === 'de' ? 'Kopiert!' :
+                   locale === 'pt' ? 'Copiado!' :
+                   locale === 'id' ? 'Tersalin!' : 'Copied!';
+
+const securityNotice = locale === 'es' ? '100% seguro y local. Los archivos nunca salen de su dispositivo.' :
+                       locale === 'fr' ? '100% sécurisé et local. Les fichiers ne quittent jamais votre appareil.' :
+                       locale === 'de' ? '100% sicher & lokal. Dateien verlassen niemals Ihr Gerät.' :
+                       locale === 'pt' ? '100% seguro e local. Os arquivos nunca saem do seu dispositivo.' :
+                       locale === 'id' ? '100% Aman & Lokal. File tidak pernah meninggalkan perangkat Anda.' : '100% Secure & Local. Files never leave your device.';
+
+const requestedText = locale === 'es' ? 'Solicitado' :
+                      locale === 'fr' ? 'Demandé' :
+                      locale === 'de' ? 'Angefordert' :
+                      locale === 'pt' ? 'Solicitado' :
+                      locale === 'id' ? 'Diminta' : 'Requested';
 
 const seoTitle = generateSeoTitle(tool);
 const seoDescription = generateSeoDescription(tool);
@@ -48,7 +105,7 @@ const softwareSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": tool.name + " - Image Tool Stack",
-  "url": `https://imagetoolstack.com/tools/${tool.slug}`,
+  "url": `https://imagetoolstack.com${getLocalizedPath(`/tools/${tool.slug}`, locale)}`,
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Web Browser",
   "offers": {
@@ -68,9 +125,9 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://imagetoolstack.com/" },
-    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` },
-    { "@type": "ListItem", "position": 3, "name": tool.name, "item": `https://imagetoolstack.com/tools/${tool.slug}` }
+    { "@type": "ListItem", "position": 1, "name": homeText, "item": `https://imagetoolstack.com${getLocalizedPath("/", locale)}` },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com${getLocalizedPath(`/category/${category.slug}`, locale)}` },
+    { "@type": "ListItem", "position": 3, "name": tool.name, "item": `https://imagetoolstack.com${getLocalizedPath(`/tools/${tool.slug}`, locale)}` }
   ]
 };
 
@@ -93,9 +150,9 @@ const faqSchema = faqs && faqs.length > 0 ? {
     <!-- Breadcrumbs -->
     <div class="border-b border-hairline bg-canvas">
       <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
-        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{homeText}</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <a href={`/category/${category.slug}`} class="hover:text-ink transition-colors">{category.name}</a>
+        <a href={getLocalizedPath(`/category/${category.slug}`, locale)} class="hover:text-ink transition-colors">{category.name}</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-ink">{tool.name}</span>
       </nav>
@@ -109,10 +166,10 @@ const faqSchema = faqs && faqs.length > 0 ? {
           <header class="mb-8">
             <div class="flex flex-wrap items-center gap-3 mb-2">
               <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{tool.name}</h1>
-              {tool.communityRequested && <span class="flex items-center gap-1 text-[10px] font-mono font-bold text-link bg-link/10 px-2 py-0.5 rounded-full uppercase tracking-widest"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> Requested</span>}
-              <button id="open-embed-modal" class="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-canvas-soft border border-hairline rounded-md text-xs font-semibold text-ink hover:border-link hover:text-link transition-colors" title="Embed this tool on your website">
+              {tool.communityRequested && <span class="flex items-center gap-1 text-[10px] font-mono font-bold text-link bg-link/10 px-2 py-0.5 rounded-full uppercase tracking-widest"><svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg> {requestedText}</span>}
+              <button id="open-embed-modal" class="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-canvas-soft border border-hairline rounded-md text-xs font-semibold text-ink hover:border-link hover:text-link transition-colors" title={embedTitle}>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-                Embed
+                {embedText}
               </button>
             </div>
             
@@ -138,7 +195,7 @@ const faqSchema = faqs && faqs.length > 0 ? {
             <!-- Universal Privacy Messaging Inside Dropzone -->
             <div class="mt-8 flex items-center justify-center gap-2 text-[11px] font-semibold text-mute bg-canvas px-3 py-1.5 rounded-full border border-hairline relative z-10 group-hover:border-success/30 group-hover:text-success transition-colors">
               <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-              100% Secure & Local. Files never leave your device.
+              {securityNotice}
             </div>
           </div>
 
@@ -182,8 +239,8 @@ const faqSchema = faqs && faqs.length > 0 ? {
     <div class="p-6">
       <div class="flex justify-between items-start mb-4">
         <div>
-          <h3 class="text-lg font-semibold text-ink">Embed {tool.name}</h3>
-          <p class="text-sm text-mute">Add this tool directly to your website or blog.</p>
+          <h3 class="text-lg font-semibold text-ink">{embedHeading}</h3>
+          <p class="text-sm text-mute">{embedDesc}</p>
         </div>
         <button id="close-embed-modal" class="text-mute hover:text-ink transition-colors p-1">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -194,13 +251,13 @@ const faqSchema = faqs && faqs.length > 0 ? {
       </div>
       <button id="copy-embed-btn" class="w-full py-2.5 bg-ink text-canvas font-semibold rounded-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-        Copy Code Snippet
+        {copyCodeText}
       </button>
     </div>
   </dialog>
   
-  <script>
-    const modal = document.getElementById('embed-modal') as HTMLDialogElement;
+  <script define:vars={{ copiedText }}>
+    const modal = document.getElementById('embed-modal');
     const openBtn = document.getElementById('open-embed-modal');
     const closeBtn = document.getElementById('close-embed-modal');
     const copyBtn = document.getElementById('copy-embed-btn');
@@ -217,7 +274,7 @@ const faqSchema = faqs && faqs.length > 0 ? {
         try {
           await navigator.clipboard.writeText(codeText.innerText);
           const originalText = copyBtn.innerHTML;
-          copyBtn.innerHTML = '<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!';
+          copyBtn.innerHTML = `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ${copiedText}`;
           setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
         } catch (err) {
           console.error('Failed to copy', err);

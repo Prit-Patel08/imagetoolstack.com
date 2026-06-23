@@ -2,49 +2,139 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+
+const locale = Astro.currentLocale || 'en';
+
+const title = locale === 'es' ? "Sobre Nosotros" :
+              locale === 'fr' ? "À Propos de Nous" :
+              locale === 'de' ? "Über Uns" :
+              locale === 'pt' ? "Sobre Nós" :
+              locale === 'id' ? "Tentang Kami" : "About Us";
+
+const heading = locale === 'es' ? "La plataforma de imágenes local-first" :
+                locale === 'fr' ? "La plateforme d'images local-first" :
+                locale === 'de' ? "Die Local-First Bildplattform" :
+                locale === 'pt' ? "A plataforma de imagens local-first" :
+                locale === 'id' ? "Platform Gambar Berbasis Lokal (Local-First)" : "The Local-First Image Platform";
+
+const subheading = locale === 'es' ? "Image Tool Stack nació de una simple observación: la mayoría de las utilidades en línea están infladas, llenas de anuncios y comprometen innecesariamente la privacidad del usuario." :
+                   locale === 'fr' ? "Image Tool Stack est né d'un constat simple : la plupart des utilitaires en ligne sont surchargés, truffés de publicités et compromettent inutilement la vie privée des utilisateurs." :
+                   locale === 'de' ? "Image Tool Stack entstand aus einer einfachen Beobachtung: Die meisten Online-Dienstprogramme sind überladen, werbeüberflutet und gefährden unnötigerweise die Privatsphäre der Benutzer." :
+                   locale === 'pt' ? "O Image Tool Stack nasceu de uma observação simples: a maioria dos utilitários online são inchados, cheios de anúncios e comprometem desnecessariamente a privacidade do usuário." :
+                   locale === 'id' ? "Image Tool Stack lahir dari pengamatan sederhana: sebagian besar utilitas online terlalu bengkak, penuh iklan, dan membahayakan privasi pengguna tanpa alasan yang jelas." : "Image Tool Stack was born from a simple observation: most online utilities are bloated, ad-ridden, and unnecessarily compromise user privacy.";
+
+const missionTitle = locale === 'es' ? "Nuestra Misión" :
+                     locale === 'fr' ? "Notre Mission" :
+                     locale === 'de' ? "Unsere Mission" :
+                     locale === 'pt' ? "Nossa Missão" :
+                     locale === 'id' ? "Misi Kami" : "Our Mission";
+
+const missionBody = locale === 'es' ? "Nuestro objetivo es proporcionar las herramientas de imagen más rápidas y confiables de la web. Al aprovechar las capacidades de los navegadores modernos, eliminamos la necesidad de procesamiento del lado del servidor para el 99% de las tareas de imagen comunes." :
+                    locale === 'fr' ? "Nous visons à fournir les outils d'image les plus rapides et les plus fiables du Web. En tirant parti des capacités des navigateurs modernes, nous éliminons le besoin de traitement côté serveur pour 99 % des tâches d'image courantes." :
+                    locale === 'de' ? "Unser Ziel ist es, die schnellsten und zuverlässigsten Bildwerkzeuge im Web bereitzustellen. Durch die Nutzung moderner Browserfunktionen erübrigt sich bei 99 % der üblichen Bildaufgaben die serverseitige Verarbeitung." :
+                    locale === 'pt' ? "Nosso objetivo é fornecer as ferramentas de imagem mais rápidas e confiáveis da web. Ao aproveitar os recursos modernos do navegador, eliminamos a necessidade de processamento no servidor para 99% das tarefas comuns de imagem." :
+                    locale === 'id' ? "Kami bertujuan untuk menyediakan alat gambar tercepat dan paling andal di web. Dengan memanfaatkan kemampuan browser modern, kami meniadakan kebutuhan pemrosesan di sisi server untuk 99% tugas gambar umum." : "We aim to provide the fastest, most reliable image tools on the web. By leveraging modern browser capabilities, we eliminate the need for server-side processing for 99% of common image tasks.";
+
+const privacyTitle = locale === 'es' ? "Enfoque en la privacidad" :
+                     locale === 'fr' ? "Axé sur la vie privée" :
+                     locale === 'de' ? "Datenschutzorientiert" :
+                     locale === 'pt' ? "Focado na privacidade" :
+                     locale === 'id' ? "Fokus pada Privasi" : "Privacy focused";
+
+const privacyBody = locale === 'es' ? "Sus datos nunca salen de su navegador. No almacenamos sus imágenes y nunca lo haremos." :
+                    locale === 'fr' ? "Vos données ne quittent jamais votre navigateur. Nous ne stockons pas vos images et ne le ferons jamais." :
+                    locale === 'de' ? "Ihre Daten verlassen niemals Ihren Browser. Wir speichern Ihre Bilder nicht und werden es auch nie tun." :
+                    locale === 'pt' ? "Seus dados nunca saem do seu navegador. Não armazenamos suas imagens e nunca o faremos." :
+                    locale === 'id' ? "Data Anda tidak pernah meninggalkan browser Anda. Kami tidak menyimpan gambar Anda, dan tidak akan pernah." : "Your data never leaves your browser. We don't store your images, and we never will.";
+
+const performanceTitle = locale === 'es' ? "Impulsado por el rendimiento" :
+                           locale === 'fr' ? "Axé sur la performance" :
+                           locale === 'de' ? "Leistungsorientiert" :
+                           locale === 'pt' ? "Focado no desempenho" :
+                           locale === 'id' ? "Berorientasi Performa" : "Performance driven";
+
+const performanceBody = locale === 'es' ? "Creado con Astro y JavaScript mínimo para garantizar que cada página se cargue en milisegundos." :
+                        locale === 'fr' ? "Construit avec Astro et un minimum de JavaScript pour garantir que chaque page se charge en millisecondes." :
+                        locale === 'de' ? "Entwickelt mit Astro und minimalem JavaScript, um sicherzustellen, dass jede Seite in Millisekunden geladen wird." :
+                        locale === 'pt' ? "Construído com Astro e JavaScript mínimo para garantir que cada página seja carregada em milissegundos." :
+                        locale === 'id' ? "Dibangun dengan Astro dan JavaScript minimal untuk memastikan setiap halaman dimuat dalam milidetik." : "Built with Astro and minimal JavaScript to ensure every page loads in milliseconds.";
+
+const developerTitle = locale === 'es' ? "Amigable para desarrolladores" :
+                       locale === 'fr' ? "Convivial pour les développeurs" :
+                       locale === 'de' ? "Entwicklerfreundlich" :
+                       locale === 'pt' ? "Amigável para desenvolvedores" :
+                       locale === 'id' ? "Ramah Developer" : "Developer friendly";
+
+const developerBody = locale === 'es' ? "Exportaciones limpias, formatos optimizados (WebP/AVIF) y acceso API que se lanzará próximamente." :
+                      locale === 'fr' ? "Exportations propres, formats optimisés (WebP/AVIF) et accès API à venir." :
+                      locale === 'de' ? "Saubere Exporte, optimierte Formate (WebP/AVIF) und in Kürze veröffentlichter API-Zugriff." :
+                      locale === 'pt' ? "Exportações limpas, formatos otimizados (WebP/AVIF) e acesso à API que será lançado em breve." :
+                      locale === 'id' ? "Ekspor bersih, format yang dioptimalkan (WebP/AVIF), dan akses API yang akan segera dirilis." : "Clean exports, optimized formats (WebP/AVIF), and soon-to-be-released API access.";
+
+const freeTitle = locale === 'es' ? "Gratis para todos" :
+                  locale === 'fr' ? "Gratuit pour tous" :
+                  locale === 'de' ? "Kostenlos für alle" :
+                  locale === 'pt' ? "Grátis para todos" :
+                  locale === 'id' ? "Gratis untuk Semua" : "Free for everyone";
+
+const freeBody = locale === 'es' ? "Sin suscripciones. Sin tarifas ocultas. Solo herramientas de alta calidad para tareas de imagen comunes." :
+                 locale === 'fr' ? "Pas d'abonnements. Pas de frais cachés. Juste des outils de haute qualité pour les tâches d'image courantes." :
+                 locale === 'de' ? "Keine Abonnements. Keine versteckten Gebühren. Einfach hochwertige Tools für gängige Bildaufgaben." :
+                 locale === 'pt' ? "Sem assinaturas. Sem taxas ocultas. Apenas ferramentas de alta qualidade para tarefas comuns de imagem." :
+                 locale === 'id' ? "Tanpa langganan. Tanpa biaya tersembunyi. Hanya alat berkualitas tinggi untuk tugas gambar umum." : "No subscriptions. No hidden fees. Just high-quality tools for common image tasks.";
+
+const stackTitle = locale === 'es' ? "La tecnología" :
+                   locale === 'fr' ? "La Stack" :
+                   locale === 'de' ? "Der Stack" :
+                   locale === 'pt' ? "A Tecnologia" :
+                   locale === 'id' ? "Stack Teknologi" : "The Stack";
+
+const stackBody = locale === 'es' ? "Image Tool Stack está construido con **Astro** para una generación estática ultrarrápida, **Tailwind CSS v4** para un estilo moderno y utiliza **WebAssembly** para tareas pesadas de procesamiento de imágenes directamente en su navegador." :
+                  locale === 'fr' ? "Image Tool Stack est construit avec **Astro** pour une génération statique ultra-rapide, **Tailwind CSS v4** pour un style moderne, et utilise **WebAssembly** pour les tâches de traitement d'images lourdes directement dans votre navigateur." :
+                  locale === 'de' ? "Image Tool Stack wurde mit **Astro** für eine blitzschnelle statische Generierung und **Tailwind CSS v4** für modernes Styling entwickelt und nutzt **WebAssembly** für anspruchsvolle Bildverarbeitungsaufgaben direkt in Ihrem Browser." :
+                  locale === 'pt' ? "O Image Tool Stack é construído com **Astro** para geração estática ultrarrápida, **Tailwind CSS v4** para estilo moderno e utiliza **WebAssembly** para tarefas pesadas de processamento de imagens diretamente no seu navegador." :
+                  locale === 'id' ? "Image Tool Stack dibangun dengan **Astro** untuk pembuatan situs statis secepat kilat, **Tailwind CSS v4** untuk desain modern, dan menggunakan **WebAssembly** untuk pemrosesan gambar yang berat langsung di browser Anda." : "Image Tool Stack is built with Astro for lightning-fast static generation, Tailwind CSS v4 for modern styling, and utilizes WebAssembly for heavy-duty image processing tasks directly in your browser.";
 ---
 
-<Layout title="About Us">
+<Layout title={title}>
   <Navbar />
   
   <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">
-    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-8">The Local-First Image Platform</h1>
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-8">{heading}</h1>
     <p class="text-xl text-body mb-12 leading-relaxed">
-      Image Tool Stack was born from a simple observation: most online utilities are bloated, ad-ridden, and unnecessarily compromise user privacy.
+      {subheading}
     </p>
     
     <div class="prose prose-vercel text-body leading-relaxed space-y-12">
       <section>
-        <h2 class="text-2xl font-semibold text-ink mb-4">Our Mission</h2>
+        <h2 class="text-2xl font-semibold text-ink mb-4">{missionTitle}</h2>
         <p>
-          We aim to provide the fastest, most reliable image tools on the web. By leveraging modern browser capabilities, we eliminate the need for server-side processing for 99% of common image tasks.
+          {missionBody}
         </p>
       </section>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-12 border-y border-hairline my-12">
         <div>
-          <h3 class="font-semibold text-ink mb-2">Privacy focused</h3>
-          <p class="text-sm">Your data never leaves your browser. We don't store your images, and we never will.</p>
+          <h3 class="font-semibold text-ink mb-2">{privacyTitle}</h3>
+          <p class="text-sm">{privacyBody}</p>
         </div>
         <div>
-          <h3 class="font-semibold text-ink mb-2">Performance driven</h3>
-          <p class="text-sm">Built with Astro and minimal JavaScript to ensure every page loads in milliseconds.</p>
+          <h3 class="font-semibold text-ink mb-2">{performanceTitle}</h3>
+          <p class="text-sm">{performanceBody}</p>
         </div>
         <div>
-          <h3 class="font-semibold text-ink mb-2">Developer friendly</h3>
-          <p class="text-sm">Clean exports, optimized formats (WebP/AVIF), and soon-to-be-released API access.</p>
+          <h3 class="font-semibold text-ink mb-2">{developerTitle}</h3>
+          <p class="text-sm">{developerBody}</p>
         </div>
         <div>
-          <h3 class="font-semibold text-ink mb-2">Free for everyone</h3>
-          <p class="text-sm">No subscriptions. No hidden fees. Just high-quality tools for common image tasks.</p>
+          <h3 class="font-semibold text-ink mb-2">{freeTitle}</h3>
+          <p class="text-sm">{freeBody}</p>
         </div>
       </div>
 
       <section>
-        <h2 class="text-2xl font-semibold text-ink mb-4">The Stack</h2>
-        <p>
-          Image Tool Stack is built with **Astro** for lightning-fast static generation, **Tailwind CSS v4** for modern styling, 
-          and utilizes **WebAssembly** for heavy-duty image processing tasks directly in your browser.
+        <h2 class="text-2xl font-semibold text-ink mb-4">{stackTitle}</h2>
+        <p set:html={stackBody.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}>
         </p>
       </section>
     </div>

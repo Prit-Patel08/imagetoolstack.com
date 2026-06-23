@@ -2,34 +2,90 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+
+const locale = Astro.currentLocale || 'en';
+
+const title = locale === 'es' ? "Contacto" :
+              locale === 'fr' ? "Contactez-nous" :
+              locale === 'de' ? "Kontakt" :
+              locale === 'pt' ? "Contate-nos" :
+              locale === 'id' ? "Hubungi Kami" : "Contact Us";
+
+const heading = locale === 'es' ? "Póngase en contacto" :
+                locale === 'fr' ? "Entrer en contact" :
+                locale === 'de' ? "Kontaktieren Sie uns" :
+                locale === 'pt' ? "Entre em contato" :
+                locale === 'id' ? "Hubungi Kami" : "Get in Touch";
+
+const subheading = locale === 'es' ? "¿Tiene alguna sugerencia para una nueva herramienta o encontró un error? Nos encantaría saber de usted." :
+                   locale === 'fr' ? "Vous avez une suggestion pour un nouvel outil ou vous avez trouvé un bug ? Nous aimerions avoir de vos nouvelles." :
+                   locale === 'de' ? "Haben Sie einen Vorschlag für ein neues Tool oder haben Sie einen Fehler gefunden? Wir würden uns freuen, von Ihnen zu hören." :
+                   locale === 'pt' ? "Tem alguma sugestão para uma nova ferramenta ou encontrou um bug? Adoraríamos ouvir de você." :
+                   locale === 'id' ? "Punya saran untuk alat baru atau menemukan bug? Kami akan senang mendengar dari Anda." : "Have a suggestion for a new tool or found a bug? We'd love to hear from you.";
+
+const nameLabel = locale === 'es' ? "Nombre" :
+                  locale === 'fr' ? "Nom" :
+                  locale === 'de' ? "Name" :
+                  locale === 'pt' ? "Nome" :
+                  locale === 'id' ? "Nama" : "Name";
+
+const emailLabel = locale === 'es' ? "Correo electrónico" :
+                   locale === 'fr' ? "E-mail" :
+                   locale === 'de' ? "E-Mail" :
+                   locale === 'pt' ? "E-mail" :
+                   locale === 'id' ? "Email" : "Email";
+
+const messageLabel = locale === 'es' ? "Mensaje" :
+                     locale === 'fr' ? "Message" :
+                     locale === 'de' ? "Nachricht" :
+                     locale === 'pt' ? "Mensagem" :
+                     locale === 'id' ? "Pesan" : "Message";
+
+const messagePlaceholder = locale === 'es' ? "¿Cómo podemos ayudarle?" :
+                             locale === 'fr' ? "Comment pouvons-nous vous aider ?" :
+                             locale === 'de' ? "Wie können wir helfen?" :
+                             locale === 'pt' ? "Como podemos ajudar?" :
+                             locale === 'id' ? "Bagaimana kami bisa membantu?" : "How can we help?";
+
+const buttonText = locale === 'es' ? "Enviar mensaje" :
+                   locale === 'fr' ? "Envoyer le message" :
+                   locale === 'de' ? "Nachricht senden" :
+                   locale === 'pt' ? "Enviar mensagem" :
+                   locale === 'id' ? "Kirim Pesan" : "Send Message";
+
+const directEmail = locale === 'es' ? "Correo electrónico directo" :
+                    locale === 'fr' ? "E-mail direct" :
+                    locale === 'de' ? "Direkte E-Mail" :
+                    locale === 'pt' ? "E-mail direto" :
+                    locale === 'id' ? "Email Langsung" : "Direct Email";
 ---
 
-<Layout title="Contact Us">
+<Layout title={title}>
   <Navbar />
   
   <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24 text-center">
-    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-6">Get in Touch</h1>
-    <p class="text-lg text-body mb-12">Have a suggestion for a new tool or found a bug? We'd love to hear from you.</p>
+    <h1 class="text-4xl font-semibold tracking-tight text-ink sm:text-5xl mb-6">{heading}</h1>
+    <p class="text-lg text-body mb-12">{subheading}</p>
     
     <div class="mx-auto max-w-lg text-left">
       <form class="space-y-6">
         <div>
-          <label for="name" class="block text-sm font-medium text-ink mb-2">Name</label>
+          <label for="name" class="block text-sm font-medium text-ink mb-2">{nameLabel}</label>
           <input type="text" id="name" name="name" class="w-full rounded-md border border-hairline bg-canvas px-4 py-2 text-ink focus:border-ink focus:outline-none" placeholder="Jane Doe" required />
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium text-ink mb-2">Email</label>
+          <label for="email" class="block text-sm font-medium text-ink mb-2">{emailLabel}</label>
           <input type="email" id="email" name="email" class="w-full rounded-md border border-hairline bg-canvas px-4 py-2 text-ink focus:border-ink focus:outline-none" placeholder="jane@example.com" required />
         </div>
         <div>
-          <label for="message" class="block text-sm font-medium text-ink mb-2">Message</label>
-          <textarea id="message" name="message" rows="4" class="w-full rounded-md border border-hairline bg-canvas px-4 py-2 text-ink focus:border-ink focus:outline-none" placeholder="How can we help?" required></textarea>
+          <label for="message" class="block text-sm font-medium text-ink mb-2">{messageLabel}</label>
+          <textarea id="message" name="message" rows="4" class="w-full rounded-md border border-hairline bg-canvas px-4 py-2 text-ink focus:border-ink focus:outline-none" placeholder={messagePlaceholder} required></textarea>
         </div>
-        <button type="submit" class="btn-primary w-full">Send Message</button>
+        <button type="submit" class="btn-primary w-full">{buttonText}</button>
       </form>
       
       <div class="mt-16 border-t border-hairline pt-12 text-center">
-        <h2 class="text-sm font-mono uppercase tracking-widest text-mute mb-4">Direct Email</h2>
+        <h2 class="text-sm font-mono uppercase tracking-widest text-mute mb-4">{directEmail}</h2>
         <a href="mailto:hello@imagetoolstack.com" class="text-xl font-semibold text-ink hover:text-link transition-colors">hello@imagetoolstack.com</a>
       </div>
     </div>

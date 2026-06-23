@@ -1,14 +1,17 @@
 ---
+import { getTranslations } from "../../utils/i18n";
 interface Props {
   tool: any;
 }
 const { tool } = Astro.props;
 
+const locale = Astro.currentLocale || 'en';
+const t = getTranslations(locale);
 const cases = tool.useCases || [];
 ---
 {cases.length > 0 && (
   <section class="mb-16">
-    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Common Use Cases</h2>
+    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">{t.toolTemplates.useCases.title}</h2>
     <div class="space-y-4">
       {cases.map((uc: string) => (
         <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas-soft border border-hairline hover:border-link transition-colors">

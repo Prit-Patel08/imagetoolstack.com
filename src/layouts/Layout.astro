@@ -17,16 +17,37 @@ const siteName = "Image Tool Stack";
 const pageTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
 
 // Clean the pathname to produce a clean trailing-slash-free, extension-free URL
-const cleanPathname = Astro.url.pathname
+const currentLocale = Astro.currentLocale || 'en';
+const locales = ['es', 'fr', 'de', 'pt', 'id'];
+
+let basePath = Astro.url.pathname
   .replace(/\/index\.html?$/i, '/')
   .replace(/\.html?$/i, '')
   .replace(/\/$/, '');
 
-const canonicalUrl = new URL(cleanPathname || '/', Astro.site || 'https://imagetoolstack.com').href;
+const localeRegex = new RegExp(`^\\/(${locales.join('|')})($|\\/)`);
+const matchedLocale = basePath.match(localeRegex);
+if (matchedLocale) {
+  basePath = basePath.replace(localeRegex, '/');
+}
+basePath = basePath.replace(/\/$/, '');
+if (!basePath.startsWith('/')) {
+  basePath = '/' + basePath;
+}
+
+const domain = 'https://imagetoolstack.com';
+const getUrl = (lang: string) => {
+  if (lang === 'en') {
+    return `${domain}${basePath === '/' ? '' : basePath}`;
+  }
+  return `${domain}/${lang}${basePath === '/' ? '' : basePath}`;
+};
+
+const canonicalUrl = getUrl(currentLocale);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={currentLocale}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -64,6 +85,11 @@ const canonicalUrl = new URL(cleanPathname || '/', Astro.site || 'https://imaget
 		{keywords && <meta name="keywords" content={keywords} />}
 		<meta name="robots" content="index, follow" />
 		<link rel="canonical" href={canonicalUrl} />
+		<link rel="alternate" hreflang="x-default" href={getUrl('en')} />
+		<link rel="alternate" hreflang="en" href={getUrl('en')} />
+		{locales.map(lang => (
+			<link rel="alternate" hreflang={lang} href={getUrl(lang)} />
+		))}
 		
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />

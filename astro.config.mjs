@@ -8,6 +8,13 @@ import { remarkInternalLinks } from './src/plugins/remark-internal-links.mjs';
 export default defineConfig({
   site: 'https://imagetoolstack.com',
   trailingSlash: 'never',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'es', 'fr', 'de', 'pt', 'id'],
+    routing: {
+      prefixDefaultLocale: false
+    }
+  },
   build: {
     format: 'file'
   },

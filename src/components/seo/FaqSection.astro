@@ -1,14 +1,17 @@
 ---
+import { getTranslations } from "../../utils/i18n";
 interface Props {
   tool: any;
 }
 const { tool } = Astro.props;
 
+const locale = Astro.currentLocale || 'en';
+const t = getTranslations(locale);
 const faqs = tool.faqs || tool.faq || [];
 ---
 {faqs.length > 0 && (
   <section class="mb-16">
-    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Frequently Asked Questions</h2>
+    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">{t.toolTemplates.faqs.title}</h2>
     <div class="space-y-4">
       {faqs.map((item: any, index: number) => (
         <details class="group bg-canvas border border-hairline rounded-xl p-4 transition-all hover:border-link" open={index === 0}>

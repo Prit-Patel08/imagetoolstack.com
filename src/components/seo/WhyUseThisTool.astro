@@ -1,15 +1,18 @@
 ---
 import type { Tool } from "../../utils/seo-generator";
+import { getTranslations } from "../../utils/i18n";
 
 interface Props {
   tool: Tool;
 }
 const { tool } = Astro.props;
 
+const locale = Astro.currentLocale || 'en';
+const t = getTranslations(locale);
 const bullets = tool.benefits || [];
 ---
 <section class="mb-16">
-  <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Why Use This Tool</h2>
+  <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">{t.toolTemplates.benefits.title}</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     {bullets.map((benefit: string) => (
       <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas border border-hairline">

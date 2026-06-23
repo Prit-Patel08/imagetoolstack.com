@@ -24,10 +24,163 @@ export async function getStaticPaths() {
   });
 }
 
-const { comp } = Astro.props;
+import { translateComparison, translateCapabilityValue, translateTool, getLocalizedPath } from "../../utils/i18n";
+
+const { comp: rawComp } = Astro.props;
+const locale = Astro.currentLocale || 'en';
+const comp = translateComparison(rawComp, locale);
+
+const homeText = locale === 'es' ? 'Inicio' :
+                 locale === 'fr' ? 'Accueil' :
+                 locale === 'de' ? 'Startseite' :
+                 locale === 'pt' ? 'Início' :
+                 locale === 'id' ? 'Beranda' : 'Home';
+
+const compareLinkText = locale === 'es' ? 'Comparar' :
+                        locale === 'fr' ? 'Comparer' :
+                        locale === 'de' ? 'Vergleichen' :
+                        locale === 'pt' ? 'Comparar' :
+                        locale === 'id' ? 'Bandingkan' : 'Compare';
+
+const prosConsHeading = locale === 'es' ? 'Comparación de pros y contras' :
+                        locale === 'fr' ? 'Comparaison des avantages et des inconvénients' :
+                        locale === 'de' ? 'Vor- und Nachteile im Vergleich' :
+                        locale === 'pt' ? 'Comparação de prós e contras' :
+                        locale === 'id' ? 'Perbandingan Kelebihan & Kekurangan' : 'Pros & Cons Comparison';
+
+const advantagesText = locale === 'es' ? 'Ventajas' :
+                       locale === 'fr' ? 'Avantages' :
+                       locale === 'de' ? 'Vorteile' :
+                       locale === 'pt' ? 'Vantagens' :
+                       locale === 'id' ? 'Kelebihan' : 'Advantages';
+
+const disadvantagesText = locale === 'es' ? 'Desventajas' :
+                          locale === 'fr' ? 'Inconvénients' :
+                          locale === 'de' ? 'Nachteile' :
+                          locale === 'pt' ? 'Desvantagens' :
+                          locale === 'id' ? 'Kekurangan' : 'Disadvantages';
+
+const specMatrixHeading = locale === 'es' ? 'Matriz de especificaciones técnicas' :
+                          locale === 'fr' ? 'Matrice des spécifications techniques' :
+                          locale === 'de' ? 'Technische Spezifikationsmatrix' :
+                          locale === 'pt' ? 'Matriz de especificações técnicas' :
+                          locale === 'id' ? 'Matriks Spesifikasi Teknis' : 'Technical Specification Matrix';
+
+const featureText = locale === 'es' ? 'Característica' :
+                    locale === 'fr' ? 'Caractéristique' :
+                    locale === 'de' ? 'Merkmal' :
+                    locale === 'pt' ? 'Recurso' :
+                    locale === 'id' ? 'Fitur' : 'Feature';
+
+const compLabel = locale === 'es' ? 'Tipo de compresión' :
+                  locale === 'fr' ? 'Type de compression' :
+                  locale === 'de' ? 'Kompressionstyp' :
+                  locale === 'pt' ? 'Tipo de compressão' :
+                  locale === 'id' ? 'Jenis Kompresi' : 'Compression Type';
+
+const transLabel = locale === 'es' ? 'Soporte de transparencia' :
+                   locale === 'fr' ? 'Support de transparence' :
+                   locale === 'de' ? 'Transparenzunterstützung' :
+                   locale === 'pt' ? 'Suporte a transparência' :
+                   locale === 'id' ? 'Dukungan Transparansi' : 'Transparency Support';
+
+const animLabel = locale === 'es' ? 'Soporte de animación' :
+                  locale === 'fr' ? 'Support d\'animation' :
+                  locale === 'de' ? 'Animationsunterstützung' :
+                  locale === 'pt' ? 'Suporte a animação' :
+                  locale === 'id' ? 'Dukungan Animasi' : 'Animation Support';
+
+const vectorLabel = locale === 'es' ? 'Vectorial / Escalable' :
+                    locale === 'fr' ? 'Vectoriel / Évolutif' :
+                    locale === 'de' ? 'Vektor / Skalierbar' :
+                    locale === 'pt' ? 'Vetorial / Escalável' :
+                    locale === 'id' ? 'Vektor / Skalabel' : 'Vector / Scalable';
+
+const browserLabel = locale === 'es' ? 'Soporte en navegadores web' :
+                     locale === 'fr' ? 'Support des navigateurs Web' :
+                     locale === 'de' ? 'Webbrowser-Unterstützung' :
+                     locale === 'pt' ? 'Suporte a navegadores web' :
+                     locale === 'id' ? 'Dukungan Browser Web' : 'Web Browser Support';
+
+const useCaseLabel = locale === 'es' ? 'Caso de uso principal' :
+                     locale === 'fr' ? 'Cas d\'utilisation principal' :
+                     locale === 'de' ? 'Hauptanwendungsfall' :
+                     locale === 'pt' ? 'Caso de uso principal' :
+                     locale === 'id' ? 'Kasus Penggunaan Utama' : 'Primary Use Case';
+
+const sect1Heading = locale === 'es' ? '1. Tamaño del archivo y eficiencia de compresión' :
+                     locale === 'fr' ? '1. Taille du fichier et efficacité de compression' :
+                     locale === 'de' ? '1. Dateigröße und Kompressionseffizienz' :
+                     locale === 'pt' ? '1. Tamanho do arquivo e eficiência de compactação' :
+                     locale === 'id' ? '1. Ukuran File & Efisiensi Kompresi' : '1. File Size & Compression Efficiency';
+
+const sect2Heading = locale === 'es' ? '2. Calidad de representación y fidelidad' :
+                     locale === 'fr' ? '2. Qualité de rendu et fidélité' :
+                     locale === 'de' ? '2. Renderqualität und Detailtreue' :
+                     locale === 'pt' ? '2. Qualidade de renderização e fidelidade' :
+                     locale === 'id' ? '2. Kualitas & Ketepatan Rendering' : '2. Rendering Quality & Fidelity';
+
+const sect3Heading = locale === 'es' ? '3. Soporte de navegadores y compatibilidad de plataformas' :
+                     locale === 'fr' ? '3. Support des navigateurs et compatibilité des plateformes' :
+                     locale === 'de' ? '3. Browserunterstützung und Plattformkompatibilität' :
+                     locale === 'pt' ? '3. Suporte do navegador e compatibilidade de plataforma' :
+                     locale === 'id' ? '3. Dukungan Browser & Kompatibilitas Platform' : '3. Browser Support & Platform Compatibility';
+
+const sect4Heading = locale === 'es' ? '4. SEO y rendimiento (Largest Contentful Paint)' :
+                     locale === 'fr' ? '4. Référencement et performance (Largest Contentful Paint)' :
+                     locale === 'de' ? '4. SEO und Performance (Largest Contentful Paint)' :
+                     locale === 'pt' ? '4. SEO e desempenho (Largest Contentful Paint)' :
+                     locale === 'id' ? '4. SEO & Performa (Largest Contentful Paint)' : '4. SEO & Performance (Largest Contentful Paint)';
+
+const verdictHeading = locale === 'es' ? 'El veredicto' :
+                       locale === 'fr' ? 'Le verdict' :
+                       locale === 'de' ? 'Das Urteil' :
+                       locale === 'pt' ? 'O veredito' :
+                       locale === 'id' ? 'Keputusan' : 'The Verdict';
+
+const whenToUseFormatText = (fmt: string) => {
+  return locale === 'es' ? `Cuándo usar ${fmt}` :
+         locale === 'fr' ? `Quand utiliser ${fmt}` :
+         locale === 'de' ? `Wann man ${fmt} verwendet` :
+         locale === 'pt' ? `Quando usar ${fmt}` :
+         locale === 'id' ? `Kapan menggunakan ${fmt}` : `When to use ${fmt}`;
+};
+
+const faqHeading = locale === 'es' ? 'Preguntas frecuentes' :
+                   locale === 'fr' ? 'Questions fréquemment posées' :
+                   locale === 'de' ? 'Häufig gestellte Fragen' :
+                   locale === 'pt' ? 'Perguntas frequentes' :
+                   locale === 'id' ? 'Pertanyaan yang Sering Diajukan' : 'Frequently Asked Questions';
+
+const moreCompHeading = locale === 'es' ? 'Más comparaciones de formatos' :
+                        locale === 'fr' ? 'Plus de comparaisons de formats' :
+                        locale === 'de' ? 'Weitere Formatvergleiche' :
+                        locale === 'pt' ? 'Mais comparações de formatos' :
+                        locale === 'id' ? 'Perbandingan Format Lainnya' : 'More Format Comparisons';
+
+const ctaTitle = locale === 'es' ? '¿Listo para procesar sus imágenes?' :
+                 locale === 'fr' ? 'Prêt à traiter vos images ?' :
+                 locale === 'de' ? 'Bereit, Ihre Bilder zu verarbeiten?' :
+                 locale === 'pt' ? 'Pronto para processar suas imagens?' :
+                 locale === 'id' ? 'Siap memproses gambar Anda?' : 'Ready to process your images?';
+
+const ctaDesc = locale === 'es' ? 'Utilice nuestra herramienta gratuita, privada y en el navegador para convertir o optimizar sus imágenes al instante.' :
+                locale === 'fr' ? 'Utilisez notre outil gratuit, privé et basé sur le navigateur pour convertir ou optimiser instantanément vos images.' :
+                locale === 'de' ? 'Verwenden Sie unser kostenloses, privates In-Browser-Tool, um Ihre Bilder sofort zu konvertieren oder zu optimieren.' :
+                locale === 'pt' ? 'Use nossa ferramenta gratuita, privada e no navegador para converter ou otimizar suas imagens instantaneamente.' :
+                locale === 'id' ? 'Gunakan alat dalam browser kami yang gratis dan privat untuk mengonversi atau mengoptimalkan gambar Anda secara instan.' : 'Use our free, private, in-browser tool to convert or optimize your images instantly.';
+
+const ctaButtonText = (toolName: string) => {
+  return locale === 'es' ? `Ir a ${toolName}` :
+         locale === 'fr' ? `Aller à ${toolName}` :
+         locale === 'de' ? `Zu ${toolName} wechseln` :
+         locale === 'pt' ? `Ir para ${toolName}` :
+         locale === 'id' ? `Buka ${toolName}` : `Go to ${toolName}`;
+};
 
 // Find the related tool
-const relatedTool = toolsData.tools.find(t => t.slug === comp.relatedToolSlug);
+const rawRelatedTool = toolsData.tools.find(t => t.slug === comp.relatedToolSlug);
+const relatedTool = rawRelatedTool ? translateTool(rawRelatedTool, locale) : null;
 
 // Get stable related comparisons that share one format.
 const relatedComparisons = comparisonsData.comparisons
@@ -43,6 +196,7 @@ if (relatedComparisons.length < 4) {
 }
 
 const visibleRelatedComparisons = relatedComparisons
+  .map(c => translateComparison(c, locale))
   .slice(0, 4);
 
 // Helper function to return format specifications for the capability comparison grid
@@ -107,7 +261,14 @@ const getFormatCapabilities = (format: string) => {
     caps.browserSupport = "Unsupported (Safari Only)";
     caps.idealFor = "Medical Imaging, Digital Archives";
   }
-  return caps;
+  return {
+    compression: translateCapabilityValue(caps.compression, locale),
+    transparency: translateCapabilityValue(caps.transparency, locale),
+    animation: translateCapabilityValue(caps.animation, locale),
+    vector: translateCapabilityValue(caps.vector, locale),
+    browserSupport: translateCapabilityValue(caps.browserSupport, locale),
+    idealFor: translateCapabilityValue(caps.idealFor, locale),
+  };
 };
 
 // Generate detailed programmatic content blocks for comparison
@@ -115,30 +276,100 @@ const f1 = comp.format1;
 const f2 = comp.format2;
 const cap1 = getFormatCapabilities(f1);
 const cap2 = getFormatCapabilities(f2);
+
+const proseTranslations = {
+  en: {
+    intro: `Choosing between ${f1} and ${f2} is one of the most common decisions designers, web developers, and content creators face. Both formats have distinct strengths, and picking the wrong one can result in bloated file sizes, blurry text, or compatibility issues. In this guide, we dive deep into the technical differences, performance characteristics, and practical use cases of ${f1} vs ${f2} to help you select the optimal format for your project.`,
+    fileSize: `File size is a critical factor for web performance, Core Web Vitals, and server storage. ${f1} and ${f2} handle data compression in fundamentally different ways. Typically, if one format is lossless (like PNG or TIFF) and the other is lossy (like JPG or WebP), the lossy format will achieve file sizes that are 70% to 90% smaller. For vector formats like SVG, file sizes depend entirely on coordinate complexity rather than pixel dimensions, making them incredibly lightweight for logos and icons but unsuitable for photographs. When comparing ${f1} to ${f2}, you will generally find that ${f1} excels in situations requiring ${comp.format1Pros[0] || 'high fidelity'}, while ${f2} provides optimization advantages like ${comp.format2Pros[0] || 'portability'}.`,
+    quality: `Visual quality and compression artifacts differ significantly between these formats. ${f1} relies on ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'lossless representation, meaning every vector path or pixel color is preserved down to the exact mathematical coordinate or byte' : 'advanced lossy algorithms that discard high-frequency visual details to compress file sizes'}. On the other hand, ${f2} uses ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'lossless representation to ensure pixel-perfect fidelity' : 'lossy structures that compress visual data, which can introduce compression noise or blocky artifacts at lower quality ratios'}. If you require a format that handles sharp text, hard boundaries, and design assets without any distortion, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} is the clear choice. For complex photographs and continuous gradients, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} is highly recommended.`,
+    browserSupport: `Browser compatibility and platform accessibility can make or break a user experience. Modern web browsers natively support common formats like JPG, PNG, WebP, AVIF, and SVG. However, legacy or specialized formats like ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'niche extensions'} are completely unsupported by browsers like Chrome, Firefox, and Edge. If you upload an unsupported format directly to a web page, visitors will see a broken image icon. For these formats, a client-side conversion to a standard web-safe format like JPEG or PNG is required before web deployment.`,
+    seo: `Google and other search engines directly reward website speed and usability. Core Web Vitals metrics, specifically Largest Contentful Paint (LCP), are heavily influenced by the weight of the images loaded on the page. Using optimized formats like WebP or AVIF instead of legacy PNG or JPG can reduce page load times by seconds. Furthermore, vector formats like SVG are written in XML code, which means any text strings inside the vector coordinates are fully crawlable and indexable by search engine spiders, giving SVG a distinct SEO advantage for logos and illustrations.`,
+    q1: `What is the main difference between ${f1} and ${f2}?`,
+    a1: `The main difference lies in their compression and structure. ${f1} is typically optimized for ${comp.whenToUse1.toLowerCase()} while ${f2} is best suited for ${comp.whenToUse2.toLowerCase()}.`,
+    q2: `Which format is better for website speed and SEO?`,
+    a2: `For modern websites, next-gen formats like WebP or AVIF are superior to legacy formats because they offer much smaller file sizes at the same visual quality. If you are comparing a vector format like SVG, it is ideal for icons and logos because it scales infinitely without increasing file size.`,
+    q3: `Can I convert ${f1} to ${f2} directly in my browser?`,
+    a3: `Yes! You can use our free, browser-based conversion tools to instantly convert and optimize your files without uploading them to any external servers.`
+  },
+  es: {
+    intro: `Elegir entre ${f1} y ${f2} es una de las decisiones más comunes que enfrentan los diseñadores, desarrolladores web y creadores de contenido. Ambos formatos tienen fortalezas distintas, y elegir el incorrecto puede resultar en tamaños de archivo inflados, texto borroso o problemas de compatibilidad. En esta guía, profundizamos en las diferencias técnicas, las características de rendimiento y los casos de uso prácticos de ${f1} vs ${f2} para ayudarle a seleccionar el formato óptimo para su proyecto.`,
+    fileSize: `El tamaño del archivo es un factor crítico para el rendimiento web, las métricas de Core Web Vitals y el almacenamiento en el servidor. ${f1} y ${f2} manejan la compresión de datos de formas fundamentalmente diferentes. Por lo general, si un formato es sin pérdidas (como PNG o TIFF) y el otro es con pérdidas (como JPG o WebP), el formato con pérdidas logrará tamaños de archivo entre un 70% y un 90% más pequeños. Para formatos vectoriales como SVG, el tamaño del archivo depende completamente de la complejidad de las coordenadas en lugar de las dimensiones de los píxeles, lo que los hace increíblemente livianos para logotipos e iconos pero inadecuados para fotografías. Al comparar ${f1} con ${f2}, generalmente encontrará que ${f1} sobresale en situaciones que requieren ${comp.format1Pros[0] || 'alta fidelidad'}, mientras que ${f2} proporciona ventajas de optimización como ${comp.format2Pros[0] || 'portabilidad'}.`,
+    quality: `La calidad visual y los artefactos de compresión difieren significativamente entre estos formatos. ${f1} se basa en ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'representación sin pérdidas, lo que significa que cada ruta vectorial o color de píxel se conserva con exactitud matemática' : 'algoritmos con pérdidas avanzados que descartan detalles visuales de alta frecuencia para comprimir el archivo'}. Por otro lado, ${f2} utiliza ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'representación sin pérdidas para garantizar una fidelidad perfecta de los píxeles' : 'estructuras con pérdidas que comprimen los datos visuales, lo que puede introducir ruido o artefactos de bloque a menores ratios de calidad'}. Si necesita un formato para manejar texto nítido, bordes definidos y recursos de diseño sin distorsión, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} es la opción clara. Para fotografías complejas y degradados continuos, se recomienda ampliamente ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2}.`,
+    browserSupport: `La compatibilidad del navegador y la accesibilidad de la plataforma pueden mejorar o arruinar la experiencia del usuario. Los navegadores modernos admiten de forma nativa formatos comunes como JPG, PNG, WebP, AVIF y SVG. Sin embargo, los formatos heredados o especializados como ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'extensiones de nicho'} no son compatibles en absoluto con navegadores como Chrome, Firefox y Edge. Si sube un formato no compatible directamente a una página web, los visitantes verán un icono de imagen rota. Para estos formatos, se requiere una conversión en el lado del cliente a un formato estándar seguro para la web como JPEG o PNG antes del despliegue en la web.`,
+    seo: `Google y otros motores de búsqueda recompensan directamente la velocidad y la usabilidad del sitio web. Las métricas de Core Web Vitals, específicamente el Largest Contentful Paint (LCP), están fuertemente influenciadas por el peso de las imágenes cargadas. El uso de formatos optimizados como WebP o AVIF en lugar de los heredados PNG o JPG puede reducir los tiempos de carga en segundos. Además, los formatos vectoriales como SVG se escriben en código XML, lo que significa que cualquier cadena de texto dentro de las coordenadas vectoriales es totalmente rastreable e indexable por los motores de búsqueda, dando a SVG una clara ventaja de SEO para logotipos e ilustraciones.`,
+    q1: `¿Cuál es la diferencia principal entre ${f1} y ${f2}?`,
+    a1: `La diferencia principal radica en su compresión y estructura. ${f1} suele estar optimizado para ${comp.whenToUse1.toLowerCase()} mientras que ${f2} es el más adecuado para ${comp.whenToUse2.toLowerCase()}.`,
+    q2: `¿Qué formato es mejor para la velocidad del sitio web y el SEO?`,
+    a2: `Para los sitios web modernos, los formatos de próxima generación como WebP o AVIF son superiores a los formatos heredados porque ofrecen tamaños de archivo mucho más pequeños con la misma calidad visual. Si está comparando un formato vectorial como SVG, es ideal para iconos y logotipos porque escala infinitamente sin aumentar el tamaño del archivo.`,
+    q3: `¿Puedo convertir ${f1} a ${f2} directamente en mi navegador?`,
+    a3: `¡Sí! Puede usar nuestras herramientas de conversión gratuitas basadas en el navegador para convertir y optimizar instantáneamente sus archivos sin subirlos a ningún servidor externo.`
+  },
+  fr: {
+    intro: `Choisir entre ${f1} et ${f2} est l'une des décisions les plus courantes auxquelles sont confrontés les concepteurs, les développeurs Web et les créateurs de contenu. Les deux formats ont des atouts distincts, et choisir le mauvais peut entraîner des fichiers trop lourds, du texte flou ou des problèmes de compatibilité. Dans ce guide, nous plongeons dans les différences techniques, les performances et les cas d'utilisation de ${f1} vs ${f2} pour vous aider à sélectionner le meilleur format.`,
+    fileSize: `La taille du fichier est un facteur critique pour les performances web, les Core Web Vitals et le stockage. ${f1} et ${f2} gèrent la compression des données de manière fondamentalement différente. Généralement, si un format est sans perte (comme PNG ou TIFF) et l'autre avec perte (comme JPG ou WebP), le format avec perte obtiendra des fichiers 70% à 90% plus petits. Pour les formats vectoriels comme SVG, la taille dépend uniquement de la complexité des tracés et non des dimensions en pixels. Lors de la comparaison de ${f1} à ${f2}, vous constaterez généralement que ${f1} excelle dans les situations nécessitant ${comp.format1Pros[0] || 'une grande fidélité'}, tandis que ${f2} offre des avantages d'optimisation comme ${comp.format2Pros[0] || 'la légèreté'}.`,
+    quality: `La qualité visuelle et les artefacts de compression diffèrent considérablement. ${f1} repose sur ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'une représentation sans perte, ce qui signifie que chaque tracé vectoriel ou couleur de pixel est préservé' : 'des algorithmes avec perte avancés qui éliminent les détails haute fréquence'}. De son côté, ${f2} utilise ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'une représentation sans perte pour assurer une fidélité parfaite' : 'des structures avec perte qui compressent les données visuelles, pouvant introduire du bruit ou des blocs à faible qualité'}. Si vous avez besoin d'un format pour du texte net et des contours précis, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} est le choix évident. Pour des photos complexes, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} est fortement recommandé.`,
+    browserSupport: `La compatibilité des navigateurs est essentielle. Les navigateurs modernes prennent en charge nativement les formats courants comme JPG, PNG, WebP, AVIF et SVG. Cependant, les formats spécialisés ou anciens comme ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'extensions de niche'} ne sont pas du tout supportés par des navigateurs comme Chrome ou Firefox. Si vous importez un format non pris en charge, les visiteurs verront une image brisée. Une conversion côté client vers un format standard comme JPEG ou PNG est requise.`,
+    seo: `Google et les autres moteurs de recherche récompensent la vitesse du site. Les indicateurs Core Web Vitals, en particulier le Largest Contentful Paint (LCP), dépendent fortement du poids des images. L'utilisation de formats optimisés comme WebP ou AVIF peut réduire le temps de chargement de plusieurs secondes. De plus, les formats vectoriels comme l'SVG sont écrits en code XML, ce qui signifie que les chaînes de texte y sont entièrement indexables par les moteurs de recherche.`,
+    q1: `Quelle est la principale différence entre ${f1} et ${f2} ?`,
+    a1: `La différence principale réside dans leur compression et leur structure. ${f1} est généralement entraîné pour ${comp.whenToUse1.toLowerCase()} tandis que ${f2} convient mieux pour ${comp.whenToUse2.toLowerCase()}.`,
+    q2: `Quel format est le meilleur pour la vitesse du site et le référencement ?`,
+    a2: `Pour les sites web modernes, les formats de nouvelle génération comme WebP ou AVIF sont supérieurs car ils offrent des fichiers beaucoup plus légers à qualité visuelle équivalente. L'SVG est idéal pour les logos car il s'adapte sans perte de qualité ni augmentation de poids.`,
+    q3: `Puis-je convertir ${f1} en ${f2} directement dans mon navigateur ?`,
+    a3: `Oui ! Vous pouvez utiliser nos outils de conversion gratuits directement dans votre navigateur pour convertir et optimiser vos fichiers instantanément sans aucun envoi sur un serveur.`
+  },
+  de: {
+    intro: `Die Entscheidung zwischen ${f1} und ${f2} ist eine der häufigsten Fragen für Designer, Webentwickler und Ersteller von Inhalten. Beide Formate haben spezifische Stärken. In diesem Leitfaden gehen wir tief in die technischen Unterschiede, Leistungsmerkmale und Anwendungsfälle von ${f1} vs. ${f2} ein, um Ihnen bei der Auswahl zu helfen.`,
+    fileSize: `Die Dateigröße ist ein kritischer Faktor für die Web-Performance, Core Web Vitals und den Speicherplatz. ${f1} und ${f2} komprimieren Daten grundlegend anders. Wenn ein Format verlustfrei (wie PNG oder TIFF) und das andere verlustbehaftet (wie JPG oder WebP) ist, erzielt das verlustbehaftete Format meist 70% bis 90% kleinere Dateien. Bei Vektorformaten wie SVG hängt die Dateigröße von der Komplexität der Pfade ab. Im Vergleich excels ${f1} bei ${comp.format1Pros[0] || 'hoher Detailtreue'}, während ${f2} Vorteile wie ${comp.format2Pros[0] || 'geringere Größe'} bietet.`,
+    quality: `Bildqualität und Kompressionsartefakte unterscheiden sich erheblich. ${f1} setzt auf ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'verlustfreie Darstellung, bei der jeder Pfad oder Pixel exakt erhalten bleibt' : 'fortschrittliche verlustbehaftete Algorithmen, die hochfrequente Details verwerfen'}. ${f2} verwendet hingegen ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'verlustfreie Strukturen für pixelgenaue Wiedergabe' : 'verlustbehaftete Kompression, die bei niedriger Qualität zu Blockartefakten führen kann'}. Für scharfen Text und klare Kanten ist ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} die beste Wahl. Für Fotos empfiehlt sich ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2}.`,
+    browserSupport: `Browserkompatibilität ist entscheidend für die Benutzererfahrung. Moderne Browser unterstützen JPG, PNG, WebP, AVIF und SVG nativ. Ältere oder spezielle Formate wie ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'Nischenformate'} werden jedoch von Browsern wie Chrome oder Firefox nicht unterstützt. Hier ist eine lokale Konvertierung in ein Standardformat wie JPEG oder PNG vor der Webbereitstellung erforderlich.`,
+    seo: `Google belohnt schnelle Ladezeiten. Core Web Vitals wie der LCP-Wert werden stark durch das Gewicht der geladenen Bilder beeinflusst. Der Einsatz von WebP oder AVIF statt PNG/JPG spart wertvolle Sekunden. Zudem sind SVG-Dateien in XML geschrieben, wodurch darin enthaltene Texte für Suchmaschinen-Crawler vollständig lesbar und indexierbar sind.`,
+    q1: `Was ist der Hauptunterschied zwischen ${f1} und ${f2}?`,
+    a1: `Der Hauptunterschied liegt in der Komprimierung und Struktur. ${f1} ist meist optimiert für ${comp.whenToUse1.toLowerCase()}, während ${f2} am besten für ${comp.whenToUse2.toLowerCase()} geeignet ist.`,
+    q2: `Welches Format ist besser für Website-Geschwindigkeit und SEO?`,
+    a2: `Für moderne Websites sind Next-Gen-Formate wie WebP oder AVIF älteren Formaten überlegen, da sie deutlich kleinere Dateigrößen bei gleicher Qualität bieten. SVGs sind ideal für Logos, da sie ohne Qualitätsverlust unendlich skalierbar sind.`,
+    q3: `Kann ich ${f1} direkt im Browser in ${f2} konvertieren?`,
+    a3: `Ja! Sie können unsere kostenlosen Browser-Tools nutzen, um Ihre Dateien sofort lokal zu konvertieren, ohne dass diese auf externe Server hochgeladen werden müssen.`
+  },
+  pt: {
+    intro: `Escolher entre ${f1} e ${f2} é uma das decisões mais comuns enfrentadas por designers, desenvolvedores web e criadores de conteúdo. Ambos os formatos têm pontos fortes distintos. Neste guia, analisamos as diferenças técnicas, desempenho e casos de uso de ${f1} vs ${f2} para ajudar você a escolher o formato ideal para seu projeto.`,
+    fileSize: `O tamanho do arquivo é crucial para a velocidade do site, Core Web Vitals e armazenamento. ${f1} e ${f2} compactam dados de formas diferentes. Normalmente, se um formato é sem perdas (como PNG ou TIFF) e o outro com perdas (como JPG ou WebP), o formato com perdas gera arquivos de 70% a 90% menores. Para vetores como SVG, o tamanho depende da complexidade do código XML. Ao comparar ${f1} com ${f2}, geralmente ${f1} se destaca em situações que exigem ${comp.format1Pros[0] || 'alta fidelidade'}, enquanto ${f2} oferece vantagens como ${comp.format2Pros[0] || 'tamanho reduzido'}.`,
+    quality: `A qualidade visual e os artefatos de compressão diferem bastante. ${f1} depende de ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'compressão sem perdas, preservando cada pixel ou coordenada vetorial perfeitamente' : 'algoritmos com perdas que descartam detalhes de alta frequência'}. Por outro lado, ${f2} usa ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'estruturas sem perdas para fidelidade perfeita' : 'compressão com perdas que pode gerar ruídos ou blocos em qualidades mais baixas'}. Para textos nítidos e bordas duras, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} é o vencedor. Para fotografias complexas, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} é o recomendado.`,
+    browserSupport: `A compatibilidade do navegador é essencial. Os navegadores modernos suportam nativamente JPG, PNG, WebP, AVIF e SVG. No entanto, formatos especializados como ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'outros formatos'} não têm suporte. Se você carregá-los diretamente no site, eles aparecerão como imagens quebradas. É recomendável convertê-los localmente no navegador para JPEG ou PNG antes de usá-los na web.`,
+    seo: `O Google recompensa a velocidade das páginas. O LCP (Largest Contentful Paint) é muito afetado pelo tamanho das fotos. Usar formatos modernos como WebP ou AVIF diminui o tempo de carregamento. Além disso, arquivos SVG são escritos em XML, o que significa que textos dentro deles são totalmente indexáveis pelos motores de busca.`,
+    q1: `Qual é a principal diferença entre ${f1} e ${f2}?`,
+    a1: `A principal diferença está na compactação e na estrutura. ${f1} é geralmente otimizado para ${comp.whenToUse1.toLowerCase()}, enquanto ${f2} é mais adequado para ${comp.whenToUse2.toLowerCase()}.`,
+    q2: `Qual formato é melhor para SEO e velocidade do site?`,
+    a2: `Para sites modernos, formatos de nova geração como WebP ou AVIF são superiores aos formatos antigos porque reduzem muito o tamanho dos arquivos com a mesma qualidade de imagem. O SVG é excelente para logotipos por sua escalabilidade infinita.`,
+    q3: `Posso converter ${f1} para ${f2} direto no meu navegador?`,
+    a3: `Sim! Você pode usar nossas ferramentas gratuitas para converter e otimizar seus arquivos instantaneamente e 100% no seu navegador, sem precisar enviar suas fotos para servidores.`
+  },
+  id: {
+    intro: `Memilih antara ${f1} dan ${f2} adalah salah satu keputusan paling umum yang dihadapi oleh desainer, pengembang web, dan pembuat konten. Kedua format memiliki kekuatan yang berbeda. Dalam panduan ini, kami mengulas perbedaan teknis, performa, dan studi kasus praktis dari ${f1} vs ${f2} untuk membantu Anda menentukan pilihan terbaik.`,
+    fileSize: `Ukuran file sangat penting untuk performa web, Core Web Vitals, dan kapasitas penyimpanan. ${f1} dan ${f2} mengompresi data dengan cara yang sangat berbeda. Biasanya, jika salah satu format bersifat lossless (seperti PNG atau TIFF) dan yang lainnya lossy (seperti JPG atau WebP), format lossy akan menghasilkan file 70% hingga 90% lebih kecil. Untuk format vektor seperti SVG, ukuran file bergantung pada kompleksitas koordinat. Membandingkan ${f1} dengan ${f2}, Anda akan menemukan bahwa ${f1} unggul dalam hal ${comp.format1Pros[0] || 'kualitas tinggi'}, sementara ${f2} unggul dalam hal ${comp.format2Pros[0] || 'ukuran file kecil'}.`,
+    quality: `Kualitas visual dan artefak kompresi sangat berbeda. ${f1} mengandalkan ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'representasi lossless, di mana setiap piksel atau koordinat vektor disimpan dengan sempurna' : 'algoritma lossy canggih yang membuang detail visual frekuensi tinggi'}. Sementara itu, ${f2} menggunakan ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'struktur lossless untuk memastikan ketepatan piksel yang sempurna' : 'kompresi lossy yang dapat menimbulkan artefak kotak-kotak pada kualitas rendah'}. Untuk teks tajam dan logo transparan, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} adalah pilihan yang jelas. Untuk foto yang rumit, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} sangat direkomendasikan.`,
+    browserSupport: `Kompatibilitas browser sangat menentukan pengalaman pengguna. Browser modern mendukung format umum seperti JPG, PNG, WebP, AVIF, dan SVG secara asli. Namun, format khusus atau lama seperti ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'format lainnya'} tidak didukung sama sekali. Jika Anda mengunggahnya langsung, gambar akan tampak rusak. Konversi lokal di browser ke JPEG atau PNG diperlukan sebelum mempublikasikannya di web.`,
+    seo: `Google dan mesin pencari lainnya menyukai situs web yang cepat. Metrik Core Web Vitals seperti Largest Contentful Paint (LCP) sangat dipengaruhi oleh ukuran gambar. Menggunakan format WebP atau AVIF dapat mempercepat waktu pemuatan halaman. Selain itu, gambar SVG ditulis dalam kode XML sehingga teks di dalamnya dapat dirayapi dan diindeks oleh mesin pencari.`,
+    q1: `Apa perbedaan utama antara ${f1} dan ${f2}?`,
+    a1: `Perbedaan utamanya terletak pada kompresi dan strukturnya. ${f1} biasanya dioptimalkan untuk ${comp.whenToUse1.toLowerCase()} sedangkan ${f2} paling cocok untuk ${comp.whenToUse2.toLowerCase()}.`,
+    q2: `Format mana yang lebih baik untuk kecepatan website dan SEO?`,
+    a2: `Untuk situs modern, format generasi baru seperti WebP atau AVIF jauh lebih unggul karena memberikan ukuran file yang jauh lebih kecil dengan kualitas visual yang sama. Vektor seperti SVG sangat cocok untuk logo karena dapat diperbesar tanpa batas tanpa memperbesar ukuran file.`,
+    q3: `Apakah saya bisa mengonversi ${f1} ke ${f2} langsung di browser?`,
+    a3: `Ya! Anda dapat menggunakan alat konversi gratis kami langsung di browser untuk mengonversi dan mengoptimalkan file Anda secara instan tanpa mengunggahnya ke server mana pun.`
+  }
+};
+
+const text = proseTranslations[locale as keyof typeof proseTranslations] || proseTranslations.en;
+
 const compareContent = {
-  intro: `Choosing between ${f1} and ${f2} is one of the most common decisions designers, web developers, and content creators face. Both formats have distinct strengths, and picking the wrong one can result in bloated file sizes, blurry text, or compatibility issues. In this guide, we dive deep into the technical differences, performance characteristics, and practical use cases of ${f1} vs ${f2} to help you select the optimal format for your project.`,
-  
-  fileSize: `File size is a critical factor for web performance, Core Web Vitals, and server storage. ${f1} and ${f2} handle data compression in fundamentally different ways. Typically, if one format is lossless (like PNG or TIFF) and the other is lossy (like JPG or WebP), the lossy format will achieve file sizes that are 70% to 90% smaller. For vector formats like SVG, file sizes depend entirely on coordinate complexity rather than pixel dimensions, making them incredibly lightweight for logos and icons but unsuitable for photographs. When comparing ${f1} to ${f2}, you will generally find that ${f1} excels in situations requiring ${comp.format1Pros[0] || 'high fidelity'}, while ${f2} provides optimization advantages like ${comp.format2Pros[0] || 'portability'}.`,
-
-  quality: `Visual quality and compression artifacts differ significantly between these formats. ${f1} relies on ${f1 === 'PNG' || f1 === 'SVG' || f1 === 'PDF' || f1 === 'TIFF' ? 'lossless representation, meaning every vector path or pixel color is preserved down to the exact mathematical coordinate or byte' : 'advanced lossy algorithms that discard high-frequency visual details to compress file sizes'}. On the other hand, ${f2} uses ${f2 === 'PNG' || f2 === 'SVG' || f2 === 'PDF' || f2 === 'TIFF' ? 'lossless representation to ensure pixel-perfect fidelity' : 'lossy structures that compress visual data, which can introduce compression noise or blocky artifacts at lower quality ratios'}. If you require a format that handles sharp text, hard boundaries, and design assets without any distortion, ${f1 === 'PNG' || f1 === 'SVG' ? f1 : f2} is the clear choice. For complex photographs and continuous gradients, ${f1 === 'JPG' || f1 === 'WebP' || f1 === 'AVIF' ? f1 : f2} is highly recommended.`,
-
-  browserSupport: `Browser compatibility and platform accessibility can make or break a user experience. Modern web browsers natively support common formats like JPG, PNG, WebP, AVIF, and SVG. However, legacy or specialized formats like ${f1 === 'HEIC' || f1 === 'TIFF' || f1 === 'EPS' ? f1 : (f2 === 'HEIC' || f2 === 'TIFF' || f2 === 'EPS' ? f2 : '') || 'niche extensions'} are completely unsupported by browsers like Chrome, Firefox, and Edge. If you upload an unsupported format directly to a web page, visitors will see a broken image icon. For these formats, a client-side conversion to a standard web-safe format like JPEG or PNG is required before web deployment.`,
-
-  seo: `Google and other search engines directly reward website speed and usability. Core Web Vitals metrics, specifically Largest Contentful Paint (LCP), are heavily influenced by the weight of the images loaded on the page. Using optimized formats like WebP or AVIF instead of legacy PNG or JPG can reduce page load times by seconds. Furthermore, vector formats like SVG are written in XML code, which means any text strings inside the vector coordinates are fully crawlable and indexable by search engine spiders, giving SVG a distinct SEO advantage for logos and illustrations.`,
-
+  intro: text.intro,
+  fileSize: text.fileSize,
+  quality: text.quality,
+  browserSupport: text.browserSupport,
+  seo: text.seo,
   faqs: [
-    {
-      q: `What is the main difference between ${f1} and ${f2}?`,
-      a: `The main difference lies in their compression and structure. ${f1} is typically optimized for ${comp.whenToUse1.toLowerCase()} while ${f2} is best suited for ${comp.whenToUse2.toLowerCase()}.`
-    },
-    {
-      q: `Which format is better for website speed and SEO?`,
-      a: `For modern websites, next-gen formats like WebP or AVIF are superior to legacy formats because they offer much smaller file sizes at the same visual quality. If you are comparing a vector format like SVG, it is ideal for icons and logos because it scales infinitely without increasing file size.`
-    },
-    {
-      q: `Can I convert ${f1} to ${f2} directly in my browser?`,
-      a: `Yes! You can use our free, browser-based conversion tools to instantly convert and optimize your files without uploading them to any external servers.`
-    }
+    { q: text.q1, a: text.a1 },
+    { q: text.q2, a: text.a2 },
+    { q: text.q3, a: text.a3 }
   ]
 };
 
@@ -177,9 +408,9 @@ const schema = {
     <!-- Breadcrumbs -->
     <div class="border-b border-hairline bg-canvas">
       <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute" aria-label="Breadcrumb">
-        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{homeText}</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{compareLinkText}</a>
         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         <span class="text-ink">{comp.title}</span>
       </nav>
@@ -207,7 +438,7 @@ const schema = {
 
       <!-- Quick Pros & Cons Comparison -->
       <section class="mb-16">
-        <h2 class="text-2xl font-bold text-ink mb-6">Pros & Cons Comparison</h2>
+        <h2 class="text-2xl font-bold text-ink mb-6">{prosConsHeading}</h2>
         <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -221,7 +452,7 @@ const schema = {
                 <td class="p-6 border-r border-hairline align-top bg-canvas">
                   <h3 class="text-xs font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    Advantages
+                    {advantagesText}
                   </h3>
                   <ul class="space-y-3">
                     {comp.format1Pros.map((pro: string) => (
@@ -233,7 +464,7 @@ const schema = {
                   
                   <h3 class="text-xs font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    Disadvantages
+                    {disadvantagesText}
                   </h3>
                   <ul class="space-y-3">
                     {comp.format1Cons.map((con: string) => (
@@ -247,7 +478,7 @@ const schema = {
                 <td class="p-6 align-top bg-canvas">
                   <h3 class="text-xs font-bold text-success uppercase tracking-widest mb-4 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    Advantages
+                    {advantagesText}
                   </h3>
                   <ul class="space-y-3">
                     {comp.format2Pros.map((pro: string) => (
@@ -259,7 +490,7 @@ const schema = {
                   
                   <h3 class="text-xs font-bold text-error uppercase tracking-widest mb-4 mt-8 flex items-center gap-2">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    Disadvantages
+                    {disadvantagesText}
                   </h3>
                   <ul class="space-y-3">
                     {comp.format2Cons.map((con: string) => (
@@ -277,44 +508,44 @@ const schema = {
 
       <!-- Technical Capabilities Specification Table -->
       <section class="mb-16">
-        <h2 class="text-2xl font-bold text-ink mb-6">Technical Specification Matrix</h2>
+        <h2 class="text-2xl font-bold text-ink mb-6">{specMatrixHeading}</h2>
         <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-canvas-soft border-b border-hairline">
-                <th class="p-4 text-sm font-bold text-ink w-1/3 border-r border-hairline">Feature</th>
+                <th class="p-4 text-sm font-bold text-ink w-1/3 border-r border-hairline">{featureText}</th>
                 <th class="p-4 text-sm font-bold text-ink w-1/3 border-r border-hairline">{comp.format1}</th>
                 <th class="p-4 text-sm font-bold text-ink w-1/3">{comp.format2}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-hairline">
               <tr class="bg-canvas">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Compression Type</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{compLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.compression}</td>
                 <td class="p-4 text-sm text-body">{cap2.compression}</td>
               </tr>
               <tr class="bg-canvas-soft/30">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Transparency Support</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{transLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.transparency}</td>
                 <td class="p-4 text-sm text-body">{cap2.transparency}</td>
               </tr>
               <tr class="bg-canvas">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Animation Support</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{animLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.animation}</td>
                 <td class="p-4 text-sm text-body">{cap2.animation}</td>
               </tr>
               <tr class="bg-canvas-soft/30">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Vector / Scalable</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{vectorLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.vector}</td>
                 <td class="p-4 text-sm text-body">{cap2.vector}</td>
               </tr>
               <tr class="bg-canvas">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Web Browser Support</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{browserLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.browserSupport}</td>
                 <td class="p-4 text-sm text-body">{cap2.browserSupport}</td>
               </tr>
               <tr class="bg-canvas-soft/30">
-                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">Primary Use Case</td>
+                <td class="p-4 text-sm font-semibold text-ink border-r border-hairline">{useCaseLabel}</td>
                 <td class="p-4 text-sm text-body border-r border-hairline">{cap1.idealFor}</td>
                 <td class="p-4 text-sm text-body">{cap2.idealFor}</td>
               </tr>
@@ -328,7 +559,7 @@ const schema = {
         <div class="border-t border-hairline pt-12">
           <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
             <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-            1. File Size & Compression Efficiency
+            {sect1Heading}
           </h2>
           <p class="text-base text-body leading-relaxed">{compareContent.fileSize}</p>
         </div>
@@ -336,7 +567,7 @@ const schema = {
         <div class="border-t border-hairline pt-12">
           <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
             <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            2. Rendering Quality & Fidelity
+            {sect2Heading}
           </h2>
           <p class="text-base text-body leading-relaxed">{compareContent.quality}</p>
         </div>
@@ -344,7 +575,7 @@ const schema = {
         <div class="border-t border-hairline pt-12">
           <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
             <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            3. Browser Support & Platform Compatibility
+            {sect3Heading}
           </h2>
           <p class="text-base text-body leading-relaxed">{compareContent.browserSupport}</p>
         </div>
@@ -352,7 +583,7 @@ const schema = {
         <div class="border-t border-hairline pt-12">
           <h2 class="text-2xl font-bold text-ink mb-4 flex items-center gap-3">
             <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            4. SEO & Performance (Largest Contentful Paint)
+            {sect4Heading}
           </h2>
           <p class="text-base text-body leading-relaxed">{compareContent.seo}</p>
         </div>
@@ -360,25 +591,25 @@ const schema = {
 
       <!-- The Verdict -->
       <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline text-center shadow-sm">
-        <h2 class="text-xs font-bold text-mute uppercase tracking-widest mb-2">The Verdict</h2>
+        <h2 class="text-xs font-bold text-mute uppercase tracking-widest mb-2">{verdictHeading}</h2>
         <p class="text-2xl font-bold text-ink">{comp.winner}</p>
       </section>
 
       <!-- When to Use -->
       <section class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-link shadow-sm">
-          <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format1}</h2>
+          <h2 class="text-lg font-bold text-ink mb-4">{whenToUseFormatText(comp.format1)}</h2>
           <p class="text-sm text-body leading-relaxed">{comp.whenToUse1}</p>
         </div>
         <div class="p-6 rounded-xl bg-canvas border border-hairline border-t-4 border-t-ink shadow-sm">
-          <h2 class="text-lg font-bold text-ink mb-4">When to use {comp.format2}</h2>
+          <h2 class="text-lg font-bold text-ink mb-4">{whenToUseFormatText(comp.format2)}</h2>
           <p class="text-sm text-body leading-relaxed">{comp.whenToUse2}</p>
         </div>
       </section>
 
       <!-- FAQ Accordion Section -->
       <section class="mb-16 border-t border-hairline pt-12">
-        <h2 class="text-2xl font-bold text-ink mb-6">Frequently Asked Questions</h2>
+        <h2 class="text-2xl font-bold text-ink mb-6">{faqHeading}</h2>
         <div class="space-y-4">
           {compareContent.faqs.map((faq) => (
             <details class="group rounded-xl border border-hairline bg-canvas p-6 [&_summary::-webkit-details-marker]:hidden shadow-sm">
@@ -398,10 +629,10 @@ const schema = {
       <!-- Related Comparisons -->
       {visibleRelatedComparisons.length > 0 && (
         <section class="mb-16">
-          <h2 class="text-2xl font-bold text-ink mb-6">More Format Comparisons</h2>
+          <h2 class="text-2xl font-bold text-ink mb-6">{moreCompHeading}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {visibleRelatedComparisons.map((relatedComp) => (
-              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between shadow-sm">
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between shadow-sm">
                 <div>
                   <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
                   <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
@@ -416,10 +647,10 @@ const schema = {
       <!-- CTA -->
       {relatedTool && (
         <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
-          <h2 class="text-2xl font-bold mb-4">Ready to process your images?</h2>
-          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to convert or optimize your images instantly.</p>
-          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
-            Go to {relatedTool.name}
+          <h2 class="text-2xl font-bold mb-4">{ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {ctaButtonText(relatedTool.name)}
             <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
           </a>
         </section>

@@ -1,5 +1,53 @@
 ---
 // PrivacyFirst.astro
+const locale = Astro.currentLocale || 'en';
+
+const content = {
+  en: {
+    title: "Privacy First Guarantee",
+    body: "Unlike most online image tools that upload your private photos to remote servers for processing, our tools operate <strong class=\"text-ink\">100% locally in your web browser</strong>. We utilize modern WebAssembly and the HTML5 Canvas API to perform all conversions, optimizations, and edits directly on your device.",
+    uploads: "Zero Server Uploads",
+    collection: "No Data Collection",
+    deletion: "Instant Deletion"
+  },
+  es: {
+    title: "Garantía de Privacidad Primero",
+    body: "A diferencia de la mayoría de las herramientas de imagen en línea que suben sus fotos privadas a servidores remotos para su procesamiento, nuestras herramientas funcionan <strong class=\"text-ink\">100% localmente en su navegador web</strong>. Utilizamos WebAssembly moderno y la API HTML5 Canvas para realizar todas las conversiones, optimizaciones y ediciones directamente en su dispositivo.",
+    uploads: "Cero subidas a servidores",
+    collection: "Sin recopilación de datos",
+    deletion: "Eliminación instantánea"
+  },
+  fr: {
+    title: "Garantie de Confidentialité Absolue",
+    body: "Contrairement à la plupart des outils d'image en ligne qui importent vos photos privées sur des serveurs distants pour traitement, nos outils fonctionnent <strong class=\"text-ink\">100% localement dans votre navigateur Web</strong>. Nous utilisons la technologie moderne WebAssembly et l'API HTML5 Canvas pour effectuer toutes les conversions, optimisations et modifications directement sur votre appareil.",
+    uploads: "Zéro transfert serveur",
+    collection: "Aucune collecte de données",
+    deletion: "Suppression instantanée"
+  },
+  de: {
+    title: "Garantie für Datenschutz",
+    body: "Im Gegensatz zu den meisten Online-Bildwerkzeugen, die Ihre privaten Fotos zur Verarbeitung auf entfernte Server hochladen, arbeiten unsere Tools zu <strong class=\"text-ink\">100% lokal in Ihrem Webbrowser</strong>. Wir nutzen moderne WebAssembly- und HTML5-Canvas-APIs, um alle Konvertierungen, Optimierungen und Bearbeitungen direkt auf Ihrem Gerät durchzuführen.",
+    uploads: "Keine Server-Uploads",
+    collection: "Keine Datenerfassung",
+    deletion: "Sofortige Löschung"
+  },
+  pt: {
+    title: "Garantia de Privacidade",
+    body: "Ao contrário da maioria das ferramentas de imagem online que enviam suas fotos privadas para servidores remotos, nossas ferramentas operam <strong class=\"text-ink\">100% localmente no seu navegador</strong>. Utilizamos WebAssembly moderno e a API HTML5 Canvas para realizar todas as conversões, otimizações e edições diretamente no seu dispositivo.",
+    uploads: "Zero uploads no servidor",
+    collection: "Sem coleta de dados",
+    deletion: "Exclusão imediata"
+  },
+  id: {
+    title: "Jaminan Keamanan Privasi",
+    body: "Berbeda dengan sebagian besar alat gambar online yang mengunggah foto pribadi Anda ke server jarak jauh untuk diproses, alat kami beroperasi <strong class=\"text-ink\">100% secara lokal di browser web Anda</strong>. Kami menggunakan WebAssembly modern dan HTML5 Canvas API untuk melakukan semua konversi, pengoptimalan, dan pengeditan langsung di perangkat Anda.",
+    uploads: "Nol Unggah Server",
+    collection: "Tanpa Pengumpulan Data",
+    deletion: "Penghapusan Instan"
+  }
+};
+
+const t = content[locale as keyof typeof content] || content.en;
 ---
 <section class="mb-8 p-6 rounded-xl bg-canvas border border-hairline shadow-sm relative overflow-hidden">
   <div class="relative z-10">
@@ -7,25 +55,23 @@
       <div class="p-2 bg-success/10 rounded-full">
         <svg class="h-5 w-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       </div>
-      <h2 class="text-lg font-bold tracking-tight text-ink">Privacy First Guarantee</h2>
+      <h2 class="text-lg font-bold tracking-tight text-ink">{t.title}</h2>
     </div>
     
-    <p class="text-sm text-body leading-relaxed">
-      Unlike most online image tools that upload your private photos to remote servers for processing, our tools operate <strong class="text-ink">100% locally in your web browser</strong>. We utilize modern WebAssembly and the HTML5 Canvas API to perform all conversions, optimizations, and edits directly on your device.
-    </p>
+    <p class="text-sm text-body leading-relaxed" set:html={t.body} />
     
     <div class="mt-5 space-y-2">
       <div class="flex items-center gap-2 text-xs font-mono text-mute uppercase tracking-widest bg-canvas-soft px-3 py-2 rounded border border-hairline">
         <span class="h-2 w-2 rounded-full bg-success"></span>
-        Zero Server Uploads
+        {t.uploads}
       </div>
       <div class="flex items-center gap-2 text-xs font-mono text-mute uppercase tracking-widest bg-canvas-soft px-3 py-2 rounded border border-hairline">
         <span class="h-2 w-2 rounded-full bg-success"></span>
-        No Data Collection
+        {t.collection}
       </div>
       <div class="flex items-center gap-2 text-xs font-mono text-mute uppercase tracking-widest bg-canvas-soft px-3 py-2 rounded border border-hairline">
         <span class="h-2 w-2 rounded-full bg-success"></span>
-        Instant Deletion
+        {t.deletion}
       </div>
     </div>
   </div>

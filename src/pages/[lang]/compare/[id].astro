@@ -1,0 +1,20 @@
+---
+import comparisonsData from "../../../data/comparisons.json";
+import RootComparePage from "../../compare/[id].astro";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  const paths = [];
+  for (const locale of locales) {
+    for (const comp of comparisonsData.comparisons) {
+      paths.push({
+        params: { lang: locale, id: comp.id },
+        props: { comp, locale },
+      });
+    }
+  }
+  return paths;
+}
+const { comp } = Astro.props;
+---
+<RootComparePage comp={comp} />

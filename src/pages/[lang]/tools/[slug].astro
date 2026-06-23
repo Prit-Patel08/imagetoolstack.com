@@ -1,0 +1,21 @@
+---
+import toolsData from "../../../data/tools.json";
+import RootToolPage from "../../tools/[slug].astro";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  const paths = [];
+  for (const locale of locales) {
+    for (const tool of toolsData.tools) {
+      const category = toolsData.categories.find((c) => c.id === tool.categoryId);
+      paths.push({
+        params: { lang: locale, slug: tool.slug },
+        props: { tool, category, locale },
+      });
+    }
+  }
+  return paths;
+}
+const { tool, category } = Astro.props;
+---
+<RootToolPage tool={tool} category={category} />
