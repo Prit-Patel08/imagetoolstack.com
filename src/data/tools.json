@@ -9796,5 +9796,41 @@
         "bulk-resizer"
       ]
     }
+  ],
+  "categories": [
+    {
+      "id": "conversion",
+      "name": "Convert",
+      "slug": "conversion",
+      "icon": "repeat",
+      "description": "Convert PNG, JPG, WebP, SVG and HEIC files instantly inside your browser. No uploads required.",
+      "seoTitle": "Image Conversion Tools - Convert Any Image Format Free",
+      "seoDescription": "Free online image conversion tools. Convert between PNG, JPG, WebP, SVG, HEIC and more. 100% browser-based, no uploads required."
+    },
+    {
+      "id": "optimization",
+      "name": "Edit",
+      "slug": "optimization",
+      "icon": "zap",
+      "description": "Compress, resize, crop and optimize images without sacrificing quality.",
+      "seoTitle": "Image Optimization Tools - Compress & Resize Free",
+      "seoDescription": "Professional image optimization tools. Compress, resize, and crop images without losing quality. Browser-based processing."
+    },
+    {
+      "id": "utility",
+      "name": "Tools",
+      "slug": "utility",
+      "icon": "tool",
+      "description": "Extract metadata, generate PDFs, analyze colors and perform advanced image operations.",
+      "seoTitle": "Image Utility Tools - Metadata, Color Picker & More",
+      "seoDescription": "Advanced image utility tools including EXIF viewer, color picker, and image-to-PDF converter. Free and privacy-first."
+    },
+    {
+      "id": "pdf",
+      "name": "PDF Tools",
+      "description": "Merge, split, compress, and convert PDF documents locally in your browser.",
+      "slug": "pdf",
+      "icon": "file-text"
+    }
   ]
 }
