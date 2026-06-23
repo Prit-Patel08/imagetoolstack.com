@@ -17,6 +17,7 @@ import UseCases from "../components/seo/UseCases.astro";
 import PrivacyFirst from "../components/seo/PrivacyFirst.astro";
 import RelatedGuides from "../components/seo/RelatedGuides.astro";
 import AdSlot from "../components/seo/AdSlot.astro";
+import CrossLinkBlock from "../components/seo/CrossLinkBlock.astro";
 
 interface Props {
   tool: any;
@@ -198,6 +199,9 @@ const faqSchema = faqs && faqs.length > 0 ? {
           <RelatedGuides tool={tool} />
 
           <RequestToolSection source="tool_page" />
+
+          <!-- High-Density Internal Cross-Linking Block -->
+          <CrossLinkBlock currentToolSlug={tool.slug} currentCategory={category?.slug} />
         </div>
 
         <!-- Sidebar -->

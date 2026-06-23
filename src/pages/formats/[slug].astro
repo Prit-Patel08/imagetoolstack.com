@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import toolsData from "../../data/tools.json";
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
 
 export async function getStaticPaths() {
   const formats = await getCollection('formats');
@@ -95,6 +96,12 @@ const articleSchema = {
       </aside>
 
     </div>
+
+    <!-- High-Density Internal Cross-Linking Block -->
+    <div class="mx-auto max-w-[1200px] px-6 lg:px-8 mb-16">
+      <CrossLinkBlock currentFormat={entry.id} />
+    </div>
+
   </main>
 
   <Footer />

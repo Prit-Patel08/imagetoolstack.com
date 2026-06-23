@@ -1,0 +1,128 @@
+---
+import toolsData from "../../data/tools.json";
+import comparisonsData from "../../data/comparisons.json";
+import { getLocalizedPath } from "../../utils/i18n";
+import { getCollection } from "astro:content";
+
+interface Props {
+  currentToolSlug?: string;
+  currentCategory?: string;
+  currentFormat?: string;
+}
+
+const { currentToolSlug, currentCategory, currentFormat } = Astro.props;
+const locale = Astro.currentLocale || 'en';
+
+const headingText = locale === 'es' ? 'Explorar más tareas' :
+                    locale === 'fr' ? 'Explorer d\'autres tâches' :
+                    locale === 'de' ? 'Weitere Aufgaben entdecken' :
+                    locale === 'pt' ? 'Explorar mais tarefas' :
+                    locale === 'id' ? 'Jelajahi Tugas Lainnya' : 'Explore More Tasks';
+
+const toolsHeading = locale === 'es' ? 'Herramientas populares' :
+                     locale === 'fr' ? 'Outils populaires' :
+                     locale === 'de' ? 'Beliebte Werkzeuge' :
+                     locale === 'pt' ? 'Ferramentas populares' :
+                     locale === 'id' ? 'Alat Populer' : 'Popular Tools';
+
+const compareHeading = locale === 'es' ? 'Comparar formatos' :
+                       locale === 'fr' ? 'Comparer les formatos' :
+                       locale === 'de' ? 'Formate vergleichen' :
+                       locale === 'pt' ? 'Comparar formatos' :
+                       locale === 'id' ? 'Bandingkan Format' : 'Compare Formats';
+
+const guidesHeading = locale === 'es' ? 'Guías útiles' :
+                      locale === 'fr' ? 'Guides utiles' :
+                      locale === 'de' ? 'Hilfreiche Anleitungen' :
+                      locale === 'pt' ? 'Guias úteis' :
+                      locale === 'id' ? 'Panduan Berguna' : 'Helpful Guides';
+
+const allTools = toolsData.tools || [];
+const allComparisons = comparisonsData.comparisons || [];
+
+// Fetch articles dynamically
+const allArticles = await getCollection('articles');
+
+// 1. Get 6 Related Tools
+let relatedTools = allTools.filter(t => t && t.slug && t.slug !== currentToolSlug);
+if (currentCategory) {
+  const categoryTools = relatedTools.filter(t => t.categoryId === currentCategory);
+  if (categoryTools.length >= 6) relatedTools = categoryTools;
+} else if (currentFormat) {
+  const formatTools = relatedTools.filter(t => t.slug && t.slug.includes(currentFormat.toLowerCase()));
+  if (formatTools.length >= 4) relatedTools = formatTools;
+}
+relatedTools = relatedTools.slice(0, 6);
+
+// 2. Get 6 Related Comparisons
+let relatedComparisons = allComparisons;
+if (currentFormat) {
+  const formatComps = relatedComparisons.filter(c => 
+    (c.format1 && c.format1.toLowerCase() === currentFormat.toLowerCase()) || 
+    (c.format2 && c.format2.toLowerCase() === currentFormat.toLowerCase())
+  );
+  if (formatComps.length > 0) relatedComparisons = formatComps;
+}
+relatedComparisons = relatedComparisons.slice(0, 6);
+
+// 3. Get 6 Guides
+let relatedGuides = allArticles;
+if (currentFormat) {
+  const formatGuides = relatedGuides.filter(g => g.slug && g.slug.includes(currentFormat.toLowerCase()));
+  if (formatGuides.length > 0) relatedGuides = formatGuides;
+}
+relatedGuides = relatedGuides.slice(0, 6);
+---
+
+<div class="mt-16 border-t border-hairline pt-12">
+  <h3 class="text-2xl font-bold text-ink mb-8">{headingText}</h3>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <!-- Related Tools -->
+    <div>
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">{toolsHeading}</h4>
+      <ul class="space-y-3">
+        {relatedTools.map((rt) => (
+          <li>
+            <a href={getLocalizedPath(`/tools/${rt.slug}`, locale)} class="flex items-center text-sm text-body hover:text-link group transition-colors">
+              <svg class="h-4 w-4 mr-2 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              {rt.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Related Comparisons -->
+    <div>
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">{compareHeading}</h4>
+      <ul class="space-y-3">
+        {relatedComparisons.map((rc) => (
+          <li>
+            <a href={getLocalizedPath(`/compare/${rc.id}`, locale)} class="flex items-center text-sm text-body hover:text-link group transition-colors">
+              <svg class="h-4 w-4 mr-2 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+              {rc.format1} vs {rc.format2}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Related Guides -->
+    <div>
+      <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">{guidesHeading}</h4>
+      <ul class="space-y-3">
+        {relatedGuides.map((rg) => (
+          <li>
+            <a href={getLocalizedPath(`/${rg.slug}`, locale)} class="flex items-center text-sm text-body hover:text-link group transition-colors">
+              <svg class="h-4 w-4 mr-2 text-mute group-hover:text-link transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              {rg.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+  </div>
+</div>

@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
 
 export async function getStaticPaths() {
   const dedicatedComparisonPages = new Set([
@@ -655,6 +656,9 @@ const schema = {
           </a>
         </section>
       )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat={comp.format1} />
 
     </div>
   </main>
