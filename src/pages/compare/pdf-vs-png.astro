@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import PdfToJpgTool from "../../components/tools/PdfToJpgTool.astro";
 
 // SEO Metadata
 const seoTitle = "PDF vs PNG: Which Format Should You Use? (2026 Guide)";
@@ -104,6 +105,12 @@ const relatedTool = toolsData.tools.find(t => t.slug === "pdf-to-png");
           <p><strong class="text-ink">Use PDF for:</strong> Resumes, multi-page reports, forms, print materials, and sharing documents where text must remain selectable.</p>
           <p><strong class="text-ink">Use PNG for:</strong> Logos, icons, transparent web graphics, and single-page screenshots that you need to embed inside a webpage.</p>
         </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert PDF to PNG Instantly (Offline & Private)</h2>
+        <PdfToJpgTool toolId="pdf-to-png" />
       </section>
 
       <!-- Real World Tests -->

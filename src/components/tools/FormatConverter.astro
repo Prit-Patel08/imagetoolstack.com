@@ -10,7 +10,7 @@ interface Props {
 const { toolId, targetKb } = Astro.props;
 ---
 
-<div id="converter-tool-root" class="w-full flex flex-col items-center" data-target-kb={targetKb}>
+<div id="converter-tool-root" class="w-full flex flex-col items-center" data-target-kb={targetKb} data-tool-id={toolId}>
   {targetKb && (
     <div class="mb-4 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -88,7 +88,8 @@ const { toolId, targetKb } = Astro.props;
     const qualityVal = document.getElementById('quality-val');
     const settingsContainer = document.getElementById('compressor-settings');
 
-    const toolId = window.location.pathname.split('/').pop() || '';
+    const root = document.getElementById('converter-tool-root');
+    const toolId = root?.getAttribute('data-tool-id') || window.location.pathname.split('/').pop() || '';
 
     let currentImg: HTMLImageElement | null = null;
     let currentFileType = '';

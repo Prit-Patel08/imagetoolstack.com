@@ -39,6 +39,8 @@ import PdfToPngTool from "../../components/tools/PdfToPngTool.astro";
 import RemovePdfPagesTool from "../../components/tools/RemovePdfPagesTool.astro";
 import RotatePdfTool from "../../components/tools/RotatePdfTool.astro";
 import DefaultTool from "../../components/ImageTool.astro";
+import JsonFormatterTool from "../../components/tools/JsonFormatterTool.astro";
+import CsvConverterTool from "../../components/tools/CsvConverterTool.astro";
 import toolsData from "../../data/tools.json";
 
 export async function getStaticPaths() {
@@ -132,6 +134,10 @@ if (formatConverters.includes(tool.slug)) {
   ToolComponent = RemovePdfPagesTool;
 } else if (tool.slug === 'rotate-pdf') {
   ToolComponent = RotatePdfTool;
+} else if (tool.slug === 'json-formatter') {
+  ToolComponent = JsonFormatterTool;
+} else if (tool.slug === 'csv-to-json') {
+  ToolComponent = CsvConverterTool;
 }
 ---
 

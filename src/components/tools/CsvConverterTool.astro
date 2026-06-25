@@ -1,0 +1,402 @@
+---
+interface Props {
+  toolId: string;
+}
+
+const { toolId } = Astro.props;
+---
+
+<div id="csv-converter-root" class="w-full flex flex-col gap-6">
+  <!-- Tabs Navigation -->
+  <div class="flex border-b border-hairline">
+    <button id="tab-csv-to-json" class="px-6 py-3 border-b-2 border-link text-link text-sm font-semibold transition-all focus:outline-none">
+      CSV to JSON
+    </button>
+    <button id="tab-json-to-csv" class="px-6 py-3 border-b-2 border-transparent text-mute hover:text-ink text-sm font-semibold transition-all focus:outline-none">
+      JSON to CSV
+    </button>
+  </div>
+
+  <!-- CSV TO JSON WORKSPACE -->
+  <div id="panel-csv-to-json" class="flex flex-col gap-6">
+    <!-- Config Row -->
+    <div class="flex flex-wrap items-center gap-6 p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+      <div class="flex items-center gap-3">
+        <label for="delimiter-select" class="text-xs font-bold text-ink uppercase tracking-wider">Delimiter:</label>
+        <select id="delimiter-select" class="bg-canvas border border-hairline rounded px-2 py-1 text-xs text-ink outline-none">
+          <option value="," selected>Comma ( , )</option>
+          <option value=";">Semicolon ( ; )</option>
+          <option value="\t">Tab</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="headers-checkbox" checked class="h-4 w-4 border border-hairline accent-link rounded cursor-pointer" />
+        <label for="headers-checkbox" class="text-xs font-bold text-ink uppercase tracking-wider cursor-pointer">First row contains headers</label>
+      </div>
+      <div class="flex-grow"></div>
+      <div class="flex gap-2">
+        <button id="csv-sample-btn" class="px-3 py-1.5 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+          Sample CSV
+        </button>
+        <button id="csv-clear-btn" class="px-3 py-1.5 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Upload & Inputs -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-bold text-mute uppercase tracking-wider">Pasted CSV or Upload File</span>
+        <div id="csv-drop-zone" class="w-full flex flex-col items-center justify-center p-6 border-2 border-dashed border-hairline rounded-xl bg-canvas hover:bg-canvas-soft hover:border-link transition-all cursor-pointer min-h-[120px] mb-2 group">
+          <svg class="h-6 w-6 text-mute group-hover:text-link group-hover:scale-110 transition-transform mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+          <p class="text-xs font-semibold text-ink">Upload a CSV file or drag & drop</p>
+          <input type="file" id="csv-file-input" class="hidden" accept=".csv,.txt" />
+        </div>
+        <textarea id="csv-input" class="w-full min-h-[250px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm" placeholder="Paste your CSV data here..."></textarea>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-mute uppercase tracking-wider">JSON Output</span>
+          <div class="flex gap-2">
+            <button id="csv-copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Copy
+            </button>
+            <button id="csv-download-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Download .json
+            </button>
+          </div>
+        </div>
+        <textarea id="csv-output" readonly class="w-full min-h-[400px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-y cursor-text shadow-sm" placeholder="JSON array output will appear here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON TO CSV WORKSPACE (Hidden initially) -->
+  <div id="panel-json-to-csv" class="hidden flex flex-col gap-6">
+    <div class="flex justify-between items-center p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+      <span class="text-xs font-bold text-mute uppercase tracking-wider">Convert JSON Arrays to CSV spreadsheet data</span>
+      <div class="flex gap-2">
+        <button id="json-sample-btn" class="px-3 py-1.5 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+          Sample JSON
+        </button>
+        <button id="json-clear-btn" class="px-3 py-1.5 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-bold text-mute uppercase tracking-wider">Pasted JSON Array</span>
+        <textarea id="json-input" class="w-full min-h-[400px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm" placeholder='[
+  { "id": 1, "name": "Item A", "price": 9.99 },
+  { "id": 2, "name": "Item B", "price": 14.99 }
+]'></textarea>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-mute uppercase tracking-wider">CSV Output</span>
+          <div class="flex gap-2">
+            <button id="json-copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Copy
+            </button>
+            <button id="json-download-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Download .csv
+            </button>
+          </div>
+        </div>
+        <textarea id="json-output" readonly class="w-full min-h-[400px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-y cursor-text shadow-sm" placeholder="CSV output will appear here..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Tabs
+    const tabCsv = document.getElementById('tab-csv-to-json');
+    const tabJson = document.getElementById('tab-json-to-csv');
+    const panelCsv = document.getElementById('panel-csv-to-json');
+    const panelJson = document.getElementById('panel-json-to-csv');
+
+    // CSV to JSON elements
+    const csvDropZone = document.getElementById('csv-drop-zone');
+    const csvFileInput = document.getElementById('csv-file-input') as HTMLInputElement;
+    const csvInput = document.getElementById('csv-input') as HTMLTextAreaElement;
+    const csvOutput = document.getElementById('csv-output') as HTMLTextAreaElement;
+    const delimiterSelect = document.getElementById('delimiter-select') as HTMLSelectElement;
+    const headersCheckbox = document.getElementById('headers-checkbox') as HTMLInputElement;
+    const csvSampleBtn = document.getElementById('csv-sample-btn');
+    const csvClearBtn = document.getElementById('csv-clear-btn');
+    const csvCopyBtn = document.getElementById('csv-copy-btn');
+    const csvDownloadBtn = document.getElementById('csv-download-btn');
+
+    // JSON to CSV elements
+    const jsonInput = document.getElementById('json-input') as HTMLTextAreaElement;
+    const jsonOutput = document.getElementById('json-output') as HTMLTextAreaElement;
+    const jsonSampleBtn = document.getElementById('json-sample-btn');
+    const jsonClearBtn = document.getElementById('json-clear-btn');
+    const jsonCopyBtn = document.getElementById('json-copy-btn');
+    const jsonDownloadBtn = document.getElementById('json-download-btn');
+
+    if (!panelCsv || !panelJson || !tabCsv || !tabJson) return;
+
+    // Tabs toggle logic
+    tabCsv.addEventListener('click', () => {
+      tabCsv.className = 'px-6 py-3 border-b-2 border-link text-link text-sm font-semibold transition-all focus:outline-none';
+      tabJson.className = 'px-6 py-3 border-b-2 border-transparent text-mute hover:text-ink text-sm font-semibold transition-all focus:outline-none';
+      panelCsv.classList.remove('hidden');
+      panelJson.classList.add('hidden');
+    });
+
+    tabJson.addEventListener('click', () => {
+      tabJson.className = 'px-6 py-3 border-b-2 border-link text-link text-sm font-semibold transition-all focus:outline-none';
+      tabCsv.className = 'px-6 py-3 border-b-2 border-transparent text-mute hover:text-ink text-sm font-semibold transition-all focus:outline-none';
+      panelJson.classList.remove('hidden');
+      panelCsv.classList.add('hidden');
+    });
+
+    // Sample data
+    const sampleCsv = `id,name,role,country,status\n101,John Doe,Developer,United States,Active\n102,Jane Smith,Designer,Canada,Pending\n103,Alex Kim,Manager,South Korea,Active\n104,Maria Silva,Support,Brazil,Inactive`;
+    
+    const sampleJsonArr = [
+      { "productId": "p100", "name": "Wireless Mouse", "stock": 45, "price": 24.99 },
+      { "productId": "p101", "name": "Mechanical Keyboard", "stock": 18, "price": 89.99 },
+      { "productId": "p102", "name": "USB-C Hub adapter", "stock": 110, "price": 19.50 },
+      { "productId": "p103", "name": "27-inch LED Monitor", "stock": 7, "price": 249.00 }
+    ];
+
+    // CSV to JSON logic
+    csvSampleBtn?.addEventListener('click', () => {
+      csvInput.value = sampleCsv;
+      triggerCsvConversion();
+    });
+
+    csvClearBtn?.addEventListener('click', () => {
+      csvInput.value = '';
+      csvOutput.value = '';
+      csvFileInput.value = '';
+    });
+
+    csvCopyBtn?.addEventListener('click', () => {
+      copyToClipboard(csvOutput, csvCopyBtn);
+    });
+
+    csvDownloadBtn?.addEventListener('click', () => {
+      downloadFile(csvOutput.value, 'json');
+    });
+
+    csvDropZone?.addEventListener('click', () => csvFileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      csvDropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    csvDropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleCsvFile(file);
+    });
+
+    csvFileInput.addEventListener('change', () => {
+      const file = csvFileInput.files?.[0];
+      if (file) handleCsvFile(file);
+    });
+
+    function handleCsvFile(file: File) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        csvInput.value = e.target?.result as string;
+        triggerCsvConversion();
+      };
+      reader.readAsText(file);
+    }
+
+    // Auto-convert on input change
+    csvInput.addEventListener('input', triggerCsvConversion);
+    delimiterSelect?.addEventListener('change', triggerCsvConversion);
+    headersCheckbox?.addEventListener('change', triggerCsvConversion);
+
+    function triggerCsvConversion() {
+      const raw = csvInput.value;
+      if (!raw.trim()) {
+        csvOutput.value = '';
+        return;
+      }
+
+      let delim = delimiterSelect.value;
+      if (delim === '\\t') delim = '\t';
+      
+      const hasHeaders = headersCheckbox.checked;
+
+      try {
+        const parsed = parseCSV(raw, delim, hasHeaders);
+        csvOutput.value = JSON.stringify(parsed, null, 2);
+        trackToolUsage('csv-to-json');
+      } catch (err: any) {
+        csvOutput.value = `Conversion error: ${err.message}`;
+      }
+    }
+
+    // JSON to CSV logic
+    jsonSampleBtn?.addEventListener('click', () => {
+      jsonInput.value = JSON.stringify(sampleJsonArr, null, 2);
+      triggerJsonConversion();
+    });
+
+    jsonClearBtn?.addEventListener('click', () => {
+      jsonInput.value = '';
+      jsonOutput.value = '';
+    });
+
+    jsonCopyBtn?.addEventListener('click', () => {
+      copyToClipboard(jsonOutput, jsonCopyBtn);
+    });
+
+    jsonDownloadBtn?.addEventListener('click', () => {
+      downloadFile(jsonOutput.value, 'csv');
+    });
+
+    jsonInput.addEventListener('input', triggerJsonConversion);
+
+    function triggerJsonConversion() {
+      const raw = jsonInput.value.trim();
+      if (!raw) {
+        jsonOutput.value = '';
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        const csv = jsonToCSV(parsed);
+        jsonOutput.value = csv;
+        trackToolUsage('json-to-csv');
+      } catch (err: any) {
+        jsonOutput.value = `Conversion error: ${err.message}`;
+      }
+    }
+
+    // RFC-4180 compliant CSV parser
+    function parseCSV(text: string, delimiter: string, hasHeaders: boolean) {
+      const rows = [];
+      let row = [];
+      let col = "";
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            col += '"';
+            i++;
+          } else {
+            insideQuotes = !insideQuotes;
+          }
+        } else if (char === delimiter && !insideQuotes) {
+          row.push(col.trim());
+          col = "";
+        } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          row.push(col.trim());
+          if (row.some(c => c !== "")) rows.push(row);
+          row = [];
+          col = "";
+        } else {
+          col += char;
+        }
+      }
+      if (col !== "" || row.length > 0) {
+        row.push(col.trim());
+        if (row.some(c => c !== "")) rows.push(row);
+      }
+
+      if (rows.length === 0) return [];
+
+      if (hasHeaders) {
+        const headers = rows[0];
+        const data = [];
+        for (let r = 1; r < rows.length; r++) {
+          const obj: any = {};
+          const currentRow = rows[r];
+          for (let c = 0; c < headers.length; c++) {
+            obj[headers[c]] = currentRow[c] !== undefined ? currentRow[c] : "";
+          }
+          data.push(obj);
+        }
+        return data;
+      } else {
+        return rows;
+      }
+    }
+
+    // JSON to CSV stringifier
+    function jsonToCSV(jsonArray: any[]) {
+      if (!Array.isArray(jsonArray) || jsonArray.length === 0) {
+        throw new Error("Input must be a non-empty JSON array of objects");
+      }
+
+      const headers = Object.keys(jsonArray[0]);
+      const rows = [headers.map(h => escapeCSVField(h)).join(",")];
+
+      for (const obj of jsonArray) {
+        const row = headers.map(h => {
+          const val = obj[h] !== undefined && obj[h] !== null ? obj[h] : "";
+          const strVal = typeof val === 'object' ? JSON.stringify(val) : String(val);
+          return escapeCSVField(strVal);
+        });
+        rows.push(row.join(","));
+      }
+      return rows.join("\n");
+    }
+
+    function escapeCSVField(val: string) {
+      if (val.includes('"') || val.includes(',') || val.includes('\n') || val.includes('\r')) {
+        return `"${val.replace(/"/g, '""')}"`;
+      }
+      return val;
+    }
+
+    // Helper functions
+    function copyToClipboard(textarea: HTMLTextAreaElement, button: HTMLElement) {
+      const text = textarea.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1500);
+      });
+    }
+
+    function downloadFile(content: string, type: 'json' | 'csv') {
+      if (!content) return;
+      const mime = type === 'json' ? 'application/json' : 'text/csv';
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `converted-${Date.now()}.${type}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function trackToolUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'CSV Converter',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

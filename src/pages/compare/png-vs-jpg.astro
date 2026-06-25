@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
 
 // SEO Metadata
 const seoTitle = "PNG vs JPG: Which Format Should You Use? (2026 Guide)";
@@ -104,6 +105,12 @@ const relatedTool = toolsData.tools.find(t => t.slug === "png-to-jpg");
           <p><strong class="text-ink">Use PNG for:</strong> logos, screenshots, anything with text or transparency</p>
           <p><strong class="text-ink">Use WebP for:</strong> everything, if you can (it beats both for web delivery)</p>
         </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert PNG to JPG Instantly (Offline & Private)</h2>
+        <FormatConverter toolId="png-to-jpg" />
       </section>
 
       <!-- Real World Tests -->

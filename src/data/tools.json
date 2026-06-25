@@ -9795,6 +9795,100 @@
         "crop-image",
         "bulk-resizer"
       ]
+    },
+    {
+      "id": "json-formatter",
+      "name": "JSON Formatter & Validator",
+      "slug": "json-formatter",
+      "categoryId": "utility",
+      "description": "Beautify, validate, minify, and check syntax errors in your JSON data locally in your browser. 100% private.",
+      "seoTitle": "Free JSON Formatter & Validator Online — Secure [No Uploads]",
+      "seoDescription": "Validate, beautify, and minify JSON data instantly. Complete client-side processing keeps your sensitive data 100% secure. Offline-first, fast, and free.",
+      "icon": "file-text",
+      "inputFormats": ["JSON", "TXT"],
+      "outputFormats": ["JSON"],
+      "benefits": [
+        "100% Private: All JSON parsing and formatting happens directly in your browser. Your data is never uploaded to any server.",
+        "Real-time Syntax Highlights: Instantly locate errors, missing brackets, or mismatched quotes with line-numbered error reports.",
+        "Custom Formatting Options: Format with 2 spaces, 4 spaces, or tabs, or minify your JSON to a single line for web performance."
+      ],
+      "useCases": [
+        "Debugging API responses and finding JSON structure errors.",
+        "Beautifying minified JSON for readability and editing.",
+        "Minifying JSON config files before deploying to production."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Paste your raw JSON text or load a sample file into the input text area.",
+        "If there are errors, check the real-time validator box for syntax errors and line numbers.",
+        "Select your formatting options (e.g., 2 spaces, 4 spaces, or minify).",
+        "Click Beautify or Minify to process the data.",
+        "Click Copy or Download to save the formatted JSON to your computer."
+      ],
+      "faqs": [
+        {
+          "q": "Is my JSON data safe?",
+          "a": "Yes, absolutely. The JSON Formatter & Validator runs entirely in your browser using local client-side Javascript. Your JSON data is read into memory and never sent to any server, making it safe for private configuration files or key strings."
+        },
+        {
+          "q": "Will it highlight syntax errors?",
+          "a": "Yes. If your JSON is malformed, our parser will show you the exact parsing error and the line number where the issue occurred."
+        }
+      ],
+      "relatedTools": [
+        "csv-to-json",
+        "base64-to-pdf",
+        "hex-viewer"
+      ]
+    },
+    {
+      "id": "csv-to-json",
+      "name": "CSV to JSON Converter",
+      "slug": "csv-to-json",
+      "categoryId": "conversion",
+      "description": "Convert CSV files or pasted text into structured JSON arrays and vice versa. 100% client-side conversion.",
+      "seoTitle": "Free CSV to JSON Converter Online — Secure & Fast [No Uploads]",
+      "seoDescription": "Convert CSV files to JSON or JSON to CSV instantly. Runs entirely in your browser. Perfect for developers, analysts, and privacy-conscious users.",
+      "icon": "repeat",
+      "inputFormats": ["CSV", "JSON", "TXT"],
+      "outputFormats": ["JSON", "CSV"],
+      "benefits": [
+        "Zero Server Uploads: Convert your CSV or JSON data entirely in your browser with 100% privacy and security.",
+        "Bidirectional Conversion: Easily switch between converting CSV-to-JSON and JSON-to-CSV inside a single page.",
+        "Delimiter Control: Auto-detect or manually set your delimiter (comma, semicolon, or tab) for custom parsing."
+      ],
+      "useCases": [
+        "Converting Excel or Sheets CSV exports into JSON arrays for database seeding.",
+        "Flattening complex JSON payloads into CSV format for data analysis.",
+        "Converting local files without uploading proprietary customer data to external servers."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Select your conversion mode (CSV to JSON or JSON to CSV).",
+        "Upload a .csv/.json file, or paste raw text into the input field.",
+        "Configure options (e.g., set headers option, select field delimiters).",
+        "Click the Convert button to execute the translation script.",
+        "Copy the output results to your clipboard or download the formatted file."
+      ],
+      "faqs": [
+        {
+          "q": "Does this tool support large CSV files?",
+          "a": "Yes! Because the conversion happens on your local computer's processor, it can parse and convert large datasets extremely fast without any server upload timeouts."
+        },
+        {
+          "q": "Can I convert JSON back into CSV?",
+          "a": "Yes, our tool is bidirectional. You can paste a JSON array of objects, and it will automatically flatten the keys into headers and generate the CSV output."
+        }
+      ],
+      "relatedTools": [
+        "json-formatter",
+        "base64-to-pdf",
+        "hex-viewer"
+      ]
     }
   ],
   "categories": [

@@ -86,6 +86,8 @@ import SolarizeFilterTool from "../../components/tools/SolarizeFilterTool.astro"
 import ImageSkewTool from "../../components/tools/ImageSkewTool.astro";
 import ImageReflectionTool from "../../components/tools/ImageReflectionTool.astro";
 import VectorizerTool from "../../components/tools/VectorizerTool.astro";
+import JsonFormatterTool from "../../components/tools/JsonFormatterTool.astro";
+import CsvConverterTool from "../../components/tools/CsvConverterTool.astro";
 import toolsData from "../../data/tools.json";
 import { translateTool, translateCategory } from "../../utils/i18n";
 export async function getStaticPaths() {
@@ -273,6 +275,10 @@ if (tool.slug === 'avif-to-png') {
   ToolComponent = QrScannerTool;
 } else if (tool.slug === 'exif-remover') {
   ToolComponent = ExifRemoverTool;
+} else if (tool.slug === 'json-formatter') {
+  ToolComponent = JsonFormatterTool;
+} else if (tool.slug === 'csv-to-json') {
+  ToolComponent = CsvConverterTool;
 }
 ---
 

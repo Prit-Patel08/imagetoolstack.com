@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
 
 // SEO Metadata
 const seoTitle = "WebP vs PNG: Is WebP Really Better? (2026 Guide)";
@@ -104,6 +105,12 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
           <p><strong class="text-ink">Use WebP for:</strong> uploading images to your website, blog, or app to maximize page speed and SEO.</p>
           <p><strong class="text-ink">Use PNG for:</strong> designing in Figma, saving assets locally, or sending files to people who might have older devices.</p>
         </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert WebP to PNG Instantly (Offline & Private)</h2>
+        <FormatConverter toolId="webp-to-png" />
       </section>
 
       <!-- Real World Tests -->
