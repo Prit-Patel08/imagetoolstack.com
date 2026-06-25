@@ -3920,6 +3920,102 @@
       "whenToUse1": "Use JPEG for digital photographs, social media uploads, and situations requiring maximum legacy compatibility.",
       "whenToUse2": "Use SVG for logos, icons, UI elements, and simple illustrations that need to look sharp on any screen size.",
       "relatedToolSlug": "jpeg-to-svg"
+    },
+    {
+      "id": "eps-vs-svg",
+      "format1": "EPS",
+      "format2": "SVG",
+      "title": "EPS vs SVG",
+      "seoTitle": "EPS vs SVG: Vector Formats Explained (2026 Guide)",
+      "seoDescription": "What is the difference between EPS and SVG? We compare the two vector formats, their use cases for web design vs print, and which one you should use for your logos.",
+      "description": "Unlike JPEGs and PNGs which are made of pixels, both EPS and SVG are \"Vector\" formats. This means they are made of mathematical equations and can be scaled to the size of a skyscraper without losing quality.",
+      "format1Pros": [
+        "Universal Print Compatibility",
+        "Perfect CMYK Color Profiles",
+        "Lossless Vector Geometry"
+      ],
+      "format1Cons": [
+        "Zero Web Presence",
+        "Heavier Files"
+      ],
+      "format2Pros": [
+        "Native Browser Parsing",
+        "CSS & JS Manipulability",
+        "Ultra-Lightweight",
+        "SEO-Friendly"
+      ],
+      "format2Cons": [
+        "Limited to RGB print setups without extra config",
+        "Strict browser security filters"
+      ],
+      "winner": "SVG (For Web), EPS (For Print)",
+      "whenToUse1": "Use EPS when sending files to professional printers, laser engravers, or manufacturers (clothing, billboards, merchandise).",
+      "whenToUse2": "Use SVG for website logos, UI icons, and interactive web graphics on the internet.",
+      "relatedToolSlug": "svg-to-png"
+    },
+    {
+      "id": "pdf-vs-png",
+      "format1": "PDF",
+      "format2": "PNG",
+      "title": "PDF vs PNG",
+      "seoTitle": "PDF vs PNG: Which Format Should You Use? (2026 Guide)",
+      "seoDescription": "PDF or PNG? We break down the exact differences between the global document standard and the transparent web image format. See when to use each for sharing, printing, and web design.",
+      "description": "Comparing PDF and PNG is like comparing a digital binder to a single photograph. One is a complex document container designed for text and vector layouts, while the other is a flat pixel grid designed for web transparency.",
+      "format1Pros": [
+        "Multi-page Support",
+        "Selectable Text",
+        "Universal Formatting",
+        "Security"
+      ],
+      "format1Cons": [
+        "Terrible for Web Design",
+        "Difficult to Edit"
+      ],
+      "format2Pros": [
+        "Web Native",
+        "Lossless Quality",
+        "Alpha Transparency"
+      ],
+      "format2Cons": [
+        "Single Page Only",
+        "No Selectable Text",
+        "Large File Sizes"
+      ],
+      "winner": "PDF (For Documents), PNG (For Web Graphics)",
+      "whenToUse1": "Use PDF for resumes, multi-page reports, forms, print materials, and sharing documents where text must remain selectable.",
+      "whenToUse2": "Use PNG for logos, icons, transparent web graphics, and single-page screenshots that you need to embed inside a webpage.",
+      "relatedToolSlug": "pdf-to-png"
+    },
+    {
+      "id": "tiff-vs-jpeg",
+      "format1": "TIFF",
+      "format2": "JPEG",
+      "title": "TIFF vs JPEG",
+      "seoTitle": "TIFF vs JPEG: Which Format Should Photographers Use? (2026 Guide)",
+      "seoDescription": "What is the difference between TIFF and JPEG? We compare file sizes, compression artifacts, and printing quality to help you choose the right format for your photography.",
+      "description": "If you are working with digital photography, you'll eventually need to choose between TIFF and JPEG. One is built for archiving raw, uncompressed quality, while the other is built for fast sharing and web performance.",
+      "format1Pros": [
+        "Zero Loss in Quality",
+        "Layer & Multi-Page Support",
+        "Excellent Print Quality"
+      ],
+      "format1Cons": [
+        "Bloated File Storage",
+        "No Web Rendering"
+      ],
+      "format2Pros": [
+        "Universal Playback",
+        "Compact footprint",
+        "Rich EXIF data"
+      ],
+      "format2Cons": [
+        "Generation Loss",
+        "No Transparency or Layers"
+      ],
+      "winner": "TIFF (For Print), JPEG (For Web)",
+      "whenToUse1": "Use TIFF when sending files to a professional print lab, or for the final archival master copy of your artwork.",
+      "whenToUse2": "Use JPEG for web galleries, client previews, and social media sharing.",
+      "relatedToolSlug": "tiff-to-jpg"
     }
   ]
 }

@@ -2,13 +2,40 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import { getLocalizedPath } from "../utils/i18n";
 
 interface Props {
     error: unknown;
 }
+
+const locale = Astro.currentLocale || 'en';
+
+const title = locale === 'es' ? "500: Error del Servidor" :
+              locale === 'fr' ? "500: Erreur Serveur" :
+              locale === 'de' ? "500: Serverfehler" :
+              locale === 'pt' ? "500: Erro do Servidor" :
+              locale === 'id' ? "500: Kesalahan Server" : "500: Server Error";
+
+const internalError = locale === 'es' ? "Error Interno del Servidor" :
+                      locale === 'fr' ? "Erreur Interne du Serveur" :
+                      locale === 'de' ? "Interner Serverfehler" :
+                      locale === 'pt' ? "Erro Interno do Servidor" :
+                      locale === 'id' ? "Kesalahan Server Internal" : "Internal Server Error";
+
+const description = locale === 'es' ? "Algo salió mal por nuestra parte. Nuestros servidores encontraron una condición inesperada que les impidió completar la solicitud." :
+                      locale === 'fr' ? "Quelque chose s'est mal passé de notre côté. Nos serveurs ont rencontré une condition inattendue qui les a empêchés de répondre à la demande." :
+                      locale === 'de' ? "Auf unserer Seite ist etwas schiefgelaufen. Unsere Server haben einen unerwarteten Zustand festgestellt, der die Ausführung der Anfrage verhindert hat." :
+                      locale === 'pt' ? "Algo deu errado do nosso lado. Nossos servidores encontraram uma condição inesperada que impediu o cumprimento da solicitação." :
+                      locale === 'id' ? "Ada masalah di pihak kami. Server kami mengalami kondisi tidak terduga yang mencegah pemenuhan permintaan." : "Something went wrong on our end. Our servers encountered an unexpected condition that prevented it from fulfilling the request.";
+
+const returnHome = locale === 'es' ? "Volver al inicio" :
+                     locale === 'fr' ? "Retourner à la page d'accueil" :
+                     locale === 'de' ? "Zur Startseite zurückkehren" :
+                     locale === 'pt' ? "Voltar para a página inicial" :
+                     locale === 'id' ? "Kembali ke Beranda" : "Return to Homepage";
 ---
 
-<Layout title="500: Server Error">
+<Layout title={title}>
   <Navbar />
   
   <main class="flex-1 flex flex-col items-center justify-center min-h-[60vh] py-32 px-6 text-center">
@@ -19,13 +46,13 @@ interface Props {
     </div>
     
     <h1 class="text-6xl font-semibold tracking-tight text-ink mb-4">500</h1>
-    <h2 class="text-2xl font-semibold text-body mb-6">Internal Server Error</h2>
+    <h2 class="text-2xl font-semibold text-body mb-6">{internalError}</h2>
     <p class="text-mute max-w-md mx-auto mb-10 leading-relaxed">
-      Something went wrong on our end. Our servers encountered an unexpected condition that prevented it from fulfilling the request.
+      {description}
     </p>
     
-    <a href="/" class="btn-primary">
-      Return to Homepage
+    <a href={getLocalizedPath("/", locale)} class="btn-primary">
+      {returnHome}
     </a>
   </main>
 

@@ -4,24 +4,67 @@ import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import RequestToolSection from "../components/RequestToolSection.astro";
 import toolsData from "../data/tools.json";
+import { translateTool, translateCategory, getLocalizedPath } from "../utils/i18n";
 
-const popularTools = toolsData.tools.slice(0, 4); // Top 4 tools
+const locale = Astro.currentLocale || 'en';
+
+const popularTools = toolsData.tools.slice(0, 4).map(t => translateTool(t, locale));
 const categoriesWithTools = toolsData.categories.map(cat => ({
-  ...cat,
+  ...translateCategory(cat, locale),
   tools: toolsData.tools.filter(t => t.categoryId === cat.id)
 }));
 
-const searchIndex = toolsData.tools.map(tool => ({
-  name: tool.name,
-  slug: tool.slug,
-  description: tool.description || "",
-  inputFormats: tool.inputFormats || [],
-  outputFormats: tool.outputFormats || [],
-  category: toolsData.categories.find(c => c.id === tool.categoryId)?.name || 'Tool'
-}));
+const searchIndex = toolsData.tools.map(tool => {
+  const translated = translateTool(tool, locale);
+  return {
+    name: translated.name,
+    slug: translated.slug,
+    description: translated.description || "",
+    inputFormats: translated.inputFormats || [],
+    outputFormats: translated.outputFormats || [],
+    category: toolsData.categories.find(c => c.id === tool.categoryId)?.name || 'Tool'
+  };
+});
+
+const title = locale === 'es' ? "404: Página no encontrada" :
+              locale === 'fr' ? "404: Page non trouvée" :
+              locale === 'de' ? "404: Seite nicht gefunden" :
+              locale === 'pt' ? "404: Página não encontrada" :
+              locale === 'id' ? "404: Halaman Tidak Ditemukan" : "404: Page Not Found";
+
+const looksLost = locale === 'es' ? "¡Parece que te has perdido!" :
+                  locale === 'fr' ? "Il semblerait que vous soyez perdu !" :
+                  locale === 'de' ? "Es sieht so aus, als hätten Sie sich verlaufen!" :
+                  locale === 'pt' ? "Parece que você está perdido!" :
+                  locale === 'id' ? "Sepertinya Anda tersesat!" : "Looks like you're lost!";
+
+const searchPlaceholder = locale === 'es' ? "Buscar una herramienta de imagen..." :
+                            locale === 'fr' ? "Rechercher un outil d'image..." :
+                            locale === 'de' ? "Nach einem Bildwerkzeug suchen..." :
+                            locale === 'pt' ? "Buscar uma ferramenta de imagem..." :
+                            locale === 'id' ? "Cari alat gambar..." : "Search for an image tool...";
+
+const browseCategory = locale === 'es' ? "BUSCAR POR CATEGORÍA" :
+                       locale === 'fr' ? "PARCOURIR PAR CATÉGORIE" :
+                       locale === 'de' ? "NACH KATEGORIE DURCHSUCHEN" :
+                       locale === 'pt' ? "NAVEGAR POR CATEGORIA" :
+                       locale === 'id' ? "TELUSURI BERDASARKAN KATEGORI" : "BROWSE BY CATEGORY";
+
+const popularToolsText = locale === 'es' ? "Herramientas populares" :
+                           locale === 'fr' ? "Outils populaires" :
+                           locale === 'de' ? "Beliebte Tools" :
+                           locale === 'pt' ? "Ferramentas populares" :
+                           locale === 'id' ? "Alat Populer" : "Popular Tools";
+
+const noToolsFoundTemplate = locale === 'es' ? 'No se encontraron herramientas para "${e.target.value}"' :
+                             locale === 'fr' ? 'Aucun outil trouvé pour "${e.target.value}"' :
+                             locale === 'de' ? 'Keine Werkzeuge gefunden für "${e.target.value}"' :
+                             locale === 'pt' ? 'Nenhuma ferramenta encontrada para "${e.target.value}"' :
+                             locale === 'id' ? 'Tidak ada alat yang ditemukan untuk "${e.target.value}"' :
+                             'No tools found for "${e.target.value}"';
 ---
 
-<Layout title="404: Page Not Found">
+<Layout title={title}>
   <Navbar />
   
   <main class="flex-1 flex flex-col items-center justify-start min-h-[60vh] py-20 px-6 text-center">
@@ -34,7 +77,7 @@ const searchIndex = toolsData.tools.map(tool => ({
     </div>
     
     <h1 class="text-5xl font-semibold tracking-tight text-ink mb-3">404</h1>
-    <h2 class="text-xl font-semibold text-body mb-8">Looks like you're lost!</h2>
+    <h2 class="text-xl font-semibold text-body mb-8">{looksLost}</h2>
     
     <!-- Search Box -->
     <div class="w-full max-w-xl mx-auto mb-16 relative" id="error-search-container">
@@ -43,7 +86,7 @@ const searchIndex = toolsData.tools.map(tool => ({
         <input 
           id="error-search-input"
           type="text" 
-          placeholder="Search for an image tool..." 
+          placeholder={searchPlaceholder} 
           class="h-14 w-full rounded-2xl border-2 border-hairline bg-canvas pl-12 pr-4 text-base text-ink placeholder:text-mute focus:border-link focus:ring-4 focus:ring-link/10 focus:outline-none transition-all shadow-sm"
           autocomplete="off"
         />
@@ -55,10 +98,10 @@ const searchIndex = toolsData.tools.map(tool => ({
 
     <!-- Category Links -->
     <div class="w-full max-w-4xl mx-auto mb-16">
-      <h3 class="text-sm font-semibold text-mute uppercase tracking-widest mb-6">Browse by Category</h3>
+      <h3 class="text-sm font-semibold text-mute uppercase tracking-widest mb-6">{browseCategory}</h3>
       <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         {categoriesWithTools.map((cat) => (
-          <a href={`/category/${cat.slug}`} class="flex items-center gap-2 rounded-full border border-hairline bg-canvas px-5 py-2 text-sm font-medium text-ink hover:border-link hover:bg-link/5 hover:text-link transition-all shadow-sm">
+          <a href={getLocalizedPath(`/category/${cat.slug}`, locale)} class="flex items-center gap-2 rounded-full border border-hairline bg-canvas px-5 py-2 text-sm font-medium text-ink hover:border-link hover:bg-link/5 hover:text-link transition-all shadow-sm">
             {cat.name} <span class="text-mute text-xs font-mono">({cat.tools.length})</span>
           </a>
         ))}
@@ -67,10 +110,10 @@ const searchIndex = toolsData.tools.map(tool => ({
 
     <!-- Popular Tools -->
     <div class="w-full max-w-5xl mx-auto mb-20 text-left">
-      <h3 class="text-sm font-semibold text-mute uppercase tracking-widest mb-6 text-center">Popular Tools</h3>
+      <h3 class="text-sm font-semibold text-mute uppercase tracking-widest mb-6 text-center">{popularToolsText}</h3>
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {popularTools.map((tool) => (
-          <a href={`/tools/${tool.slug}`} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-6 rounded-2xl border border-hairline bg-canvas">
+          <a href={getLocalizedPath(`/tools/${tool.slug}`, locale)} class="card-marketing group flex flex-col items-start gap-4 hover:border-link hover:shadow-xl transition-all p-6 rounded-2xl border border-hairline bg-canvas">
             <div class="h-10 w-10 rounded-lg bg-canvas-soft-2 flex items-center justify-center border border-hairline group-hover:bg-link/5 transition-colors group-hover:border-link/20">
               <svg class="h-5 w-5 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -94,7 +137,7 @@ const searchIndex = toolsData.tools.map(tool => ({
 
   <Footer />
 
-  <script define:vars={{ searchIndex }}>
+  <script define:vars={{ searchIndex, locale, noToolsFoundTemplate }}>
     const input = document.getElementById('error-search-input');
     const dropdown = document.getElementById('error-search-dropdown');
     const container = document.getElementById('error-search-container');
@@ -145,14 +188,19 @@ const searchIndex = toolsData.tools.map(tool => ({
           .slice(0, 5);
 
         if (results.length > 0) {
-          dropdown.innerHTML = results.map(tool => `
-            <a href="/tools/${tool.slug}" class="flex flex-col px-4 py-3 hover:bg-canvas-soft border-b border-hairline last:border-b-0 transition-colors">
-              <span class="text-sm font-semibold text-ink">${tool.name}</span>
-              <span class="text-xs text-mute mt-0.5 line-clamp-1">${tool.description}</span>
-            </a>
-          `).join('');
+          dropdown.innerHTML = results.map(tool => {
+            const path = locale === 'en' ? `/tools/${tool.slug}` : `/${locale}/tools/${tool.slug}`;
+            return `
+              <a href="${path}" class="flex flex-col px-4 py-3 hover:bg-canvas-soft border-b border-hairline last:border-b-0 transition-colors">
+                <span class="text-sm font-semibold text-ink">${tool.name}</span>
+                <span class="text-xs text-mute mt-0.5 line-clamp-1">${tool.description}</span>
+              </a>
+            `;
+          }).join('');
         } else {
-          dropdown.innerHTML = `<div class="px-4 py-4 text-sm text-mute text-center">No tools found for "${e.target.value}"</div>`;
+          // Replace placeholder query in the template
+          const text = noToolsFoundTemplate.replace('"${e.target.value}"', `"${e.target.value}"`);
+          dropdown.innerHTML = `<div class="px-4 py-4 text-sm text-mute text-center">${text}</div>`;
         }
         
         dropdown.classList.remove('hidden');

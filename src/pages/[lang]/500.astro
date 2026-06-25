@@ -1,0 +1,11 @@
+---
+import Root500Page from "../500.astro";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  return locales.map((locale) => ({
+    params: { lang: locale },
+  }));
+}
+---
+<Root500Page />
