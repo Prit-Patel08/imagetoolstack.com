@@ -87,9 +87,21 @@
     const statHours = document.getElementById('stat-hours')!;
     const statMinutes = document.getElementById('stat-minutes')!;
 
+    function formatLocalDate(date: Date): string {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function parseLocalDate(dateStr: string): Date {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+
     // Set ageAtDate default to today
     const today = new Date();
-    const localToday = today.toISOString().split('T')[0];
+    const localToday = formatLocalDate(today);
     ageAtDateInput.value = localToday;
 
     let countdownTimer: number | undefined;
@@ -102,7 +114,7 @@
         ageResPrimary.textContent = '--';
         ageResDetail.textContent = '--';
         bdayCountdown.textContent = '--';
-        bdayTickingClock.textContent = '--';
+        bdayTickingClock.textContent = '--h --m --s';
         statMonths.textContent = '--';
         statWeeks.textContent = '--';
         statDays.textContent = '--';
@@ -111,12 +123,20 @@
         return;
       }
 
-      const birthDate = new Date(birthStr);
-      const targetDate = new Date(targetStr);
+      const birthDate = parseLocalDate(birthStr);
+      const targetDate = parseLocalDate(targetStr);
 
       if (birthDate > targetDate) {
         ageResPrimary.textContent = 'Birth date is in the future!';
         ageResDetail.textContent = 'Please select a birth date prior to the target date.';
+        bdayCountdown.textContent = '--';
+        bdayTickingClock.textContent = '--h --m --s';
+        statMonths.textContent = '--';
+        statWeeks.textContent = '--';
+        statDays.textContent = '--';
+        statHours.textContent = '--';
+        statMinutes.textContent = '--';
+        window.clearInterval(countdownTimer);
         return;
       }
 
@@ -128,7 +148,8 @@
       if (d < 0) {
         m--;
         const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
-        d += prevMonth.getDate();
+        const daysInPrev = prevMonth.getDate();
+        d = targetDate.getDate() + Math.max(0, daysInPrev - birthDate.getDate());
       }
 
       if (m < 0) {

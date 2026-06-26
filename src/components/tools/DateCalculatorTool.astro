@@ -140,14 +140,26 @@
     const resWeeks = document.getElementById('diff-res-weeks')!;
     const resParsed = document.getElementById('diff-res-parsed')!;
 
+    function formatLocalDate(date: Date): string {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function parseLocalDate(dateStr: string): Date {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+
     // Set default dates for diff
     const today = new Date();
-    const localToday = today.toISOString().split('T')[0];
+    const localToday = formatLocalDate(today);
     diffStart.value = localToday;
     
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
-    diffEnd.value = nextWeek.toISOString().split('T')[0];
+    diffEnd.value = formatLocalDate(nextWeek);
 
     // Count business days helper
     function getBusinessDays(startDate: Date, endDate: Date): number {
@@ -174,8 +186,8 @@
         return;
       }
 
-      const d1 = new Date(startStr);
-      const d2 = new Date(endStr);
+      const d1 = parseLocalDate(startStr);
+      const d2 = parseLocalDate(endStr);
       
       // Swap dates if user picks start date after end date
       let isNegative = false;
@@ -227,7 +239,8 @@
         m--;
         // Get number of days in previous month
         const prevMonth = new Date(dateB.getFullYear(), dateB.getMonth(), 0);
-        d += prevMonth.getDate();
+        const daysInPrev = prevMonth.getDate();
+        d = dateB.getDate() + Math.max(0, daysInPrev - dateA.getDate());
       }
 
       // Handle month borrowing
@@ -280,7 +293,7 @@
         return;
       }
 
-      const baseDate = new Date(startStr);
+      const baseDate = parseLocalDate(startStr);
       const isAdd = addOperation.value === 'add';
       const multiplier = isAdd ? 1 : -1;
 
