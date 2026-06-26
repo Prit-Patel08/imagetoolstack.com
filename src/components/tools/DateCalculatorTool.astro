@@ -289,11 +289,22 @@
       const w = parseInt(durWeeks.value || '0', 10) * multiplier;
       const d = parseInt(durDays.value || '0', 10) * multiplier;
 
-      // Adjust date mathematically using native setMethods
+      // Adjust date mathematically, avoiding month-end overflows (e.g. Jan 31 + 1 month -> Feb 28/29)
       const targetDate = new Date(baseDate.getTime());
-      targetDate.setFullYear(targetDate.getFullYear() + y);
-      targetDate.setMonth(targetDate.getMonth() + m);
-      targetDate.setDate(targetDate.getDate() + (w * 7) + d);
+      const originalDay = baseDate.getDate();
+
+      if (y !== 0 || m !== 0) {
+        targetDate.setFullYear(targetDate.getFullYear() + y);
+        targetDate.setMonth(targetDate.getMonth() + m);
+        // If the day of the month changed/overflowed, set to last day of target month
+        if (targetDate.getDate() !== originalDay) {
+          targetDate.setDate(0);
+        }
+      }
+
+      if (w !== 0 || d !== 0) {
+        targetDate.setDate(targetDate.getDate() + (w * 7) + d);
+      }
 
       // Display formatted date
       const options: Intl.DateTimeFormatOptions = { 
