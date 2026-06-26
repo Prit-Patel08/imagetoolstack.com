@@ -29,26 +29,50 @@ const schema = {
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Which format has a smaller file size?",
+          "name": "What is the difference between PNG and JPG?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "JPG almost always has a significantly smaller file size than PNG. This is because JPG uses lossy compression to discard visual information that the human eye can't easily detect, whereas PNG uses lossless compression to preserve every single pixel perfectly."
+            "text": "The main difference between PNG and JPG is their compression method. PNG uses lossless compression, preserving 100% of the pixel data and supporting transparent backgrounds (alpha channels). JPG uses lossy compression, which permanently deletes invisible image details to achieve up to 85% smaller file sizes but does not support transparency."
           }
         },
         {
           "@type": "Question",
-          "name": "Which format supports transparency?",
+          "name": "Is PNG higher quality than JPG?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Only PNG supports transparency (via an alpha channel). If you need an image with a transparent background—like a logo or a cutout product image—you must use PNG (or WebP). JPG does not support transparency."
+            "text": "Yes. PNG is higher quality than JPG because it uses lossless compression, meaning no pixel information or details are discarded. JPG uses lossy compression, which averages colors and discards data, occasionally causing compression artifacts or blurry text."
           }
         },
         {
           "@type": "Question",
-          "name": "Should I use PNG or JPG for my website?",
+          "name": "Which format should I use for website speed, PNG or JPG?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "For photographs and large hero images, use JPG. For logos, icons, graphics with text, or images requiring transparency, use PNG. Using PNG for large photographs will drastically slow down your website loading speed."
+            "text": "For web speed and Core Web Vitals, use JPG (or WebP) for all photos and gradients to keep file payloads low. Only use PNG for graphics with text, transparent logos, or screenshots where sharp lines are required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which is better for print, PNG or JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG is better for print because it natively supports CMYK color profiles, which are standard for physical printing presses. It also retains EXIF parameters. PNG is strictly designed in RGB for digital screens and does not support CMYK."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is PNG file size so much larger than JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PNG file sizes are much larger because the format stores a perfect, uncompromised copy of the image's pixels. JPG discards color gradients and detailed data that the human eye cannot easily distinguish, shrinking files by up to 80-90%."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does JPG not support transparency?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG does not support transparency because it only includes Red, Green, and Blue color channels (RGB) and lacks the 'Alpha Channel' (RGBA) used by PNG to record opacity. Any transparent areas saved to a JPG default to a solid background color (usually white)."
           }
         }
       ]
@@ -104,6 +128,67 @@ const relatedTool = toolsData.tools.find(t => t.slug === "png-to-jpg");
           <p><strong class="text-ink">Use JPG for:</strong> photographs, hero images, anything with gradients</p>
           <p><strong class="text-ink">Use PNG for:</strong> logos, screenshots, anything with text or transparency</p>
           <p><strong class="text-ink">Use WebP for:</strong> everything, if you can (it beats both for web delivery)</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between PNG and JPG?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both formats display images in your browser, they utilize completely different compression techniques. Here is a side-by-side technical comparison of PNG vs JPG.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">PNG (Portable Network Graphics)</th>
+                <th class="p-4">JPG (Joint Photographic Experts Group)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Type</td>
+                <td class="p-4">Lossless (DEFLATE algorithm)</td>
+                <td class="p-4">Lossy (Discrete Cosine Transform)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4">Yes (supports Alpha Channel)</td>
+                <td class="p-4">No (backgrounds flatten to white/solid)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Image Quality</td>
+                <td class="p-4">Perfect 1:1 pixel reproduction</td>
+                <td class="p-4">Variable (degrades at high compression)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">EXIF Metadata</td>
+                <td class="p-4">No official support</td>
+                <td class="p-4">Full support (camera settings, GPS, dates)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Animation Support</td>
+                <td class="p-4">Yes (via APNG)</td>
+                <td class="p-4">No</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Ideal Use Case</td>
+                <td class="p-4">Logos, screenshots, graphics with text</td>
+                <td class="p-4">Photographs, colorful art, complex gradients</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Typical File Size</td>
+                <td class="p-4">Large (heavy payloads)</td>
+                <td class="p-4">Small to Medium (highly compressed)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Web Loading Speed</td>
+                <td class="p-4">Slow (takes longer on slow connections)</td>
+                <td class="p-4">Fast (optimized lightweight files)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -225,20 +310,40 @@ const relatedTool = toolsData.tools.find(t => t.slug === "png-to-jpg");
         <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
         <div class="space-y-6">
           <div class="bg-canvas-soft rounded-xl p-6">
-            <h3 class="text-xl font-bold text-ink mb-3">Which format has a smaller file size?</h3>
-            <p class="text-body leading-relaxed">JPG almost always has a significantly smaller file size than PNG. This is because JPG uses lossy compression to discard visual information that the human eye can't easily detect, whereas PNG uses lossless compression to preserve every single pixel perfectly.</p>
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between PNG and JPG?</h3>
+            <p class="text-body leading-relaxed">
+              The main difference between PNG and JPG is their compression method. PNG uses <strong>lossless compression</strong>, preserving 100% of pixel and color data while supporting transparent backgrounds. JPG uses <strong>lossy compression</strong>, which permanently discards some color and gradient details to compress image files by up to 80-90% but does not support transparency.
+            </p>
           </div>
           <div class="bg-canvas-soft rounded-xl p-6">
-            <h3 class="text-xl font-bold text-ink mb-3">Which format supports transparency?</h3>
-            <p class="text-body leading-relaxed">Only PNG supports transparency (via an alpha channel). If you need an image with a transparent background—like a logo or a cutout product image—you must use PNG (or WebP). JPG does not support transparency.</p>
+            <h3 class="text-xl font-bold text-ink mb-3">Is PNG higher quality than JPG?</h3>
+            <p class="text-body leading-relaxed">
+              <strong>Yes. PNG is higher quality than JPG</strong> because it uses lossless compression. It preserves every single pixel perfectly, which is essential for screenshots, diagrams, and images containing text. JPG compromises quality to achieve smaller file sizes, which can sometimes result in visible compression artifacts or blurry text.
+            </p>
           </div>
           <div class="bg-canvas-soft rounded-xl p-6">
-            <h3 class="text-xl font-bold text-ink mb-3">Is PNG always higher quality than JPG?</h3>
-            <p class="text-body leading-relaxed">Technically, yes, because PNG is lossless. However, at high quality settings (e.g., 90%+), a JPG can be visually indistinguishable from a PNG while maintaining a much smaller file size. For complex photographs, JPG is usually the better choice.</p>
+            <h3 class="text-xl font-bold text-ink mb-3">Which format should I use for website speed, PNG or JPG?</h3>
+            <p class="text-body leading-relaxed">
+              For web speed and Core Web Vitals, <strong>always use JPG (or next-gen WebP) for photographs</strong> and complex images. Only use PNG for graphic assets with transparent backgrounds or screenshots. Large photographs saved as PNGs are far too heavy and will degrade website load speeds.
+            </p>
           </div>
           <div class="bg-canvas-soft rounded-xl p-6">
-            <h3 class="text-xl font-bold text-ink mb-3">Should I use PNG or JPG for my website?</h3>
-            <p class="text-body leading-relaxed">For photographs and large hero images, use JPG. For logos, icons, graphics with text, or images requiring transparency, use PNG. Using PNG for large photographs will drastically slow down your website loading speed and harm your SEO rankings.</p>
+            <h3 class="text-xl font-bold text-ink mb-3">Which is better for print, PNG or JPG?</h3>
+            <p class="text-body leading-relaxed">
+              <strong>JPG is much better for print than PNG.</strong> JPG natively supports CMYK color profiles, printing DPI attributes, and EXIF camera metadata. PNG is strictly designed in RGB for computer screens and cannot accurately convey color coordinates to physical printing presses.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why is PNG file size so much larger than JPG?</h3>
+            <p class="text-body leading-relaxed">
+              PNG file sizes are larger because <strong>they must store a mathematically exact copy of the image</strong>. JPG uses compression algorithms to group similar pixels, simplify color bands, and delete visual information that the human eye does not easily notice, which drastically shrinks file sizes.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why does JPG not support transparency?</h3>
+            <p class="text-body leading-relaxed">
+              JPG does not support transparency because <strong>the file standard only defines Red, Green, and Blue color channels (RGB)</strong>. It lacks the fourth channel—the "Alpha Channel" (RGBA)—which stores transparency values. When you save a cutout image as a JPG, the transparent areas are flattened to a solid background color, usually white.
+            </p>
           </div>
         </div>
       </section>

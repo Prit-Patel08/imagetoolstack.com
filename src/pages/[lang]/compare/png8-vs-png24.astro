@@ -1,0 +1,656 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG-8 vs PNG-24: ¿Qué formato de PNG debería usar? (Comparativa 2026)",
+    seoDescription: "¿PNG-8 o PNG-24? Comparamos el formato PNG de color indexado de 8 bits con el estándar de color directo de 24 bits. Conozca las diferencias de tamaño de archivo y color.",
+    title: "PNG-8 vs PNG-24: ¿Qué formato es mejor?",
+    intro: "Ambos son archivos PNG, pero comprimen colores y transparencias de maneras fundamentalmente diferentes. Comparamos PNG-8 (color indexado) con PNG-24 (color directo) para ayudarlo a elegir el mejor archivo para sus recursos web.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use PNG-8 para:",
+    useTiffForDesc: "Gráficos simples como iconos de interfaz, logotipos de colores planos y gráficos sencillos donde un tamaño reducido es crítico y 256 colores son suficientes.",
+    useJxlFor: "Use PNG-24 para:",
+    useJxlForDesc: "Imágenes que requieran transparencias con bordes suavizados (como sombras paralelas), capturas de pantalla con gradientes complejos y gráficos de alta gama.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG-8 y PNG-24?",
+    differenceDesc: "La distinción principal radica en la indexación del color. PNG-8 utiliza una paleta de colores precalculada de hasta 256 colores, mientras que PNG-24 utiliza mapeo de color directo, asignando valores RGB individuales a cada píxel.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "PNG-8 (Color Indexado)",
+    thJxl: "PNG-24 (Color Directo)",
+    tdCompStandard: "Capacidad de color",
+    tdCompStandardTiff: "Máximo 256 colores",
+    tdCompStandardJxl: "Más de 16 millones de colores (24 bits)",
+    tdFileSize: "Tamaño de archivo promedio",
+    tdFileSizeTiff: "Extremadamente pequeño (50% a 80% menor)",
+    tdFileSizeJxl: "Más grande (Propenso a ralentizar páginas web)",
+    tdColorDepth: "Nivel de transparencia",
+    tdColorDepthTiff: "Transparencia binaria (Sí/No, puede crear halos)",
+    tdColorDepthJxl: "Canal alfa de 8 bits (Admite semi-transparencia)",
+    tdBrowser: "Fidelidad fotográfica",
+    tdBrowserTiff: "Pobre (Propenso a tramado y bandas de color)",
+    tdBrowserJxl: "Excelente (Reconstrucción perfecta sin pérdidas)",
+    tdPrint: "Algoritmo de compresión",
+    tdPrintTiff: "Generación de paleta con pérdidas + Deflate",
+    tdPrintJxl: "Deflate 100% sin pérdidas",
+    tdTranscoding: "Uso ideal",
+    tdTranscodingTiff: "Iconos planos simples, recursos de interfaz de usuario",
+    tdTranscodingJxl: "Imágenes con sombras, capturas de pantalla detalladas",
+    converterTitle: "Cuantizar y comprimir PNG-24 a PNG-8 (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es PNG-8?",
+    diveTiffP1: "PNG-8 es una versión indexada de 8 bits del formato Portable Network Graphics. Funciona bajo el mismo concepto de índice que el antiguo formato GIF: el archivo contiene una tabla de hasta 256 colores únicos. Cada píxel en la cuadrícula apunta a una ranura de color en esta tabla en lugar de almacenar sus coordenadas RGB completas.",
+    diveTiffP2: "Debido a que cada píxel solo necesita 8 bits (1 byte) de datos para referenciar su color, los archivos PNG-8 son muy pequeños. Sin embargo, si la imagen original contiene más de 256 colores, los programas deben agrupar los colores más cercanos, lo que puede resultar en patrones de tramado (dithering) visibles.",
+    diveTiffAdv: "Ventajas de PNG-8",
+    diveTiffAdvList: [
+      "Tamaños ultra pequeños: Ideal para sitios web que buscan optimizar los Core Web Vitals.",
+      "Compresión sin pérdidas de índices: Una vez que los colores se limitan, el archivo se comprime sin más pérdidas.",
+      "Carga universal: Compatible de forma nativa con cualquier navegador."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es PNG-24?",
+    diveJxlP1: "PNG-24 es una implementación de color directo de 24 bits del estándar PNG. En lugar de limitarse a una paleta indexada, PNG-24 asigna 8 bits a cada uno de los canales Rojo, Verde y Azul para cada píxel, lo que permite reproducir más de 16,7 millones de colores.",
+    diveJxlP2: "Además, en la práctica, PNG-24 suele guardarse como PNG-32 en programas de diseño, lo que incluye un canal alfa de 8 bits dedicado. Este canal de transparencia admite 256 niveles de opacidad, lo que permite píxeles semi-transparentes de alta calidad.",
+    diveJxlAdv: "Ventajas de PNG-24",
+    diveJxlAdvList: [
+      "Fidelidad de color real: Cero cuantización de color, asegurando una representación perfecta de fotos.",
+      "Canal alfa enriquecido: Permite superposiciones translúcidas hermosas y sombras suaves.",
+      "Sin bandas de color: Maneja degradados complejos sin distorsión visual."
+    ],
+    snippetSectionTitle: "Cuándo usar PNG-8 vs PNG-24",
+    snippetSectionDesc: "Elegir el tipo de archivo PNG correcto ayuda a mantener la rapidez del sitio web sin perder calidad visual.",
+    q1: "¿Cuál es la diferencia entre PNG-8 y PNG-24?",
+    a1: "PNG-8 utiliza una paleta limitada a un máximo de 256 colores, ofreciendo archivos pequeños similares a un GIF. PNG-24 utiliza color directo de 24 bits, admitiendo millones de colores y transparencias de canal alfa avanzadas.",
+    q2: "¿Admite el formato PNG-8 fondos transparentes?",
+    a2: "Sí, pero con límites. PNG-8 admite transparencia binaria (un píxel es transparente o es opaco), lo que puede causar bordes dentados. PNG-24 admite transparencias graduadas suaves (canal alfa).",
+    q3: "¿Qué formato es mejor para el rendimiento web, PNG-8 o PNG-24?",
+    q3_text: "¿Qué formato es mejor para el rendimiento web, PNG-8 o PNG-24?",
+    a3: "PNG-8 es muy superior para el rendimiento web porque sus archivos suelen ser entre un 50% y un 80% más pequeños que los PNG-24, cargándose mucho más rápido.",
+    q4: "¿Cómo puedo convertir una imagen PNG-24 a PNG-8?",
+    a4: "Puede convertir PNG-24 a PNG-8 cuantizando la paleta en su navegador con nuestro compresor offline. Esto reduce los millones de colores a los 256 más importantes.",
+    q5: "¿Soporta el formato PNG-8 millones de colores?",
+    a5: "No, PNG-8 está estrictamente limitado a 256 colores. Si intenta guardar una foto o degradado complejo como PNG-8, los colores se agruparán, causando bandas de color visibles.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita comprimir sus imágenes PNG?",
+    ctaDesc: "Use nuestro compresor de imágenes gratuito en el navegador para cuantizar y reducir sus archivos PNG a ligeros recursos PNG-8 al instante.",
+    ctaButton: "Probar compresor de PNG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG-8 vs PNG-24 : Quel format PNG devriez-vous utiliser ? (Comparaison 2026)",
+    seoDescription: "PNG-8 ou PNG-24 ? Nous comparons le format PNG à couleurs indexées 8 bits avec le standard de couleurs directes 24 bits. Lisez pour choisir le bon format.",
+    title: "PNG-8 vs PNG-24 : Quel format est le meilleur ?",
+    intro: "Tous deux sont des fichiers PNG, mais ils compressent les couleurs et gèrent la transparence de manières différentes. Nous comparons le PNG-8 (couleurs indexées) et le PNG-24 (couleurs directes) pour optimiser vos pages web.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le PNG-8 pour :",
+    useTiffForDesc: "Les graphismes simples comme les icônes d'interface, les logos à couleurs unies et les illustrations simples où le poids est crucial.",
+    useJxlFor: "Utilisez le PNG-24 pour :",
+    useJxlForDesc: "Les images nécessitant des transparences progressives (comme les ombres portées), les captures d'écran complexes et les visuels à dégradés.",
+    differenceTitle: "Quelle est la différence entre PNG-8 et PNG-24 ?",
+    differenceDesc: "La différence majeure réside dans la gestion des couleurs. Le PNG-8 utilise une palette indexée de 256 couleurs maximum, tandis que le PNG-24 mappe directement les valeurs RVB pour chaque pixel.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "PNG-8 (Couleurs Indexées)",
+    thJxl: "PNG-24 (Couleurs Directes)",
+    tdCompStandard: "Nombre de couleurs",
+    tdCompStandardTiff: "Maximum 256 couleurs",
+    tdCompStandardJxl: "Plus de 16 millions de couleurs (24 bits)",
+    tdFileSize: "Taille de fichier moyenne",
+    tdFileSizeTiff: "Extrêmement faible (50% à 80% plus léger)",
+    tdFileSizeJxl: "Plus lourde (Peut ralentir le chargement des pages)",
+    tdColorDepth: "Niveau de transparence",
+    tdColorDepthTiff: "Transparence binaire (Tout ou rien, crée un halo)",
+    tdColorDepthJxl: "Canal Alpha 8 bits (Gère la semi-transparence)",
+    tdBrowser: "Rendu des photos",
+    tdBrowserTiff: "Médiocre (Effets de bandes ou tramage)",
+    tdBrowserJxl: "Excellent (Reconstruction parfaite sans perte)",
+    tdPrint: "Algorithme de compression",
+    tdPrintTiff: "Génération de palette avec perte + Deflate",
+    tdPrintJxl: "Deflate 100% sans perte",
+    tdTranscoding: "Usage recommandé",
+    tdTranscodingTiff: "Icônes plats simples, éléments d'interface légers",
+    tdTranscodingJxl: "Images avec ombres complexes, captures détaillées",
+    converterTitle: "Quantifier et compresser PNG-24 en PNG-8 (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le PNG-8 ?",
+    diveTiffP1: "Le PNG-8 est une déclinaison 8 bits du format Portable Network Graphics. Il repose sur le même concept que le format GIF : le fichier stocke une table de 256 couleurs. Chaque pixel pointe simplement vers une case de cette table, limitant le volume de données.",
+    diveTiffP2: "Puisque chaque pixel ne requiert que 8 bits (1 octet) pour désigner sa couleur, le PNG-8 est très léger. Cependant, si le graphique original contient plus de 256 nuances, la compression doit opérer une réduction, ce qui peut créer des effets de trame visibles.",
+    diveTiffAdv: "Avantages du PNG-8",
+    diveTiffAdvList: [
+      "Poids plume : Optimal pour accélérer les temps de chargement des pages web.",
+      "Compression sans perte après réduction : Une fois la palette établie, les données ne subissent plus de pertes.",
+      "Support universel : S'affiche immédiatement sur tous les navigateurs."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le PNG-24 ?",
+    diveJxlP1: "Le PNG-24 est une implémentation de couleur directe sur 24 bits. Au lieu d'utiliser une palette, le PNG-24 alloue 8 bits pour chacun des canaux Rouge, Vert et Bleu de chaque pixel, ce qui permet de restituer plus de 16,7 millions de nuances.",
+    diveJxlP2: "De plus, il est fréquemment enregistré sous l'appellation PNG-32 dans les éditeurs graphiques, qui y associe un canal Alpha de 8 bits. Ce canal gère 256 niveaux d'opacité, assurant des transitions transparentes très douces, idéales pour les ombres portées.",
+    diveJxlAdv: "Avantages du PNG-24",
+    diveJxlAdvList: [
+      "Fidélité totale : Aucune réduction de couleur, parfait pour les photos.",
+      "Canal Alpha riche : Permet des superpositions et des effets d'ombrage progressifs.",
+      "Pas d'effets de bandes : Traite sans dégradation les dégradés complexes."
+    ],
+    snippetSectionTitle: "Quand utiliser le PNG-8 ou le PNG-24",
+    snippetSectionDesc: "Choisir le format adapté permet de préserver la rapidité du site tout en garantissant un rendu propre.",
+    q1: "Quelle est la différence entre PNG-8 et PNG-24 ?",
+    a1: "Le PNG-8 se limite à 256 couleurs et offre un poids très faible semblable au GIF. Le PNG-24 utilise des millions de couleurs en 24 bits et offre une transparence de canal alpha complète.",
+    q2: "Le PNG-8 gère-t-il la transparence ?",
+    a2: "Oui, mais avec des limites. Il ne prend en charge qu'une transparence binaire (soit transparent, soit opaque). Le PNG-24 permet une transparence progressive sans contours rugueux.",
+    q3: "Lequel est le meilleur pour la vitesse d'affichage ?",
+    q3_text: "Lequel est le meilleur pour la vitesse d'affichage ?",
+    a3: "Le PNG-8 est nettement supérieur car ses fichiers sont de 50% à 80% plus légers que les PNG-24, ce qui accélère le temps de chargement des pages.",
+    q4: "Comment convertir une image PNG-24 en PNG-8 ?",
+    a4: "Vous pouvez convertir votre PNG-24 en PNG-8 en réduisant la palette grâce à notre outil de compression hors ligne. Il va condenser les couleurs en 256 teintes clés.",
+    q5: "Le PNG-8 prend-il en charge des millions de couleurs ?",
+    a5: "Non, il est limité à 256 couleurs maximum. Exporter une photo en PNG-8 provoquera des effets de bandes de couleur ou du tramage.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de compresser vos images PNG ?",
+    ctaDesc: "Utilisez notre compresseur gratuit dans le navigateur pour réduire vos PNG en fichiers PNG-8 très légers instantanément.",
+    ctaButton: "Essayer le compresseur PNG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG-8 vs. PNG-24: Welches PNG-Format sollten Sie nutzen? (2026 Vergleich)",
+    seoDescription: "PNG-8 oder PNG-24? Wir vergleichen das 8-Bit-Index-Farbformat mit dem 24-Bit-Echtfarben-Standard. Erfahren Sie mehr über Dateigrößen und Transparenzen.",
+    title: "PNG-8 vs. PNG-24: Welches Format ist besser?",
+    intro: "Beides sind PNG-Dateien, aber sie komprimieren Farben und Transparenz auf völlig unterschiedliche Weise. Wir vergleichen PNG-8 (Indexfarbe) mit PNG-24 (Direktfarbe), um Ihnen die Wahl des besten Formates zu erleichtern.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie PNG-8 für:",
+    useTiffForDesc: "Einfache Grafiken wie UI-Icons, Logos mit flachen Farben und einfache Diagramme, bei denen eine minimale Dateigröße entscheidend ist.",
+    useJxlFor: "Nutzen Sie PNG-24 für:",
+    useJxlForDesc: "Bilder, die teiltransparente Pixel benötigen (wie Schlagschatten), Screenshots mit Farbverläufen und detaillierte verlustfreie Grafiken.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG-8 und PNG-24?",
+    differenceDesc: "Der Hauptunterschied liegt in der Farbindizierung. PNG-8 verwendet eine Farbtabelle mit bis zu 256 vordefinierten Farben, während PNG-24 Echtfarben (True Color) mit separaten Werten für jeden Pixel speichert.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "PNG-8 (Indizierte Farben)",
+    thJxl: "PNG-24 (Echtfarben)",
+    tdCompStandard: "Farbkapazität",
+    tdCompStandardTiff: "Maximal 256 Farben",
+    tdCompStandardJxl: "Über 16 Millionen Farben (24-Bit)",
+    tdFileSize: "Durchschnittliche Dateigröße",
+    tdFileSizeTiff: "Extrem klein (50 % bis 80 % kleiner)",
+    tdFileSizeJxl: "Größer (Kann Ladezeiten auf Websites erhöhen)",
+    tdColorDepth: "Transparenzstufen",
+    tdColorDepthTiff: "Binäre Transparenz (An/Aus, erzeugt Ränder)",
+    tdColorDepthJxl: "8-Bit-Alpha-Kanal (Unterstützt Teiltransparenz)",
+    tdBrowser: "Fotografische Wiedergabe",
+    tdBrowserTiff: "Schlecht (Neigt zu Farbbanding und Rauschen)",
+    tdBrowserJxl: "Hervorragend (Verlustfreie 1-zu-1-Wiedergabe)",
+    tdPrint: "Kompressionstyp",
+    tdPrintTiff: "Verlustbehaftete Reduzierung + Deflate",
+    tdPrintJxl: "100 % verlustfreies Deflate",
+    tdTranscoding: "Ideale Nutzung",
+    tdTranscodingTiff: "Einfache Icons, Grafikelemente im Web",
+    tdTranscodingJxl: "Grafiken mit Schlagschatten, hochauflösende Screenshots",
+    converterTitle: "PNG-24 in PNG-8 komprimieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist PNG-8?",
+    diveTiffP1: "PNG-8 ist eine indizierte Version des PNG-Formats mit 8-Bit-Farbtiefe. Es basiert auf dem gleichen Prinzip wie das ältere GIF-Format: Es speichert eine Farbtabelle mit maximal 256 Werten. Jeder Pixel verweist auf eine Farbnummer in dieser Tabelle, anstatt die vollen RGB-Werte zu speichern.",
+    diveTiffP2: "Weil jeder Pixel nur 8 Bit (1 Byte) benötigt, sind die Dateigrößen von PNG-8-Dateien extrem klein. Besitzt die Grafik jedoch feine Verläufe, muss das Bild gerastert werden, um die Farbbegrenzung auszugleichen.",
+    diveTiffAdv: "Vorteile von PNG-8",
+    diveTiffAdvList: [
+      "Minimale Dateigrößen: Verbessert Ladezeiten und Ladeleistung von Websites.",
+      "Verlustfreie Index-Kompression: Nach der Farbbegrenzung wird die Datei verlustfrei gepackt.",
+      "Volle Kompatibilität: Wird von absolut jedem Browser unterstützt."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist PNG-24?",
+    diveJxlP1: "PNG-24 ist die Echtfarb-Version des PNG-Standards. Anstatt sich auf eine indizierte Tabelle zu beschränken, spendiert PNG-24 jedem Pixel jeweils 8 Bit für die Farbkanäle Rot, Grün und Blau, wodurch 16,7 Millionen Farben möglich sind.",
+    diveJxlP2: "Darüber hinaus wird PNG-24 im Web-Design meist mit einem zusätzlichen 8-Bit-Kanal als PNG-32 gespeichert. Dieser Alpha-Kanal ermöglicht feine Teiltransparenzen, was für weiche Schatten und abgerundete Ränder über wechselnden Web-Hintergründen unverzichtbar ist.",
+    diveJxlAdv: "Vorteile von PNG-24",
+    diveJxlAdvList: [
+      "Absolute Farbechtheit: Keine Einschränkung auf 256 Farben, perfekt für hochauflösende Bilder.",
+      "Echter Alpha-Kanal: Weiche, teiltransparente Übergänge und Schlagschatten ohne unschöne Kanten.",
+      "Keine Farbstufen: Farbverläufe und Screendesigns werden fehlerfrei dargestellt."
+    ],
+    snippetSectionTitle: "Wann nutzt man PNG-8 oder PNG-24",
+    snippetSectionDesc: "Die richtige Wahl spart Bandbreite, ohne die Bildqualität Ihrer Webseite zu beeinträchtigen.",
+    q1: "Was ist der Unterschied zwischen PNG-8 und PNG-24?",
+    a1: "PNG-8 nutzt maximal 256 Farben in einer Tabelle, um kleine Dateien wie ein GIF zu erzeugen. PNG-24 bietet Echtfarben (True Color) und feine Transparenz-Verläufe, ist aber spürbar größer.",
+    q2: "Unterstützt PNG-8 Transparenz?",
+    a2: "Ja, aber nur binär (ein Pixel ist entweder voll transparent oder voll sichtbar). Für weiche Schlagschatten oder transparente Ränder benötigen Sie PNG-24.",
+    q3: "Welches Format ist besser für die Ladezeit?",
+    q3_text: "Welches Format ist besser für die Ladezeit?",
+    a3: "PNG-8 ist deutlich besser für die Ladezeit, da die Dateigröße meist 50 % bis 80 % geringer ausfällt als bei PNG-24.",
+    q4: "Wie konvertiere ich PNG-24 in PNG-8?",
+    a4: "Nutzen Sie unser Offline-Kompressionstool im Browser. Dieses reduziert die Echtfarben intelligent auf die wichtigsten 256 Farben.",
+    q5: "Kann PNG-8 Millionen Farben darstellen?",
+    a5: "Nein, PNG-8 ist fest auf 256 Farben limitiert. Bei komplexen Fotos oder Farbverläufen führt dies zu sichtbaren Farbstufen.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie PNG-Dateien komprimieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um PNG-Dateien sicher offline in das sparsame PNG-8-Format zu konvertieren.",
+    ctaButton: "PNG-Kompressor testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG-8 vs PNG-24: Qual formato PNG você deve usar? (Comparativo 2026)",
+    seoDescription: "PNG-8 ou PNG-24? Comparamos o formato PNG de cor indexada de 8 bits com o padrão de cores diretas de 24 bits. Entenda sobre peso de arquivos e transparência.",
+    title: "PNG-8 vs PNG-24: Qual formato é melhor?",
+    intro: "Ambos são arquivos com a extensão .png, mas salvam cores e transparências de formas totalmente distintas. Comparamos o PNG-8 (cores indexadas) ao PNG-24 (cores diretas) para você escolher o melhor para o seu site.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use PNG-8 para:",
+    useTiffForDesc: "Gráficos simples como ícones de UI, logotipos de cores sólidas e diagramas básicos onde o tamanho diminuto é crítico e 256 cores bastam.",
+    useJxlFor: "Use PNG-24 para:",
+    useJxlForDesc: "Imagens com transparências suaves (como sombras projetadas), capturas de telas complexas e imagens digitais ricas em cores.",
+    differenceTitle: "Qual é a diferença entre PNG-8 e PNG-24?",
+    differenceDesc: "A distinção principal está na indexação das cores. O PNG-8 usa uma paleta reduzida de até 256 cores únicas, enquanto o PNG-24 mapeia diretamente os valores RGB de cada pixel individual.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "PNG-8 (Cores Indexadas)",
+    thJxl: "PNG-24 (Cores Diretas)",
+    tdCompStandard: "Capacidade de cores",
+    tdCompStandardTiff: "Máximo de 256 cores",
+    tdCompStandardJxl: "Mais de 16 milhões de cores (24 bits)",
+    tdFileSize: "Tamanho médio do arquivo",
+    tdFileSizeTiff: "Extremamente pequeno (50% a 80% menor)",
+    tdFileSizeJxl: "Maior (Pode pesar na velocidade da página)",
+    tdColorDepth: "Transparência",
+    tdColorDepthTiff: "Transparência binária (Sim/Não, gera serrilhado)",
+    tdColorDepthJxl: "Canal alfa de 8 bits (Suporta semi-transparência)",
+    tdBrowser: "Fidelidade de cores",
+    tdBrowserTiff: "Baixa (Sujeito a banding e dithering em gradientes)",
+    tdBrowserJxl: "Excelente (Perfeita reconstrução sem perdas)",
+    tdPrint: "Algoritmo de compressão",
+    tdPrintTiff: "Redução de paleta de cores + Deflate",
+    tdPrintJxl: "Deflate 100% sem perdas",
+    tdTranscoding: "Uso recomendado",
+    tdTranscodingTiff: "Ícones simples, elementos planos de interface",
+    tdTranscodingJxl: "Imagens com sombras, capturas detalhadas de layouts",
+    converterTitle: "Quantizar e comprimir PNG-24 para PNG-8 (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é PNG-8?",
+    diveTiffP1: "O PNG-8 é a versão de 8 bits do formato PNG. Funciona exatamente sob o mesmo conceito do GIF: armazena uma tabela de índice com até 256 cores. Cada pixel do arquivo aponta para uma posição dessa tabela, economizando muitos bits.",
+    diveTiffP2: "Como cada pixel precisa de apenas 1 byte para definir a sua cor, o tamanho final do arquivo é minúsculo. Contudo, se a imagem original possuir degradados sutis ou muitas cores, o conversor precisa agrupar os tons similares, resultando em ruídos visuais.",
+    diveTiffAdv: "Vantagens do PNG-8",
+    diveTiffAdvList: [
+      "Arquivos minúsculos: Garante carregamento instantâneo para páginas da web.",
+      "Sem perdas após redução: Uma vez gerado o índice, a compactação Deflate não gera novas perdas.",
+      "Leitura universal: Abre nativamente em todos os navegadores da internet."
+    ],
+    diveJxlTitle: "Análise profunda: O que é PNG-24?",
+    diveJxlP1: "O PNG-24 é a especificação de cores diretas em 24 bits. Ao invés de limitar-se a uma tabela de cores, ele atribui 8 bits para cada canal (Vermelho, Verde, Azul) de cada pixel do arquivo. Isso permite atingir 16,7 milhões de cores reais.",
+    diveJxlP2: "Comumente, ele é salvo como PNG-32 para integrar um canal alfa extra de 8 bits. Este canal permite 256 níveis de opacidade, ideal para criar sombras realistas e contornos arredondados perfeitamente anti-aliased.",
+    diveJxlAdv: "Vantagens do PNG-24",
+    diveJxlAdvList: [
+      "Fidelidade de cores real: Nenhuma alteração nas cores das fotos ou renders.",
+      "Canal alfa avançado: Suporta fusões translúcidas e sombras sem falhas de borda.",
+      "Gradientes perfeitos: Excelente para capturas de layouts e interfaces complexas."
+    ],
+    snippetSectionTitle: "Quando usar PNG-8 ou PNG-24",
+    snippetSectionDesc: "A escolha certa do tipo de PNG melhora o SEO e o tempo de carregamento da sua página.",
+    q1: "Qual é a diferença entre PNG-8 e PNG-24?",
+    a1: "O PNG-8 é limitado a 256 cores, gerando arquivos leves como um GIF. O PNG-24 suporta mais de 16 milhões de cores e transparências graduadas, porém com arquivos mais pesados.",
+    q2: "O PNG-8 suporta fundo transparente?",
+    a2: "Sim, mas de forma simples. Suporta apenas transparência de tudo ou nada (pixel transparente ou opaco). O PNG-24 permite níveis de transparência graduada.",
+    q3: "Qual é melhor para o desempenho do site?",
+    q3_text: "Qual é melhor para o desempenho do site?",
+    a3: "O PNG-8 é melhor, pois reduz o peso dos arquivos de 50% a 80% em relação ao PNG-24, economizando tráfego de rede.",
+    q4: "Como converter fotos PNG-24 para PNG-8?",
+    a4: "Você pode converter PNG-24 para PNG-8 reduzindo as cores no nosso compressor integrado offline. Ele otimiza a tabela de cores mantendo as 256 mais importantes.",
+    q5: "O PNG-8 suporta degradados de muitas cores?",
+    a5: "Não, ele suporta no máximo 256 cores. Em fotos ou degradados longos, haverá falhas perceptíveis de cores.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa comprimir as suas imagens PNG?",
+    ctaDesc: "Use a nossa ferramenta gratuita no navegador para comprimir seus arquivos PNG em formato PNG-8 leve de forma offline.",
+    ctaButton: "Testar compressor de PNG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG-8 vs PNG-24: Mana Format PNG yang Harus Anda Gunakan? (Perbandingan 2026)",
+    seoDescription: "PNG-8 atau PNG-24? Kami membandingkan format PNG indeks warna 8-bit dengan standar warna langsung 24-bit. Pelajari tentang ukuran file dan transparansi.",
+    title: "PNG-8 vs PNG-24: Mana Format yang Lebih Baik?",
+    intro: "Keduanya adalah file PNG, tetapi mengompresi warna dan transparansi dengan cara yang berbeda. Kami membandingkan PNG-8 (indeks warna) dengan PNG-24 (warna langsung) untuk membantu Anda memilih format terbaik untuk web Anda.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan PNG-8 untuk:",
+    useTiffForDesc: "Grafis sederhana seperti ikon UI, logo dengan warna solid, dan diagram sederhana di mana ukuran file kecil sangat krusial dan 256 warna sudah cukup.",
+    useJxlFor: "Gunakan PNG-24 untuk:",
+    useJxlForDesc: "Gambar yang membutuhkan transparansi semi-transparan (seperti bayangan), tangkapan layar dengan gradasi warna yang kompleks, dan grafis detail.",
+    differenceTitle: "Apa Perbedaan Antara PNG-8 dan PNG-24?",
+    differenceDesc: "Perbedaan utama terletak pada indeks warna. PNG-8 menggunakan tabel indeks warna hingga 256 warna, sedangkan PNG-24 menggunakan pemetaan warna langsung (RGB) untuk setiap piksel.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "PNG-8 (Warna Terindeks)",
+    thJxl: "PNG-24 (Warna Langsung)",
+    tdCompStandard: "Kapasitas Warna",
+    tdCompStandardTiff: "Maksimum 256 warna",
+    tdCompStandardJxl: "Lebih dari 16 juta warna (24-bit)",
+    tdFileSize: "Ukuran File Rata-rata",
+    tdFileSizeTiff: "Sangat kecil (50% hingga 80% lebih kecil)",
+    tdFileSizeJxl: "Lebih besar (Bisa memperlambat pemuatan halaman)",
+    tdColorDepth: "Tingkat Transparansi",
+    tdColorDepthTiff: "Transparansi binar (Aktif/Nonaktif, bisa buat efek halo)",
+    tdColorDepthJxl: "Saluran Alfa 8-bit (Mendukung semi-transparansi)",
+    tdBrowser: "Ketajaman Foto",
+    tdBrowserTiff: "Kurang (Rentan efek banding dan noise)",
+    tdBrowserJxl: "Sangat Baik (Rekonstruksi lossless sempurna)",
+    tdPrint: "Algoritma Kompresi",
+    tdPrintTiff: "Pengurangan warna palette + Deflate",
+    tdPrintJxl: "Deflate 100% Lossless",
+    tdTranscoding: "Penggunaan Ideal",
+    tdTranscodingTiff: "Ikon datar sederhana, aset antarmuka pengguna",
+    tdTranscodingJxl: "Gambar dengan bayangan, tangkapan layar detail",
+    converterTitle: "Kuantisasi dan Kompresi PNG-24 ke PNG-8 (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu PNG-8?",
+    diveTiffP1: "PNG-8 adalah versi terindeks 8-bit dari format Portable Network Graphics. Konsepnya mirip dengan format GIF: file gambar menyimpan tabel indeks warna hingga 256 warna saja. Setiap piksel hanya menyimpan petunjuk warna dari tabel tersebut.",
+    diveTiffP2: "Karena piksel hanya membutuhkan 8-bit (1 byte) data untuk merujuk pada warnanya, ukuran file PNG-8 sangat kecil. Namun, jika gambar asli memiliki ribuan warna, alat kompresi akan menggabungkan warna-warna terdekat, yang dapat menghasilkan noise visual (dithering).",
+    diveTiffAdv: "Kelebihan PNG-8",
+    diveTiffAdvList: [
+      "Ukuran Sangat Kecil: Optimal untuk mempercepat performa halaman situs web Anda.",
+      "Kompresi Lossless Indeks: Setelah warna dikurangi, file dikompresi tanpa kehilangan data lebih lanjut.",
+      "Dukungan Universal: Dapat dibaca langsung di browser apa pun."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu PNG-24?",
+    diveJxlP1: "PNG-24 adalah implementasi warna langsung 24-bit dari standar PNG. Bukannya menggunakan tabel warna, PNG-24 memberikan 8-bit untuk masing-masing saluran Merah, Hijau, dan Biru untuk setiap piksel, memungkinkan 16,7 juta warna.",
+    diveJxlP2: "Dalam praktiknya, program sering menyimpannya sebagai PNG-32 untuk menyertakan saluran Alpha 8-bit. Saluran transparansi ini mendukung 256 tingkat opasitas, memungkinkan bayangan halus dan tepi membulat yang mulus.",
+    diveJxlAdv: "Kelebihan PNG-24",
+    diveJxlAdvList: [
+      "Warna Akurat: Tidak ada kuantisasi warna, menjamin foto ditampilkan dengan sempurna.",
+      "Saluran Alfa Premium: Mendukung efek bayangan halus tanpa tepian bergerigi.",
+      "Tanpa Banding: Menangani gradasi warna dan tangkapan layar UI yang kompleks tanpa cacat."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan PNG-8 atau PNG-24",
+    snippetSectionDesc: "Memilih jenis PNG yang tepat membantu menghemat bandwidth situs web tanpa mengorbankan tampilan visual.",
+    q1: "Apa perbedaan antara PNG-8 dan PNG-24?",
+    a1: "PNG-8 dibatasi maksimal 256 warna untuk menghasilkan file berukuran kecil mirip GIF. PNG-24 menggunakan warna langsung 24-bit untuk mendukung jutaan warna dan transparansi yang halus.",
+    q2: "Apakah PNG-8 mendukung latar belakang transparan?",
+    a2: "Ya, tetapi dengan keterbatasan. PNG-8 mendukung transparansi biner (piksel transparan atau tidak sama sekali). PNG-24 mendukung transparansi saluran alfa yang lebih halus.",
+    q3: "Mana yang lebih baik untuk performa web?",
+    q3_text: "Mana yang lebih baik untuk performa web?",
+    a3: "PNG-8 jauh lebih baik karena ukuran file biasanya 50% hingga 80% lebih kecil dibanding PNG-24, sehingga halaman web dimuat jauh lebih cepat.",
+    q4: "Bagaimana cara mengubah PNG-24 menjadi PNG-8?",
+    a4: "Anda dapat menggunakan kompresor gambar offline browser kami untuk menguantisasi warna. Alat ini akan menciutkan jutaan warna menjadi 256 warna kunci paling penting.",
+    q5: "Apakah PNG-8 mendukung jutaan warna?",
+    a5: "Tidak, PNG-8 dibatasi hanya 256 warna. Jika Anda menyimpan foto bergradasi rumit sebagai PNG-8, warna akan pecah dan terlihat berpita.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengompresi gambar PNG Anda?",
+    ctaDesc: "Gunakan kompresor gambar gratis kami di browser untuk mengonversi gambar PNG Anda menjadi file PNG-8 yang ringan secara offline.",
+    ctaButton: "Coba Kompresor PNG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png8-vs-png24")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG-8 vs PNG-24</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG-8</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG-24</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-error">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-error">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-error">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: PNG-8 -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PNG-24 -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

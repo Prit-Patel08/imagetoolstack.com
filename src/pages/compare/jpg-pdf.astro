@@ -1,0 +1,285 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import ImageToPdfTool from "../../components/tools/ImageToPdfTool.astro";
+
+// SEO Metadata
+const seoTitle = "JPG vs PDF: Which Format Should You Use? (2026 Comparison)";
+const seoDescription = "JPG or PDF? We compare the standard web image format against the global document container. Learn the key differences in resolution, scaling, and printing.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the main difference between JPG and PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG (Joint Photographic Experts Group) is a compressed raster image file type designed for photographs and web graphics, while PDF (Portable Document Format) is a multi-page document container that preserves text, fonts, vector drawings, and raster images exactly as laid out."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use JPG instead of PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use JPG for individual photographs, web design graphics, and images that need to load quickly on social media or website pages. JPG is smaller and universally supported as an image tag in browsers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use PDF instead of JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use PDF for documents, multi-page reports, resumes, legal contracts, forms, and professional printing layouts. PDF preserves scalable vector fonts and keeps layout dimensions consistent across all devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you convert a JPG to PDF without losing quality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, you can package a JPG into a PDF document wrapper. Because the JPG image data is embedded inside the PDF without recompression, the original image quality remains exactly the same."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is PDF better for printing than JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, PDF is far superior for printing. Unlike JPG, which is a flat raster grid of pixels that can look blurry when scaled up, PDF files can hold scalable vector text and shapes that print at maximum crispness regardless of physical print size."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "jpg-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "jpg-to-pdf");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">JPG vs PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">JPG vs PDF: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          JPG is the undisputed king of web images, while PDF is the global standard for documents. Deciding which format to use depends entirely on your content type: single photographs or multi-page documents. Let's compare their technical details side-by-side.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use JPG for:</strong> Web photographs, social media shares, and lightweight image assets where fast load times and universal image tag rendering are key.</p>
+          <p><strong class="text-ink">Use PDF for:</strong> Contracts, resumes, forms, booklets, and professional print jobs where vector shapes, text searchability, and formatting must be preserved.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between JPG and PDF?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both formats can store high-quality visual data, their underlying architectures are completely different. Here is a side-by-side comparison.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">JPG (Joint Photographic Experts Group)</th>
+                <th class="p-4">PDF (Portable Document Format)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">File Type</td>
+                <td class="p-4">Compressed Raster Image</td>
+                <td class="p-4 text-success">Portable Document Container</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Multi-page Support</td>
+                <td class="p-4 text-error">No (Single image only)</td>
+                <td class="p-4 text-success">Yes (Infinite pages)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Scale & Zoom</td>
+                <td class="p-4 text-error">Pixelates when enlarged</td>
+                <td class="p-4 text-success">Scalable vector fonts & graphics</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Text Searchability</td>
+                <td class="p-4 text-error">No (Text is flattened into pixels)</td>
+                <td class="p-4 text-success">Yes (Selectable, indexable text)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Universal Web Rendering</td>
+                <td class="p-4 text-success">Yes (Renders natively in `<img>` tag)</td>
+                <td class="p-4">Requires viewer or browser plug-in</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Ideal Use Case</td>
+                <td class="p-4">Digital photography & web graphics</td>
+                <td class="p-4 text-success">Documents, forms, print publications</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert JPG to PDF Instantly (Offline & Private)</h2>
+        <ImageToPdfTool toolId="jpg-to-pdf" />
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a JPG?</h2>
+        <p>
+          JPG (or JPEG) stands for Joint Photographic Experts Group, the committee that created the standard in 1992. It is a lossy raster format, which means it discards some pixel details to achieve exceptionally small file sizes.
+        </p>
+        <p>
+          JPG is designed specifically for photographic images containing smooth gradients of color. Because it is supported by every browser, operating system, and digital device, it remains the standard choice for web content. However, JPG is flat and does not support transparency, layers, or text editing.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JPG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Compatibility:</strong> Every screen and device can render JPG files natively.</li>
+          <li><strong>Compact File Sizes:</strong> High compression ratios keep files small and web pages loading fast.</li>
+          <li><strong>Photographic Excellence:</strong> Perfect for smooth, complex color blends in photographs.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PDF?</h2>
+        <p>
+          PDF stands for Portable Document Format, created by Adobe in 1993 to present documents consistently, regardless of software, hardware, or operating systems. 
+        </p>
+        <p>
+          Instead of just holding pixels, a PDF is an encapsulation system. It can store vector paths (which can scale infinitely), font structures (so text looks crisp at any zoom level), search indexes, interactive form fields, and even compressed raster images (like JPGs) inside a single file wrapper.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PDF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Fixed Layouts:</strong> Preserves formatting, fonts, margins, and designs exactly as authored.</li>
+          <li><strong>Vector Integrity:</strong> Text and logos stay perfectly sharp at any zoom level or screen scale.</li>
+          <li><strong>Multi-page Support:</strong> Designed to store books, papers, and slide decks cleanly in one file.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the main difference between JPG and PDF?</h3>
+            <p class="text-body leading-relaxed">JPG (Joint Photographic Experts Group) is a compressed raster image file type designed for photographs and web graphics, while PDF (Portable Document Format) is a multi-page document container that preserves text, fonts, vector drawings, and raster images exactly as laid out.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I use JPG instead of PDF?</h3>
+            <p class="text-body leading-relaxed">Use JPG for individual photographs, web design graphics, and images that need to load quickly on social media or website pages. JPG is smaller and universally supported as an image tag in browsers.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I use PDF instead of JPG?</h3>
+            <p class="text-body leading-relaxed">Use PDF for documents, multi-page reports, resumes, legal contracts, forms, and professional printing layouts. PDF preserves scalable vector fonts and keeps layout dimensions consistent across all devices.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can you convert a JPG to PDF without losing quality?</h3>
+            <p class="text-body leading-relaxed">Yes, you can package a JPG into a PDF document wrapper. Because the JPG image data is embedded inside the PDF without recompression, the original image quality remains exactly the same.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Is PDF better for printing than JPG?</h3>
+            <p class="text-body leading-relaxed">Yes, PDF is far superior for printing. Unlike JPG, which is a flat raster grid of pixels that can look blurry when scaled up, PDF files can hold scalable vector text and shapes that print at maximum crispness regardless of physical print size.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert JPG images to PDF?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly merge and package your images into a PDF document securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="JPG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

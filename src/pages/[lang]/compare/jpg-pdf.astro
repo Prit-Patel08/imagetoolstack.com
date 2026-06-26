@@ -1,0 +1,686 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import ImageToPdfTool from "../../../components/tools/ImageToPdfTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "JPG vs PDF: ¿Qué formato debería usar? (Comparación de 2026)",
+    seoDescription: "¿JPG o PDF? Comparamos el formato estándar de imagen web con el contenedor global de documentos. Conozca las diferencias de resolución, escala e impresión.",
+    title: "JPG vs PDF: ¿Qué formato es mejor?",
+    intro: "JPG es el rey indiscutible de las imágenes web, mientras que PDF es el estándar global para documentos. La elección del formato depende completamente de su tipo de contenido: fotografías individuales o documentos de varias páginas. Comparemos sus especificaciones técnicas lado a lado.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use JPG para:",
+    useTiffForDesc: "Fotografías web, contenido de redes sociales y elementos visuales livianos donde los tiempos de carga rápidos y la renderización nativa sean clave.",
+    useJxlFor: "Use PDF para:",
+    useJxlForDesc: "Contratos, currículums, formularios, folletos e impresión profesional donde se deban conservar formas vectoriales, la capacidad de búsqueda de texto y el formato original.",
+    differenceTitle: "¿Cuál es la diferencia entre JPG y PDF?",
+    differenceDesc: "Aunque ambos formatos pueden almacenar información visual de alta calidad, sus arquitecturas subyacentes son completamente diferentes. Aquí tiene una comparación lado a lado.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "JPG (Joint Photographic Experts Group)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Tipo de archivo",
+    tdCompStandardTiff: "Imagen ráster comprimida",
+    tdCompStandardJxl: "Contenedor de documentos portátil",
+    tdFileSize: "Soporte de múltiples páginas",
+    tdFileSizeTiff: "No (Una sola imagen)",
+    tdFileSizeJxl: "Sí (Páginas ilimitadas)",
+    tdColorDepth: "Escala y Zoom",
+    tdColorDepthTiff: "Se pixela al agrandarse",
+    tdColorDepthJxl: "Textos y gráficos vectoriales escalables",
+    tdBrowser: "Búsqueda de texto",
+    tdBrowserTiff: "No (El texto se aplana en píxeles)",
+    tdBrowserJxl: "Sí (Texto seleccionable e indexable)",
+    tdPrint: "Renderizado web universal",
+    tdPrintTiff: "Sí (Nativo en etiqueta <img>)",
+    tdPrintJxl: "Requiere visor o plugin del navegador",
+    tdTranscoding: "Caso de uso ideal",
+    tdTranscodingTiff: "Fotografía digital y gráficos web",
+    tdTranscodingJxl: "Documentos, formularios y publicaciones impresas",
+    converterTitle: "Convertir JPG a PDF al instante (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es JPG?",
+    diveTiffP1: "JPG (o JPEG) son las siglas de Joint Photographic Experts Group, el comité que creó el estándar en 1992. Es un formato ráster con pérdida, lo que significa que descarta algunos detalles de píxeles para lograr tamaños de archivo excepcionalmente pequeños.",
+    diveTiffP2: "JPG está diseñado específicamente para imágenes fotográficas con transiciones suaves de color. Al ser compatible con todos los navegadores, sistemas operativos y dispositivos digitales, sigue siendo la opción estándar para el contenido web. Sin embargo, JPG es plano y no admite transparencia, capas ni edición de texto.",
+    diveTiffAdv: "Ventajas de JPG",
+    diveTiffAdvList: [
+      "Compatibilidad universal: Cualquier pantalla y dispositivo puede renderizar archivos JPG nativamente.",
+      "Tamaño de archivo compacto: Los altos índices de compresión mantienen los archivos pequeños y aceleran la carga de páginas.",
+      "Excelencia fotográfica: Perfecto para combinaciones de colores suaves y complejas en fotos."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es PDF?",
+    diveJxlP1: "PDF significa Portable Document Format (Formato de Documento Portátil), creado por Adobe en 1993 para presentar documentos de manera uniforme, independientemente del software, hardware o sistema operativo.",
+    diveJxlP2: "En lugar de contener solo píxeles, un PDF es un sistema de encapsulación. Puede almacenar trazados vectoriales (que pueden escalar de forma ilimitada), estructuras de fuentes (para que el texto se vea nítido en cualquier zoom), índices de búsqueda, campos de formulario interactivos e incluso imágenes ráster comprimidas (como JPG) dentro de un solo contenedor.",
+    diveJxlAdv: "Ventajas de PDF",
+    diveJxlAdvList: [
+      "Diseño fijo: Conserva el formato, las fuentes, los márgenes y los diseños exactamente como se crearon.",
+      "Integridad vectorial: El texto y los logotipos permanecen perfectamente nítidos en cualquier nivel de zoom.",
+      "Soporte multipágina: Diseñado para almacenar libros, informes y diapositivas de manera organizada en un solo archivo."
+    ],
+    snippetSectionTitle: "Cuándo usar JPG vs PDF",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es clave para mantener la claridad y equilibrar el rendimiento.",
+    q1: "¿Cuál es la diferencia principal entre JPG y PDF?",
+    a1: "JPG es un formato de imagen ráster comprimido diseñado para fotos, mientras que PDF es un contenedor de documentos de varias páginas que conserva texto, fuentes, trazados vectoriales e imágenes tal como fueron diseñados.",
+    q2: "¿Cuándo debo usar JPG en lugar de PDF?",
+    a2: "Use JPG para fotos individuales, gráficos web y recursos visuales que requieran una carga rápida en sitios web o redes sociales. JPG es más pequeño y compatible de forma nativa con la etiqueta de imagen.",
+    q3: "¿Cuándo debo usar PDF en lugar de JPG?",
+    a3: "Use PDF para documentos, currículums, contratos legales, formularios y archivos listos para impresión profesional. El PDF mantiene las fuentes vectoriales legibles y las dimensiones del diseño estables en cualquier pantalla.",
+    q4: "¿Se puede convertir un JPG a PDF sin perder calidad?",
+    a4: "Sí. Al convertir un JPG a PDF, el archivo simplemente envuelve los datos de la imagen JPG original sin volver a comprimirla. Por lo tanto, la calidad visual original se mantiene al 100%.",
+    q5: "¿Es el PDF mejor para imprimir que el JPG?",
+    a5: "Sí, el PDF es muy superior para la impresión. A diferencia de JPG, que es una cuadrícula plana de píxeles que puede verse borrosa si se amplía, el PDF admite fuentes y formas vectoriales que se imprimen con la máxima nitidez.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir imágenes JPG a PDF?",
+    ctaDesc: "Use nuestra herramienta gratuita y local en el navegador para combinar y empaquetar sus imágenes en un documento PDF de forma segura.",
+    ctaButton: "Probar convertidor JPG a PDF",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "JPG vs PDF : Quel format devriez-vous utiliser ? (Comparaison 2026)",
+    seoDescription: "JPG ou PDF ? Nous comparons le format d'image web standard avec le conteneur de documents global. Découvrez les différences de résolution, de mise à l'échelle et d'impression.",
+    title: "JPG vs PDF : Quel format est le meilleur ?",
+    intro: "Le JPG est le roi incontesté des images web, tandis que le PDF est la norme mondiale pour les documents. Le choix du format dépend entièrement de votre type de contenu : photographies uniques ou documents multi-pages. Comparons leurs caractéristiques techniques.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le JPG pour :",
+    useTiffForDesc: "Photos web, partages sur les réseaux sociaux et images légères où les temps de chargement rapides et le rendu natif sont essentiels.",
+    useJxlFor: "Utilisez le PDF pour :",
+    useJxlForDesc: "Contrats, CV, formulaires, livrets et impressions professionnelles où les formes vectorielles, la recherche de texte et le formatage doivent être préservés.",
+    differenceTitle: "Quelle est la différence entre JPG et PDF ?",
+    differenceDesc: "Bien que les deux formats puissent stocker des données visuelles de haute qualité, leurs architectures sous-jacentes sont totalement différentes.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "JPG (Joint Photographic Experts Group)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Type de fichier",
+    tdCompStandardTiff: "Image matricielle compressée",
+    tdCompStandardJxl: "Conteneur de document portable",
+    tdFileSize: "Prise en charge multi-pages",
+    tdFileSizeTiff: "Non (Image unique)",
+    tdFileSizeJxl: "Oui (Pages infinies)",
+    tdColorDepth: "Mise à l'échelle et Zoom",
+    tdColorDepthTiff: "Se pixellise lors de l'agrandissement",
+    tdColorDepthJxl: "Polices et graphiques vectoriels évolutifs",
+    tdBrowser: "Recherche de texte",
+    tdBrowserTiff: "Non (Le texte est aplati en pixels)",
+    tdBrowserJxl: "Oui (Texte sélectionnable et indexable)",
+    tdPrint: "Rendu Web universel",
+    tdPrintTiff: "Oui (Rendu natif via la balise <img>)",
+    tdPrintJxl: "Nécessite un visualiseur ou un plug-in de navigateur",
+    tdTranscoding: "Cas d'utilisation idéal",
+    tdTranscodingTiff: "Photographie numérique et graphiques web",
+    tdTranscodingJxl: "Documents, formulaires, publications imprimées",
+    converterTitle: "Convertir JPG en PDF instantanément (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le JPG ?",
+    diveTiffP1: "Le JPG (ou JPEG) signifie Joint Photographic Experts Group, le comité qui a créé la norme en 1992. Il s'agit d'un format matriciel destructeur (lossy), ce qui signifie qu'il élimine certains détails pour obtenir des tailles de fichier très réduites.",
+    diveTiffP2: "Le JPG est spécialement conçu pour les photographies avec des dégradés de couleurs fluides. Supporté par tous les navigateurs et systèmes, il reste le choix standard pour le web. Cependant, il ne gère pas la transparence ou le texte éditable.",
+    diveTiffAdv: "Avantages du JPG",
+    diveTiffAdvList: [
+      "Compatibilité universelle : Affichage natif sur tous les écrans et systèmes.",
+      "Fichiers légers : Compression élevée garantissant un chargement rapide des pages.",
+      "Rendu photographique : Idéal pour les transitions complexes de couleurs dans les photos."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le PDF ?",
+    diveJxlP1: "Le PDF (Portable Document Format) a été créé par Adobe en 1993 pour présenter des documents de manière uniforme, quel que soit le logiciel ou le système utilisé.",
+    diveJxlP2: "Plus qu'une simple image, un PDF encapsule des vecteurs (pour un zoom infini), des polices intégrées (pour un texte net) et même des images matricielles comme des JPG dans un seul document.",
+    diveJxlAdv: "Avantages du PDF",
+    diveJxlAdvList: [
+      "Format fixe : Conserve la mise en page, les polices et les marges exactes.",
+      "Qualité vectorielle : Texte et logos restent parfaitement nets à n'importe quel zoom.",
+      "Multi-pages : Parfait pour rassembler rapports, livres ou présentations en un seul fichier."
+    ],
+    snippetSectionTitle: "Quand utiliser le JPG ou le PDF",
+    snippetSectionDesc: "Choisir le bon format est crucial pour préserver la clarté et la compatibilité.",
+    q1: "Quelle est la différence principale entre JPG et PDF ?",
+    a1: "Le JPG est un format d'image compressé conçu pour les photos et graphiques web, tandis que le PDF est un conteneur de documents multi-pages préservant les textes, polices et dessins vectoriels.",
+    q2: "Quand dois-je utiliser le JPG plutôt que le PDF ?",
+    a2: "Utilisez le JPG pour les photos individuelles, les illustrations web et les visuels devant s'afficher instantanément sur internet. Il est idéal pour l'intégration de balises d'images standard.",
+    q3: "Quand dois-je utiliser le PDF plutôt que le JPG ?",
+    a3: "Privilégiez le PDF pour les documents administratifs, CV, contrats, formulaires et impressions papier. Il maintient la mise en page et la netteté du texte sur tous les supports.",
+    q4: "Peut-on convertir un JPG en PDF sans perte de qualité ?",
+    a4: "Oui, la conversion d'un JPG en PDF encapsule simplement l'image d'origine sans appliquer de nouvelle compression. La qualité visuelle reste donc inchangée.",
+    q5: "Le PDF est-il meilleur que le JPG pour l'impression ?",
+    a5: "Oui, le PDF est très supérieur pour l'impression car il conserve les polices et les graphiques vectoriels qui restent nets à n'importe quelle taille, contrairement aux pixels d'un JPG.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des images JPG en PDF ?",
+    ctaDesc: "Utilisez notre outil gratuit et local pour fusionner et empaqueter vos photos en un fichier PDF de façon sécurisée.",
+    ctaButton: "Essayer le convertisseur JPG en PDF",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "JPG vs. PDF: Welches Format sollten Sie verwenden? (2026 Vergleich)",
+    seoDescription: "JPG oder PDF? Wir vergleichen das Standard-Web-Bildformat mit dem globalen Dokumentencontainer. Erfahren Sie die Unterschiede bei Auflösung, Zoom und Druck.",
+    title: "JPG vs. PDF: Welches Format ist besser?",
+    intro: "JPG ist der unangefochtene König der Web-Bilder, während PDF der weltweite Standard für Dokumente ist. Die Entscheidung hängt ganz von Ihren Inhalten ab: einzelne Fotos oder mehrseitige Dokumente. Vergleichen wir die Details.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie JPG für:",
+    useTiffForDesc: "Web-Fotos, Social-Media-Bilder und leichte Grafikressourcen, bei denen schnelle Ladezeiten und universelle Browser-Darstellung wichtig sind.",
+    useJxlFor: "Nutzen Sie PDF für:",
+    useJxlForDesc: "Verträge, Lebensläufe, Formulare, Broschüren und professionelle Druckdateien, bei denen Vektorgrafiken, Textsuche und Layout erhalten bleiben müssen.",
+    differenceTitle: "Was ist der Unterschied zwischen JPG und PDF?",
+    differenceDesc: "Obwohl beide Formate hochwertige visuelle Daten speichern können, ist ihre grundlegende Struktur völlig unterschiedlich.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "JPG (Joint Photographic Experts Group)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Dateityp",
+    tdCompStandardTiff: "Komprimiertes Rasterbild",
+    tdCompStandardJxl: "Tragbarer Dokumentencontainer",
+    tdFileSize: "Mehrseitige Unterstützung",
+    tdFileSizeTiff: "Nein (Nur Einzelbild)",
+    tdFileSizeJxl: "Ja (Unbegrenzte Seiten)",
+    tdColorDepth: "Zoom & Skalierung",
+    tdColorDepthTiff: "Verpixelt beim Vergrößern",
+    tdColorDepthJxl: "Skalierbare Vektorschriften & Grafiken",
+    tdBrowser: "Textdurchsuchbarkeit",
+    tdBrowserTiff: "Nein (Text wird flach in Pixel umgewandelt)",
+    tdBrowserJxl: "Ja (Auswählbarer, durchsuchbarer Text)",
+    tdPrint: "Universelle Web-Darstellung",
+    tdPrintTiff: "Ja (Wird nativ über das <img>-Tag gerendert)",
+    tdPrintJxl: "Erfordert einen Viewer oder ein Browser-Plugin",
+    tdTranscoding: "Idealer Anwendungsfall",
+    tdTranscodingTiff: "Digitale Fotografie & Web-Grafiken",
+    tdTranscodingJxl: "Dokumente, Formulare, gedruckte Publikationen",
+    converterTitle: "JPG sofort in PDF konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist ein JPG?",
+    diveTiffP1: "JPG (oder JPEG) steht für Joint Photographic Experts Group, das Komitee, das diesen Standard 1992 entwickelte. Es ist ein verlustbehaftetes Rasterformat, das Details entfernt, um extrem kleine Dateigrößen zu ermöglichen.",
+    diveTiffP2: "JPG wurde speziell für Fotos mit feinen Farbübergängen entwickelt. Da es von allen Geräten unterstützt wird, ist es das Standardformat im Web. Es bietet jedoch keine Transparenz oder editierbaren Text.",
+    diveTiffAdv: "Vorteile von JPG",
+    diveTiffAdvList: [
+      "Universelle Kompatibilität: Jedes Display und Gerät kann JPGs nativ anzeigen.",
+      "Kompakte Dateigrößen: Hohe Kompressionsraten sorgen für schnelle Ladezeiten im Web.",
+      "Perfekt für Fotos: Ideal für weiche Farbmischungen bei Fotografien."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist ein PDF?",
+    diveJxlP1: "PDF steht für Portable Document Format und wurde 1993 von Adobe entwickelt, um Dokumente unabhängig von Software oder Betriebssystemen einheitlich darzustellen.",
+    diveJxlP2: "Ein PDF ist ein Kapselungssystem: Es kann Vektorpfade (für unendliche Skalierung), Schriftarten (für scharfen Text) und sogar Rasterbilder wie JPGs in einem einzigen Wrapper speichern.",
+    diveJxlAdv: "Vorteile von PDF",
+    diveJxlAdvList: [
+      "Festes Layout: Bewahrt Formatierung, Schriftarten und Ränder exakt wie erstellt.",
+      "Vektor-Integrität: Texte und Logos bleiben bei jedem Zoom gestochen scharf.",
+      "Mehrseitig: Ideal für Bücher, Berichte und Präsentationen in einer einzigen Datei."
+    ],
+    snippetSectionTitle: "Wann nutzt man JPG oder PDF",
+    snippetSectionDesc: "Die Wahl des richtigen Formats sorgt für scharfe Bilder und reibungslose Workflows.",
+    q1: "Was ist der Hauptunterschied zwischen JPG und PDF?",
+    a1: "JPG ist ein komprimiertes Bildformat für Fotos, während PDF ein Dokumentencontainer ist, der Texte, Schriften, Vektoren und Layouts geräteübergreifend bewahrt.",
+    q2: "Wann sollte ich JPG anstelle von PDF verwenden?",
+    a2: "Nutzen Sie JPG für einzelne Fotos und Grafiken auf Webseiten. JPGs sind kleiner und werden nativ von Browsern geladen.",
+    q3: "Wann sollte ich PDF anstelle von JPG verwenden?",
+    a3: "Verwenden Sie PDF für Dokumente, Lebensläufe, Verträge und Drucklayouts. PDF hält Schriften und Vektoren gestochen scharf und bewahrt die Formatierung.",
+    q4: "Kann man JPG ohne Qualitätsverlust in PDF konvertieren?",
+    a4: "Ja. Bei der Konvertierung in ein PDF wird das JPG einfach in den PDF-Container verpackt, ohne das Bild neu zu komprimieren. Die Qualität bleibt komplett erhalten.",
+    q5: "Ist PDF besser zum Drucken geeignet als JPG?",
+    a5: "Ja, PDF ist für den Druck weitaus besser. Da es skalierbare Vektoren und Schriften enthält, wird alles mit maximaler Schärfe gedruckt, während JPGs beim Vergrößern verpixeln.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie JPG-Bilder in PDF konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Offline-Browser-Tool, um Bilder sicher in einem PDF-Dokument zusammenzufügen.",
+    ctaButton: "JPG-in-PDF-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "JPG vs PDF: Qual formato você deve usar? (Comparativo 2026)",
+    seoDescription: "JPG ou PDF? Comparamos o formato de imagem padrão da web com o contêiner de documentos global. Entenda as diferenças de resolução, zoom e impressão.",
+    title: "JPG vs PDF: Qual formato é melhor?",
+    intro: "O JPG é o rei incontestado das imagens web, enquanto o PDF é o padrão mundial para documentos. A escolha do formato ideal depende apenas do seu conteúdo: fotos individuais ou documentos com várias páginas. Veja os detalhes técnicos.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use JPG para:",
+    useTiffForDesc: "Fotos web, compartilhamento em redes sociais e imagens leves onde a velocidade de carregamento e o render nativo são fundamentais.",
+    useJxlFor: "Use PDF para:",
+    useJxlForDesc: "Contratos, currículos, formulários, livretos e impressões profissionais onde vetores, pesquisa de texto e formatação rígida devem ser preservados.",
+    differenceTitle: "Qual é a diferença entre JPG e PDF?",
+    differenceDesc: "Embora ambos os formatos possam armazenar dados visuais de alta qualidade, as suas estruturas fundamentais são totalmente diferentes.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "JPG (Joint Photographic Experts Group)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Tipo de arquivo",
+    tdCompStandardTiff: "Imagem Raster Compactada",
+    tdCompStandardJxl: "Contêiner de Documento Portátil",
+    tdFileSize: "Suporte a Múltiplas Páginas",
+    tdFileSizeTiff: "Não (Apenas imagem única)",
+    tdFileSizeJxl: "Sim (Páginas ilimitadas)",
+    tdColorDepth: "Zoom e Escala",
+    tdColorDepthTiff: "Fica pixelizado ao ser ampliado",
+    tdColorDepthJxl: "Fontes e gráficos vetoriais escaláveis",
+    tdBrowser: "Pesquisa de Texto",
+    tdBrowserTiff: "Não (O texto vira parte dos pixels)",
+    tdBrowserJxl: "Sim (Texto selecionável e indexável)",
+    tdPrint: "Renderização Web Universal",
+    tdPrintTiff: "Sim (Nativo usando tag <img>)",
+    tdPrintJxl: "Exige visualizador ou plugin do navegador",
+    tdTranscoding: "Caso de Uso Ideal",
+    tdTranscodingTiff: "Fotografia digital e imagens de sites",
+    tdTranscodingJxl: "Documentos, formulários, impressões e relatórios",
+    converterTitle: "Converter JPG para PDF instantaneamente (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é o JPG?",
+    diveTiffP1: "O JPG (ou JPEG) significa Joint Photographic Experts Group, comitê que criou o padrão em 1992. É um formato raster com perdas (lossy), o que significa que ele descarta alguns detalhes visuais para obter tamanhos menores.",
+    diveTiffP2: "Foi criado especialmente para fotografias com gradientes suaves de cor. Sendo compatível com todas as telas, tornou-se o padrão da web. Porém, não suporta transparência ou textos editáveis.",
+    diveTiffAdv: "Vantagens do JPG",
+    diveTiffAdvList: [
+      "Compatibilidade Universal: Funciona nativamente em qualquer tela e dispositivo.",
+      "Tamanho Reduzido: Altos níveis de compressão facilitam o carregamento de sites.",
+      "Excelente para Fotos: Perfeito para lidar com misturas de cores de imagens reais."
+    ],
+    diveJxlTitle: "Análise profunda: O que é o PDF?",
+    diveJxlP1: "O PDF (Portable Document Format) foi criado pela Adobe em 1993 para apresentar documentos de forma padronizada, independente do hardware ou sistema.",
+    diveJxlP2: "Um PDF funciona como um contêiner: armazena caminhos vetoriais (zoom infinito), fontes integradas (leitura nítida) e até imagens rasterizadas como JPGs em uma única embalagem.",
+    diveJxlAdv: "Vantagens do PDF",
+    diveJxlAdvList: [
+      "Formatação Estável: Preserva fontes, layouts e margens exatamente como foram criados.",
+      "Alta Resolução Vetorial: Textos e logos permanecem nítidos em qualquer escala.",
+      "Multi-páginas: Desenhado para reunir páginas, livros e relatórios em um só arquivo."
+    ],
+    snippetSectionTitle: "Quando usar JPG ou PDF",
+    snippetSectionDesc: "Escolher o formato correto mantém o visual nítido e evita arquivos pesados.",
+    q1: "Qual é a principal diferença entre JPG e PDF?",
+    a1: "O JPG é um formato raster comprimido projetado para exibir fotos na web. O PDF é um contêiner de documentos que mantém fontes, vetores e textos intocados.",
+    q2: "Quando devo usar JPG em vez de PDF?",
+    a2: "Use JPG para fotos avulsas e elementos visuais de sites. Eles carregam muito mais rápido e são suportados pelas tags HTML nativas.",
+    q3: "Quando devo usar PDF em vez de JPG?",
+    a3: "Use PDF para currículos, contratos, relatórios corporativos e arquivos para impressão. O PDF preserva a fidelidade do layout e o texto pesquisável.",
+    q4: "É possível converter JPG para PDF sem perder qualidade?",
+    a4: "Sim. A conversão apenas envelopa os dados da imagem JPG original dentro do PDF, sem recompressão. A qualidade continua idêntica.",
+    q5: "O PDF é melhor para impressão do que o JPG?",
+    a5: "Sim, o PDF é o padrão da indústria gráfica. Por conter vetores e fontes escaláveis, o resultado impresso é extremamente nítido, ao contrário dos pixels limitados do JPG.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa de converter imagens JPG para PDF?",
+    ctaDesc: "Use a nossa ferramenta gratuita integrada para converter e agrupar as suas imagens em PDF de forma totalmente privada.",
+    ctaButton: "Testar conversor JPG para PDF",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "JPG vs PDF: Format Mana yang Harus Anda Gunakan? (Perbandingan 2026)",
+    seoDescription: "JPG atau PDF? Kami membandingkan format gambar web standar dengan wadah dokumen global. Pelajari perbedaan resolusi, skala, dan cetak.",
+    title: "JPG vs PDF: Mana Format yang Lebih Baik?",
+    intro: "JPG adalah raja gambar web, sedangkan PDF adalah standar dokumen global. Keputusan menggunakan format mana tergantung pada jenis konten Anda: foto tunggal atau dokumen multi-halaman. Mari bandingkan spesifikasi teknisnya.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan JPG untuk:",
+    useTiffForDesc: "Foto web, media sosial, dan aset gambar ringan yang memerlukan waktu muat cepat dan rendering tag gambar universal.",
+    useJxlFor: "Gunakan PDF untuk:",
+    useJxlForDesc: "Kontrak, resume, formulir, pamflet, dan cetak profesional di mana bentuk vektor, pencarian teks, dan format tata letak harus dipertahankan.",
+    differenceTitle: "Apa Perbedaan Antara JPG dan PDF?",
+    differenceDesc: "Meskipun kedua format dapat menyimpan data visual berkualitas tinggi, arsitektur dasar keduanya sangatlah berbeda.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "JPG (Joint Photographic Experts Group)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Jenis File",
+    tdCompStandardTiff: "Gambar Raster Terkompresi",
+    tdCompStandardJxl: "Kontainer Dokumen Portabel",
+    tdFileSize: "Dukungan Multi-halaman",
+    tdFileSizeTiff: "Tidak (Hanya satu gambar)",
+    tdFileSizeJxl: "Ya (Halaman tak terbatas)",
+    tdColorDepth: "Skala & Zoom",
+    tdColorDepthTiff: "Piksel pecah saat diperbesar",
+    tdColorDepthJxl: "Font & grafis vektor terukur (skalabel)",
+    tdBrowser: "Pencarian Teks",
+    tdBrowserTiff: "Tidak (Teks menyatu dengan piksel)",
+    tdBrowserJxl: "Ya (Teks dapat dipilih & diindeks)",
+    tdPrint: "Rendering Web Universal",
+    tdPrintTiff: "Ya (Render secara natif di tag <img>)",
+    tdPrintJxl: "Memerlukan penampil dokumen atau plugin browser",
+    tdTranscoding: "Kasus Penggunaan Ideal",
+    tdTranscodingTiff: "Fotografi digital & grafis halaman web",
+    tdTranscodingJxl: "Dokumen, formulir, publikasi cetak",
+    converterTitle: "Konversi JPG ke PDF Instan (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu JPG?",
+    diveTiffP1: "JPG (atau JPEG) adalah singkatan dari Joint Photographic Experts Group, komite yang membuat standar ini pada tahun 1992. Ini adalah format raster lossy, artinya membuang sebagian detail piksel demi ukuran file yang sangat kecil.",
+    diveTiffP2: "JPG dirancang khusus untuk gambar foto dengan gradasi warna yang halus. Karena didukung oleh setiap browser dan perangkat, JPG tetap menjadi pilihan utama untuk web. Namun, JPG tidak mendukung transparansi atau teks yang dapat diedit.",
+    diveTiffAdv: "Kelebihan JPG",
+    diveTiffAdvList: [
+      "Kompatibilitas Universal: Setiap layar dan perangkat dapat menampilkan JPG secara natif.",
+      "Ukuran File Ringkas: Kompresi tinggi menjaga file tetap kecil agar situs web memuat lebih cepat.",
+      "Unggul untuk Foto: Sangat baik untuk menampilkan transisi warna rumit pada fotografi."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu PDF?",
+    diveJxlP1: "PDF singkatan dari Portable Document Format, dibuat oleh Adobe pada tahun 1993 untuk menyajikan dokumen secara seragam di perangkat lunak dan sistem operasi apa pun.",
+    diveJxlP2: "Alih-alih hanya menyimpan piksel, PDF adalah sistem wadah. PDF dapat menyimpan jalur vektor (skala tak terbatas), font (agar teks tetap tajam), indeks pencarian, dan bahkan gambar raster seperti JPG dalam satu file.",
+    diveJxlAdv: "Kelebihan PDF",
+    diveJxlAdvList: [
+      "Tata Letak Tetap: Mempertahankan format, font, dan margin tepat seperti aslinya.",
+      "Integritas Vektor: Teks dan logo tetap tajam pada tingkat perbesaran apa pun.",
+      "Dukungan Multi-halaman: Dirancang untuk menyimpan buku, laporan, dan dokumen dalam satu berkas."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan JPG atau PDF",
+    snippetSectionDesc: "Memilih format file yang tepat menyeimbangkan ketajaman visual dan kegunaan dokumen.",
+    q1: "Apa perbedaan utama antara JPG dan PDF?",
+    a1: "JPG adalah format gambar raster terkompresi untuk foto web, sedangkan PDF adalah wadah dokumen multi-halaman yang mempertahankan teks, font, vektor, dan tata letak secara konsisten.",
+    q2: "Kapan saya harus menggunakan JPG daripada PDF?",
+    a2: "Gunakan JPG untuk foto tunggal, gambar web, dan konten visual media sosial. JPG berukuran kecil dan didukung secara natif sebagai tag gambar di browser.",
+    q3: "Kapan saya harus menggunakan PDF daripada JPG?",
+    a3: "Gunakan PDF untuk dokumen, resume, surat kontrak, formulir, dan file siap cetak. PDF menjaga teks vektor tetap tajam dan layout tetap rapi di semua perangkat.",
+    q4: "Apakah konversi JPG ke PDF merusak kualitas gambar?",
+    a4: "Tidak. Konversi JPG ke PDF hanya membungkus gambar JPG asli ke dalam format PDF tanpa kompresi ulang. Kualitas gambar asli tetap terjaga 100%.",
+    q5: "Apakah PDF lebih baik untuk mencetak dibanding JPG?",
+    a5: "Ya, PDF jauh lebih unggul untuk dicetak. PDF mendukung teks dan bentuk vektor yang dicetak sangat tajam, sedangkan JPG akan terlihat pecah/buram jika diperbesar melebihi ukuran pikselnya.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi gambar JPG ke PDF?",
+    ctaDesc: "Gunakan alat dalam browser gratis kami untuk menggabungkan dan mengemas gambar Anda ke PDF secara aman dan offline.",
+    ctaButton: "Coba Pengonversi JPG ke PDF",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "jpg-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "jpg-to-pdf");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">JPG vs PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-error">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-error">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <ImageToPdfTool toolId="jpg-to-pdf" />
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="JPG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

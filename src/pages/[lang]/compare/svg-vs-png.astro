@@ -1,0 +1,640 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+const pageTranslations = {
+  es: {
+    seoTitle: "SVG vs PNG: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿SVG o PNG? Comparamos el formato vectorial SVG con el formato rasterizado PNG. Conozca cuándo usar cada uno en diseño web, rendimiento y escalabilidad.",
+    title: "SVG vs PNG: ¿Qué formato es mejor?",
+    intro: "¿Debería usar vectores basados en código o archivos rasterizados basados en píxeles? Comparamos las diferencias entre SVG y PNG para ayudarlo a optimizar la velocidad web y la calidad visual.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use SVG para:",
+    useTiffForDesc: "Logotipos, iconos web, botones de interfaz, gráficos, ilustraciones planas y capas de texto que deban permanecer perfectamente nítidas a cualquier nivel de zoom.",
+    useJxlFor: "Use PNG para:",
+    useJxlForDesc: "Fotografías, gráficos digitales con muchos colores, capturas de pantalla o diseños complejos con miles de transiciones tonales de color.",
+    differenceTitle: "¿Cuál es la diferencia entre SVG y PNG?",
+    differenceDesc: "La diferencia radica en la estructura: SVG utiliza fórmulas matemáticas para trazar formas, mientras que PNG almacena una cuadrícula fija de valores de color por píxel.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "PNG (Portable Network Graphics)",
+    tdCompStandard: "Tipo de imagen",
+    tdCompStandardTiff: "Vectorial / Rutas matemáticas",
+    tdCompStandardJxl: "Rasterizado / Cuadrícula de píxeles",
+    tdFileSize: "Escalabilidad",
+    tdFileSizeTiff: "Infinita (siempre perfectamente nítido)",
+    tdFileSizeJxl: "Fija (se pixela al ampliarse)",
+    tdColorDepth: "Ideal para",
+    tdColorDepthTiff: "Logotipos, iconos de interfaz, diseño plano",
+    tdColorDepthJxl: "Fotos, capturas, ilustraciones con muchos colores",
+    tdBrowser: "Tamaño de archivo",
+    tdBrowserTiff: "Depende de la complejidad de rutas",
+    tdBrowserJxl: "Depende de las dimensiones en píxeles",
+    tdPrint: "Estilo e interactividad",
+    tdPrintTiff: "Sí (estilos y animaciones con CSS y JS)",
+    tdPrintJxl: "No (píxeles estáticos)",
+    tdTranscoding: "Rendimiento web",
+    tdTranscodingTiff: "Excelente (se puede incrustar en HTML)",
+    tdTranscodingJxl: "Carga de red estándar",
+    converterTitle: "Convertir SVG a PNG (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es SVG?",
+    diveTiffP1: "SVG (Scalable Vector Graphics) es un estándar vectorial XML establecido por el W3C en 1999. Define formas y rutas mediante coordenadas geométricas, lo que permite un archivo muy ligero e infinitamente escalable.",
+    diveTiffP2: "Los navegadores analizan el código de forma dinámica, permitiendo incrustarlo directamente en HTML, modificar sus colores mediante CSS en eventos hover y animar sus líneas.",
+    diveTiffAdv: "Ventajas de SVG",
+    diveTiffAdvList: [
+      "Escalabilidad infinita: Se ve perfectamente en cualquier pantalla digital.",
+      "Ligereza extrema: Ideal para iconos planos y logotipos rápidos.",
+      "Interactividad completa: Estilo y animación por CSS y JS."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es PNG?",
+    diveJxlP1: "PNG son las siglas de Portable Network Graphics. Lanzado en 1996, utiliza compresión sin pérdidas DEFLATE para conservar cada píxel de forma exacta, evitando los artefactos habituales del formato JPG.",
+    diveJxlP2: "Su soporte para transparencias de 8 bits lo hace ideal para imágenes web complejas y capturas de pantalla, aunque no se puede ampliar sin perder nitidez.",
+    diveJxlAdv: "Ventajas de PNG",
+    diveJxlAdvList: [
+      "Fidelidad de píxel: Conservación pura sin ruido de compresión.",
+      "Transparencia alfa: Soporta degradados suaves y sombras proyectadas.",
+      "Compatibilidad total: Funciona en todos los navegadores y visores."
+    ],
+    q1: "¿Cuál es la diferencia entre SVG y PNG?",
+    a1: "SVG es un formato vectorial basado en código matemático e infinitamente escalable. PNG es un formato rasterizado basado en una cuadrícula fija de píxeles que se pixela al ampliarse.",
+    q2: "¿Cuándo debo usar SVG en lugar de PNG?",
+    a2: "Use SVG para logotipos, iconos e ilustraciones planas que deban verse nítidas en cualquier pantalla. Use PNG para fotos o diseños con miles de colores complejos.",
+    q3: "¿Puedo convertir un archivo SVG a PNG?",
+    a3: "Sí. Puede rasterizar código vectorial SVG en una imagen PNG transparente de forma local en su navegador con nuestro convertidor gratuito.",
+    q4: "¿Qué formato es mejor para el rendimiento web?",
+    a4: "Para gráficos de interfaz, SVG es superior al ser ligero e incrustable en HTML. Sin embargo, vectores hipercomplejos con miles de rutas pueden ralentizar la CPU del navegador, donde se prefiere PNG.",
+    q5: "¿Soportan tanto SVG como PNG transparencias?",
+    a5: "Sí, ambos formatos soportan transparencia. SVG la maneja mediante estilos de código, y PNG usa un canal alfa de 8 bits para degradados suaves de opacidad.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir archivos SVG?",
+    ctaDesc: "Use nuestro convertidor local gratuito para exportar sus vectores como imágenes PNG transparentes al instante sin subir nada a servidores.",
+    ctaButton: "Probar el Convertidor de SVG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "SVG vs PNG : Quel format d'image est le meilleur ? (Comparatif 2026)",
+    seoDescription: "SVG ou PNG ? Nous comparons le format vectoriel SVG et le format matriciel PNG. Découvrez les cas d'utilisation pour le design web et les Core Web Vitals.",
+    title: "SVG vs PNG : Quel format est le meilleur ?",
+    intro: "Devez-vous utiliser des vecteurs basés sur du code ou des grilles de pixels statiques ? Nous comparons l'SVG et le PNG afin de maximiser le temps de chargement de vos pages.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le SVG pour :",
+    useTiffForDesc: "Les logos, icônes web, boutons d'interface, diagrammes, illustrations à plat et calques de texte qui doivent rester nets quel que soit le zoom.",
+    useJxlFor: "Utilisez le PNG pour :",
+    useJxlForDesc: "Les photographies, images complexes avec de nombreuses couleurs, captures d'écran et graphiques contenant des dégradés subtils.",
+    differenceTitle: "Quelle est la différence entre SVG et PNG ?",
+    differenceDesc: "La différence réside dans la structure des données : l'SVG utilise des formules mathématiques de tracés alors que le PNG enregistre une grille fixe de pixels de couleur.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "PNG (Portable Network Graphics)",
+    tdCompStandard: "Type d'image",
+    tdCompStandardTiff: "Vectoriel / Tracés géométriques",
+    tdCompStandardJxl: "Matriciel / Grille de pixels",
+    tdFileSize: "Mise à l'échelle",
+    tdFileSizeTiff: "Infinie (Parfaitement net à tout instant)",
+    tdFileSizeJxl: "Fixe (Pixelise si agrandi)",
+    tdColorDepth: "Usage recommandé",
+    tdColorDepthTiff: "Logos, icônes d'interface, illustrations à plat",
+    tdColorDepthJxl: "Photos, captures d'écran, dessins complexes",
+    tdBrowser: "Taille de fichier",
+    tdBrowserTiff: "Liée uniquement à la complexité des tracés",
+    tdBrowserJxl: "Liée aux dimensions en pixels",
+    tdPrint: "Style et interactivité",
+    tdPrintTiff: "Oui (mise en style CSS et script JavaScript)",
+    tdPrintJxl: "Non (pixels statiques)",
+    tdTranscoding: "Performances web",
+    tdTranscodingTiff: "Excellentes (peut s'intégrer directement en HTML)",
+    tdTranscodingJxl: "Chargement de réseau standard",
+    converterTitle: "Convertir SVG en PNG (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que l'SVG ?",
+    diveTiffP1: "L'SVG (Scalable Vector Graphics) est un standard vectoriel XML défini par le W3C en 1999. Au lieu de pixels, le fichier stocke des instructions géométriques pour tracer des cercles, rectangles et chemins.",
+    diveTiffP2: "Cette nature logicielle permet de l'intégrer en ligne (inline) dans l'HTML, de changer ses couleurs au survol (hover) en CSS, et d'accéder à son texte par les moteurs de recherche pour le SEO.",
+    diveTiffAdv: "Avantages de l'SVG",
+    diveTiffAdvList: [
+      "Netteté infinie : Parfait sur tous les types d'écrans (Retina, 4K).",
+      "Poids ultra-léger : Idéal pour les ressources de navigation web.",
+      "Intégrable et dynamique : Modifiable en direct via CSS ou JS."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    diveJxlP1: "Le PNG (Portable Network Graphics) a été créé en 1996 pour remplacer le GIF en tant que format raster sans perte de qualité. Il exploite l'algorithme DEFLATE pour enregistrer chaque point exact de l'image.",
+    diveJxlP2: "Sa gestion de la transparence par pixel (canal alpha 8 bits) le rend incontournable pour les designs de superposition complexes et captures d'écran, bien qu'il ne tolère pas les agrandissements.",
+    diveJxlAdv: "Avantages du PNG",
+    diveJxlAdvList: [
+      "Fidélité pixel-perfect : Aucune dégradation due à la compression.",
+      "Transparence douce : Support des ombres floues et opacités partielles.",
+      "Compatibilité totale : Lecture instantanée par n'importe quel afficheur."
+    ],
+    q1: "Quelle est la différence entre SVG et PNG ?",
+    a1: "L'SVG est un format vectoriel basé sur des lignes et calculs mathématiques, ce qui lui donne une netteté illimitée. Le PNG est un format matriciel basé sur une grille fixe de pixels qui devient flou à l'agrandissement.",
+    q2: "Quand utiliser l'SVG plutôt que le PNG ?",
+    a2: "Utilisez l'SVG pour les logos et les icônes devant s'adapter à toutes les résolutions. Utilisez le PNG pour les photos ou les illustrations complexes à dégradés denses.",
+    q3: "Puis-je convertir un SVG en PNG ?",
+    a3: "Oui. Vous pouvez transformer le code vectoriel d'un SVG en image PNG transparente localement dans votre navigateur grâce à notre outil gratuit.",
+    q4: "Quel format est le plus performant pour un site web ?",
+    a4: "Pour les éléments d'interface, l'SVG est bien plus performant car très léger. Cependant, un dessin vectoriel trop lourd peut ralentir le processeur du navigateur, cas dans lequel le PNG reste préférable.",
+    q5: "L'SVG et le PNG gèrent-ils la transparence ?",
+    a5: "Oui, les deux formats gèrent la transparence. L'SVG utilise du code pour réguler l'opacité des tracés, et le PNG utilise un canal alpha 8 bits pour des transitions progressives d'opacité.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des fichiers SVG ?",
+    ctaDesc: "Utilisez notre outil local gratuit pour exporter vos vecteurs sous forme d'images PNG transparentes sans envoi sur serveur.",
+    ctaButton: "Essayer le convertisseur SVG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "SVG vs. PNG: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "SVG oder PNG? Wir vergleichen das Vektorformat SVG mit dem Pixelformat PNG. Erfahren Sie, wann Sie welches für Webdesign, Ladezeit und Skalierung nutzen.",
+    title: "SVG vs. PNG: Welches Format ist besser?",
+    intro: "Sollten Sie codebasierte Vektoren oder pixelbasierte Rastergrafiken nutzen? Wir vergleichen die Unterschiede von SVG und PNG für Webdesign und Bildqualität.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie SVG für:",
+    useTiffForDesc: "Logos, Website-Icons, Menüschaltflächen, flache Grafiken und Textlayer, die bei jeder Zoomstufe absolut scharf bleiben müssen.",
+    useJxlFor: "Nutzen Sie PNG für:",
+    useJxlForDesc: "Fotos, farbenreiche Digitalbilder, Screenshots oder komplexe Designs, die feine Farbverläufe enthalten.",
+    differenceTitle: "Was ist der Unterschied zwischen SVG und PNG?",
+    differenceDesc: "Der Unterschied liegt in der Struktur: SVG definiert Grafiken über mathematischen Code, während PNG ein festes Pixelraster abspeichert.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "PNG (Portable Network Graphics)",
+    tdCompStandard: "Grafiktyp",
+    tdCompStandardTiff: "Vektor / Pfadkoordinaten",
+    tdCompStandardJxl: "Raster / Pixelraster",
+    tdFileSize: "Skalierbarkeit",
+    tdFileSizeTiff: "Unbegrenzt (Immer perfekt scharf)",
+    tdFileSizeJxl: "Begrenzt (Pixelbildung bei Vergrößerung)",
+    tdColorDepth: "Optimal für",
+    tdColorDepthTiff: "Logos, UI-Icons, flaches Design",
+    tdColorDepthJxl: "Fotos, Screenshots, detailreiches Artwork",
+    tdBrowser: "Dateigröße",
+    tdBrowserTiff: "Wächst mit Pfadkomplexität",
+    tdBrowserJxl: "Wächst mit Abmessung und Pixeldichte",
+    tdPrint: "Interaktivität & Styling",
+    tdPrintTiff: "Ja (CSS-Stylesheets & JavaScript-Steuerung)",
+    tdPrintJxl: "Nein (Statische Bildpunkte)",
+    tdTranscoding: "Web-Ladezeit",
+    tdTranscodingTiff: "Hervorragend (In HTML einbettbar)",
+    tdTranscodingJxl: "Standardmäßiger Netzladevorgang",
+    converterTitle: "SVG in PNG konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist SVG?",
+    diveTiffP1: "SVG (Scalable Vector Graphics) ist ein W3C-Standard-Vektorformat auf XML-Basis aus dem Jahr 1999. Es definiert Bilder über geometrische Formen und Linienkoordinaten statt über feste Pixel.",
+    diveTiffP2: "Da es auf Code basiert, können Browser SVGs extrem schnell parsen. Sie können den XML-Code direkt in HTML-Dateien platzieren, um Ladezeiten zu sparen, oder CSS-Hover-Farben definieren.",
+    diveTiffAdv: "Vorteile von SVG",
+    diveTiffAdvList: [
+      "Stufenlose Skalierung: Bleibt auf jedem Retina- oder 4K-Display gestochen scharf.",
+      "Minimales Gewicht: Extrem geringe Dateigrößen für einfache Grafiken.",
+      "Dynamische Steuerung: Per Stylesheet veränderbar und animierbar."
+    ],
+    diveJxlTitle: "Deep Dive: What is PNG?",
+    diveJxlP1: "PNG steht für Portable Network Graphics. Es wurde 1996 als lizenzfreier Nachfolger für GIF entwickelt. PNG nutzt die verlustfreie DEFLATE-Kompression, um jedes Pixel exakt zu bewahren.",
+    diveJxlP2: "Durch die verlustfreie Struktur eignet sich PNG ideal für Detailgrafiken mit transparenten Ebenen. Im Gegensatz zu JPG entstehen keine störenden Kompressionsschatten an Kanten.",
+    diveJxlAdv: "Vorteile von PNG",
+    diveJxlAdvList: [
+      "Pixeltreue: Keine Kompressionsartefakte oder Unschärfen.",
+      "Alpha-Kanal: Unterstützt weiche Transparenz- und Schattenübergänge.",
+      "Universal: Läuft auf 100% aller Systeme und Browser."
+    ],
+    q1: "Was ist der Unterschied zwischen SVG und PNG?",
+    a1: "SVG ist ein codebasiertes Vektorformat und unbegrenzt skalierbar. PNG ist ein pixelbasiertes Rasterformat, das bei Vergrößerung unscharf wird.",
+    q2: "Wann sollte ich SVG statt PNG verwenden?",
+    a2: "Nutzen Sie SVG für Logos und UI-Icons, die sich an alle Bildschirmgrößen anpassen müssen. Nutzen Sie PNG für Fotos oder Grafiken mit vielen Farbdetails.",
+    q3: "Kann ich SVG-Dateien in PNGs umwandeln?",
+    a3: "Ja. Sie können den Vektorcode eines SVGs direkt in Ihrem Browser offline mit unserem kostenlosen Tool in eine transparente PNG-Datei rendern.",
+    q4: "Welches Format lädt schneller auf Webseiten?",
+    a4: "Für einfache Benutzeroberflächen-Grafiken ist SVG deutlich schneller, da es sehr leicht ist und inline in HTML eingefügt werden kann. Sehr komplexe Vektoren können jedoch die Browser-CPU belasten, weshalb dann PNG besser ist.",
+    q5: "Unterstützen SVG und PNG transparente Hintergründe?",
+    a5: "Ja, beide Formate unterstützen Transparenz. SVG löst dies über Code-Kombinationen, während PNG über einen vollwertigen 8-Bit-Alpha-Kanal verfügt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie SVG-Dateien konvertieren?",
+    ctaDesc: "Nutzen Sie unseren kostenlosen Browser-Konverter, um SVG-Vektoren sofort offline als transparente PNGs zu speichern.",
+    ctaButton: "SVG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "SVG vs PNG: Qual formato de imagem é melhor? (Comparativo 2026)",
+    seoDescription: "SVG ou PNG? Comparamos o formato vetorial SVG com o clássico raster PNG. Entenda as diferenças de carregamento web, interatividade e definição.",
+    title: "SVG vs PNG: Qual formato é melhor?",
+    intro: "Deve usar imagens vetoriais baseadas em código ou grades estáticas de pixels? Comparamos SVG e PNG para ajudar você a decidir e otimizar seu site.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use SVG para:",
+    useTiffForDesc: "Logotipos, ícones de navegação, botões digitais, esquemas, ilustrações chapadas e fontes de texto que precisam de nitidez máxima em qualquer zoom.",
+    useJxlFor: "Use PNG para:",
+    useJxlForDesc: "Fotografias reais, imagens com degradês de cores muito densos, capturas de tela e artes digitais ricas em detalhes cromáticos.",
+    differenceTitle: "Qual é a diferença entre SVG e PNG?",
+    differenceDesc: "A diferença estrutural é simples: o SVG descreve linhas e formas via código XML de geometria, enquanto o PNG mapeia as coordenadas exatas dos pixels de cor.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "PNG (Portable Network Graphics)",
+    tdCompStandard: "Tipo de imagem",
+    tdCompStandardTiff: "Vetorial / Caminhos matemáticos",
+    tdCompStandardJxl: "Rasterizado / Grade de pixels",
+    tdFileSize: "Escalabilidade",
+    tdFileSizeTiff: "Infinita (sempre perfeitamente nítido)",
+    tdFileSizeJxl: "Fixa (perde nitidez ao ser ampliado)",
+    tdColorDepth: "Melhor para",
+    tdColorDepthTiff: "Logotipos, ícones de UI, gráficos planos",
+    tdColorDepthJxl: "Fotos, prints de tela, ilustrações detalhadas",
+    tdBrowser: "Tamanho de arquivo",
+    tdBrowserTiff: "Varia com a complexidade do desenho",
+    tdBrowserJxl: "Varia com as dimensões de pixel",
+    tdPrint: "Interatividade e CSS",
+    tdPrintTiff: "Sim (estilização e animações via CSS/JS)",
+    tdPrintJxl: "Não (pixels estáticos)",
+    tdTranscoding: "Rendimento web",
+    tdTranscodingTiff: "Excelente (pode ser colado no código HTML)",
+    tdTranscodingJxl: "Carregamento de rede padrão",
+    converterTitle: "Converter SVG para PNG (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é SVG?",
+    diveTiffP1: "O SVG (Scalable Vector Graphics) é o formato vetorial oficial da W3C baseado em XML criado em 1999. Ele define a imagem desenhando vetores, linhas e formas de preenchimento.",
+    diveTiffP2: "Pelo fato de ser gerado por texto de programação, o SVG pode ser inserido inline nos sites (eliminando conexões extras com servidores), estilizado dinamicamente com CSS e indexado pelo Google.",
+    diveTiffAdv: "Vantagens do SVG",
+    diveTiffAdvList: [
+      "Definição infinita: Roda com nitidez perfeita em qualquer tela Retina ou 4K.",
+      "Leveza: Ficheiros muito pequenos ideais para ícones de menus.",
+      "Dinâmico: Permite alterar cores e fazer animações com CSS/JS."
+    ],
+    diveJxlTitle: "Análise profunda: O que é PNG?",
+    diveJxlP1: "O PNG (Portable Network Graphics) foi lançado em 1996 para substituir o antigo GIF com compressão sem perdas (lossless) sob o algoritmo DEFLATE, sem adicionar ruídos.",
+    diveJxlP2: "Por suportar transparência de fundo com suavização (canal alfa 8-bit), o PNG é o padrão ideal para designs web elaborados de montagem, embora sofra pixelização quando esticado.",
+    diveJxlAdv: "Vantagens do PNG",
+    diveJxlAdvList: [
+      "Alta fidelidade de pixel: Preserva os pontos exatos da imagem original.",
+      "Transparência suave: Ótimo para efeitos de sombra translúcidos.",
+      "Universal: Reconhecido de forma instantânea em qualquer browser."
+    ],
+    q1: "Qual é a diferença entre SVG e PNG?",
+    a1: "O SVG é um formato vetorial matemático e infinitamente escalável. O PNG é um formato rasterizado baseado em pixels que perde definição se ampliado.",
+    q2: "Quando devo preferir o SVG ao PNG?",
+    a2: "Escolha o SVG para logotipos e ícones corporativos que precisam caber em várias telas. Escolha o PNG para fotografias e artes digitais de alta complexidade.",
+    q3: "É possível converter arquivos SVG para PNG?",
+    a3: "Sim. O nosso conversor gratuito transforma o código vetorial de um SVG em imagem rasterizada PNG transparente de forma local no seu navegador.",
+    q4: "Qual formato carrega mais rápido na web?",
+    a4: "Para ícones, o SVG é mais rápido porque é leve e entra diretamente no HTML. Já artes vetoriais com milhares de coordenadas podem exigir muito processamento, sendo melhor convertê-las para PNG.",
+    q5: "SVG e PNG aceitam fundos transparentes?",
+    a5: "Sim, os dois formatos aceitam transparência. O SVG gerencia isso via código e o PNG usa um canal alfa de 8 bits para suavizar degradês de opacidade.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa converter arquivos SVG?",
+    ctaDesc: "Use a nossa ferramenta local gratuita para salvar as suas ilustrações em formato PNG transparente instantaneamente.",
+    ctaButton: "Testar conversor SVG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "SVG vs PNG: Mana Format Gambar yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "SVG atau PNG? Kami membandingkan format vektor SVG dengan format raster PNG. Pelajari kapan harus menggunakannya untuk web design dan SEO.",
+    title: "SVG vs PNG: Format Mana yang Lebih Baik?",
+    intro: "Apakah Anda harus menggunakan vektor berbasis kode atau file piksel raster? Kami membandingkan perbedaan SVG dan PNG untuk membantu performa website Anda.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan SVG untuk:",
+    useTiffForDesc: "Logo, ikon menu website, tombol antarmuka, bagan, ilustrasi datar, dan teks yang harus tetap tajam pada resolusi layar apa pun.",
+    useJxlFor: "Gunakan PNG untuk:",
+    useJxlForDesc: "Foto, gambar digital penuh warna, tangkapan layar, atau desain grafis rumit yang memiliki banyak gradasi warna detail.",
+    differenceTitle: "Apa Perbedaan Antara SVG dan PNG?",
+    differenceDesc: "Perbedaan utama ada pada strukturnya: SVG menggunakan rumus matematika untuk menggambar bentuk, sedangkan PNG menyimpan kisi-kisi warna piksel tetap.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "PNG (Portable Network Graphics)",
+    tdCompStandard: "Jenis Gambar",
+    tdCompStandardTiff: "Vektor / Jalur matematika",
+    tdCompStandardJxl: "Raster / Kisi piksel",
+    tdFileSize: "Skalabilitas",
+    tdFileSizeTiff: "Tak terbatas (Selalu tajam sempurna)",
+    tdFileSizeJxl: "Terbatas (Pecah jika diperbesar)",
+    tdColorDepth: "Paling Cocok Untuk",
+    tdColorDepthTiff: "Logo, ikon antarmuka, desain datar",
+    tdColorDepthJxl: "Foto, screenshot, ilustrasi detail",
+    tdBrowser: "Ukuran File",
+    tdBrowserTiff: "Bergantung pada kerumitan jalur",
+    tdBrowserJxl: "Bergantung pada resolusi piksel gambar",
+    tdPrint: "Gaya & Interaktivitas",
+    tdPrintTiff: "Ya (Dapat diatur dengan CSS & Javascript)",
+    tdPrintJxl: "Tidak (Piksel gambar statis)",
+    tdTranscoding: "Performa Web",
+    tdTranscodingTiff: "Sangat baik (Bisa dipasang langsung di HTML)",
+    tdTranscodingJxl: "Loading jaringan standar",
+    converterTitle: "Konversi SVG ke PNG (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu SVG?",
+    diveTiffP1: "SVG (Scalable Vector Graphics) adalah format vektor berbasis XML yang diakui W3C sejak tahun 1999. SVG menyimpan rumus matematika untuk mendefinisikan bentuk garis, warna, dan teks.",
+    diveTiffP2: "Struktur teks ini membuat SVG mudah dimuat browser. Anda bisa menempelkan kodenya langsung (inline) di HTML untuk menghemat request jaringan, serta mengatur warnanya dengan CSS.",
+    diveTiffAdv: "Kelebihan SVG",
+    diveTiffAdvList: [
+      "Skalabilitas Sempurna: Tetap tajam di monitor resolusi tinggi seperti Retina Display.",
+      "File Ringan: Ukuran dokumen sangat kecil untuk aset grafis flat.",
+      "Fleksibel: Bisa dimodifikasi warnanya dan dianimasikan dengan CSS/JS."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu PNG?",
+    diveJxlP1: "PNG singkaran dari Portable Network Graphics. Dirilis tahun 1996, ia menggunakan kompresi lossless DEFLATE untuk menyimpan setiap piksel gambar secara akurat tanpa buram.",
+    diveJxlP2: "Dukungan transparansi detail (alpha channel 8-bit) membuatnya menjadi standar utama untuk gambar tumpuk web dan screenshot, meskipun gambarnya akan pecah jika diperbesar.",
+    diveJxlAdv: "Kelebihan PNG",
+    diveJxlAdvList: [
+      "Akurasi Piksel: Tidak ada kompresi pixel kasar di sekitar teks atau objek.",
+      "Transparansi Halus: Mendukung gradasi opacity dan bayangan transparan.",
+      "Dukungan Universal: Terbuka instan di semua jenis browser dan OS."
+    ],
+    q1: "Apa perbedaan antara SVG dan PNG?",
+    a1: "SVG adalah format vektor matematika yang tajam pada resolusi mana pun. PNG adalah format raster berbasis piksel yang akan pecah jika diperbesar melebihi ukuran aslinya.",
+    q2: "Kapan saya sebaiknya memakai SVG dibanding PNG?",
+    a2: "Gunakan SVG untuk logo dan ikon agar tajam di semua layar. Gunakan PNG untuk foto berkualitas tinggi atau tangkapan layar (screenshot) beresolusi tinggi.",
+    q3: "Apakah saya bisa mengubah file SVG ke PNG?",
+    a3: "Ya. Anda bisa merender kode vektor SVG menjadi gambar PNG transparan secara instan dan lokal di browser menggunakan pengonversi gratis kami.",
+    q4: "Format mana yang memuat halaman web lebih cepat?",
+    a4: "Untuk grafis antarmuka, SVG memuat jauh lebih cepat karena kodenya ringan dan bisa disatukan ke HTML. Namun vektor yang terlalu rumit bisa membebani CPU browser, sehingga PNG menjadi pilihan yang lebih aman.",
+    q5: "Apakah SVG dan PNG mendukung transparansi?",
+    a5: "Ya, kedua format mendukung transparansi. SVG mengaturnya via kode, sedangkan PNG menggunakan saluran alpha 8-bit untuk gradasi transparansi yang halus.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Butuh mengonversi file SVG Anda?",
+    ctaDesc: "Gunakan alat lokal kami untuk mengekspor gambar vektor SVG Anda menjadi file PNG transparan secara instan tanpa kirim data ke server.",
+    ctaButton: "Coba Pengonversi SVG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "svg-vs-png")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">SVG vs PNG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-error">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4">{text.tdColorDepthTiff}</td>
+                <td class="p-4">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4">{text.tdBrowserTiff}</td>
+                <td class="p-4">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4 text-error">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-error">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="svg-to-png" />
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="SVG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

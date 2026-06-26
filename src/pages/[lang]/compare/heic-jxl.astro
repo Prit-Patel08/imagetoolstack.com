@@ -1,0 +1,645 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import HeicToJpgTool from "../../../components/tools/HeicToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+const pageTranslations = {
+  es: {
+    seoTitle: "HEIC vs JXL: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿HEIC o JXL (JPEG XL)? Comparamos el formato HEIC de Apple con el estándar de nueva generación JXL. Conozca las diferencias de compresión, calidad y soporte.",
+    title: "HEIC vs JXL: ¿Qué formato es mejor?",
+    intro: "Comparamos el formato predeterminado de Apple, HEIC, con el estándar de nueva generación, JXL (JPEG XL), para ayudarlo a elegir entre el almacenamiento móvil, el diseño web y el archivado de alta fidelidad.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use HEIC para:",
+    useTiffForDesc: "Guardar fotos capturadas en dispositivos iOS/Apple para minimizar el espacio de almacenamiento interno manteniendo una gran calidad visual.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Archivar fotos de alta fidelidad sin pérdidas, flujos de diseño web modernos y diseño gráfico profesional donde se requieran estándares libres de regalías.",
+    differenceTitle: "¿Cuál es la diferencia entre HEIC y JXL?",
+    differenceDesc: "La diferencia radica en los estándares de compresión y las licencias. HEIC requiere licencias por patentes y se basa en HEVC, mientras que JXL es un estándar de código abierto libre de regalías.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "HEIC (High Efficiency Image Container)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Licencias / Regalías",
+    tdCompStandardTiff: "Sujeto a patentes (requiere pagos)",
+    tdCompStandardJxl: "Código abierto y libre de regalías",
+    tdFileSize: "Compresión sin pérdidas",
+    tdFileSizeTiff: "Limitado / Rara vez soportado",
+    tdFileSizeJxl: "Totalmente soportado nativamente",
+    tdColorDepth: "Transcodificación JPG sin pérdidas",
+    tdColorDepthTiff: "No",
+    tdColorDepthJxl: "Sí (ahorra ~20% de forma reversible)",
+    tdBrowser: "Profundidad de color máxima",
+    tdBrowserTiff: "10 bits (soporte HDR)",
+    tdBrowserJxl: "Hasta 32 bits flotantes (Ultra HDR)",
+    tdPrint: "Soporte nativo de Apple",
+    tdPrintTiff: "Sí (predeterminado en cámaras iOS/macOS)",
+    tdPrintJxl: "No",
+    tdTranscoding: "Soporte en navegadores",
+    tdTranscodingTiff: "Solo Safari (en plataformas Apple)",
+    tdTranscodingJxl: "Experimental (requiere flags)",
+    converterTitle: "Convertir HEIC a JPG (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es HEIC?",
+    diveTiffP1: "HEIC significa High Efficiency Image Container. Es la extensión elegida por Apple para implementar el estándar HEIF. Introducido en iOS 11, codifica imágenes usando compresión de video HEVC (H.265).",
+    diveTiffP2: "HEIC reduce a la mitad el tamaño de los archivos JPG. Sin embargo, al estar protegido por patentes, las licencias han bloqueado su soporte nativo en otros sistemas operativos y navegadores fuera del ecosistema Apple.",
+    diveTiffAdv: "Ventajas de HEIC",
+    diveTiffAdvList: [
+      "Ahorro de espacio: Reduce las imágenes a la mitad del peso de un JPG.",
+      "Contenedores multiimagen: Almacena ráfagas, Live Photos y mapas de profundidad en un solo archivo.",
+      "Ecosistema Apple: Funciona perfectamente en todo el hardware y nubes de Apple."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es JXL?",
+    diveJxlP1: "JXL (JPEG XL) se creó para modernizar la compresión sin limitaciones de licencias. Es un estándar abierto libre de regalías que admite codificación con pérdidas (VarDCT) y sin pérdidas (Modular).",
+    diveJxlP2: "A diferencia de HEIC, JXL admite codificación sin pérdidas y tiene una transcodificación única para JPEGs que reduce su tamaño un 20% de forma reversible bit a bit, manteniendo los archivos seguros y compatibles.",
+    diveJxlAdv: "Ventajas de JXL",
+    diveJxlAdvList: [
+      "Libre de regalías: Código abierto y libre de licencias de patentes.",
+      "Modo sin pérdidas real: Comprime imágenes sin perder un solo píxel.",
+      "Transcodificación perfecta: Reduce el espacio de los JPG antiguos de forma reversible.",
+      "Soporte HDR: Admite colores de alta definición para pantallas de última generación."
+    ],
+    q1: "¿Cuál es la diferencia entre HEIC y JXL (JPEG XL)?",
+    a1: "HEIC se basa en HEVC y es el formato predeterminado de Apple para ahorrar espacio. JXL es un estándar moderno libre de regalías y de código abierto que admite compresión sin pérdidas.",
+    q2: "¿Es JXL mejor que HEIC?",
+    a2: "Sí, técnicamente es superior al ser libre de regalías, admitir compresión sin pérdidas nativa, profundidad de color de hasta 32 bits flotantes y transcodificación de JPG sin pérdidas.",
+    q3: "¿Soportan los navegadores HEIC o JXL nativamente?",
+    a3: "Ninguno tiene soporte amplio. HEIC solo funciona en Safari (Apple). JXL requiere activar flags experimentales de desarrollo en Chrome, Firefox y Safari.",
+    q4: "¿Puedo convertir archivos HEIC a JXL?",
+    a4: "Sí, usando herramientas como ImageMagick. Pero dado que los navegadores no los muestran nativamente, lo mejor es convertirlos a JPG o WebP para su uso en la web.",
+    q5: "¿Por qué debería usar HEIC en lugar de JXL hoy en día?",
+    a5: "Al tomar fotos con iPhone o iPad, HEIC es la mejor opción para ahorrar almacenamiento en iOS de forma transparente. Para otras plataformas, se prefiere JXL o JPG.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir fotos HEIC?",
+    ctaDesc: "Utilice nuestro convertidor de HEIC gratuito y local para transformar sus fotos de iPhone en archivos JPG universales al instante de forma segura.",
+    ctaButton: "Probar el Convertidor de HEIC",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "HEIC vs JXL : Quel format de image est le meilleur ? (Comparatif 2026)",
+    seoDescription: "HEIC ou JXL (JPEG XL) ? Nous comparons le format HEIC d'Apple avec le standard de nouvelle génération JXL. Découvrez les détails sur la compression et la compatibilité.",
+    title: "HEIC vs JXL : Quel format est le meilleur ?",
+    intro: "Nous comparons le format natif d'Apple, HEIC, avec le standard de nouvelle génération, JXL (JPEG XL), pour vous aider à choisir entre stockage mobile, intégration web et archivage.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le HEIC pour :",
+    useTiffForDesc: "Le stockage des photos capturées sur iOS/Apple afin de réduire l'occupation de la mémoire interne tout en conservant une excellente fidélité photo.",
+    useJxlFor: "Utilisez le JXL pour :",
+    useJxlForDesc: "L'archivage d'images haute fidélité sans perte, le design web moderne et les flux graphiques exigeant des standards ouverts et libres de droits.",
+    differenceTitle: "Quelle est la différence entre HEIC et JXL ?",
+    differenceDesc: "La différence se situe au niveau des licences et algorithmes. Le HEIC requiert des redevances et dérive du codec vidéo HEVC, tandis que le JXL est open-source et libre de droits.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "HEIC (High Efficiency Image Container)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Licences / Droits",
+    tdCompStandardTiff: "Breveté (Redevances applicables)",
+    tdCompStandardJxl: "Open-source & Libre de droits",
+    tdFileSize: "Compression sans perte",
+    tdFileSizeTiff: "Limitée / Rarement supportée",
+    tdFileSizeJxl: "Totalement supportée nativement",
+    tdColorDepth: "Transcodage JPG sans perte",
+    tdColorDepthTiff: "Non",
+    tdColorDepthJxl: "Oui (gain de ~20 % réversible)",
+    tdBrowser: "Profondeur de couleur max",
+    tdBrowserTiff: "10 bits (support HDR)",
+    tdBrowserJxl: "Jusqu'à 32 bits flottants (Ultra HDR)",
+    tdPrint: "Support natif Apple",
+    tdPrintTiff: "Oui (par défaut sur iOS/macOS)",
+    tdPrintJxl: "Non",
+    tdTranscoding: "Support navigateur",
+    tdTranscodingTiff: "Safari uniquement (plateformes Apple)",
+    tdTranscodingJxl: "Expérimental (nécessite des flags)",
+    converterTitle: "Convertir HEIC en JPG (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le HEIC ?",
+    diveTiffP1: "HEIC signifie High Efficiency Image Container. Il s'agit du conteneur d'image exploité par Apple pour le standard HEIF. Introduit avec iOS 11, il encode les images avec le codec vidéo HEVC (H.265).",
+    diveTiffP2: "HEIC permet de diviser le poids des JPG par deux. Néanmoins, en raison de brevets stricts, ce format n'est pas pris en charge par défaut sur Windows, Android ou sur la majorité des navigateurs.",
+    diveTiffAdv: "Avantages du HEIC",
+    diveTiffAdvList: [
+      "Gain de stockage : Divise le poids des fichiers par deux par rapport au JPG.",
+      "Conteneur riche : Permet de stocker des rafales de photos, des Live Photos et des cartes de profondeur.",
+      "Intégration Apple : Fonctionne de manière fluide sur l'ensemble de l'écosystème iOS et macOS."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le JXL ?",
+    diveJxlP1: "Le JXL (JPEG XL) a été conçu pour moderniser l'encodage des images sans contraintes de licence. C'est un standard ouvert libre de droits qui intègre des modes avec perte (VarDCT) et sans perte (Modular).",
+    diveJxlP2: "Contrairement au HEIC, le JXL prend pleinement en charge l'archivage sans perte et propose un mode de compression pour JPEGs réduisant leur taille de 20 % de façon 100 % réversible bit par bit.",
+    diveJxlAdv: "Avantages du JXL",
+    diveJxlAdvList: [
+      "Libre de droits : Open-source et exempt de brevets commerciaux.",
+      "Mode sans perte pur : Compresse les images brutes sans dégradation d'un seul pixel.",
+      "Transcodage parfait : Réduit le poids de vos anciens JPG de façon réversible.",
+      "Rendu HDR : Supporte des espaces de couleurs optimisés pour les derniers écrans HDR."
+    ],
+    q1: "Quelle est la différence entre HEIC et JXL (JPEG XL) ?",
+    a1: "Le HEIC est basé sur le codec HEVC et constitue le format par défaut d'Apple pour économiser du stockage. Le JXL est un standard moderne open-source libre de droits prenant en charge la compression sans perte.",
+    q2: "Le JXL est-il meilleur que le HEIC ?",
+    a2: "Oui, le JXL est techniquement plus complet : libre de droits, il gère la compression sans perte native, une profondeur de couleur allant jusqu'à 32 bits et le transcodage JPG réversible.",
+    q3: "Les navigateurs supportent-ils le HEIC ou le JXL ?",
+    a3: "Le support est restreint. Le HEIC ne fonctionne que sur Safari. Le JXL nécessite l'activation de flags expérimentaux sur Chrome, Firefox et Safari.",
+    q4: "Puis-je convertir du HEIC en JXL ?",
+    a4: "Oui, via des utilitaires comme ImageMagick. Cependant, les navigateurs ne pouvant afficher ces formats en natif, convertissez le HEIC en JPG ou WebP pour une diffusion web.",
+    q5: "Pourquoi utiliser le HEIC au lieu du JXL aujourd'hui ?",
+    a5: "Pour la capture de photos sur iPhone et iPad, le HEIC est idéal et transparent pour économiser de la mémoire. Pour d'autres usages, préférez le JXL ou le JPG.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir vos photos HEIC ?",
+    ctaDesc: "Utilisez notre convertisseur HEIC local et gratuit pour transformer vos photos d'iPhone en JPG universels instantanément et en toute sécurité.",
+    ctaButton: "Essayer le convertisseur HEIC",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "HEIC vs. JXL: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "HEIC oder JXL (JPEG XL)? Wir vergleichen Apples HEIC-Format mit dem lizenzfreien JXL-Standard. Erfahren Sie mehr über Kompression und Browser-Support.",
+    title: "HEIC vs. JXL: Welches Format ist besser?",
+    intro: "Wir vergleichen Apples HEIC-Standard mit dem lizenzfreien JXL-Format (JPEG XL), um Ihnen bei der Wahl für mobilen Speicher und Fotoarchivierung zu helfen.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie HEIC für:",
+    useTiffForDesc: "Das Speichern von Mobilfotos auf Apple-Geräten, um den internen Speicherbedarf bei hoher Bildqualität zu minimieren.",
+    useJxlFor: "Nutzen Sie JXL für:",
+    useJxlForDesc: "Verlustfreie Fotoarchivierung, modernes Webdesign und professionelle Grafikworkflows, die offene, lizenzfreie Standards erfordern.",
+    differenceTitle: "Was ist der Unterschied zwischen HEIC und JXL?",
+    differenceDesc: "Der Unterschied liegt in der Kompression und den Lizenzen. HEIC ist patentrechtlich geschützt und basiert auf HEVC, während JXL ein freier Open-Source-Standard ist.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "HEIC (High Efficiency Image Container)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Lizenzierung / Patente",
+    tdCompStandardTiff: "Patentiert (Lizenzgebühren fallen an)",
+    tdCompStandardJxl: "Open-Source & Lizenzfrei",
+    tdFileSize: "Verlustfreie Kompression",
+    tdFileSizeTiff: "Eingeschränkt / Kaum unterstützt",
+    tdFileSizeJxl: "Nativ voll unterstützt",
+    tdColorDepth: "Verlustfreie JPG-Transkodierung",
+    tdColorDepthTiff: "Nein",
+    tdColorDepthJxl: "Ja (spart ~20% Dateigröße, umkehrbar)",
+    tdBrowser: "Maximale Farbtiefe",
+    tdBrowserTiff: "10-Bit (HDR-Unterstützung)",
+    tdBrowserJxl: "Bis zu 32-Bit Float (Ultra HDR)",
+    tdPrint: "Apple Nativ-Support",
+    tdPrintTiff: "Ja (Standard bei iOS/macOS Kameras)",
+    tdPrintJxl: "Nein",
+    tdTranscoding: "Browser-Support",
+    tdTranscodingTiff: "Nur Safari (auf Apple-Geräten)",
+    tdTranscodingJxl: "Experimentell (Erfordert Browser-Flags)",
+    converterTitle: "HEIC in JPG konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist HEIC?",
+    diveTiffP1: "HEIC steht für High Efficiency Image Container. Es ist Apples Dateiendung für den HEIF-Standard. Eingeführt mit iOS 11, codiert es Bilder über den HEVC (H.265) Videokompressions-Codec.",
+    diveTiffP2: "HEIC halbiert die Dateigröße gegenüber JPG bei gleicher Qualität. Da es jedoch patentrechtlich geschützt ist, wird es von Windows, Android und vielen Webbrowsern nicht nativ unterstützt.",
+    diveTiffAdv: "Vorteile von HEIC",
+    diveTiffAdvList: [
+      "Speichersparend: Bilder sind nur halb so groß wie JPGs.",
+      "Multibild-Container: Speichert Serienbilder, Live Photos und Tiefenkarten in einer Datei.",
+      "Apple-Integration: Funktioniert reibungslos auf allen Apple-Geräten."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist JXL?",
+    diveJxlP1: "JXL (JPEG XL) wurde entwickelt, um die Bildkompression lizenzfrei zu modernisieren. Der offene Standard unterstützt sowohl verlustbehaftete (VarDCT) als auch verlustfreie (Modular) Codierungen.",
+    diveJxlP2: "Im Gegensatz zu HEIC unterstützt JXL native verlustfreie Speicherung und bietet eine spezielle Transkodierung für JPEGs, die alte JPGs um 20% verkleinert und jederzeit bitgenau wiederherstellt.",
+    diveJxlAdv: "Vorteile von JXL",
+    diveJxlAdvList: [
+      "Lizenzfrei: Open-Source und frei von Patentgebühren.",
+      "Echtes Lossless: Sichert Bilddaten ohne den Verlust eines einzelnen Pixels.",
+      "JPG-Transkodierung: Verkleinert bestehende JPEGs verlustfrei und umkehrbar.",
+      "HDR-Support: Bietet hohe Farbtiefe für moderne HDR-Monitore."
+    ],
+    q1: "Was ist der Unterschied zwischen HEIC und JXL (JPEG XL)?",
+    a1: "HEIC basiert auf HEVC und dient bei Apple zur Dateiverkleinerung. JXL ist ein moderner, lizenzfreier und offener Standard, der native verlustfreie Komprimierung bietet.",
+    q2: "Ist JXL besser als HEIC?",
+    a2: "Ja, JXL ist technisch überlegen: Es ist lizenzfrei, bietet echten Lossless-Modus, unterstützt Farbtiefen bis zu 32-Bit Float und umkehrbare JPEG-Transkodierung.",
+    q3: "Unterstützen Browser HEIC oder JXL?",
+    a3: "Der Support ist stark eingeschränkt. HEIC läuft nur auf Safari (Apple). JXL erfordert die Aktivierung experimenteller Flags in Chrome, Firefox und Safari.",
+    q4: "Kann ich HEIC-Dateien in JXL umwandeln?",
+    a4: "Ja, über Tools wie ImageMagick. Da Browser beide Formate nicht nativ anzeigen, sollten Sie HEIC für das Web jedoch in JPG oder WebP konvertieren.",
+    q5: "Warum sollte ich heute HEIC statt JXL verwenden?",
+    a5: "Beim Fotografieren mit dem iPhone ist HEIC die beste Wahl, da es Speicherplatz unter iOS spart. Für den plattformübergreifenden Austausch wird JPG oder JXL bevorzugt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie HEIC-Fotos konvertieren?",
+    ctaDesc: "Nutzen Sie unseren kostenlosen Browser-Konverter, um Ihre HEIC-Bilder offline und sicher in JPGs umzuwandeln.",
+    ctaButton: "HEIC-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "HEIC vs JXL: Qual formato de imagem é melhor? (Comparativo 2026)",
+    seoDescription: "HEIC ou JXL (JPEG XL)? Comparamos o formato HEIC da Apple com o padrão de nova geração JXL. Saiba sobre compressão, licenciamento e suporte.",
+    title: "HEIC vs JXL: Qual formato é melhor?",
+    intro: "Comparamos o formato padrão da Apple, HEIC, com o formato de última geração, JXL (JPEG XL), para ajudar você a escolher entre armazenamento móvel e arquivamento de alta fidelidade.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use HEIC para:",
+    useTiffForDesc: "Armazenar fotos capturadas em dispositivos iOS/Apple, minimizando o uso do armazenamento interno sem perder definição da câmera.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Arquivar fotos em alta definição sem perdas, fluxos de design web modernos e trabalhos gráficos profissionais onde são exigidos padrões abertos livres de royalties.",
+    differenceTitle: "Qual é a diferença entre HEIC e JXL?",
+    differenceDesc: "A diferença está na compactação e licenças. O HEIC é protegido por patentes comerciais e usa HEVC, enquanto o JXL é um padrão livre de royalties.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "HEIC (High Efficiency Image Container)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Licenciamento / Royalties",
+    tdCompStandardTiff: "Protegido por patentes (Requer taxas)",
+    tdCompStandardJxl: "Código aberto & Livre de royalties",
+    tdFileSize: "Compressão sem perdas",
+    tdFileSizeTiff: "Limitada / Rara vez suportada",
+    tdFileSizeJxl: "Totalmente suportada de forma nativa",
+    tdColorDepth: "Transcodificação JPG sem perdas",
+    tdColorDepthTiff: "Não",
+    tdColorDepthJxl: "Sim (economiza ~20% de forma reversível)",
+    tdBrowser: "Profundidade de cor máx",
+    tdBrowserTiff: "10 bits (suporta HDR)",
+    tdBrowserJxl: "Até 32 bits float (Ultra HDR)",
+    tdPrint: "Suporte nativo Apple",
+    tdPrintTiff: "Sim (padrão em câmeras iOS/macOS)",
+    tdPrintJxl: "Não",
+    tdTranscoding: "Suporte web / navegadores",
+    tdTranscodingTiff: "Apenas Safari (sistemas Apple)",
+    tdTranscodingJxl: "Experimental (requer flags nos navegadores)",
+    converterTitle: "Converter HEIC para JPG (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é HEIC?",
+    diveTiffP1: "HEIC significa High Efficiency Image Container. É a extensão adotada pela Apple para implementar o formato HEIF. Lançado no iOS 11, ele compacta fotos usando o codec de vídeo HEVC (H.265).",
+    diveTiffP2: "O HEIC reduz o peso das imagens em até 50% em comparação ao JPG. Mas por exigir patentes comerciais caras, o suporte nativo em sistemas como Windows, Android e navegadores ficou atrasado.",
+    diveTiffAdv: "Vantagens do HEIC",
+    diveTiffAdvList: [
+      "Super compactação: Salva arquivos pela metade do tamanho do JPG.",
+      "Recipiente multi-imagem: Armazena fotos em sequência, Live Photos e profundidade em um só arquivo.",
+      "Integração Apple: Roda de forma transparente em todos os sistemas iOS e macOS."
+    ],
+    diveJxlTitle: "Análise profunda: O que é JXL?",
+    diveJxlP1: "O JXL (JPEG XL) foi desenvolvido para atualizar a compactação de imagens sem restrições de licenças. O padrão aberto suporta tanto compressão com perdas (VarDCT) quanto sem perdas (Modular).",
+    diveJxlP2: "Diferente do HEIC, o JXL gasta menos espaço para salvar imagens sem perdas (lossless) e transcodifica JPGs antigos reduzindo o peso em 20% de forma 100% reversível e sem perdas de pixels.",
+    diveJxlAdv: "Vantagens do JXL",
+    diveJxlAdvList: [
+      "Livre de royalties: Código aberto e livre de patentes comerciais.",
+      "Sem perdas real: Salva fotos cruas com integridade absoluta de pixel.",
+      "Transcodificação reversível: Compacta JPGs legados mantendo o arquivo intacto.",
+      "Cores HDR: Suporta exibição de cores de alto alcance dinâmico."
+    ],
+    q1: "Qual é a diferença entre HEIC e JXL (JPEG XL)?",
+    a1: "O HEIC é baseado no codec HEVC e serve para economizar espaço de fotos no iPhone. O JXL é um formato moderno livre de royalties que suporta compressão sem perdas nativa.",
+    q2: "O JXL é melhor do que o HEIC?",
+    a2: "Sim, o JXL é superior: é livre de licenças, suporta compressão sem perdas de verdade, profundidade de cor de 32 bits e transcodificação JPG reversível.",
+    q3: "Os navegadores abrem HEIC ou JXL nativamente?",
+    a3: "O suporte é bastante limitado. O HEIC funciona apenas no Safari (Apple). O JXL requer ativação de flags experimentais de desenvolvimento no Chrome e Firefox.",
+    q4: "É possível converter fotos HEIC em JXL?",
+    a4: "Sim, usando conversores locais como ImageMagick. Mas para postar na web, converta HEIC para JPG ou WebP para garantir que os usuários consigam ver.",
+    q5: "Por que devo usar o HEIC em vez do JXL hoje?",
+    a5: "Para fotos tiradas no iPhone ou iPad, o HEIC é ideal para poupar memória interna no iOS de forma nativa. Para outras plataformas, use JPG.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa converter fotos HEIC?",
+    ctaDesc: "Use a nossa ferramenta local gratuita para converter fotos de iPhone em arquivos JPG de forma segura.",
+    ctaButton: "Testar conversor HEIC",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "HEIC vs JXL: Mana Format Gambar yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "HEIC atau JXL (JPEG XL)? Kami membandingkan format HEIC Apple dengan standar masa depan JXL. Pelajari perbandingan kompresi, kualitas, dan dukungannya.",
+    title: "HEIC vs JXL: Mana Format yang Lebih Baik?",
+    intro: "Kami membandingkan format default Apple HEIC dengan format generasi berikutnya JXL (JPEG XL) untuk membantu Anda memilih antara penyimpanan seluler dan pengarsipan foto berkualitas tinggi.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan HEIC untuk:",
+    useTiffForDesc: "Menyimpan foto yang diambil di perangkat iOS/Apple untuk menghemat ruang penyimpanan internal ponsel dengan kualitas kamera tetap terjaga.",
+    useJxlFor: "Gunakan JXL untuk:",
+    useJxlForDesc: "Mengarsipkan foto resolusi tinggi secara lossless, pembuatan aset game, dan workflow desain grafis profesional yang membutuhkan format bebas royalti.",
+    differenceTitle: "Apa Perbedaan Antara HEIC dan JXL?",
+    differenceDesc: "Perbedaan utama ada pada lisensi paten dan kompresi. HEIC berbayar dan menggunakan codec video HEVC, sedangkan JXL gratis dan open-source.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "HEIC (High Efficiency Image Container)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Lisensi / Royalti",
+    tdCompStandardTiff: "Dilindungi paten (Berbayar)",
+    tdCompStandardJxl: "Open-source & Bebas royalti",
+    tdFileSize: "Kompresi Lossless",
+    tdFileSizeTiff: "Terbatas / Jarang didukung",
+    tdFileSizeJxl: "Didukung penuh secara native",
+    tdColorDepth: "Transkode Lossless JPG",
+    tdColorDepthTiff: "Tidak",
+    tdColorDepthJxl: "Ya (menghemat ~20% ukuran secara reversibel)",
+    tdBrowser: "Kedalaman Warna Maksimal",
+    tdBrowserTiff: "10-bit (mendukung HDR)",
+    tdBrowserJxl: "Hingga 32-bit float (Ultra HDR)",
+    tdPrint: "Dukungan Native Apple",
+    tdPrintTiff: "Ya (default kamera iOS/macOS)",
+    tdPrintJxl: "Tidak",
+    tdTranscoding: "Dukungan Browser",
+    tdTranscodingTiff: "Hanya Safari (perangkat Apple)",
+    tdTranscodingJxl: "Eksperimental (butuh pengaturan developer)",
+    converterTitle: "Konversi HEIC ke JPG (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu HEIC?",
+    diveTiffP1: "HEIC singkaran dari High Efficiency Image Container. Ini adalah format wadah file yang dipilih Apple untuk standar HEIF. Diperkenalkan di iOS 11, format ini mengompresi gambar menggunakan codec video HEVC (H.265).",
+    diveTiffP2: "HEIC memangkas ukuran JPG hingga setengahnya. Namun karena memiliki lisensi paten berbayar, dukungan native format ini di Windows, Android, dan browser populer di luar Apple menjadi terhambat.",
+    diveTiffAdv: "Kelebihan HEIC",
+    diveTiffAdvList: [
+      "Menghemat Penyimpanan: Ukuran file setengah kali lebih kecil dibanding JPG.",
+      "Wadah Multi-gambar: Menyimpan foto beruntun, Live Photos, dan depth maps dalam satu file.",
+      "Integrasi Apple: Bekerja sempurna di semua hardware dan ekosistem Apple."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu JXL?",
+    diveJxlP1: "JXL (JPEG XL) diciptakan untuk memodernisasi kompresi gambar tanpa terhalang royalti. Standar terbuka ini mendukung kompresi lossy (VarDCT) dan kompresi lossless (Modular).",
+    diveJxlP2: "Berbeda dengan HEIC, JXL mendukung pengarsipan lossless secara penuh dan memiliki fitur transkode lossless unik untuk file JPEG yang memangkas ukuran JPG sebesar 20% secara reversibel bit-per-bit.",
+    diveJxlAdv: "Kelebihan JXL",
+    diveJxlAdvList: [
+      "Bebas Royalti: Open-source dan bebas lisensi paten komersial.",
+      "Mode Lossless Sebenarnya: Mengompresi file foto tanpa kehilangan piksel sama sekali.",
+      "Transkode JPG Sempurna: Mengurangi ukuran JPG lama secara aman dan reversibel.",
+      "Dukungan HDR: Menyimpan detail warna tingkat tinggi untuk monitor HDR modern."
+    ],
+    q1: "Apa perbedaan antara HEIC and JXL (JPEG XL)?",
+    a1: "HEIC didasarkan pada codec video HEVC dan digunakan Apple untuk menghemat ruang. JXL adalah standar gambar open-source bebas royalti yang mendukung kompresi lossless.",
+    q2: "Apakah JXL lebih baik daripada HEIC?",
+    a2: "Ya, JXL secara teknis lebih baik karena bebas paten, memiliki kompresi lossless native, mendukung warna hingga 32-bit float, dan transkode JPG reversibel.",
+    q3: "Apakah browser mendukung HEIC atau JXL secara native?",
+    a3: "Dukungan keduanya sangat terbatas. HEIC hanya terbuka di Safari (Apple). JXL membutuhkan aktivasi flag eksperimental pada Chrome, Firefox, dan Safari.",
+    q4: "Apakah saya bisa mengubah file HEIC ke JXL?",
+    a4: "Ya, Anda bisa menggunakan tools local seperti ImageMagick. Namun untuk web, sebaiknya ubah HEIC ke JPG atau WebP agar semua orang bisa melihat gambarnya.",
+    q5: "Mengapa saya harus memakai HEIC dibanding JXL saat ini?",
+    a5: "Saat memotret dengan iPhone atau iPad, HEIC adalah pilihan terbaik untuk menghemat penyimpanan internal iOS secara langsung. Untuk perangkat lain, gunakan JPG.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi foto HEIC?",
+    ctaDesc: "Gunakan pengonversi HEIC offline gratis kami di browser untuk mengubah foto iPhone Anda menjadi format JPG secara aman.",
+    ctaButton: "Coba Pengonversi HEIC",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-jxl")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs JXL</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JXL</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-error">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-success">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4 text-error">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-error">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-error">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JXL -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="HEIC" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

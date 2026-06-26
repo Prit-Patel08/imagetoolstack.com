@@ -61,6 +61,10 @@ export const es = {
     pdf: {
       name: "Herramientas PDF",
       description: "Combine, divida, comprima y convierta documentos PDF localmente en su navegador."
+    },
+    "time-date": {
+      name: "Hora y Fecha",
+      description: "Convierta marcas de tiempo, calcule fechas, consulte la edad exacta y compare zonas horarias localmente en su navegador."
     }
   },
   toolTemplates: {

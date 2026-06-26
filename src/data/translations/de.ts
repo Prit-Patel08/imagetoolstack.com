@@ -61,6 +61,10 @@ export const de = {
     pdf: {
       name: "PDF-Werkzeuge",
       description: "PDF-Dokumente lokal in Ihrem Browser zusammenführen, teilen, komprimieren und konvertieren."
+    },
+    "time-date": {
+      name: "Zeit & Datum",
+      description: "Konvertieren Sie Zeitstempel, berechnen Sie Daten, überprüfen Sie das genaue Alter und vergleichen Sie Zeitzonen lokal in Ihrem Browser."
     }
   },
   toolTemplates: {

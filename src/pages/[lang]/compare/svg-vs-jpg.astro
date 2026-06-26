@@ -1,0 +1,639 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import VectorizerTool from "../../../components/tools/VectorizerTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "SVG vs JPG: Diferencia entre formatos de imagen vectoriales y rasterizados",
+    seoDescription: "SVG vs JPG. Comparamos gráficos vectoriales escalables con imágenes rasterizadas JPEG. Conozca cuándo usar cada uno para web y diseño.",
+    title: "SVG vs JPG: ¿Qué formato de imagen es mejor?",
+    intro: "Comparamos un formato vectorial matemático con un formato de cuadrícula de píxeles rasterizado. Conozca cuándo usar SVG y cuándo usar JPG.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use SVG para:",
+    usePngForDesc: "Logotipos, iconos vectoriales, gráficos de interfaz de usuario, encabezados de texto e ilustraciones digitales que requieren escalado infinito y bordes afilados.",
+    useIcoFor: "Use JPG para:",
+    useIcoForDesc: "Fotografías, pinturas digitales complejas, escaneos realistas e imágenes de alta coloración con degradados suaves.",
+    differenceTitle: "¿Cuál es la diferencia entre SVG y JPG?",
+    differenceDesc: "SVG describe las estructuras de la imagen matemáticamente mediante curvas, líneas y formas. JPG codifica cuadrículas de color en un mapa de coordenadas de píxeles.",
+    thFeature: "Característica / Aspecto",
+    thPng: "SVG (Scalable Vector Graphics)",
+    thIco: "JPG (Joint Photographic Experts Group)",
+    tdFileNature: "Categoría de imagen",
+    tdFileNaturePng: "Vectorial (Fórmulas matemáticas)",
+    tdFileNatureIco: "Rasterizado (Mapa de cuadrícula de píxeles)",
+    tdFallback: "Escalado infinito",
+    tdFallbackPng: "Sí (Resolución perfecta a cualquier escala)",
+    tdFallbackIco: "No (Se pixela cuando se escala hacia arriba)",
+    tdPurpose: "Idoneidad fotográfica",
+    tdPurposePng: "Muy deficiente (Produce archivos gigantes)",
+    tdPurposeIco: "Excelente (Diseñado para fotografía)",
+    tdResolutions: "Editabilidad",
+    tdResolutionsPng: "Alta (Trazados XML editables, estilos con CSS/JS)",
+    tdResolutionsIco: "Baja (Cuadrícula de píxeles aplanada)",
+    tdSize: "Soporte de transparencia",
+    tdSizePng: "Sí (Opacidad alfa en trazados)",
+    tdSizeIco: "No (Solo fondos sólidos)",
+    tdTrans: "Animación",
+    tdTransPng: "Sí (A través de CSS o JS)",
+    tdTransIco: "No",
+    converterTitle: "Vectorizar JPG a SVG Vector (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es un SVG?",
+    divePngP1: "SVG (Scalable Vector Graphics) es un formato de archivo basado en XML diseñado por el W3C específicamente para describir gráficos bidimensionales. Dado que los archivos SVG almacenan coordenadas, trazados, anchos de trazo y colores de forma matemática, se procesan perfectamente en cualquier resolución.",
+    divePngP2: "SVG es altamente personalizable: al ser código XML, los desarrolladores web pueden incrustarlo directamente en HTML, aplicando estilos con CSS y animando trazados con JavaScript. Esto lo convierte en el estándar de oro para iconos, logotipos y elementos de interfaz adaptables.",
+    divePngAdv: "Ventajas de SVG",
+    divePngAdvList: [
+      "Resolución infinita: Los gráficos se mantienen nítidos en pantallas retina de ultra alta definición.",
+      "Accesibilidad DOM: Los motores de búsqueda pueden leer e indexar el texto dentro de los trazados SVG.",
+      "Interactividad: Los estilos dinámicos, estados hover y animaciones son nativos."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es un JPG?",
+    diveIcoP1: "JPG (o JPEG) son las siglas de Joint Photographic Experts Group. Lanzado en 1992, sigue siendo el formato más común para la fotografía digital. Un JPG es un formato rasterizado, lo que significa que almacena imágenes como una cuadrícula plana de píxeles. Aplica compresión con pérdida para reducir el peso.",
+    diveIcoP2: "JPG sobresale en capturar sutiles cambios de tono, iluminación suave y texturas detalladas presentes en la fotografía natural. Sin embargo, debido a que descarta detalles para comprimir, editar o guardar un JPG múltiples veces puede introducir ruido de compresión.",
+    diveIcoAdv: "Ventajas de JPG",
+    diveIcoAdvList: [
+      "Optimizado para fotos reales: Soporta degradados suaves y millones de colores.",
+      "Tamaño de archivo fotográfico reducido: La compresión con pérdida permite cargas rápidas de páginas.",
+      "Compatibilidad universal: Compatible con todos los visores de imágenes, navegadores y clientes de correo."
+    ],
+    q1: "¿Cuál es la diferencia entre SVG y JPG?",
+    a1: "SVG es un formato vectorial que utiliza ecuaciones matemáticas para representar líneas y curvas, haciéndolo infinitamente escalable. JPG es un formato rasterizado que guarda píxeles en una cuadrícula fija, ideal para fotos pero que se pixela al ampliarse.",
+    q2: "¿Cuándo debo usar SVG en lugar de JPG?",
+    a2: "Use SVG para logotipos, iconos, texto e ilustraciones web de colores planos. Use JPG para fotografías, imágenes escaneadas o gráficos complejos con degradados y variaciones de color del mundo real.",
+    q3: "¿Se puede convertir un JPG a SVG?",
+    a3: "Sí, puede convertir un JPG a SVG utilizando un proceso llamado vectorización o trazado de imágenes. Nuestra herramienta gratuita Vectorizer le permite trazar JPG a SVG directamente en su navegador.",
+    q4: "¿Qué formato tiene tamaños de archivo más pequeños, SVG o JPG?",
+    a4: "Depende de la imagen. Para gráficos simples como logotipos, SVG es mucho más pequeño. Para fotografías complejas, JPG es mucho más pequeño porque los trazados vectoriales no representan millones de colores de manera eficiente.",
+    q5: "¿Los navegadores web admiten tanto SVG como JPG?",
+    a5: "Sí, todos los navegadores web modernos tienen soporte nativo y completo para ambos formatos, lo que permite cargarlos directamente en sitios web.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita vectorizar imágenes PNG o JPG?",
+    ctaDesc: "Use nuestro Vectorizador local en el navegador para trazar sus imágenes rasterizadas a vectores SVG limpios completamente sin conexión.",
+    ctaButton: "Probar Vectorizador de Imágenes",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "SVG vs JPG : différence entre les formats image vectorielle et matricielle",
+    seoDescription: "SVG vs JPG. Nous comparons le format vectoriel SVG avec les images matricielles JPG. Apprenez quand utiliser chacun d'eux.",
+    title: "SVG vs JPG : quel format d'image est le meilleur ?",
+    intro: "We comparons un format vectoriel mathématique avec un format d'image matricielle (pixels). Découvrez quand utiliser SVG et quand utiliser JPG.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez l'SVG pour :",
+    usePngForDesc: "Les logos, icônes vectorielles, graphiques d'interface utilisateur, titres et illustrations nécessitant un agrandissement infini et des contours nets.",
+    useIcoFor: "Utilisez le JPG pour :",
+    useIcoForDesc: "Les photographies, peintures numériques complexes, numérisations et images riches en couleurs avec des dégradés subtils.",
+    differenceTitle: "Quelle est la différence entre SVG et JPG ?",
+    differenceDesc: "Le SVG décrit les structures de l'image de façon mathématique à l'aide de courbes, de lignes et de formes. Le JPG stocke une grille fixe de pixels colorés.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "SVG (Scalable Vector Graphics)",
+    thIco: "JPG (Joint Photographic Experts Group)",
+    tdFileNature: "Catégorie d'image",
+    tdFileNaturePng: "Vectorielle (Formules mathématiques)",
+    tdFileNatureIco: "Matricielle (Grille de pixels)",
+    tdFallback: "Redimensionnement infini",
+    tdFallbackPng: "Oui (Netteté parfaite à n'importe quelle échelle)",
+    tdFallbackIco: "Non (Pixellisation en cas d'agrandissement)",
+    tdPurpose: "Adapté aux photos",
+    tdPurposePng: "Médiocre (Génère des fichiers trop lourds)",
+    tdPurposeIco: "Excellent (Conçu pour la photographie)",
+    tdResolutions: "Édition",
+    tdResolutionsPng: "Élevée (Code XML éditable, personnalisation avec CSS/JS)",
+    tdResolutionsIco: "Faible (Grille de pixels plate)",
+    tdSize: "Transparence",
+    tdSizePng: "Oui (Opacité alpha sur les tracés)",
+    tdSizeIco: "Non (Fond opaque uniquement)",
+    tdTrans: "Animation",
+    tdTransPng: "Oui (Via CSS ou JavaScript)",
+    tdTransIco: "Non",
+    converterTitle: "Vectoriser un JPG en SVG (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le SVG ?",
+    divePngP1: "Le SVG (Scalable Vector Graphics) est un format d'image basé sur le langage XML, développé par le W3C pour décrire des graphiques en deux dimensions. Puisque les fichiers SVG stockent mathématiquement des coordonnées, des tracés et des couleurs, ils s'affichent sans aucune perte de netteté à toutes les résolutions.",
+    divePngP2: "Le SVG est très flexible : comme il s'agit de code, il peut être intégré directement dans le code HTML, personnalisé avec du CSS et animé avec du JavaScript. C'est le format incontournable pour les logos et icônes d'un site web moderne.",
+    divePngAdv: "Avantages du SVG",
+    divePngAdvList: [
+      "Résolution infinie : Les graphiques restent nets même sur les écrans retina ultra HD.",
+      "Accessibilité DOM : Les moteurs de recherche peuvent indexer les textes situés dans les tracés SVG.",
+      "Interactivité : Gestion native du survol (hover) et des animations."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le JPG ?",
+    diveIcoP1: "Le JPG (ou JPEG) signifie Joint Photographic Experts Group. Lancé en 1992, il reste le format de référence pour la photo numérique. C'est un format matriciel stockant les pixels sur une grille. Il utilise une compression avec perte pour réduire le poids des fichiers.",
+    diveIcoP2: "Le JPG est parfait pour restituer les nuances de couleurs, la lumière et les textures fines des paysages et portraits. Cependant, sa compression détruit des détails subtils, ce qui peut générer des artefacts si le fichier est réenregistré plusieurs fois.",
+    diveIcoAdv: "Avantages du JPG",
+    diveIcoAdvList: [
+      "Idéal pour la photo réelle : Gère des millions de couleurs et des transitions douces.",
+      "Poids optimisé : Compression efficace facilitant le chargement rapide des pages.",
+      "Compatibilité universelle : Ouvert et lisible par tous les terminaux et navigateurs."
+    ],
+    q1: "Quelle est la différence entre SVG et JPG ?",
+    a1: "Le SVG est un format vectoriel basé sur des équations mathématiques pour tracer des courbes, le rendant redimensionnable à l'infini. Le JPG est un format matriciel stockant les couleurs sous forme de grille de pixels, idéal pour les photos mais limité en agrandissement.",
+    q2: "Quand utiliser le SVG plutôt que le JPG ?",
+    a2: "Utilisez le SVG pour les logos, les icônes, les polices de caractères et les illustrations simples. Utilisez le JPG pour les photos et les images contenant de multiples dégradés complexes.",
+    q3: "Peut-on convertir un JPG en SVG ?",
+    a3: "Oui, vous pouvez vectoriser une image JPG pour la transformer en tracé SVG. Notre outil de vectorisation gratuit traite vos images localement dans le navigateur pour générer des fichiers SVG.",
+    q4: "Quel format produit les fichiers les plus légers, le SVG ou le JPG ?",
+    a4: "Pour les illustrations géométriques simples, le SVG est beaucoup plus léger. Pour les photos, le JPG is bien plus compact, car le format vectoriel est incapable de coder efficacement des millions de nuances de pixels individuels.",
+    q5: "Les navigateurs gèrent-ils à la fois le SVG et le JPG ?",
+    a5: "Oui, tous les navigateurs web modernes supportent nativement et affichent directement le SVG et le JPG.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de vectoriser des images PNG ou JPG ?",
+    ctaDesc: "Utilisez notre outil de vectorisation hors ligne pour convertir vos images matricielles en vecteurs SVG nets en toute sécurité.",
+    ctaButton: "Essayer le Vectoriseur",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "SVG vs. JPG: Unterschied zwischen Vektor- und Raster-Bildformaten",
+    seoDescription: "SVG vs. JPG. Wir vergleichen Scalable Vector Graphics mit JPG-Rastergrafiken. Erfahren Sie, wann Sie welches Format für Webdesign nutzen.",
+    title: "SVG vs. JPG: Welches Bildformat ist besser?",
+    intro: "Wir vergleichen ein mathematisches Vektorformat mit einer pixelbasierten Rastergrafik. Erfahren Sie, wann Sie SVG und wann Sie JPG nutzen sollten.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie SVG für:",
+    usePngForDesc: "Logos, Vektorsymbole, Benutzeroberflächen, Textüberschriften und digitale Illustrationen, die eine unendliche Skalierung ohne Schärfeverlust benötigen.",
+    useIcoFor: "Nutzen Sie JPG für:",
+    useIcoForDesc: "Fotos, komplexe digitale Gemälde, realistische Scans und farbreiche Bilder mit weichen Verläufen.",
+    differenceTitle: "Was ist der Unterschied zwischen SVG und JPG?",
+    differenceDesc: "SVG beschreibt Bildstrukturen mathematisch mithilfe von Kurven und Linien. JPG kodiert Farbnetze auf einer Pixelkarte.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "SVG (Scalable Vector Graphics)",
+    thIco: "JPG (Joint Photographic Experts Group)",
+    tdFileNature: "Bildkategorie",
+    tdFileNaturePng: "Vektorgrafik (Mathematische Formeln)",
+    tdFileNatureIco: "Rastergrafik (Pixelnetz)",
+    tdFallback: "Unbegrenzte Skalierung",
+    tdFallbackPng: "Ja (Perfekt scharf in jeder Größe)",
+    tdFallbackIco: "Nein (Wird beim Vergrößern pixelig)",
+    tdPurpose: "Fototauglichkeit",
+    tdPurposePng: "Sehr schlecht (Erzeugt riesige Dateien)",
+    tdPurposeIco: "Hervorragend (Für Fotos entwickelt)",
+    tdResolutions: "Bearbeitbarkeit",
+    tdResolutionsPng: "Hoch (Editierbare XML-Pfade, CSS/JS-Styling)",
+    tdResolutionsIco: "Niedrig (Flache Pixelmatrix)",
+    tdSize: "Transparenz",
+    tdSizePng: "Ja (Alpha-Kanäle auf Pfaden)",
+    tdSizeIco: "Nein (Nur feste Hintergründe)",
+    tdTrans: "Animation",
+    tdTransPng: "Ja (Über CSS oder JS)",
+    tdTransIco: "Nein",
+    converterTitle: "JPG in SVG-Vektoren umwandeln (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist SVG?",
+    divePngP1: "SVG (Scalable Vector Graphics) ist ein XML-basiertes Bildformat, das vom W3C für zweidimensionale Grafiken entwickelt wurde. Da SVG-Dateien Koordinaten, Pfade und Farben mathematisch speichern, werden sie bei jeder Auflösung gestochen scharf dargestellt.",
+    divePngP2: "SVG ist hochgradig anpassbar: Da es sich um XML-Code handelt, können Webentwickler SVGs direkt in HTML einbetten, mit CSS gestalten und mit JavaScript animieren. Das macht es zum Standard für responsive Symbole und Logos.",
+    divePngAdv: "Vorteile von SVG",
+    divePngAdvList: [
+      "Unendliche Auflösung: Grafiken bleiben auf Retina-Displays gestochen scharf.",
+      "DOM-Barrierefreiheit: Suchmaschinen können Text in SVG-Pfaden lesen und indexieren.",
+      "Interaktivität: Dynamische Stile, Hover-Effekte und Animationen sind nativ möglich."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist JPG?",
+    diveIcoP1: "JPG (oder JPEG) steht für Joint Photographic Experts Group. Es wurde 1992 veröffentlicht und ist das Standardformat für Digitalfotografie. Als Rasterformat speichert es Bilder als Pixelraster und nutzt eine verlustbehaftete Komprimierung.",
+    diveIcoP2: "JPG eignet sich hervorragend für feine Farbübergänge und Texturen. Da es jedoch Bilddetails zur Verkleinerung verwirft, kann das wiederholte Bearbeiten und Speichern zu Kompressionsrauschen und Blockartefakten führen.",
+    diveIcoAdv: "Vorteile von JPG",
+    diveIcoAdvList: [
+      "Perfekt für Fotos: Unterstützt weiche Farbverläufe und Millionen von Farben.",
+      "Kompakt bei Fotos: Die verlustbehaftete Kompression ermöglicht schnelle Ladezeiten.",
+      "Universelle Unterstützung: Läuft auf jedem System und in allen E-Mail-Clients."
+    ],
+    q1: "Was ist der Unterschied zwischen SVG und JPG?",
+    a1: "SVG ist ein Vektorformat, das mathematische Gleichungen nutzt und unendlich skaliert werden kann. JPG ist ein Rasterformat, das Pixel speichert; es ist ideal für Fotos, wird beim Vergrößern jedoch pixelig.",
+    q2: "Was sollte ich SVG statt JPG verwenden?",
+    a2: "Nutzen Sie SVG für Logos, Symbole, Text und flache Web-Illustrationen. Nutzen Sie JPG für Fotos und komplexe Farbbilder.",
+    q3: "Kann ich JPG in SVG umwandeln?",
+    a3: "Ja. Sie können ein JPG durch Vektorisierung (Image Tracing) in ein SVG umwandeln. Unser integrierter Vectorizer führt dies sicher in Ihrem Browser aus.",
+    q4: "Welches Format hat kleinere Dateigrößen, SVG oder JPG?",
+    a4: "Bei einfachen Grafiken ist SVG meist viel kleiner. Bei Fotos ist JPG erheblich kleiner, da Vektorgrafiken Millionen von Farbpixeln nicht effizient beschreiben können.",
+    q5: "Unterstützen Webbrowser sowohl SVG als auch JPG?",
+    a5: "Ja, alle modernen Browser bieten volle, native Unterstützung für SVG und JPG auf Webseiten.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie PNG- oder JPG-Bilder vektorisieren?",
+    ctaDesc: "Nutzen Sie unseren browserbasierten Vectorizer, um Ihre Rasterbilder komplett offline in saubere SVG-Vektoren umzuwandeln.",
+    ctaButton: "Vectorizer starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "SVG vs JPG: Diferença entre os formatos de imagem Vetorial e Rasterizada",
+    seoDescription: "SVG vs JPG. Comparamos gráficos vetoriais escaláveis com imagens rasterizadas JPEG. Saiba quando usar cada um para web design e fotografia.",
+    title: "SVG vs JPG: Qual formato de imagem é melhor?",
+    intro: "Comparamos um formato vetorial matemático com um formato de grade de pixels. Aprenda quando usar SVG e quando usar JPG.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use SVG para:",
+    usePngForDesc: "Logotipos, ícones vetoriais, elementos de interface, títulos e ilustrações digitais que precisam de redimensionamento infinito e bordas nítidas.",
+    useIcoFor: "Use JPG para:",
+    useIcoForDesc: "Fotografias, pinturas digitais complexas, digitalizações realistas e imagens ricas em cores com degradês suaves.",
+    differenceTitle: "Qual é a diferença entre SVG e JPG?",
+    differenceDesc: "O SVG descreve as estruturas de imagem de forma matemática usando curvas, linhas e formas. O JPG codifica grades de cores em um mapa de coordenadas de pixels.",
+    thFeature: "Recurso / Aspeto",
+    thPng: "SVG (Scalable Vector Graphics)",
+    thIco: "JPG (Joint Photographic Experts Group)",
+    tdFileNature: "Categoria da imagem",
+    tdFileNaturePng: "Vetorial (Fórmulas matemáticas)",
+    tdFileNatureIco: "Rasterizada (Grade de pixels)",
+    tdFallback: "Redimensionamento infinito",
+    tdFallbackPng: "Sim (Resolução perfeita em qualquer escala)",
+    tdFallbackIco: "No (Fica pixelizado ao ser ampliado)",
+    tdPurpose: "Adequado para fotos",
+    tdPurposePng: "Muito fraco (Gera arquivos gigantescos)",
+    tdPurposeIco: "Excelente (Projetado para fotografia)",
+    tdResolutions: "Editabilidade",
+    tdResolutionsPng: "Alta (Caminhos XML editáveis, estilos com CSS/JS)",
+    tdResolutionsIco: "Baixa (Grade de pixels achatada)",
+    tdSize: "Suporte a transparência",
+    tdSizePng: "Sim (Opacidade alfa nos caminhos)",
+    tdSizeIco: "Não (Apenas fundos sólidos)",
+    tdTrans: "Animação",
+    tdTransPng: "Sim (Via CSS ou JavaScript)",
+    tdTransIco: "Não",
+    converterTitle: "Vetorizar JPG para Vetor SVG (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é um SVG?",
+    divePngP1: "SVG (Scalable Vector Graphics) é um formato de arquivo baseado em XML criado pelo W3C especificamente para descrever gráficos bidimensionais. Como armazena coordenadas, caminhos e cores de forma matemática, ele é exibido perfeitamente em qualquer resolução.",
+    divePngP2: "O SVG é extremamente personalizável: por ser código XML, os desenvolvedores podem incorporá-lo diretamente no HTML, estilizando elementos com CSS e animando linhas com JavaScript. É o formato perfeito para ícones responsivos e logotipos.",
+    divePngAdv: "Vantagens do SVG",
+    divePngAdvList: [
+      "Resolução infinita: Os gráficos ficam nítidos mesmo em telas de ultra definição retina.",
+      "Acessibilidade DOM: Mecanismos de busca podem ler e indexar textos nos caminhos do SVG.",
+      "Interatividade: Estilos dinâmicos, estados hover e animações são nativos."
+    ],
+    diveIcoTitle: "Análise profunda: O que é um JPG?",
+    diveIcoP1: "O JPG (ou JPEG) significa Joint Photographic Experts Group. Lançado em 1992, continua sendo o formato mais usado para fotografia digital. O JPG é rasterizado, salvando imagens como uma grade de pixels, e aplica compressão com perdas para reduzir o peso.",
+    diveIcoP2: "O JPG se destaca ao capturar tons suaves, iluminação natual e texturas ricas. No entanto, sua compressão descarta detalhes para compactar o arquivo, o que significa que editar e salvar o JPG repetidamente gera ruído de compressão.",
+    diveIcoAdv: "Vantagens do JPG",
+    diveIcoAdvList: [
+      "Otimizado para fotos: Suporta degradês suaves e milhões de cores.",
+      "Peso leve para fotos: A compressão com perdas acelera o carregamento de páginas web.",
+      "Compatibilidade total: Aceito por todos os visualizadores de imagens, navegadores e e-mails."
+    ],
+    q1: "Qual é a diferença entre SVG e JPG?",
+    a1: "O SVG é um formato vetorial que usa equações matemáticas para desenhar linhas e curvas, sendo infinitamente escalável. O JPG é um formato rasterizado que salva pixels em uma grade fixa, ideal para fotos, mas que distorce ao ser ampliado.",
+    q2: "Quando devo usar SVG em vez de JPG?",
+    a2: "Use SVG para logotipos, ícones, fontes e ilustrações web simples. Use JPG para fotos reais e imagens complexas com degradês.",
+    q3: "Posso converter um arquivo JPG para SVG?",
+    a3: "Sim. Você pode converter JPG para SVG usando vetorização ou rastreamento. Nosso Vectorizador offline gratuito permite converter suas imagens diretamente no navegador.",
+    q4: "Qual formato gera arquivos menores, SVG ou JPG?",
+    a4: "Para gráficos simples, o SVG costuma ser muito menor. Para fotografias complexas, o JPG é muito menor porque o formato vetorial não consegue codificar milhões de pixels de forma eficiente.",
+    q5: "Os navegadores web aceitam tanto SVG quanto JPG?",
+    a5: "Sim, todos os navegadores modernos oferecem suporte nativo total a ambos os formatos no desenvolvimento de sites.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa vetorizar imagens PNG ou JPG?",
+    ctaDesc: "Use o nosso Vectorizador local no navegador para converter suas imagens rasterizadas para vetores SVG limpos offline.",
+    ctaButton: "Testar Vectorizador",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "SVG vs JPG: Perbedaan antara Format Gambar Vektor dan Raster",
+    seoDescription: "SVG vs JPG. Kami membandingkan Scalable Vector Graphics dengan gambar raster JPEG. Pelajari kegunaan masing-masing format untuk web dan foto.",
+    title: "SVG vs JPG: Format Gambar Mana yang Lebih Baik?",
+    intro: "Membandingkan format vektor matematis dengan format gambar raster (grid piksel). Pelajari kapan menggunakan SVG dan kapan menggunakan JPG.",
+    quickAnswer: "Jawaban Singkat",
+    usePngFor: "Gunakan SVG untuk:",
+    usePngForDesc: "Logo, ikon vektor, grafis antarmuka pengguna, judul teks, dan ilustrasi digital yang membutuhkan skala tak terbatas tanpa pecah.",
+    useIcoFor: "Gunakan JPG untuk:",
+    useIcoForDesc: "Foto, lukisan digital yang rumit, hasil pemindaian realistis, dan gambar kaya warna dengan degradasi warna yang halus.",
+    differenceTitle: "Apa Perbedaan antara SVG dan JPG?",
+    differenceDesc: "SVG mendeskripsikan struktur gambar secara matematis menggunakan kurva, garis, dan bentuk. JPG mengodekan grid warna pada peta koordinat piksel.",
+    thFeature: "Fitur / Aspek",
+    thPng: "SVG (Scalable Vector Graphics)",
+    thIco: "JPG (Joint Photographic Experts Group)",
+    tdFileNature: "Kategori Gambar",
+    tdFileNaturePng: "Vektor (Formula matematis)",
+    tdFileNatureIco: "Raster (Grid peta piksel)",
+    tdFallback: "Skala Tak Terbatas",
+    tdFallbackPng: "Ya (Resolusi sempurna pada skala apa pun)",
+    tdFallbackIco: "Tidak (Pecah/buram saat diperbesar)",
+    tdPurpose: "Kesesuaian Foto",
+    tdPurposePng: "Sangat Buruk (Menghasilkan ukuran file raksasa)",
+    tdPurposeIco: "Sangat Baik (Dirancang khusus untuk foto)",
+    tdResolutions: "Kemudahan Pengeditan",
+    tdResolutionsPng: "Tinggi (Jalur XML yang dapat diedit, styling dengan CSS/JS)",
+    tdResolutionsIco: "Rendah (Grid piksel datar)",
+    tdSize: "Dukungan Transparansi",
+    tdSizePng: "Ya (Opasitas alfa pada jalur vektor)",
+    tdSizeIco: "Tidak (Hanya latar belakang solid)",
+    tdTrans: "Animasi",
+    tdTransPng: "Ya (Melalui CSS atau JS)",
+    tdTransIco: "Tidak",
+    converterTitle: "Vektorisasi JPG ke Vektor SVG (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu SVG?",
+    divePngP1: "SVG (Scalable Vector Graphics) adalah format file berbasis XML yang dirancang oleh W3C khusus untuk mendeskripsikan grafis dua dimensi. Karena file SVG menyimpan koordinat, jalur, ketebalan garis, dan warna secara matematis, file ini dirender dengan tajam pada resolusi apa pun.",
+    divePngP2: "SVG sangat fleksibel: karena berupa kode XML, pengembang web dapat menyematkannya langsung ke HTML, menatanya dengan CSS, dan menganimasikannya dengan JavaScript. Ini menjadikannya standar untuk logo dan ikon responsif.",
+    divePngAdv: "Kelebihan SVG",
+    divePngAdvList: [
+      "Resolusi Tak Terbatas: Grafis tetap tajam bahkan di layar retina ultra-HD.",
+      "Aksesibilitas DOM: Mesin pencari dapat membaca dan mengindeks teks di dalam jalur SVG.",
+      "Interaktivitas: Styling dinamis, efek hover, dan animasi didukung secara native."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu JPG?",
+    diveIcoP1: "JPG (atau JPEG) adalah singkatan dari Joint Photographic Experts Group. Dirilis pada tahun 1992, format ini tetap menjadi standar paling umum untuk fotografi digital. JPG adalah format raster, menyimpan gambar sebagai grid piksel dan menerapkan kompresi lossy.",
+    diveIcoP2: "JPG sangat baik dalam menangkap perubahan warna halus, pencahayaan lembut, dan tekstur detail pada foto alami. Namun, karena kompresinya membuang detail demi memperkecil file, menyimpan ulang file JPG dapat menimbulkan artefak kompresi.",
+    diveIcoAdv: "Kelebihan JPG",
+    diveIcoAdvList: [
+      "Dioptimalkan untuk Foto Asli: Mendukung degradasi halus dan jutaan warna.",
+      "Ukuran File Foto Ringkas: Kompresi lossy memungkinkan halaman web memuat foto lebih cepat.",
+      "Kompatibilitas Universal: Didukung oleh semua pemirsa gambar, peramban, dan klien email."
+    ],
+    q1: "Apa perbedaan antara SVG dan JPG?",
+    a1: "SVG adalah format vektor yang menggunakan persamaan matematis untuk merender garis dan kurva sehingga bisa diperbesar tanpa batas. JPG adalah format raster yang menyimpan piksel dalam grid tetap, ideal untuk foto tetapi akan pecah saat diperbesar.",
+    q2: "Kapan saya harus menggunakan SVG daripada JPG?",
+    a2: "Gunakan SVG untuk logo, ikon, teks, dan ilustrasi web dengan warna datar. Gunakan JPG untuk foto asli, gambar hasil pemindaian, atau grafis kaya gradasi warna.",
+    q3: "Apakah saya bisa mengonversi JPG ke SVG?",
+    a3: "Ya. Anda bisa mengonversi JPG ke SVG menggunakan proses yang disebut vektorisasi atau image tracing. Alat Vectorizer offline gratis kami memungkinkan Anda mengubah JPG ke SVG langsung di peramban.",
+    q4: "Format mana yang menghasilkan ukuran file lebih kecil, SVG atau JPG?",
+    a4: "Untuk grafis sederhana seperti logo, SVG biasanya jauh lebih kecil. Untuk foto rumit, JPG jauh lebih kecil karena format vektor tidak efisien untuk menggambarkan jutaan piksel warna yang berbeda.",
+    q5: "Apakah peramban web mendukung format SVG dan JPG?",
+    a5: "Ya, semua peramban web modern memiliki dukungan penuh secara native untuk menampilkan format SVG maupun JPG secara langsung.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengubah gambar PNG atau JPG ke vektor?",
+    ctaDesc: "Gunakan Vectorizer lokal kami di peramban untuk mengubah gambar raster Anda menjadi vektor SVG yang tajam secara offline.",
+    ctaButton: "Coba Vectorizer Gambar",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const t = pageTranslations[locale];
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": t.seoTitle,
+      "description": t.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": t.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "svg-vs-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-to-svg");
+---
+
+<Layout title={t.seoTitle} description={t.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{t.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{t.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">SVG vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{t.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{t.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {t.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{t.usePngFor}</strong> {t.usePngForDesc}</p>
+          <p><strong class="text-ink">{t.useIcoFor}</strong> {t.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{t.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">{t.differenceDesc}</p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{t.thFeature}</th>
+                <th class="p-4">{t.thPng}</th>
+                <th class="p-4">{t.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFileNature}</td>
+                <td class="p-4 text-success">{t.tdFileNaturePng}</td>
+                <td class="p-4">{t.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFallback}</td>
+                <td class="p-4 text-success">{t.tdFallbackPng}</td>
+                <td class="p-4 text-error">{t.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdPurpose}</td>
+                <td class="p-4 text-error">{t.tdPurposePng}</td>
+                <td class="p-4 text-success">{t.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdResolutions}</td>
+                <td class="p-4 text-success">{t.tdResolutionsPng}</td>
+                <td class="p-4">{t.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdSize}</td>
+                <td class="p-4 text-success">{t.tdSizePng}</td>
+                <td class="p-4 text-error">{t.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdTrans}</td>
+                <td class="p-4 text-success">{t.tdTransPng}</td>
+                <td class="p-4 text-error">{t.tdTransIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{t.converterTitle}</h2>
+        <VectorizerTool toolId="jpg-to-svg" />
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.divePngTitle}</h2>
+        <p>{t.divePngP1}</p>
+        <p>{t.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.diveIcoTitle}</h2>
+        <p>{t.diveIcoP1}</p>
+        <p>{t.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{t.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q1}</h3>
+            <p class="text-body leading-relaxed">{t.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q2}</h3>
+            <p class="text-body leading-relaxed">{t.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q3}</h3>
+            <p class="text-body leading-relaxed">{t.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q4}</h3>
+            <p class="text-body leading-relaxed">{t.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q5}</h3>
+            <p class="text-body leading-relaxed">{t.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{t.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{t.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {t.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="SVG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

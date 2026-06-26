@@ -88,6 +88,10 @@ import ImageReflectionTool from "../../components/tools/ImageReflectionTool.astr
 import VectorizerTool from "../../components/tools/VectorizerTool.astro";
 import JsonFormatterTool from "../../components/tools/JsonFormatterTool.astro";
 import CsvConverterTool from "../../components/tools/CsvConverterTool.astro";
+import UnixTimestampTool from "../../components/tools/UnixTimestampTool.astro";
+import TimezoneConverterTool from "../../components/tools/TimezoneConverterTool.astro";
+import DateCalculatorTool from "../../components/tools/DateCalculatorTool.astro";
+import AgeCalculatorTool from "../../components/tools/AgeCalculatorTool.astro";
 import toolsData from "../../data/tools.json";
 import { translateTool, translateCategory } from "../../utils/i18n";
 export async function getStaticPaths() {
@@ -119,6 +123,14 @@ if (tool.slug === 'avif-to-png') {
   ToolComponent = FormatConverter;
 } else if (tool.slug === 'image-to-base64') {
   ToolComponent = Base64Converter;
+} else if (tool.slug === 'unix-timestamp') {
+  ToolComponent = UnixTimestampTool;
+} else if (tool.slug === 'timezone-converter') {
+  ToolComponent = TimezoneConverterTool;
+} else if (tool.slug === 'date-calculator') {
+  ToolComponent = DateCalculatorTool;
+} else if (tool.slug === 'age-calculator') {
+  ToolComponent = AgeCalculatorTool;
 } else if (tool.slug === 'image-resizer') {
   ToolComponent = ImageResizer;
 } else if (tool.slug === 'color-picker') {

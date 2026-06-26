@@ -1,0 +1,656 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import TiffToJpgTool from "../../../components/tools/TiffToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "SVG vs TIFF: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿SVG o TIFF? Comparamos el formato vectorial ligero optimizado para la web (SVG) con el estándar de alta resolución de publicación (TIFF). Conozca cuándo usar cada uno.",
+    title: "SVG vs TIFF: ¿Qué formato es mejor?",
+    intro: "Comparamos el formato vectorial SVG basado en código moderno con el formato TIFF de alta densidad de píxeles y gran peso para ayudarlo a comprender sus casos de uso en diseño, impresión y web.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use SVG para:",
+    useTiffForDesc: "Diseño digital, logotipos de sitios web, iconos de interfaz de usuario, ilustraciones adaptables y gráficos nítidos sin ralentizar las páginas.",
+    useJxlFor: "Use TIFF para:",
+    useJxlForDesc: "Fotografía digital de alta gama, escaneo de documentos en alta resolución y flujos de impresión comercial sin pérdida de detalles.",
+    differenceTitle: "¿Cuál es la diferencia entre SVG y TIFF?",
+    differenceDesc: "SVG representa imágenes usando instrucciones XML que definen líneas, formas y rutas, mientras que TIFF mapea píxeles en cuadrículas de alta densidad para preservar detalles fotográficos.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "TIFF (Tagged Image File Format)",
+    tdCompStandard: "Estructura de imagen",
+    tdCompStandardTiff: "Vectorial (Rutas matemáticas)",
+    tdCompStandardJxl: "Rasterizado (Cuadrícula de píxeles)",
+    tdFileSize: "Tamaño de archivo típico",
+    tdFileSizeTiff: "Diminuto (Generalmente menos de 10 KB)",
+    tdFileSizeJxl: "Enorme (A menudo de 10 MB a más de 100 MB)",
+    tdColorDepth: "Compatibilidad web",
+    tdColorDepthTiff: "Universal (Soportado de forma nativa)",
+    tdColorDepthJxl: "Ninguna (No se muestra en sitios web estándar)",
+    tdBrowser: "Escalabilidad",
+    tdBrowserTiff: "Infinita (Nitidez perfecta con cualquier zoom)",
+    tdBrowserJxl: "Limitada (Se pixela al ampliarse más allá de su tamaño original)",
+    tdPrint: "Capas y páginas",
+    tdPrintTiff: "No (Diseño de un solo lienzo)",
+    tdPrintJxl: "Sí (Puede contener múltiples páginas y capas)",
+    tdTranscoding: "Uso ideal",
+    tdTranscodingTiff: "Logotipos web, ilustraciones planas, iconos de sistema",
+    tdTranscodingJxl: "Archivo de fotos, impresión de alta resolución, escaneo",
+    converterTitle: "Convertir TIFF a JPG al instante (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es SVG?",
+    diveTiffP1: "SVG significa Scalable Vector Graphics (Gráficos Vectoriales Escalables). Es un estándar abierto escrito en formato de texto XML. En lugar de registrar valores de color para cada píxel, los archivos SVG describen instrucciones de dibujo. Por ejemplo, define formas mediante fórmulas geométricas, lo que permite que sea sumamente ligero.",
+    diveTiffP2: "Este diseño basado en texto permite que los archivos SVG se incrusten directamente en el código HTML (inlining), evitando peticiones de red al servidor. Además, los motores de búsqueda pueden indexar el texto dentro del gráfico para potenciar el SEO.",
+    diveTiffAdv: "Ventajas de SVG",
+    diveTiffAdvList: [
+      "Escalabilidad nítida: Se mantiene perfectamente nítido en pantallas de cualquier resolución.",
+      "Súper ligero: Las ilustraciones y los iconos se cargan al instante.",
+      "Estilo CSS: Permite cambiar colores al pasar el cursor o realizar animaciones."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es TIFF?",
+    diveJxlP1: "TIFF significa Tagged Image File Format (Formato de Archivo de Imagen Etiquetada). Creado en 1986 por Aldus, fue diseñado para servir como estándar universal para escáneres. Es un formato rasterizado muy flexible que admite capas de imagen, canales de transparencia, páginas múltiples y metadatos detallados.",
+    diveJxlP2: "Debido a que TIFF prioriza la calidad absoluta, utiliza compresión sin pérdidas (como LZW) o no utiliza compresión en absoluto. Esto hace que los archivos TIFF sean muy pesados, pero garantiza que cada detalle capturado por un escáner o cámara se preserve perfectamente, haciéndolo ideal para la conservación de archivos.",
+    diveJxlAdv: "Ventajas de TIFF",
+    diveJxlAdvList: [
+      "Archivo sin pérdidas: Cero degradación de imagen, conservando detalles puros.",
+      "Soporte de color CMYK: Se adapta perfectamente a los perfiles de impresión física.",
+      "Páginas y capas: Puede agrupar varias hojas escaneadas o capas de edición."
+    ],
+    snippetSectionTitle: "Cuándo usar SVG vs TIFF",
+    snippetSectionDesc: "Elegir el tipo de archivo ideal depende de si su recurso gráfico se mostrará en pantallas digitales o en papel físico.",
+    q1: "¿Cuál es la diferencia entre SVG y TIFF?",
+    a1: "SVG es un formato vectorial ligero basado en código matemático y optimizado para la web. TIFF es un formato rasterizado basado en píxeles, de gran peso, diseñado para la conservación y la impresión física.",
+    q2: "¿Por qué no debo usar archivos TIFF en mi sitio web?",
+    a2: "Los navegadores web no admiten TIFF de forma nativa debido a su enorme tamaño. Si los sube directamente, la mayoría de los usuarios no los verán. Conviértalos a JPEG o WebP para su uso en web.",
+    q3: "¿Puedo convertir un archivo TIFF a SVG?",
+    q3_text: "¿Puedo convertir un archivo TIFF a SVG?",
+    a3: "Sí, pero con límites. Dado que TIFF utiliza píxeles y SVG utiliza vectores, requiere trazado de imagen. Funciona bien con logos planos, pero fotos complejas darían lugar a archivos SVG muy pesados e inestables.",
+    q4: "¿Qué formato es mejor para impresión, SVG o TIFF?",
+    a4: "Para fotos de alta resolución o escaneos finos, use TIFF por su soporte de perfiles CMYK y detalle sin pérdidas. Para logos, gráficos o letreros que se van a estirar a gran escala, use SVG.",
+    q5: "¿Soportan tanto SVG como TIFF fondos transparentes?",
+    a5: "Sí, ambos soportan transparencia. SVG la gestiona de forma nativa en sus rutas y estilos de código, mientras que TIFF lo hace mediante canales alfa en programas profesionales.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir archivos TIFF?",
+    ctaDesc: "Use nuestro convertidor local gratuito para transformar sus fotos TIFF en archivos JPG universales de forma segura y rápida.",
+    ctaButton: "Probar convertidor TIFF a JPG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "SVG vs TIFF : Quel format d'image est le meilleur ? (Comparaison 2026)",
+    seoDescription: "SVG ou TIFF ? Nous comparons le format vectoriel léger optimisé pour le web (SVG) avec le standard haute résolution pour l'impression (TIFF).",
+    title: "SVG vs TIFF : Quel format est le meilleur ?",
+    intro: "Nous comparons le format vectoriel SVG moderne avec le format raster TIFF haute densité pour vous aider à comprendre leurs cas d'utilisation pour le web et l'impression.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le SVG pour :",
+    useTiffForDesc: "Le design numérique, les logos de sites web, les icônes d'interface, les illustrations fluides et les graphiques légers.",
+    useJxlFor: "Utilisez le TIFF pour :",
+    useJxlForDesc: "La photographie numérique haut de gamme, la numérisation haute résolution et l'impression professionnelle sans perte.",
+    differenceTitle: "Quelle est la différence entre SVG et TIFF ?",
+    differenceDesc: "L'SVG représente les images par du code XML définissant des tracés et des formes, tandis que le TIFF cartographie des grilles de pixels pour stocker des photos haute fidélité.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "TIFF (Tagged Image File Format)",
+    tdCompStandard: "Structure de l'image",
+    tdCompStandardTiff: "Vectoriel (Tracés mathématiques)",
+    tdCompStandardJxl: "Matriciel (Grille de pixels)",
+    tdFileSize: "Taille de fichier typique",
+    tdFileSizeTiff: "Minime (Généralement moins de 10 Ko)",
+    tdFileSizeJxl: "Très grande (Souvent de 10 Mo à 100 Mo+)",
+    tdColorDepth: "Compatibilité web",
+    tdColorDepthTiff: "Universelle (Nativement supportée)",
+    tdColorDepthJxl: "Aucune (Ne s'affiche pas directement sur le web)",
+    tdBrowser: "Mise à l'échelle",
+    tdBrowserTiff: "Infinie (Netteté absolue quel que soit le zoom)",
+    tdBrowserJxl: "Limitée (Pixelise si agrandi au-delà de sa taille d'origine)",
+    tdPrint: "Calques et pages",
+    tdPrintTiff: "Non (Plan de travail unique)",
+    tdPrintJxl: "Oui (Peut stocker des pages multiples et des calques)",
+    tdTranscoding: "Usage recommandé",
+    tdTranscodingTiff: "Logos web, illustrations à plat, icônes d'interface",
+    tdTranscodingJxl: "Archivage photo, impression haute résolution, numérisation",
+    converterTitle: "Convertir TIFF en JPG instantanément (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que l'SVG ?",
+    diveTiffP1: "L'SVG (Scalable Vector Graphics) est un standard ouvert du W3C codé en texte XML. Contrairement aux pixels, il indique des instructions de tracé (lignes, cercles, couleurs). Cela rend le fichier extrêmement léger.",
+    diveTiffP2: "Son format texte permet de l'intégrer directement dans les pages HTML. Les moteurs de recherche indexent également les textes au sein de l'SVG, améliorant le référencement naturel.",
+    diveTiffAdv: "Avantages de l'SVG",
+    diveTiffAdvList: [
+      "Netteté parfaite : Reste parfaitement défini sur tous les écrans.",
+      "Légèreté absolue : Idéal pour des temps de chargement ultra-rapides.",
+      "Interactivité : Modifiez ou animez les tracés en CSS ou JavaScript."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le TIFF ?",
+    diveJxlP1: "TIFF signifie Tagged Image File Format. Créé en 1986 par Aldus, il a été conçu pour standardiser les fichiers de numérisation. C'est un format raster très flexible capable de stocker des calques, des masques de transparence et des métadonnées riches.",
+    diveJxlP2: "Puisque le TIFF privilégie la qualité, il utilise une compression sans perte (LZW) ou aucune compression. Les fichiers sont donc très volumineux, mais préservent chaque détail d'origine pour l'archivage photographique.",
+    diveJxlAdv: "Avantages du TIFF",
+    diveJxlAdvList: [
+      "Archivage sans perte : Zéro dégradation pour un rendu pur.",
+      "Prise en charge du CMJN : S'adapte idéalement aux presses à encre physiques.",
+      "Multi-pages : Permet d'intégrer plusieurs pages dans un même document."
+    ],
+    snippetSectionTitle: "Quand utiliser le SVG ou le TIFF",
+    snippetSectionDesc: "Le choix du bon format dépend du support de diffusion finale de votre visuel.",
+    q1: "Quelle est la différence entre SVG et TIFF ?",
+    a1: "L'SVG est un format vectoriel web léger et modifiable par le code. Le TIFF est un format matriciel lourd conçu pour l'impression haute définition et la numérisation.",
+    q2: "Pourquoi ne devrais-je pas publier de TIFF sur mon site ?",
+    a2: "Les navigateurs ne supportent pas le format TIFF en raison de sa taille excessive. Vous devez le convertir en JPEG ou WebP pour qu'il s'affiche correctement sur le web.",
+    q3: "Puis-je convertir un TIFF en SVG ?",
+    q3_text: "Puis-je convertir un TIFF en SVG ?",
+    a3: "Oui, mais avec des limites. La conversion d'un TIFF pixelisé en SVG vectoriel nécessite un traçage. C'est parfait pour un logo simple, mais inadapté pour une photo détaillée.",
+    q4: "Quel format convient le mieux pour l'impression ?",
+    a4: "Pour des photos et des impressions d'art, utilisez le TIFF car il préserve les couleurs CMJN. Pour des logos ou des affiches géantes, privilégiez le format SVG.",
+    q5: "Est-ce que l'SVG et le TIFF gèrent la transparence ?",
+    a5: "Oui, les deux gèrent la transparence. L'SVG utilise du code pour réguler l'opacité des tracés, tandis que le TIFF utilise des canaux alpha pour gérer des calques.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des fichiers TIFF ?",
+    ctaDesc: "Utilisez notre outil gratuit pour convertir vos images TIFF en fichiers JPG universels de façon simple et sécurisée.",
+    ctaButton: "Essayer le convertisseur TIFF en JPG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "SVG vs. TIFF: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "SVG oder TIFF? Wir vergleichen das leichtgewichtige, weboptimierte Vektorformat (SVG) mit dem hochauflösenden Layoutstandard (TIFF). Erfahren Sie mehr.",
+    title: "SVG vs. TIFF: Welches Format ist besser?",
+    intro: "Wir vergleichen das moderne, codebasierte SVG-Vektorformat mit dem hochauflösenden, pixelbasierten TIFF-Format, um Ihnen bei der Wahl für Web, Design und Druck zu helfen.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie SVG für:",
+    useTiffForDesc: "Digitales Design, Website-Logos, UI-Icons und Vektorgrafiken, die auf High-DPI-Monitoren scharf sein müssen.",
+    useJxlFor: "Nutzen Sie TIFF für:",
+    useJxlForDesc: "Professionelle Digitalfotografie, hochauflösendes Dokumenten-Scanning und Druckvorstufen mit verlustfreien Details.",
+    differenceTitle: "Was ist der Unterschied zwischen SVG und TIFF?",
+    differenceDesc: "SVG beschreibt Grafiken mithilfe von XML-Befehlen, während TIFF dichte Pixelraster speichert, um fotografische Details verlustfrei zu sichern.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "TIFF (Tagged Image File Format)",
+    tdCompStandard: "Grafiktyp",
+    tdCompStandardTiff: "Vektor (Mathematische Pfade)",
+    tdCompStandardJxl: "Raster (Pixelraster)",
+    tdFileSize: "Dateigröße",
+    tdFileSizeTiff: "Sehr klein (Unter 10 KB)",
+    tdFileSizeJxl: "Sehr groß (Oft 10 MB bis 100 MB+)",
+    tdColorDepth: "Web-Kompatibilität",
+    tdColorDepthTiff: "Universell (Von allen Browsern unterstützt)",
+    tdColorDepthJxl: "Keine (Wird von Standard-Browsern nicht angezeigt)",
+    tdBrowser: "Skalierbarkeit",
+    tdBrowserTiff: "Unbegrenzt (Immer perfekt scharf)",
+    tdBrowserJxl: "Begrenzt (Pixelbildung bei starker Vergrößerung)",
+    tdPrint: "Ebenen & Seiten",
+    tdPrintTiff: "Nein (Einzelnes Layout)",
+    tdPrintJxl: "Ja (Unterstützt mehrseitige Dokumente und Ebenen)",
+    tdTranscoding: "Idealer Nutzen",
+    tdTranscodingTiff: "Web-Logos, Icons, flache Grafiken",
+    tdTranscodingJxl: "Fotoarchivierung, Druckvorstufen, Scannen",
+    converterTitle: "TIFF in JPG konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist SVG?",
+    diveTiffP1: "SVG steht für Scalable Vector Graphics. Es ist ein W3C-Standard, der in XML geschrieben ist. Anstatt jeden Pixel einzeln zu definieren, beschreibt SVG mathematische Kurven und Formen. Dadurch sind die Dateien extrem klein.",
+    diveTiffP2: "Der XML-Code kann direkt im HTML (inline) verwendet werden, wodurch HTTP-Anfragen eingespart werden. Zudem können Suchmaschinen den Text im SVG auslesen, was das SEO verbessert.",
+    diveTiffAdv: "Vorteile von SVG",
+    diveTiffAdvList: [
+      "Perfekte Skalierbarkeit: Bleibt auf jedem Bildschirm absolut scharf.",
+      "Extrem leicht: Lädt ohne spürbare Verzögerungen im Browser.",
+      "CSS-Steuerung: Farben und Animationen können per Stylesheet angepasst werden."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist TIFF?",
+    diveJxlP1: "TIFF steht für Tagged Image File Format. Es wurde 1986 von Aldus entwickelt und dient als Standard für Scanner-Dateien. Es ist ein hochflexibles Format, das Ebenen, Alphakanäle für Transparenzen und mehrseitige Dokumente sichern kann.",
+    diveJxlP2: "Da TIFF auf maximale Qualität ausgelegt ist, nutzt es verlustfreie Kompressionsalgorithmen (wie LZW) oder verzichtet ganz darauf. Die Dateien sind zwar riesig, aber für Grafikdesigner und Druckereien zur Bewahrung feinster Details unerlässlich.",
+    diveJxlAdv: "Vorteile von TIFF",
+    diveJxlAdvList: [
+      "Verlustfreie Archivierung: Keine Qualitätsverluste bei der Speicherung.",
+      "CMYK-Farbmodell: Optimal abgestimmt auf den professionellen Tintendruck.",
+      "Mehrseitiger Scan: Speichert ganze Dokumentenstapel in einer einzigen Datei."
+    ],
+    snippetSectionTitle: "Wann nutzt man SVG oder TIFF",
+    snippetSectionDesc: "Wählen Sie das Format passend dazu aus, ob Ihre Bilder im Web oder im Druck landen.",
+    q1: "Was ist der Unterschied zwischen SVG und TIFF?",
+    a1: "SVG ist ein leichtes, codebasiertes Vektorformat für Webseiten. TIFF ist ein großes, pixelbasiertes Rasterformat für Dokumenten-Scans und hochwertige Drucke.",
+    q2: "Warum sollte ich TIFF nicht im Web verwenden?",
+    q2_text: "Warum sollte ich TIFF nicht im Web verwenden?",
+    a2: "Da TIFF-Dateien extrem groß sind und von Browsern nicht nativ geladen werden, sind sie fürs Web ungeeignet. Konvertieren Sie sie in JPG, PNG oder WebP.",
+    q3: "Kann ich eine TIFF-Datei in ein SVG umwandeln?",
+    a3: "Ja, dies erfordert jedoch ein Vektorisierungsprogramm (Tracing). Dies funktioniert gut bei einfachen Logos, führt bei Fotos jedoch zu extrem großen XML-Dateien.",
+    q4: "Welches Format ist besser für den Druck?",
+    a4: "Für Fotos und Scans ist TIFF das Standardformat (wegen CMYK-Farbunterstützung). Für Logos und Skalierungsanforderungen ist SVG die bessere Vektor-Wahl.",
+    q5: "Unterstützen SVG und TIFF transparente Hintergründe?",
+    a5: "Ja, beide Formate unterstützen Transparenz. SVG löst dies über Vektorpfade und Code-Styles, TIFF über Alphakanäle in Bildbearbeitungsprogrammen.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie TIFF-Dateien konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um TIFF-Bilder offline und sicher in JPEGs umzuwandeln.",
+    ctaButton: "TIFF-in-JPG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "SVG vs TIFF: Qual formato de imagem é melhor? (Comparativo 2026)",
+    seoDescription: "SVG ou TIFF? Comparamos o formato vetorial leve e otimizado para a web (SVG) com o padrão de alta resolução de publicação (TIFF). Entenda as diferenças.",
+    title: "SVG vs TIFF: Qual formato é melhor?",
+    intro: "Comparamos o formato vetorial baseado em código SVG com o robusto e denso formato TIFF para ajudar você a decidir entre design digital, web e impressões.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use SVG para:",
+    useTiffForDesc: "Design digital, logotipos de sites, ícones de UI, ilustrações responsivas e gráficos leves que precisam de nitidez.",
+    useJxlFor: "Use TIFF para:",
+    useJxlForDesc: "Fotografia digital avançada, escaneamento de alta definição, arquivamento de imagens e impressão gráfica sem perdas.",
+    differenceTitle: "Qual é a diferença entre SVG e TIFF?",
+    differenceDesc: "O SVG define imagens por meio de linhas e caminhos baseados em códigos XML matemáticos, enquanto o TIFF mapeia os pixels diretamente para reter detalhes exatos da câmera.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "TIFF (Tagged Image File Format)",
+    tdCompStandard: "Tipo de imagem",
+    tdCompStandardTiff: "Vetorial (Caminhos matemáticos)",
+    tdCompStandardJxl: "Rasterizado (Grade de pixels)",
+    tdFileSize: "Tamanho de arquivo comum",
+    tdFileSizeTiff: "Mínimo (Geralmente menor que 10 KB)",
+    tdFileSizeJxl: "Gigante (Muitas vezes de 10 MB a mais de 100 MB)",
+    tdColorDepth: "Compatibilidade web",
+    tdColorDepthTiff: "Universal (Suportado por todos os browsers)",
+    tdColorDepthJxl: "Nenhuma (Não abre diretamente em sites comuns)",
+    tdBrowser: "Escalabilidade",
+    tdBrowserTiff: "Infinita (Nitidez perfeita em qualquer zoom)",
+    tdBrowserJxl: "Limitada (Perde definição ao ser esticado)",
+    tdPrint: "Múltiplas páginas e camadas",
+    tdPrintTiff: "Não (Tela de desenho única)",
+    tdPrintJxl: "Sim (Ideal para escaneamentos multipáginas)",
+    tdTranscoding: "Uso recomendado",
+    tdTranscodingTiff: "Logotipos corporativos, ícones digitais",
+    tdTranscodingJxl: "Arquivo de fotos originais, impressos CMYK, escaneamento",
+    converterTitle: "Converter TIFF para JPG instantaneamente (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é SVG?",
+    diveTiffP1: "O SVG é o formato padrão da W3C para gráficos vetoriais codificados em XML. Ao invés de pixels, ele informa ao navegador as coordenadas exatas das linhas e círculos da arte gráfica, resultando em arquivos extremamente pequenos.",
+    diveTiffP2: "Pelo fato de ser gerado por meio de códigos de texto, o SVG pode ser inserido inline nos sites e indexado com facilidade pelo Google, beneficiando o posicionamento SEO orgânico das marcas na internet.",
+    diveTiffAdv: "Vantagens do SVG",
+    diveTiffAdvList: [
+      "Escalabilidade digital: Perfeito em qualquer densidade de tela.",
+      "Leveza: Carregamento web instantâneo de logos e ícones.",
+      "Manipulação dinâmica: Altere cores e opacidades via CSS/JS."
+    ],
+    diveJxlTitle: "Análise profunda: O que é TIFF?",
+    diveJxlP1: "TIFF significa Tagged Image File Format. Desenvolvido pela Aldus em 1986, foi feito originalmente para padronizar arquivos de scanners. Trata-se de um formato raster muito flexível que pode empacotar camadas, transparências e várias páginas em um só arquivo.",
+    diveJxlP2: "Por priorizar a integridade máxima do arquivo, o TIFF costuma usar compressão sem perdas (LZW) ou nenhuma compressão, gerando arquivos pesados. No entanto, é o padrão preferido por gráficas comerciais pela exatidão dos canais de cores CMYK.",
+    diveJxlAdv: "Vantagens do TIFF",
+    diveJxlAdvList: [
+      "Fidelidade intocável: Compactação sem perdas que retém a imagem original.",
+      "CMYK nativo: Perfeito para impressão gráfica tradicional com tintas.",
+      "Armazenamento de páginas: Permite agrupar documentos escaneados inteiros."
+    ],
+    snippetSectionTitle: "Quando usar SVG ou TIFF",
+    snippetSectionDesc: "A escolha varia diretamente se a imagem será veiculada online ou enviada para uma linha de produção gráfica.",
+    q1: "Qual é a diferença entre SVG e TIFF?",
+    a1: "O SVG é um formato vetorial dinâmico, leve e ideal para design web. O TIFF é um formato rasterizado pesado projetado para manter a alta definição em escaneamento e impressões comerciais.",
+    q2: "Por que não devo usar TIFF no meu site?",
+    q2_text: "Por que não devo usar TIFF no meu site?",
+    a2: "Os arquivos TIFF são excessivamente pesados e não rodam por padrão nos navegadores web. Conviértalos para JPEG ou PNG para publicá-los.",
+    q3: "É possível converter TIFF para SVG?",
+    a3: "Sim, porém através de traceamento vetorial. Isso funciona muito bem em logos planos e silhuetas, mas gera arquivos SVG extremamente lentos e complexos se feito em fotografias reais.",
+    q4: "Qual formato escolher para impressos?",
+    a4: "Para fotografias e banners com fundo real, o TIFF é a melhor escolha. Para artes gráficas, logotipos e textos que serão ampliados em grandes escalas, o SVG é o ideal.",
+    q5: "SVG e TIFF suportam transparência de fundo?",
+    a5: "Sim, os dois formatos suportam transparência. O SVG usa tags de código para isso, e o TIFF trabalha com canais alfa de edição profissional.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "¿Precisa converter arquivos TIFF?",
+    ctaDesc: "Use a nossa ferramenta gratuita integrada para converter os seus arquivos TIFF em formato JPG universal offline.",
+    ctaButton: "Testar conversor TIFF para JPG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "SVG vs TIFF: Mana Format Gambar yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "SVG atau TIFF? Kami membandingkan format vektor web ringan (SVG) dengan standar penerbitan raster beresolusi tinggi (TIFF). Pelajari kapan harus menggunakannya.",
+    title: "SVG vs TIFF: Mana Format yang Lebih Baik?",
+    intro: "Kami membandingkan format vektor SVG berbasis kode modern dengan format raster TIFF dengan kepadatan piksel tinggi untuk membantu Anda memahami penggunaan keduanya pada digital, web, dan cetak.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan SVG untuk:",
+    useTiffForDesc: "Desain digital, logo situs web, ikon UI, ilustrasi responsif, dan grafis tajam tanpa memperlambat kecepatan halaman web.",
+    useJxlFor: "Gunakan TIFF untuk:",
+    useJxlForDesc: "Fotografi digital kelas atas, pemindaian dokumen resolusi tinggi, dan pencetakan komersial yang membutuhkan detail lossless.",
+    differenceTitle: "Apa Perbedaan Antara SVG dan TIFF?",
+    differenceDesc: "SVG mewakili gambar menggunakan kode XML yang menentukan garis, bentuk, dan jalur. TIFF memetakan piksel dalam kisi piksel berkerapatan tinggi untuk menjaga detail foto asli.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "SVG (Scalable Vector Graphics)",
+    thJxl: "TIFF (Tagged Image File Format)",
+    tdCompStandard: "Struktur Gambar",
+    tdCompStandardTiff: "Vektor (Jalur matematika)",
+    tdCompStandardJxl: "Raster (Kisi piksel)",
+    tdFileSize: "Ukuran File Rata-rata",
+    tdFileSizeTiff: "Sangat kecil (Biasanya di bawah 10 KB)",
+    tdFileSizeJxl: "Sangat besar (Sering kali 10 MB hingga 100 MB+)",
+    tdColorDepth: "Kompatibilitas Web",
+    tdColorDepthTiff: "Universal (Didukung secara native di semua browser)",
+    tdColorDepthJxl: "Tidak ada (Tidak dapat ditampilkan langsung di web)",
+    tdBrowser: "Skalabilitas",
+    tdBrowserTiff: "Tak terbatas (Sangat tajam pada zoom apa pun)",
+    tdBrowserJxl: "Terbatas (Pecah jika diperbesar melebihi ukuran asli)",
+    tdPrint: "Lapisan & Halaman",
+    tdPrintTiff: "Tidak (Layout viewport tunggal)",
+    tdPrintJxl: "Ya (Dapat menyimpan multi-halaman dan layer)",
+    tdTranscoding: "Penggunaan Ideal",
+    tdTranscodingTiff: "Logo web, ilustrasi datar, ikon antarmuka",
+    tdTranscodingJxl: "Arsip foto, pencetakan resolusi tinggi, pemindaian",
+    converterTitle: "Konversi TIFF ke JPG Instan (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu SVG?",
+    diveTiffP1: "SVG singkatan dari Scalable Vector Graphics. Ini adalah standar terbuka W3C yang ditulis dalam format teks XML. Bukannya merekam warna piksel, file SVG menuliskan koordinat jalur gambar. Ini membuat ukuran file menjadi sangat kecil.",
+    diveTiffP2: "Struktur teks ini membuat SVG dapat ditaruh langsung di kode HTML halaman (inlining), menghemat permintaan HTTP jaringan. Mesin pencari seperti Google juga dapat membaca teks di dalam SVG untuk keperluan optimasi SEO.",
+    diveTiffAdv: "Kelebihan SVG",
+    diveTiffAdvList: [
+      "Ketajaman Sempurna: Tetap tajam di semua resolusi layar digital.",
+      "Sangat Ringan: Ilustrasi datar dan logo dimuat secara instan.",
+      "Dukungan CSS: Mengubah warna jalur dan membuat animasi dengan stylesheet."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu TIFF?",
+    diveJxlP1: "TIFF singkatan dari Tagged Image File Format. Dirancang pertama kali tahun 1986 oleh Aldus, ia merupakan standar universal untuk file scanner. TIFF merupakan format raster sangat fleksibel yang mampu menyimpan layer, transparansi, multi-halaman, dan metadata lengkap.",
+    diveJxlP2: "Karena mengutamakan kualitas, TIFF memakai kompresi lossless (seperti LZW) atau tidak sama sekali. Hal ini membuat file TIFF berukuran sangat besar, namun menjamin detail tangkapan sensor kamera tidak berkurang sedikit pun.",
+    diveJxlAdv: "Kelebihan TIFF",
+    diveJxlAdvList: [
+      "Arsip Tanpa Cacat: Tidak ada penurunan kualitas gambar sama sekali.",
+      "Mendukung CMYK: Cocok dengan profil warna tinta percetakan fisik.",
+      "Multi-halaman: Dapat menyimpan tumpukan dokumen yang dipindai dalam satu file."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan SVG atau TIFF",
+    snippetSectionDesc: "Format gambar yang ideal bergantung pada apakah grafis Anda akan dimuat di browser atau dicetak ke kertas fisik.",
+    q1: "Apa perbedaan antara SVG dan TIFF?",
+    a1: "SVG adalah format vektor berbasis kode matematika yang sangat ringan untuk web. TIFF adalah format raster berbasis piksel berukuran besar untuk scanner dan mesin cetak komersial.",
+    q2: "Mengapa saya tidak boleh memasang gambar TIFF di situs web?",
+    a2: "Gambar TIFF berukuran terlalu besar dan tidak dapat ditampilkan secara native di browser web. Anda harus mengonversinya terlebih dahulu ke format JPEG atau WebP.",
+    q3: "Apakah saya bisa mengubah gambar TIFF ke SVG?",
+    q3_text: "Apakah saya bisa mengubah gambar TIFF ke SVG?",
+    a3: "Ya, tetapi dengan tracing vektor. Ini bekerja baik pada gambar logo sederhana, namun foto yang rumit akan menghasilkan file XML SVG yang sangat besar dan lambat dimuat.",
+    q4: "Format cetak mana yang lebih baik, SVG atau TIFF?",
+    a4: "Untuk foto detail dan dokumen pemindaian, TIFF adalah standar percetakan yang paling aman. Untuk logo, teks spanduk, dan papan reklame besar, gunakan SVG agar tidak pecah.",
+    q5: "Apakah SVG dan TIFF mendukung transparansi latar belakang?",
+    a5: "Ya, kedua format mendukung transparansi. SVG mengelolanya melalui kode jalur, sementara TIFF mengelolanya menggunakan saluran alpha di software desain.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi file TIFF?",
+    ctaDesc: "Gunakan alat gratis browser kami untuk mengonversi gambar TIFF Anda ke format JPG secara offline dan aman.",
+    ctaButton: "Coba Pengonversi TIFF ke JPG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "svg-tiff")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">SVG vs TIFF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-error">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-success">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-error">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-success">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-error">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-error">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-error">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <TiffToJpgTool toolId="tiff-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="SVG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

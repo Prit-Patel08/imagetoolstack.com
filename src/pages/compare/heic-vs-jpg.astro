@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import HeicToJpgTool from "../../components/tools/HeicToJpgTool.astro";
 
 // SEO Metadata
 const seoTitle = "HEIC vs JPG: Which Format is Better for iPhones? (2026)";
@@ -48,6 +49,22 @@ const schema = {
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "HEIC is technically superior. It supports 16-bit color (allowing for vastly better dynamic range and HDR) whereas JPG is limited to 8-bit color. HEIC also captures details with fewer compression artifacts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does HEIC support transparent backgrounds?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, unlike JPG, HEIC supports transparency. It can store alpha channel transparency data, allowing you to have images with transparent backgrounds similar to PNG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the disadvantages of HEIC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The main disadvantages of HEIC are compatibility and browser support. Most web browsers cannot display HEIC files natively, and older Windows PCs, Android devices, or Smart TVs cannot open them without conversion software or third-party codecs."
           }
         }
       ]
@@ -104,6 +121,68 @@ const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
           <p><strong class="text-ink">Use HEIC for:</strong> Storing photographs on your iPhone and Mac to save 50% of your iCloud disk space while maintaining maximum HDR quality.</p>
           <p><strong class="text-ink">Use JPG for:</strong> Sending photos to Windows computers, Android phones, uploading to web forms, or delivering final client galleries.</p>
         </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between HEIC and JPG?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both formats display high-quality images, they utilize completely different compression algorithms and technology. Here is a side-by-side technical comparison of HEIC vs JPG.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">HEIC (High Efficiency Image Container)</th>
+                <th class="p-4">JPG / JPEG (Joint Photographic Experts Group)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Standard</td>
+                <td class="p-4">HEVC (H.265) video compression math</td>
+                <td class="p-4">Discrete Cosine Transform (DCT) (1992)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Average File Size</td>
+                <td class="p-4 text-success">~50% smaller than JPG for equal quality</td>
+                <td class="p-4">Standard size (often twice as large as HEIC)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Color Depth Support</td>
+                <td class="p-4 text-success">Up to 16-bit (Supports HDR/vibrant range)</td>
+                <td class="p-4 text-error">Limited to 8-bit (16.7 million colors)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4 text-success">Yes (supports alpha transparency channel)</td>
+                <td class="p-4 text-error">No (must bake transparent areas to a solid color)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Multi-Image/Burst Container</td>
+                <td class="p-4 text-success">Yes (how Apple Live Photos & depth maps are saved)</td>
+                <td class="p-4 text-error">No (stores only a single flat image frame)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Web Browser Support</td>
+                <td class="p-4 text-error">Very poor (requires conversion before uploading to web)</td>
+                <td class="p-4 text-success">Universal (supported natively in all browsers)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compatibility</td>
+                <td class="p-4 text-error">Limited (trouble on older Windows, Android, Smart TVs)</td>
+                <td class="p-4 text-success">Universal (works on all devices and software platforms)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert HEIC to JPG Instantly (Offline & Private)</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
       </section>
 
       <!-- Real World Tests -->
@@ -211,6 +290,14 @@ const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
           <div class="bg-canvas-soft rounded-xl p-6">
             <h3 class="text-xl font-bold text-ink mb-3">Which format has better quality: HEIC or JPG?</h3>
             <p class="text-body leading-relaxed">HEIC is technically superior. It supports 16-bit color (allowing for vastly better dynamic range and HDR) whereas JPG is limited to 8-bit color. HEIC also captures fine details with fewer blocky compression artifacts.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does HEIC support transparent backgrounds?</h3>
+            <p class="text-body leading-relaxed">Yes, unlike JPG, HEIC supports transparency. It can store alpha channel transparency data, allowing you to have images with transparent backgrounds similar to PNG.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What are the disadvantages of HEIC?</h3>
+            <p class="text-body leading-relaxed">The main disadvantages of HEIC are compatibility and browser support. Most web browsers cannot display HEIC files natively, and older Windows PCs, Android devices, or Smart TVs cannot open them without conversion software or third-party codecs.</p>
           </div>
         </div>
       </section>

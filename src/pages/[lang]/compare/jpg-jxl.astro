@@ -1,0 +1,645 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+const pageTranslations = {
+  es: {
+    seoTitle: "JPG vs JXL: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿JPG o JXL (JPEG XL)? Comparamos el clásico formato JPG con el formato de próxima generación JXL. Conozca las diferencias de tamaño, características y soporte.",
+    title: "JPG vs JXL: ¿Qué formato es mejor?",
+    intro: "Comparamos el formato clásico JPG con el formato de próxima generación JXL para ayudarlo a decidir cuál usar para el diseño web, el almacenamiento a largo plazo y la velocidad del sitio.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use JPG para:",
+    useTiffForDesc: "Publicación web general, redes sociales y envío rápido de fotos a clientes para garantizar la compatibilidad universal.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Archivo de fotos de alta fidelidad, generación de assets de juegos, e imágenes web avanzadas que requieren transparencia y HDR.",
+    differenceTitle: "¿Cuál es la diferencia entre JPG y JXL?",
+    differenceDesc: "JPG se basa en el estándar de compresión DCT clásico, mientras que JXL utiliza los modos avanzados VarDCT y Modular para ofrecer tasas de compresión superiores.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "JPG",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Compresión",
+    tdCompStandardTiff: "Solo con pérdidas",
+    tdCompStandardJxl: "Con y sin pérdidas (VarDCT / Modular)",
+    tdFileSize: "Tamaño del archivo",
+    tdFileSizeTiff: "Estándar",
+    tdFileSizeJxl: "Hasta un 60% más pequeño",
+    tdColorDepth: "Soporte de transparencia",
+    tdColorDepthTiff: "No (fondos sólidos)",
+    tdColorDepthJxl: "Sí (canal alfa nativo)",
+    tdBrowser: "Compatibilidad web",
+    tdBrowserTiff: "100% universal",
+    tdBrowserJxl: "Experimental (requiere flags)",
+    tdPrint: "Transcodificación de JPG",
+    tdPrintTiff: "No",
+    tdPrintJxl: "Sí (ahorra ~20% sin pérdidas)",
+    tdTranscoding: "Uso recomendado",
+    tdTranscodingTiff: "Fotos web universales, redes sociales",
+    tdTranscodingJxl: "Fotografía HDR, archivo digital, assets de juegos",
+    converterTitle: "Optimizar y comprimir imágenes (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es JPG?",
+    diveTiffP1: "JPG (o JPEG) son las siglas de Joint Photographic Experts Group. Creado en 1992, se convirtió en el formato predeterminado para cámaras y páginas web. Al descartar frecuencias menos visibles para el ojo humano, JPG fue pionero en la compresión con pérdidas.",
+    diveTiffP2: "Sin embargo, el formato estándar muestra su antigüedad al no admitir transparencia, animaciones ni pantallas HDR. Las configuraciones de baja calidad introducen artefactos, lo que lo hace inadecuado para logotipos o texto fino.",
+    diveTiffAdv: "Ventajas de JPG",
+    diveTiffAdvList: [
+      "Compatibilidad universal: Cualquier navegador y dispositivo admite JPG de forma nativa.",
+      "Optimizado para web: Archivos ligeros ideales para la entrega de imágenes en línea.",
+      "Predeterminado en cámaras: El formato estándar en la mayoría de cámaras y móviles."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es JXL (JPEG XL)?",
+    diveJxlP1: "JXL, o JPEG XL, fue desarrollado por el Joint Photographic Experts Group y finalizado en 2022. Está diseñado para reemplazar a los formatos antiguos JPEG y WebP al fusionar la ligereza web con características profesionales.",
+    diveJxlP2: "Una de sus propiedades más singulares es la capacidad de transcodificar archivos JPG existentes sin pérdidas en contenedores JXL. Este proceso reduce el tamaño alrededor de un 20% al instante y permite volver al JPG original sin perder ningún byte.",
+    diveJxlAdv: "Ventajas de JXL",
+    diveJxlAdvList: [
+      "Compresión extrema: Reduce los archivos hasta un 60% manteniendo la misma calidad.",
+      "Soporte de transparencia: Admite capas transparentes de forma nativa.",
+      "Transcodificación perfecta: Reduce el espacio de los JPG antiguos sin pérdidas.",
+      "Color HDR: Soporta colores de alta definición para renderizado moderno."
+    ],
+    q1: "¿Cuál es la diferencia entre JPG y JXL (JPEG XL)?",
+    a1: "JPG es el estándar tradicional con compresión con pérdidas de compatibilidad universal. JXL es un formato de nueva generación con compresión avanzada que admite transparencia, HDR y transcodificación de JPG sin pérdidas.",
+    q2: "¿Es JXL mejor que el JPG?",
+    a2: "Sí, técnicamente es superior. Ofrece hasta un 60% mejor compresión, admite transparencia nativa, animación y HDR, cosas que el JPG tradicional no puede hacer.",
+    q3: "¿Soportan los navegadores JXL nativamente?",
+    a3: "No, actualmente JXL no está soportado por defecto en Chrome, Safari ni Firefox sin activar opciones de desarrollo experimentales, mientras que JPG es universal.",
+    q4: "¿Puedo convertir un JPG a JXL sin perder calidad?",
+    a4: "Sí. JXL admite una transcodificación sin pérdidas que reduce un 20% el tamaño del JPG original y permite reconstruirlo bit a bit con total fidelidad.",
+    q5: "¿Por qué debería usar JPG en lugar de JXL hoy en día?",
+    a5: "Principalmente por compatibilidad. El formato JPG funciona en todos los dispositivos y plataformas. JXL está en fases tempranas y aún no es adecuado para uso general en la web.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Quiere comprimir sus imágenes JPG?",
+    ctaDesc: "Utilice nuestro Compresor de Imágenes gratuito y local para optimizar sus archivos JPG al instante sin subirlos a ningún servidor.",
+    ctaButton: "Probar el Compresor de Imágenes",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "JPG vs JXL : Quel format d'image est le meilleur ? (Comparatif 2026)",
+    seoDescription: "JPG ou JXL (JPEG XL) ? Nous comparons le classique format JPG avec le JXL de nouvelle génération. Découvrez les tailles, les fonctionnalités et le support.",
+    title: "JPG vs JXL : Quel format est le meilleur ?",
+    intro: "Nous comparons le format classique JPG avec le format de nouvelle génération JXL pour vous aider à choisir pour le design web, l'archivage et les Core Web Vitals.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le JPG pour :",
+    useTiffForDesc: "La publication web générale, les réseaux sociaux et le partage rapide de photos afin de garantir une compatibilité avec 100 % des appareils.",
+    useJxlFor: "Utilisez le JXL pour :",
+    useJxlForDesc: "L'archivage photo haute fidélité, les assets de jeux vidéo et l'intégration web avancée nécessitant transparence et HDR.",
+    differenceTitle: "Quelle est la différence entre JPG et JXL ?",
+    differenceDesc: "Le JPG utilise la compression classique DCT, alors que le JXL s'appuie sur les modes VarDCT et Modular pour de meilleurs ratios de compression.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "JPG",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Compression",
+    tdCompStandardTiff: "Avec perte uniquement",
+    tdCompStandardJxl: "Sans et avec perte (VarDCT / Modular)",
+    tdFileSize: "Taille de fichier",
+    tdFileSizeTiff: "Standard",
+    tdFileSizeJxl: "Jusqu'à 60 % plus petit",
+    tdColorDepth: "Gestion de la transparence",
+    tdColorDepthTiff: "Non (fond uni)",
+    tdColorDepthJxl: "Oui (canal alpha natif)",
+    tdBrowser: "Compatibilité web",
+    tdBrowserTiff: "100 % universelle",
+    tdBrowserJxl: "Expérimentale (nécessite des flags)",
+    tdPrint: "Transcodage de JPG",
+    tdPrintTiff: "Non",
+    tdPrintJxl: "Oui (gain de ~20 % sans perte)",
+    tdTranscoding: "Usage recommandé",
+    tdTranscodingTiff: "Photos web universelles, réseaux sociaux",
+    tdTranscodingJxl: "Photo HDR, archivage numérique, assets 3D",
+    converterTitle: "Optimiser et compresser des images (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le JPG ?",
+    diveTiffP1: "Le JPG (ou JPEG) signifie Joint Photographic Experts Group. Créé en 1992, il est devenu le format par défaut pour le web. En éliminant les détails peu visibles pour l'œil humain, le JPG a popularisé la compression avec perte.",
+    diveTiffP2: "Cependant, ce format montre ses limites : il ne gère pas la transparence, l'animation, ni le HDR. Des compressions fortes font apparaître des artefacts gênants pour les textes ou logos.",
+    diveTiffAdv: "Avantages du JPG",
+    diveTiffAdvList: [
+      "Compatibilité totale : Pris en charge par tous les navigateurs et logiciels.",
+      "Optimisé pour le web : Fichiers légers faciles à diffuser en ligne.",
+      "Format universel : Le format natif des appareils photo et smartphones."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le JXL (JPEG XL) ?",
+    diveJxlP1: "Le JXL (JPEG XL) a été finalisé par le groupe JPEG en 2022. Il vise à remplacer les formats JPEG et WebP en combinant performances web et fonctionnalités d'archivage professionnelles.",
+    diveJxlP2: "Sa particularité réside dans le transcodage sans perte des JPG existants. Il permet de réduire la taille des fichiers JPG d'environ 20 % de manière réversible, sans aucune dégradation de pixels.",
+    diveJxlAdv: "Avantages du JXL",
+    diveJxlAdvList: [
+      "Compression extrême : Réduction de poids jusqu'à 60 % à qualité égale.",
+      "Transparence native : Prise en charge transparente de l'alpha channel.",
+      "Transcodage parfait : Réduction des JPG existants de façon réversible.",
+      "HDR & Couleurs : Supporte les profils de couleurs de pointe pour écrans modernes."
+    ],
+    q1: "Quelle est la différence entre JPG et JXL (JPEG XL) ?",
+    a1: "Le JPG est le standard historique avec compression avec perte. Le JXL est le format de nouvelle génération offrant une compression avancée, la transparence native, le HDR et le transcodage JPG sans perte.",
+    q2: "Le JXL est-il meilleur que le JPG ?",
+    a2: "Oui, le JXL est techniquement bien supérieur. Il offre une compression jusqu'à 60 % plus efficace, gère la transparence, l'animation et le HDR, ce que le JPG ne fait pas.",
+    q3: "Les navigateurs prennent-ils en charge le JXL ?",
+    a3: "Non, le JXL n'est pas encore pris en charge par défaut dans Chrome, Safari ou Firefox sans activer des flags expérimentaux, contrairement au JPG.",
+    q4: "Puis-je convertir un JPG en JXL sans perte de qualité ?",
+    a4: "Oui. Le JXL prend en charge un transcodage sans perte qui réduit le poids du JPG de 20 % tout en permettant de retrouver le fichier d'origine bit par bit.",
+    q5: "Pourquoi utiliser le JPG au lieu du JXL aujourd'hui ?",
+    a5: "Pour la compatibilité universelle. Le JPG fonctionne sur tous les écrans et plateformes. Le JXL est encore en cours d'adoption pour le grand public.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de compresser vos images JPG ?",
+    ctaDesc: "Utilisez notre compresseur d'images local et gratuit pour optimiser vos fichiers JPG instantanément.",
+    ctaButton: "Essayer le compresseur d'images",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "JPG vs. JXL: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "JPG oder JXL (JPEG XL)? Wir vergleichen das klassische JPG-Format mit dem JXL-Format der nächsten Generation. Erfahren Sie mehr über Dateigrößen und Support.",
+    title: "JPG vs. JXL: Welches Format ist besser?",
+    intro: "Wir vergleichen das klassische JPG-Format mit dem JXL-Format der nächsten Generation, um Ihnen bei der Wahl für Webdesign und digitale Archivierung zu helfen.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie JPG für:",
+    useTiffForDesc: "Allgemeine Web-Veröffentlichungen, Social Media und das Teilen von Fotos, um maximale Kompatibilität zu garantieren.",
+    useJxlFor: "Nutzen Sie JXL für:",
+    useJxlForDesc: "Hochwertige Fotoarchivierung, Spiele-Assets und modernes Webdesign, das Transparenz und HDR-Farbräume benötigt.",
+    differenceTitle: "Was ist der Unterschied zwischen JPG und JXL?",
+    differenceDesc: "JPG basiert auf der klassischen DCT-Kompression, während JXL die fortschrittlicheren Modi VarDCT und Modular nutzt.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "JPG",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Kompression",
+    tdCompStandardTiff: "Nur verlustbehaftet",
+    tdCompStandardJxl: "Verlustfrei & Verlustbehaftet (VarDCT / Modular)",
+    tdFileSize: "Dateigröße",
+    tdFileSizeTiff: "Standard",
+    tdFileSizeJxl: "Bis zu 60% kleiner",
+    tdColorDepth: "Transparenzunterstützung",
+    tdColorDepthTiff: "Nein (Hintergrund wird farbig)",
+    tdColorDepthJxl: "Ja (Nativer Alpha-Kanal)",
+    tdBrowser: "Web-Kompatibilität",
+    tdBrowserTiff: "100% universell",
+    tdBrowserJxl: "Experimentell (Erfordert Browser-Flags)",
+    tdPrint: "Verlustfreie JPG-Konvertierung",
+    tdPrintTiff: "Nein",
+    tdPrintJxl: "Ja (Spart ~20% Dateigröße)",
+    tdTranscoding: "Idealer Nutzen",
+    tdTranscodingTiff: "Universelle Web-Fotos, Social Media",
+    tdTranscodingJxl: "HDR-Fotografie, digitale Archivierung",
+    converterTitle: "Bilder optimieren und komprimieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist JPG?",
+    diveTiffP1: "JPG (oder JPEG) steht für Joint Photographic Experts Group. Es wurde 1992 eingeführt und entwickelte sich schnell zum Webstandard. Durch das Verwerfen feiner, kaum sichtbarer Details revolutionierte es die Bildspeicherung.",
+    diveTiffP2: "Der Standard unterstützt jedoch weder Transparenzen noch HDR. Stärkere Kompression führt zu blockartigen Artefakten, die insbesondere bei Texten und Logos stören.",
+    diveTiffAdv: "Vorteile von JPG",
+    diveTiffAdvList: [
+      "Universelle Kompatibilität: Wird von allen Browsern und Geräten unterstützt.",
+      "Web-optimiert: Leicht genug für eine schnelle Ladezeit im Netz.",
+      "Kamera-Standard: Das Standard-Aufnahmeformat fast aller Kameras."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist JXL (JPEG XL)?",
+    diveJxlP1: "JXL (JPEG XL) wurde 2022 von der JPEG-Gruppe finalisiert. Es soll veraltete JPEG- und WebP-Formate ersetzen, indem es Web-Performance mit professionellen Archivierungs-Features vereint.",
+    diveJxlP2: "Ein Highlight ist die verlustfreie Transkodierung von bestehenden JPGs. Dadurch lässt sich die Dateigröße um etwa 20% reduzieren, während das originale JPG jederzeit bitgenau wiederhergestellt werden kann.",
+    diveJxlAdv: "Vorteile von JXL",
+    diveJxlAdvList: [
+      "Extreme Kompression: Bis zu 60% kleinere Dateien bei gleicher Qualität.",
+      "Transparenzen: Unterstützt transparente Layer nativ.",
+      "Verlustfreie Transkodierung: Schrumpft bestehende JPEGs ohne Qualitätsverlust.",
+      "Farbraum: Unterstützt Wide-Gamut- und HDR-Inhalte für moderne Monitore."
+    ],
+    q1: "Was ist der Unterschied zwischen JPG und JXL (JPEG XL)?",
+    a1: "JPG ist der historische Webstandard mit verlustbehafteter Kompression. JXL ist ein neues Format mit hocheffizienter Kompression, Transparenz, HDR und verlustfreier JPEG-Transkodierung.",
+    q2: "Ist JXL besser als JPG?",
+    a2: "Ja, JXL ist technisch weit überlegen. Es bietet bis zu 60% bessere Kompressionsraten, unterstützt native Transparenz, Animationen und HDR, was JPG nicht kann.",
+    q3: "Unterstützen Browser JXL nativ?",
+    a3: "Nein, derzeit ist JXL in Chrome, Safari und Firefox nur über experimentelle Entwickler-Flags aktivierbar. JPG ist dagegen zu 100% kompatibel.",
+    q4: "Kann ich JPG verlustfrei in JXL umwandeln?",
+    a4: "Ja. JXL verfügt über eine verlustfreie Transkodierungsfunktion, die die Dateigröße um 20% verringert, wobei das Original-JPG exakt rekonstruiert werden kann.",
+    q5: "Warum sollte ich heute noch JPG statt JXL nutzen?",
+    a5: "Hauptsächlich wegen der Kompatibilität. JPG funktioniert überall. JXL befindet sich noch in der frühen Einführungsphase.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Ihre JPG-Bilder komprimieren?",
+    ctaDesc: "Nutzen Sie unseren kostenlosen Browser-Bildkomprimierer, um Bilder sicher lokal zu optimieren.",
+    ctaButton: "Bildkomprimierer testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "JPG vs JXL: Qual formato de imagem é melhor? (Comparação 2026)",
+    seoDescription: "JPG ou JXL (JPEG XL)? Comparamos o clássico formato JPG com o novo JXL. Entenda as taxas de compressão, tamanho de arquivo e suporte web.",
+    title: "JPG vs JXL: Qual formato é melhor?",
+    intro: "Comparamos o tradicional formato JPG com o formato de nova geração JXL para ajudar você a escolher a melhor opção para design web e arquivamento.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use JPG para:",
+    useTiffForDesc: "Publicação na web de uso geral, upload em redes sociais e envio de fotos digitais garantindo compatibilidade universal.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Arquivamento de fotos em alta definição, assets de jogos digitais e imagens web avançadas com transparência e cores HDR.",
+    differenceTitle: "Qual é a diferença entre JPG e JXL?",
+    differenceDesc: "O JPG utiliza o clássico padrão de compactação DCT, enquanto o JXL usa os modos VarDCT e Modular para compactar com maior eficiência.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "JPG",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Compressão",
+    tdCompStandardTiff: "Apenas com perdas",
+    tdCompStandardJxl: "Com e sem perdas (VarDCT / Modular)",
+    tdFileSize: "Tamanho do arquivo",
+    tdFileSizeTiff: "Padrão",
+    tdFileSizeJxl: "Até 60% menor",
+    tdColorDepth: "Transparência",
+    tdColorDepthTiff: "Não (fundo sólido)",
+    tdColorDepthJxl: "Sim (canal alfa nativo)",
+    tdBrowser: "Compatibilidade web",
+    tdBrowserTiff: "100% universal",
+    tdBrowserJxl: "Experimental (requer flags)",
+    tdPrint: "Transcodificação de JPG",
+    tdPrintTiff: "Não",
+    tdPrintJxl: "Sim (economiza ~20% sem perdas)",
+    tdTranscoding: "Uso recomendado",
+    tdTranscodingTiff: "Fotos na web, redes sociais",
+    tdTranscodingJxl: "Fotografia HDR, arquivamento digital",
+    converterTitle: "Comprimir e otimizar imagens (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é JPG?",
+    diveTiffP1: "JPG (ou JPEG) significa Joint Photographic Experts Group. Desenvolvido em 1992, virou o formato de imagem padrão do web design. Ele elimina detalhes de frequências visuais pouco notadas pelo olho humano.",
+    diveTiffP2: "Mas o JPG mostra sinais de idade: ele carece de suporte a transparência de fundos, animações ou cores HDR. Compressões muito fortes deixam blocos de ruído na imagem.",
+    diveTiffAdv: "Vantagens do JPG",
+    diveTiffAdvList: [
+      "Compatibilidade total: Roda em qualquer browser e dispositivo de forma nativa.",
+      "Pronto para web: Arquivos leves ótimos para carregamento rápido.",
+      "Padrão de fotografia: O formato padrão em câmeras e celulares."
+    ],
+    diveJxlTitle: "Análise profunda: O que é JXL (JPEG XL)?",
+    diveJxlP1: "O JXL (JPEG XL) foi finalizado em 2022 pelo grupo JPEG. Ele foi concebido para suceder os formatos JPEG e WebP, unindo eficiência web com recursos profissionais de arquivamento.",
+    diveJxlP2: "Um dos seus recursos mais interessantes é a transcodificação sem perdas de JPGs legados. Ela encolhe arquivos JPG antigos em cerca de 20% mantendo a capacidade de restaurá-los bit a bit.",
+    diveJxlAdv: "Vantagens do JXL",
+    diveJxlAdvList: [
+      "Compactação extrema: Arquivos até 60% menores sem alteração na qualidade.",
+      "Camadas transparentes: Suporta transparência nativa.",
+      "Transcodificação perfeita: Diminui o peso de JPGs antigos de forma reversível.",
+      "Suporte a HDR: Suporta exibição de cores profundas para telas modernas."
+    ],
+    q1: "Qual é a diferença entre JPG e JXL (JPEG XL)?",
+    a1: "O JPG é o padrão histórico de imagem baseado em compressão com perdas. O JXL é um formato de próxima geração que oferece taxas superiores de compressão, transparência e HDR.",
+    q2: "O JXL é melhor do que o JPG?",
+    a2: "Sim, o JXL é muito superior. Ele gera arquivos até 60% menores, suporta canal de transparência e imagens HDR, coisas que o JPG não pode realizar.",
+    q3: "Os navegadores abrem JXL nativamente?",
+    a3: "Não, por enquanto o JXL não vem habilitado por padrão em navegadores comuns sem alterar configurações experimentais. O JPG é 100% suportado.",
+    q4: "Posso converter um JPG em JXL sem perder qualidade?",
+    a4: "Sim. O JXL permite compactar JPGs existentes de forma reversível com ganho de 20% de espaço sem perder um único byte da qualidade original.",
+    q5: "Por que devo usar o JPG em vez de JXL hoje?",
+    a5: "Por conta da compatibilidade universal. O JPG roda em qualquer plataforma. O JXL ainda está na fase inicial de adoção pelo mercado.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Deseja comprimir as suas fotos JPG?",
+    ctaDesc: "Use a nossa ferramenta de compressão local e gratuita para reduzir arquivos JPG sem enviar dados para servidores.",
+    ctaButton: "Testar compressor de imagem",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "JPG vs JXL: Mana Format Gambar yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "JPG atau JXL (JPEG XL)? Kami membandingkan format JPG universal dengan format generasi berikutnya JXL. Pelajari ukuran file, fitur, dan dukungannya.",
+    title: "JPG vs JXL: Mana Format yang Lebih Baik?",
+    intro: "Kami membandingkan format klasik JPG dengan format masa depan JXL untuk membantu Anda menentukan pilihan terbaik untuk web, desain, dan pengarsipan foto.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan JPG untuk:",
+    useTiffForDesc: "Penerbitan web umum, unggahan media sosial, dan pengiriman foto cepat yang membutuhkan jaminan kompatibilitas 100% pada semua perangkat.",
+    useJxlFor: "Gunakan JXL untuk:",
+    useJxlForDesc: "Pengarsipan foto resolusi tinggi, aset game digital, dan aset grafis modern yang memerlukan transparansi serta warna HDR.",
+    differenceTitle: "Apa Perbedaan Antara JPG dan JXL?",
+    differenceDesc: "JPG mengandalkan kompresi DCT lama, sedangkan JXL menggunakan metode VarDCT dan Modular untuk menghasilkan file yang jauh lebih kecil.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "JPG",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Kompresi",
+    tdCompStandardTiff: "Hanya lossy",
+    tdCompStandardJxl: "Lossless & Lossy (VarDCT / Modular)",
+    tdFileSize: "Ukuran File",
+    tdFileSizeTiff: "Standar",
+    tdFileSizeJxl: "Hingga 60% lebih kecil",
+    tdColorDepth: "Dukungan Transparansi",
+    tdColorDepthTiff: "Tidak (latar belakang padat)",
+    tdColorDepthJxl: "Ya (saluran alpha native)",
+    tdBrowser: "Kompatibilitas Web",
+    tdBrowserTiff: "100% universal",
+    tdBrowserJxl: "Eksperimental (butuh pengaturan developer)",
+    tdPrint: "Transkode Lossless JPG",
+    tdPrintTiff: "Tidak",
+    tdPrintJxl: "Ya (menghemat ~20% ukuran gambar)",
+    tdTranscoding: "Penggunaan Ideal",
+    tdTranscodingTiff: "Foto web umum, media sosial",
+    tdTranscodingJxl: "Fotografi HDR, pengarsipan foto, aset game",
+    converterTitle: "Optimalkan dan Kompres Gambar (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu JPG?",
+    diveTiffP1: "JPG (atau JPEG) singkaran dari Joint Photographic Experts Group. Dibuat tahun 1992, ia menjadi format gambar standar untuk kamera dan web. JPG membuang informasi detail pixel yang tidak terlalu disadari mata manusia.",
+    diveTiffP2: "Namun, JPG sudah mulai ketinggalan zaman karena tidak mendukung transparansi, animasi, atau warna HDR. Kompresi berlebih akan menimbulkan kotak-kotak piksel yang kasar.",
+    diveTiffAdv: "Kelebihan JPG",
+    diveTiffAdvList: [
+      "Kompatibilitas Mutlak: Didukung oleh semua browser dan perangkat.",
+      "Optimisasi Web: Ringan dan cepat dimuat di halaman web.",
+      "Format Default Kamera: Digunakan secara native pada kamera dan ponsel."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu JXL (JPEG XL)?",
+    diveJxlP1: "JXL atau JPEG XL dikembangkan oleh komite JPEG dan difinalisasi tahun 2022. Ini dirancang untuk menggantikan JPG dan WebP dengan menggabungkan kompresi web efisien dan pengarsipan profesional.",
+    diveJxlP2: "Salah satu fiturnya yang unik adalah kemampuan transkode JPG lama ke format JXL secara lossless. Fitur ini mengurangi ukuran file sebesar 20% tanpa membuang kualitas bit visual aslinya.",
+    diveJxlAdv: "Kelebihan JXL",
+    diveJxlAdvList: [
+      "Kompresi Luar Biasa: Mengurangi ukuran file hingga 60% dengan kualitas sama.",
+      "Transparansi Native: Mendukung transparansi alpha channel secara langsung.",
+      "Transkode Bit Sempurna: Mengecilkan file JPG lama dengan aman.",
+      "Warna HDR: Natively mendukung HDR untuk tampilan modern."
+    ],
+    q1: "Apa perbedaan antara JPG dan JXL (JPEG XL)?",
+    a1: "JPG adalah standar lawas dengan kompresi lossy universal. JXL adalah format generasi baru dengan kompresi tingkat tinggi yang mendukung transparansi, HDR, dan transkode JPG lossless.",
+    q2: "Apakah JXL lebih baik daripada JPG?",
+    a2: "Ya, JXL secara teknis jauh lebih baik. Ia menawarkan ukuran file 60% lebih kecil, mendukung transparansi, dan HDR yang tidak dimiliki oleh JPG standar.",
+    q3: "Apakah browser mendukung JXL?",
+    a3: "Tidak, saat ini browser populer seperti Chrome, Safari, dan Firefox belum mengaktifkannya secara default tanpa flag eksperimental.",
+    q4: "Apakah saya bisa mengubah JPG ke JXL tanpa mengurangi kualitas?",
+    a4: "Ya. JXL mendukung transkode lossless yang mengecilkan ukuran JPG sebesar 20% dan dapat diubah kembali ke format aslinya secara sempurna.",
+    q5: "Mengapa saya sebaiknya memakai JPG dibanding JXL saat ini?",
+    a5: "Karena jaminan kompatibilitas. JPG dapat dibuka di mana saja, sedangkan JXL masih berada pada tahap adopsi awal.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Ingin mengompres gambar JPG Anda?",
+    ctaDesc: "Gunakan alat kompresi offline gratis kami di browser untuk mengecilkan file JPG tanpa unggah ke server.",
+    ctaButton: "Coba Kompresor Gambar",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "jpg-jxl")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">JPG vs JXL</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JXL</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-error">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-success">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-error">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-error">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JXL -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="JPG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

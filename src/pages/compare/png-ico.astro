@@ -1,0 +1,290 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import IcoConverterTool from "../../components/tools/IcoConverterTool.astro";
+
+// SEO Metadata
+const seoTitle = "PNG vs ICO: Which Format is Better for Favicons? (2026)";
+const seoDescription = "PNG vs ICO. We compare Portable Network Graphics with the legacy ICO icon container. Learn when to use each for web design and favicons.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between PNG and ICO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PNG is a modern raster image format optimized for high-quality, losslessly compressed web graphics and transparency. ICO is an icon container format designed for Windows applications and website favicons. An ICO file can package multiple sizes (e.g., 16x16, 32x32) of an image inside a single file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use ICO instead of PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use ICO exclusively for website favicons (placed at the root directory as favicon.ico) to guarantee compatibility with legacy browsers, bookmarks, and search engine crawlers. For standard web assets, layouts, and illustrations, use PNG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert a PNG to an ICO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, you can easily convert any square PNG image into a standard favicon ICO file using our free offline PNG to ICO converter. The tool packages the image data client-side in your browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do modern browsers support PNG favicons?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, all modern web browsers support PNG files for favicons using the rel='icon' HTML tag. However, keeping a fallback favicon.ico file at your root directory is still recommended for maximum compatibility with all indexers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are ICO file sizes larger than PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ICO files are containers. If an ICO file packages multiple copies of the same image at different resolutions (like 16x16, 32x32, and 48x48) to fit different UI contexts, the combined file size will naturally be larger than a single PNG."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-ico")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "ico-converter");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs ICO</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">ICO</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">PNG vs ICO: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Need to design a website favicon or application icon? We compare the modern PNG format with the classic ICO container format to see which delivers better performance and compatibility.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use ICO for:</strong> The main website `favicon.ico` in the root directory and OS application icons to guarantee full cross-device and legacy system support.</p>
+          <p><strong class="text-ink">Use PNG for:</strong> Web app icons, high-resolution logos, vector-like graphics, and standard page assets to leverage modern compression rates and smaller file weights.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between PNG and ICO?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          The core distinction is that PNG is a single raster image file using deflate compression, while ICO is an uncompressed or PNG-compressed directory container capable of packing multiple resolutions.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">PNG (Portable Network Graphics)</th>
+                <th class="p-4">ICO (Icon Container Format)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">File Nature</td>
+                <td class="p-4">Single raster image</td>
+                <td class="p-4 text-success">Container for multiple resolution copies</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Primary Purpose</td>
+                <td class="p-4">General web graphics, UI, text assets</td>
+                <td class="p-4 text-success">Website favicons, OS application icons</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Packed Resolutions</td>
+                <td class="p-4">One single resolution</td>
+                <td class="p-4 text-success">Multiple sizes (16px to 256px) in one file</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">File Size Efficiency</td>
+                <td class="p-4 text-success">Highly efficient (deflate compression)</td>
+                <td class="p-4">Larger (combines multiple images)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency</td>
+                <td class="p-4 text-success">Yes (8-bit alpha channel)</td>
+                <td class="p-4 text-success">Yes (Fully supported)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Universal Favicon Fallback</td>
+                <td class="p-4 text-error">No (Legacy browsers require .ico)</td>
+                <td class="p-4 text-success">Yes (Supported universally by all clients)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Animation</td>
+                <td class="p-4 text-success">Yes (APNG)</td>
+                <td class="p-4 text-error">No</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert PNG to ICO Favicon (Offline & Private)</h2>
+        <IcoConverterTool toolId="png-to-ico" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PNG?</h2>
+        <p>
+          PNG stands for Portable Network Graphics. Finalized in 1996, it was designed as a modern, patent-free replacement for GIF. Using lossless compression, it maintains perfect pixel alignment.
+        </p>
+        <p>
+          PNG is standard for general web layout because of its 8-bit alpha channel, enabling transparency with soft anti-aliased shadows. It works universally on standard websites, though it only contains a single image copy.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Lossless Quality:</strong> Perfect pixels without compression halos.</li>
+          <li><strong>Alpha Channel:</strong> Soft transparent overlays.</li>
+          <li><strong>Small Web Payload:</strong> Smaller file size compared to packing multiple files.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: ICO -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is an ICO?</h2>
+        <p>
+          ICO is the proprietary icon container format designed by Microsoft for Windows desktop app icons and website favicons. Unlike standard image extensions, an ICO file wraps multiple separate bitmap or PNG files of different resolutions in a single binary.
+        </p>
+        <p>
+          This is crucial for favicons. When a browser tabs are compacted, it loads the 16x16 icon from the ICO. When placed on the desktop, it pulls the 32x32 or 48x48 icon, keeping the graphic crisp at different display layouts.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">ICO Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Multi-resolution Packaging:</strong> Houses different sizes inside a single asset.</li>
+          <li><strong>Root Fallback:</strong> The standard file indexers, bookmarks, and legacy clients search for automatically.</li>
+          <li><strong>OS App Defaults:</strong> Required format for Windows desktop files and shortcuts.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between PNG and ICO?</h3>
+            <p class="text-body leading-relaxed">PNG is a modern raster image format optimized for high-quality, losslessly compressed web graphics and transparency. ICO is an icon container format designed for Windows applications and website favicons. An ICO file can package multiple sizes (e.g., 16x16, 32x32) of an image inside a single file.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I use ICO instead of PNG?</h3>
+            <p class="text-body leading-relaxed">Use ICO exclusively for website favicons (placed at the root directory as favicon.ico) to guarantee compatibility with legacy browsers, bookmarks, and search engine crawlers. For standard web assets, layouts, and illustrations, use PNG.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can I convert a PNG to an ICO?</h3>
+            <p class="text-body leading-relaxed">Yes, you can easily convert any square PNG image into a standard favicon ICO file using our free offline PNG to ICO converter. The tool packages the image data client-side in your browser.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Do modern browsers support PNG favicons?</h3>
+            <p class="text-body leading-relaxed">Yes, all modern web browsers support PNG files for favicons using the rel='icon' HTML tag. However, keeping a fallback favicon.ico file at your root directory is still recommended for maximum compatibility with all indexers.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why are ICO file sizes larger than PNG?</h3>
+            <p class="text-body leading-relaxed">ICO files are containers. If an ICO file packages multiple copies of the same image at different resolutions (like 16x16, 32x32, and 48x48) to fit different UI contexts, the combined file size will naturally be larger than a single PNG.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Want to generate custom icons?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Try our client-side Favicon Generator to build multi-resolution favicons and app icons securely and fast from your browser.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

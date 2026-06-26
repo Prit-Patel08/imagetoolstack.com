@@ -1,0 +1,900 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "WebP vs PNG: ¿Es WebP realmente mejor? (Guía 2026)",
+    seoDescription: "¿WebP o PNG? Probamos ambos formatos en tamaño de archivo, transparencia y canales alfa para ver si debería hacer el cambio para su sitio web.",
+    title: "WebP vs PNG: ¿Es WebP realmente mejor?",
+    intro: "Durante décadas, PNG fue el rey indiscutible de los gráficos web. Si necesitaba un logotipo, un icono o cualquier imagen con un fondo transparente, usaba un PNG. Pero luego Google lanzó WebP. He aquí por qué toda la web está haciendo el cambio.",
+    quickAnswer: "Respuesta Rápida",
+    useWebpFor: "Use WebP para:",
+    useWebpForDesc: "subir imágenes a su sitio web, blog o aplicación para maximizar la velocidad y el SEO.",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "diseñar en Figma, guardar recursos localmente o enviar archivos a personas con dispositivos antiguos.",
+    converterTitle: "Convertir WebP a PNG al instante (Gratis y Privado)",
+    differenceTitle: "¿Cuál es la diferencia entre WebP y PNG?",
+    differenceDesc: "Aunque ambos formatos admiten transparencia y codificación sin pérdidas, utilizan tecnologías de compresión completamente diferentes. Aquí hay una comparación técnica lado a lado.",
+    thFeature: "Característica",
+    thWebp: "WebP (Google Next-Gen)",
+    thPng: "PNG (Portable Network Graphics)",
+    tdCompression: "Tipo de compresión",
+    tdCompressionWebp: "Con y Sin pérdidas (VP8/VP8L predictivo)",
+    tdCompressionPng: "Sin pérdidas (algoritmo DEFLATE)",
+    tdTransparency: "Soporte de transparencia",
+    tdTransparencyWebp: "Sí (soporta canal Alfa en ambos modos)",
+    tdTransparencyPng: "Sí (soporta canal Alfa)",
+    tdQuality: "Calidad de imagen",
+    tdQualityWebp: "Excelente (idéntica en sin pérdidas, variable en con pérdidas)",
+    tdQualityPng: "Reproducción perfecta 1:1 de píxeles",
+    tdMetadata: "Metadatos EXIF",
+    tdMetadataWebp: "Soporte completo",
+    tdMetadataPng: "Soporte limitado/básico",
+    tdAnimation: "Soporte de animación",
+    tdAnimationWebp: "Sí (animación WebP - reemplaza a GIF)",
+    tdAnimationPng: "Sí (a través de APNG, menos común)",
+    tdIdealFor: "Caso de uso ideal",
+    tdIdealForWebp: "Banners web, fotos, recursos de interfaz y velocidad web",
+    tdIdealForPng: "Logotipos, archivos de diseño de origen, texto, capturas de pantalla",
+    tdFileSize: "Tamaño de archivo típico",
+    tdFileSizeWebp: "Extremadamente pequeño (25-30% más pequeño que PNG sin pérdidas)",
+    tdFileSizePng: "Grande (carga pesada)",
+    tdWebSpeed: "Velocidad de carga web",
+    tdWebSpeedWebp: "Rápido (archivos ligeros optimizados)",
+    tdWebSpeedPng: "Lento (tarda más en conexiones lentas)",
+    
+    testTitle: "Pruebas del mundo real: Tamaños de archivo WebP vs PNG",
+    testDesc: "Para demostrar la eficiencia de los formatos de próxima generación, tomamos un gráfico de producto transparente y una fotografía, y los guardamos como PNG y WebP. Los resultados muestran por qué Google recomienda WebP.",
+    testPngTitle: "PNG (Sin pérdidas)",
+    testPngDesc: "Preserva el 100% de los píxeles con transparencia. Visualmente perfecto, pero pesado y lento para móviles.",
+    testWebpLosslessTitle: "WebP (Sin pérdidas)",
+    testWebpLosslessDesc: "100% idéntico a PNG con transparencia perfecta, pero con una reducción del 28% en el tamaño del archivo.",
+    testWebpLossyTitle: "WebP (Con pérdidas 85%)",
+    testWebpLossyDesc: "Usa compresión con pérdidas manteniendo la transparencia. Calidad excelente para web con un tamaño 83% menor.",
+    testTakeaway: "Conclusión: Al convertir gráficos PNG pesados a WebP sin pérdidas, ahorra un 25-30% de ancho de banda sin perder calidad visual. Para imágenes decorativas grandes, usar WebP con pérdidas reduce el tamaño hasta en un 80% manteniendo la transparencia.",
+
+    diveWebpTitle: "Análisis profundo: ¿Qué es WebP?",
+    diveWebpP1: "WebP es un formato de imagen moderno desarrollado por Google y lanzado en 2010. Fue creado con una única misión: hacer que la web sea más rápida reemplazando tanto a JPEG como a PNG.",
+    diveWebpP2: "WebP utiliza tecnología de codificación predictiva derivada del códec de video VP8. Predice los valores de los píxeles basándose en los bloques vecinos y solo codifica la diferencia, lo que es mucho más eficiente que los métodos de JPEG y PNG.",
+    diveWebpAdv: "Ventajas de WebP",
+    diveWebpAdvList: [
+      "Compresión superior: 26% más pequeño que PNG sin pérdidas y 25-34% más pequeño que JPEG con pérdidas.",
+      "Transparencia Alfa: Admite fondos transparentes tanto en modo con pérdidas como sin pérdidas.",
+      "Soporte de animación: Admite imágenes animadas, siendo una alternativa ligera a los GIFs pesados."
+    ],
+    diveWebpDis: "Desventajas de WebP",
+    diveWebpDisList: [
+      "Sobrecarga de CPU: Codificar WebP requiere un poco más de CPU, aunque la velocidad de decodificación es rápida.",
+      "Compatibilidad en apps antiguas: Los programas de diseño más antiguos pueden requerir complementos para abrir archivos WebP."
+    ],
+
+    divePngTitle: "Análisis profundo: ¿Qué es un PNG?",
+    divePngP1: "PNG significa Portable Network Graphics. Desarrollado a mediados de la década de 1990 como una alternativa libre de patentes a GIF, ha sido el estándar de la industria para imágenes sin pérdidas de alta calidad durante tres décadas.",
+    divePngP2: "PNG utiliza el algoritmo de compresión DEFLATE, combinando LZ77 y codificación Huffman. Está diseñado para reconstruir perfectamente la imagen original píxel por píxel.",
+    divePngAdv: "Ventajas de PNG",
+    divePngAdvList: [
+      "Calidad sin pérdidas perfecta: Editar y guardar un PNG nunca introducirá ruido de compresión o artefactos.",
+      "Soporte universal: Soportado nativamente por todos los navegadores, sistemas operativos y aplicaciones.",
+      "Renderizado gráfico nítido: Ideal para capturas de pantalla, diagramas y texto donde la legibilidad es clave."
+    ],
+    divePngDis: "Desventajas de PNG",
+    divePngDisList: [
+      "Tamaños de archivo pesados: Las imágenes grandes, especialmente las fotografías, guardadas en PNG pueden pesar varios megabytes.",
+      "Sin opción con pérdidas: No soporta compresión con pérdidas sin sacrificar dimensiones o profundidad de bits."
+    ],
+
+    snippetSectionTitle: "Cuándo usar WebP vs PNG",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es crucial para equilibrar la claridad visual y el rendimiento web. A continuación hay respuestas directas a las dudas comunes.",
+    
+    q1: "¿Es WebP de mayor calidad que el PNG?",
+    a1: "No. PNG es sin pérdidas y representa una reproducción perfecta 1:1 de la imagen original, siendo el formato rasterizado de mayor calidad. WebP admite modos con y sin pérdidas. En modo sin pérdidas, la calidad visual de WebP es idéntica a la de PNG pero con un archivo un 26% más pequeño. En modo con pérdidas, WebP elimina detalles para reducir el tamaño.",
+    
+    q2: "¿Qué formato debo usar para la velocidad de mi sitio web, WebP o PNG?",
+    a2: "Para la velocidad web, Core Web Vitals y SEO, use siempre WebP. Los archivos WebP son sustancialmente más pequeños que los PNG, mejorando los tiempos de Largest Contentful Paint (LCP). Use PNG solo para logotipos transparentes o gráficos que requieran precisión de píxeles absoluta.",
+    
+    q3: "¿Admite WebP transparencia?",
+    a3: "Sí. WebP admite transparencia de canal Alfa tanto en sus modos de compresión con pérdidas como sin pérdidas. Los archivos WebP transparentes son normalmente un 30% más pequeños que los PNG transparentes, ideales para interfaces web modernas.",
+    
+    q4: "¿Por qué el tamaño del archivo WebP es mucho más pequeño que el PNG?",
+    a4: "Los archivos WebP son más pequeños porque utilizan codificación predictiva del estándar de video VP8. El algoritmo predice el color de los píxeles basándose en bloques vecinos y solo guarda la diferencia. El PNG utiliza el algoritmo DEFLATE, que es menos eficiente encontrando patrones en datos de imágenes.",
+    
+    q5: "¿Cuáles son las desventajas de WebP en comparación con PNG?",
+    a5: "Las principales desventajas son la sobrecarga de CPU durante la codificación (guardar un WebP consume un poco más de procesamiento) y la falta de compatibilidad nativa en algunas aplicaciones de diseño de escritorio heredadas (anteriores a 2020). Sin embargo, es totalmente compatible con los navegadores web modernos.",
+    
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Quiere convertir sus archivos PNG a WebP?",
+    ctaDesc: "Use nuestra herramienta gratuita, privada y en el navegador para comprimir y convertir sus archivos de forma segura al instante.",
+    ctaButton: "Probar el Convertidor de PNG a WebP",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "WebP vs PNG : Le WebP est-il vraiment meilleur ? (Guide 2026)",
+    seoDescription: "WebP ou PNG ? Nous testons les deux formats sur la taille de fichier, la transparence et les canaux alpha pour voir si vous devez faire la transition pour votre site.",
+    title: "WebP vs PNG : Le WebP est-il vraiment meilleur ?",
+    intro: "Pendant des décennies, le PNG était le roi incontesté des graphismes web. Si vous aviez besoin d'un logo ou d'un fond transparent, vous utilisiez un PNG. Mais Google a lancé le WebP. Voici pourquoi tout le web fait la transition.",
+    quickAnswer: "Réponse rapide",
+    useWebpFor: "Utilisez le WebP pour :",
+    useWebpForDesc: "charger des images sur votre site, blog ou application afin de maximiser la vitesse et le référencement.",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "concevoir sur Figma, sauvegarder des fichiers localement ou envoyer des images à des personnes ayant des appareils anciens.",
+    converterTitle: "Convertir WebP en PNG instantanément (Gratuit & Privé)",
+    differenceTitle: "Quelle est la différence entre WebP et PNG ?",
+    differenceDesc: "Bien que les deux formats prennent en charge la transparence et l'encodage sans perte, ils utilisent des technologies de compression différentes. Voici un comparatif technique.",
+    thFeature: "Caractéristique",
+    thWebp: "WebP (Google Next-Gen)",
+    thPng: "PNG (Portable Network Graphics)",
+    tdCompression: "Type de compression",
+    tdCompressionWebp: "Avec et Sans perte (VP8/VP8L prédictif)",
+    tdCompressionPng: "Sans perte (algorithme DEFLATE)",
+    tdTransparency: "Gestion de la transparence",
+    tdTransparencyWebp: "Oui (prend en charge le canal Alpha dans les deux modes)",
+    tdTransparencyPng: "Oui (prend en charge le canal Alpha)",
+    tdQuality: "Qualité de l'image",
+    tdQualityWebp: "Excellente (identique en sans perte, variable en avec perte)",
+    tdQualityPng: "Fidélité pixel-perfect 1:1",
+    tdMetadata: "Métadonnées EXIF",
+    tdMetadataWebp: "Support complet",
+    tdMetadataPng: "Support limité/basique",
+    tdAnimation: "Animation",
+    tdAnimationWebp: "Oui (animation WebP - remplace le GIF)",
+    tdAnimationPng: "Oui (via APNG, moins courant)",
+    tdIdealFor: "Usage recommandé",
+    tdIdealForWebp: "Bannières web, photos, interfaces et vitesse de chargement",
+    tdIdealForPng: "Logos, fichiers sources de conception, textes, captures d'écran",
+    tdFileSize: "Taille de fichier type",
+    tdFileSizeWebp: "Très petite (25-30% plus légère que le PNG sans perte)",
+    tdFileSizePng: "Grande (fichiers lourds)",
+    tdWebSpeed: "Vitesse de chargement",
+    tdWebSpeedWebp: "Rapide (fichiers légers optimisés)",
+    tdWebSpeedPng: "Lente (plus long sur connexions lentes)",
+
+    testTitle: "Tests en conditions réelles : Tailles de fichier WebP vs PNG",
+    testDesc: "Pour démontrer l'efficacité des formats de nouvelle génération, nous avons pris un graphique de produit transparent et une photo, et les avons sauvegardés en PNG et WebP. Les résultats prouvent pourquoi Google recommande le WebP.",
+    testPngTitle: "PNG (Sans perte)",
+    testPngDesc: "Préserve 100% des pixels avec transparence. Visuellement parfait, mais lourd et lent pour le mobile.",
+    testWebpLosslessTitle: "WebP (Sans perte)",
+    testWebpLosslessDesc: "100% identique au PNG avec transparence parfaite, mais avec une réduction de 28% de la taille du fichier.",
+    testWebpLossyTitle: "WebP (Avec perte 85%)",
+    testWebpLossyDesc: "Utilise une compression avec perte tout en maintenant la transparence. Qualité excellente pour le web et poids 83% plus léger.",
+    testTakeaway: "Conclusion : En convertissant les PNG lourds en WebP sans perte, vous économisez 25-30% de bande passante sans perte de qualité visuelle. Pour les grandes images de fond, le WebP avec perte réduit la taille de 80% tout en conservant la transparence.",
+
+    diveWebpTitle: "Analyse approfondie : Qu'est-ce que le WebP ?",
+    diveWebpP1: "Le WebP est un format d'image moderne développé par Google et lancé en 2010. Il a été créé dans un seul but : accélérer le web en remplaçant le JPEG et le PNG.",
+    diveWebpP2: "Le WebP utilise une technologie de codage prédictif dérivée du codec vidéo VP8. Il prédit les valeurs des pixels en se basant sur les blocs voisins et ne code que la différence, ce qui est bien plus efficace que les méthodes du JPEG et du PNG.",
+    diveWebpAdv: "Avantages du WebP",
+    diveWebpAdvList: [
+      "Compression supérieure : 26% plus léger que le PNG sans perte et 25-34% plus léger que le JPEG avec perte.",
+      "Transparence Alpha : Gère les fonds transparents en modes avec et sans perte.",
+      "Support des animations : Prend en charge les images animées, une alternative légère aux GIF lourds."
+    ],
+    diveWebpDis: "Inconvénients du WebP",
+    diveWebpDisList: [
+      "Surcharge CPU : L'encodage WebP demande un peu plus de CPU, bien que la vitesse de décodage soit rapide.",
+      "Compatibilité sur anciens logiciels : Les anciennes applications de conception peuvent nécessiter un plug-in pour ouvrir le WebP."
+    ],
+
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    divePngP1: "PNG signifie Portable Network Graphics. Développé au milieu des années 1990 comme alternative libre de droits au GIF, il est le standard pour les images sans perte de haute qualité depuis trois décennies.",
+    divePngP2: "Le PNG utilise l'algorithme de compression DEFLATE. Il est conçu pour reconstruire parfaitement l'image d'origine pixel par pixel.",
+    divePngAdv: "Avantages du PNG",
+    divePngAdvList: [
+      "Qualité sans perte parfaite : L'édition d'un PNG n'introduira jamais de bruit de compression ou de flou.",
+      "Compatibilité universelle : Pris en charge par tous les navigateurs, systèmes d'exploitation et applications.",
+      "Rendu graphique net : Idéal pour les captures d'écran et graphiques contenant du texte."
+    ],
+    divePngDis: "Inconvénients du PNG",
+    divePngDisList: [
+      "Fichiers lourds : Les grandes images, notamment les photos, sauvegardées en PNG peuvent peser plusieurs mégaoctets.",
+      "Pas d'option avec perte : Ne prend pas en charge la compression avec perte sans réduire les dimensions."
+    ],
+
+    snippetSectionTitle: "Quand utiliser le WebP vs PNG",
+    snippetSectionDesc: "Choisir le format correct est crucial pour équilibrer la clarté visuelle et la vitesse du site. Voici des réponses directes aux questions fréquentes.",
+    
+    q1: "Le WebP est-il de meilleure qualité que le PNG ?",
+    a1: "Non. Le PNG est sans perte et offre une reproduction parfaite 1:1 de l'image d'origine, en faisant le format de qualité supérieure. Le WebP prend en charge les modes avec et sans perte. En mode sans perte, la qualité visuelle du WebP est identique à celle du PNG mais avec un fichier 26% plus léger. Le WebP avec perte élimine des données pour réduire le poids.",
+    
+    q2: "Quel format utiliser pour la vitesse du site, WebP ou PNG ?",
+    a2: "Pour le référencement et la vitesse du site, utilisez toujours le WebP. Les fichiers WebP sont beaucoup plus légers que les PNG, réduisant le Largest Contentful Paint (LCP). N'utilisez le PNG que pour les logos ou graphiques nécessitant une précision absolue.",
+    
+    q3: "Le WebP prend-il en charge la transparence ?",
+    a3: "Oui. Le WebP gère la transparence (canal Alpha) dans ses modes avec et sans perte. Les WebP transparents sont généralement 30% plus légers que les PNG transparents, parfaits pour les designs web modernes.",
+    
+    q4: "Pourquoi les fichiers WebP sont-ils plus légers que les PNG ?",
+    a4: "Le WebP est plus léger car il utilise le codage prédictif du standard vidéo VP8. L'algorithme prédit les pixels selon les blocs voisins et ne stocke que l'écart. Le PNG utilise l'algorithme DEFLATE, moins efficace pour trouver des motifs complexes.",
+    
+    q5: "Quels sont les inconvénients du WebP par rapport au PNG ?",
+    a5: "Les principaux inconvénients sont la charge CPU lors de l'encodage (sauvegarder en WebP demande plus de puissance) et le manque de support natif dans certains anciens logiciels de conception. Il est toutefois universellement supporté par les navigateurs modernes.",
+    
+    faqTitle: "Questions fréquemment posées",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Voulez-vous convertir vos fichiers PNG en WebP ?",
+    ctaDesc: "Utilisez notre outil gratuit, local et sécurisé pour compresser et convertir vos images instantanément.",
+    ctaButton: "Essayer le convertisseur PNG en WebP",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "WebP vs. PNG: Ist WebP wirklich besser? (Leitfaden 2026)",
+    seoDescription: "WebP oder PNG? Wir testen beide Formate in Bezug auf Dateigröße, Transparenz und Alphakanäle, um zu sehen, ob Sie für Ihre Website wechseln sollten.",
+    title: "WebP vs. PNG: Ist WebP wirklich besser?",
+    intro: "Jahrzehntelang war PNG der unangefochtene König der Webgrafiken. Wenn Sie ein Logo, ein Icon oder ein Bild mit transparentem Hintergrund brauchten, haben Sie PNG verwendet. Doch dann brachte Google WebP heraus. Hier erfahren Sie, warum das gesamte Web umsteigt.",
+    quickAnswer: "Schnelle Antwort",
+    useWebpFor: "Verwenden Sie WebP für:",
+    useWebpForDesc: "das Hochladen von Bildern auf Ihre Website, Ihren Blog oder Ihre App, um Ladezeit und SEO zu maximieren.",
+    usePngFor: "Verwenden Sie PNG für:",
+    usePngForDesc: "das Designen in Figma, das lokale Speichern von Assets oder das Senden von Dateien an Personen mit älteren Geräten.",
+    converterTitle: "WebP sofort in PNG konvertieren (Kostenlos & Privat)",
+    differenceTitle: "Was ist der Unterschied zwischen WebP und PNG?",
+    differenceDesc: "Obwohl beide Formate Transparenz und verlustfreie Codierung unterstützen, nutzen sie unterschiedliche Kompressionsmethoden. Hier ist der direkte Vergleich.",
+    thFeature: "Merkmal",
+    thWebp: "WebP (Google Next-Gen)",
+    thPng: "PNG (Portable Network Graphics)",
+    tdCompression: "Kompressionstyp",
+    tdCompressionWebp: "Verlustbehaftet & Verlustfrei (VP8/VP8L prädiktiv)",
+    tdCompressionPng: "Verlustfrei (DEFLATE-Algorithmus)",
+    tdTransparency: "Transparenzunterstützung",
+    tdTransparencyWebp: "Ja (unterstützt Alphakanal in beiden Modi)",
+    tdTransparencyPng: "Ja (unterstützt Alphakanal)",
+    tdQuality: "Bildqualität",
+    tdQualityWebp: "Hervorragend (identisch bei verlustfrei, variabel bei verlustbehaftet)",
+    tdQualityPng: "Pixelgenaue 1:1 Wiedergabe",
+    tdMetadata: "EXIF-Metadaten",
+    tdMetadataWebp: "Volle Unterstützung",
+    tdMetadataPng: "Begrenzte/grundlegende Unterstützung",
+    tdAnimation: "Animationen",
+    tdAnimationWebp: "Ja (WebP-Animation - ersetzt GIF)",
+    tdAnimationPng: "Ja (über APNG, weniger verbreitet)",
+    tdIdealFor: "Idealer Anwendungsfall",
+    tdIdealForWebp: "Webbanner, Fotos, Benutzeroberflächen-Assets und Ladezeiten",
+    tdIdealForPng: "Logos, Quelldateien, Text, Screenshots",
+    tdFileSize: "Typische Dateigröße",
+    tdFileSizeWebp: "Extrem klein (25-30% kleiner als verlustfreies PNG)",
+    tdFileSizePng: "Groß (schwere Ladezeiten)",
+    tdWebSpeed: "Ladezeit im Web",
+    tdWebSpeedWebp: "Schnell (optimierte, leichte Dateien)",
+    tdWebSpeedPng: "Langsam (längere Ladezeit bei langsamer Verbindung)",
+
+    testTitle: "Praxistests: Dateigrößen WebP vs. PNG",
+    testDesc: "Um die Effizienz der Next-Gen-Formate zu demonstrieren, haben wir eine transparente Produktgrafik und ein Foto als PNG und WebP gespeichert. Die Ergebnisse zeigen, warum Google WebP empfiehlt.",
+    testPngTitle: "PNG (Verlustfrei)",
+    testPngDesc: "Erhält 100% der Pixel mit Transparenz. Visuell perfekt, aber schwer und langsam auf Mobilgeräten.",
+    testWebpLosslessTitle: "WebP (Verlustfrei)",
+    testWebpLosslessDesc: "100% visuell identisch mit PNG mit perfekter Transparenz, aber mit einer Reduzierung der Dateigröße um 28%.",
+    testWebpLossyTitle: "WebP (Verlustbehaftet 85%)",
+    testWebpLossyDesc: "Nutzt verlustbehaftete Kompression unter Beibehaltung der Transparenz. Hervorragende Qualität für das Web bei 83% weniger Größe.",
+    testTakeaway: "Fazit: Durch Konvertieren schwerer PNG-Assets in verlustfreies WebP sparen Sie 25-30% Bandbreite ohne Qualitätsverlust. Bei großen dekorativen Bildern spart verlustbehaftetes WebP bis zu 80% Größe bei Erhalt der Transparenz.",
+
+    diveWebpTitle: "Deep Dive: Was ist WebP?",
+    diveWebpP1: "WebP ist ein modernes Bildformat, das von Google entwickelt und 2010 veröffentlicht wurde. Es wurde mit dem Ziel geschaffen, das Web durch das Ersetzen von JPEG und PNG schneller zu machen.",
+    diveWebpP2: "WebP nutzt eine prädiktive Codierungstechnologie, die vom VP8-Videocodec abgeleitet ist. Es sagt Pixelwerte voraus und codiert nur die Differenz, was weitaus effizienter ist als die Methoden von JPEG und PNG.",
+    diveWebpAdv: "Vorteile von WebP",
+    diveWebpAdvList: [
+      "Überlegene Kompression: 26% kleiner als verlustfreies PNG und 25-34% kleiner als verlustbehaftetes JPEG.",
+      "Alpha-Transparenz: Unterstützt transparente Hintergründe im verlustbehafteten und verlustfreien Modus.",
+      "Animations-Support: Unterstützt animierte Bilder, eine leichte Alternative zu großen GIFs."
+    ],
+    diveWebpDis: "Nachteile von WebP",
+    diveWebpDisList: [
+      "CPU-Auslastung: Das Encodieren von WebP erfordert etwas mehr CPU, obwohl das Decodieren sehr schnell geht.",
+      "Kompatibilität: Ältere Designprogramme benötigen möglicherweise Plugins, um WebP-Dateien zu öffnen."
+    ],
+
+    divePngTitle: "Deep Dive: Was ist ein PNG?",
+    divePngP1: "PNG steht für Portable Network Graphics. Entwickelt Mitte der 1990er Jahre als patentfreie Alternative zu GIF, ist es seit drei Jahrzehnten der Industriestandard für verlustfreie Bilder.",
+    divePngP2: "PNG verwendet den DEFLATE-Kompressionsalgorithmus. Es ist so konzipiert, dass das Originalbild Pixel für Pixel exakt rekonstruiert wird.",
+    divePngAdv: "Vorteile von PNG",
+    divePngAdvList: [
+      "Perfekte verlustfreie Qualität: Das Bearbeiten und Speichern eines PNGs führt niemals zu Kompressionsartefakten.",
+      "Universelle Unterstützung: Wird nativ von allen Browsern, Betriebssystemen und Anwendungen unterstützt.",
+      "Scharfe Kanten: Ideal für Screenshots und Grafiken, bei denen die Lesbarkeit von Text entscheidend ist."
+    ],
+    divePngDis: "Nachteile von PNG",
+    divePngDisList: [
+      "Große Dateigrößen: Große Bilder, insbesondere Fotos, die als PNG gespeichert werden, können mehrere Megabyte groß sein.",
+      "Keine verlustbehaftete Option: Unterstützt keine verlustbehaftete Kompression ohne Änderung der Dimensionen."
+    ],
+
+    snippetSectionTitle: "Wann man WebP vs. PNG verwendet",
+    snippetSectionDesc: "Die Wahl des richtigen Bildformats ist wichtig, um die Bildqualität und die Web-Performance zu optimieren. Hier sind direkte Antworten auf häufige Fragen.",
+    
+    q1: "Ist WebP qualitativ besser als PNG?",
+    a1: "Nein. PNG ist verlustfrei und stellt eine perfekte 1:1-Pixelreproduktion des Originals dar, was es zum qualitativ hochwertigsten Rasterformat macht. WebP unterstützt verlustbehaftete und verlustfreie Modi. Im verlustfreien Modus ist die Qualität identisch mit PNG bei einer um 26% kleineren Datei. Verlustbehaftetes WebP löscht Daten zur Verkleinerung.",
+    
+    q2: "Welches Format ist besser für die Ladezeit, WebP oder PNG?",
+    a2: "Für Web-Geschwindigkeit und Core Web Vitals sollten Sie immer WebP nutzen. WebP-Dateien sind deutlich kleiner als PNGs, was das Largest Contentful Paint (LCP) verbessert. Nutzen Sie PNG nur für Logos oder Grafiken, die absolute Pixelpräzision erfordern.",
+    
+    q3: "Unterstützt WebP Transparenz?",
+    a3: "Ja. WebP unterstützt die Alphakanal-Transparenz sowohl im verlustfreien als auch im verlustbehafteten Modus. Transparente WebP-Dateien sind in der Regel 30% kleiner als transparente PNGs, ideal für moderne Web-Overlays.",
+    
+    q4: "Warum ist die WebP-Dateigröße so viel kleiner als bei PNG?",
+    a4: "WebP-Dateien sind kleiner, weil sie die prädiktive Codierung des VP8-Videostandards nutzen. Der Algorithmus sagt Pixelfarben voraus und speichert nur die Abweichung. PNG nutzt den DEFLATE-Algorithmus, der beim Finden komplexer Bildmuster weniger effizient ist.",
+    
+    q5: "Welche Nachteile hat WebP im Vergleich zu PNG?",
+    a5: "Die Hauptnachteile sind eine höhere CPU-Last beim Codieren (das Speichern von WebP erfordert mehr Rechenleistung) und die fehlende native Unterstützung in einigen älteren Desktop-Designanwendungen (vor 2020). Es ist jedoch mit modernen Webbrowsern voll kompatibel.",
+    
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Ihre PNG-Dateien in WebP konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses In-Browser-Tool, um Bilder sofort lokal und sicher zu konvertieren.",
+    ctaButton: "PNG-zu-WebP-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "WebP vs PNG: O WebP é realmente melhor? (Guia 2026)",
+    seoDescription: "WebP ou PNG? Testamos ambos os formatos em tamanho de arquivo, transparência e canais alfa para ver se você deve fazer a transição para seu site.",
+    title: "WebP vs PNG: O WebP é realmente melhor?",
+    intro: "Durante décadas, o PNG foi o rei indiscutível dos gráficos web. Se você precisava de um logotipo ou fundo transparente, usava PNG. Mas o Google lançou o WebP. Veja por que toda a web está mudando.",
+    quickAnswer: "Resposta rápida",
+    useWebpFor: "Use WebP para:",
+    useWebpForDesc: "enviar imagens para seu site, blog ou aplicativo a fim de maximizar a velocidade e o SEO.",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "criar designs no Figma, salvar arquivos localmente ou enviar imagens para pessoas com dispositivos antigos.",
+    converterTitle: "Converter WebP para PNG instantaneamente (Grátis & Privado)",
+    differenceTitle: "Qual é a diferença entre WebP e PNG?",
+    differenceDesc: "Embora ambos os formatos suportem transparência e compactação sem perdas, utilizam tecnologias de compactação diferentes. Veja o comparativo técnico lado a lado.",
+    thFeature: "Recurso",
+    thWebp: "WebP (Google Next-Gen)",
+    thPng: "PNG (Portable Network Graphics)",
+    tdCompression: "Tipo de compactação",
+    tdCompressionWebp: "Com e Sem perdas (VP8/VP8L preditivo)",
+    tdCompressionPng: "Sem perdas (algoritmo DEFLATE)",
+    tdTransparency: "Suporte a transparência",
+    tdTransparencyWebp: "Sim (suporta canal Alfa em ambos os modos)",
+    tdTransparencyPng: "Sim (suporta canal Alfa)",
+    tdQuality: "Qualidade da imagem",
+    tdQualityWebp: "Excelente (idêntica em sem perdas, variável em com perdas)",
+    tdQualityPng: "Fidelidade pixel-perfect 1:1",
+    tdMetadata: "Metadados EXIF",
+    tdMetadataWebp: "Suporte completo",
+    tdMetadataPng: "Suporte limitado/básico",
+    tdAnimation: "Animação",
+    tdAnimationWebp: "Sim (animação WebP - substitui o GIF)",
+    tdAnimationPng: "Sim (via APNG, menos comum)",
+    tdIdealFor: "Caso de uso ideal",
+    tdIdealForWebp: "Banners web, fotos, interfaces e velocidade do site",
+    tdIdealForPng: "Logotipos, arquivos de design originais, textos, capturas de tela",
+    tdFileSize: "Tamanho de arquivo típico",
+    tdFileSizeWebp: "Muito pequeno (25-30% menor que o PNG sem perdas)",
+    tdFileSizePng: "Grande (pesado para carregar)",
+    tdWebSpeed: "Velocidade na web",
+    tdWebSpeedWebp: "Rápido (arquivos leves otimizados)",
+    tdWebSpeedPng: "Lento (demora mais em conexões lentas)",
+
+    testTitle: "Testes reais: Tamanhos de arquivo WebP vs PNG",
+    testDesc: "Para demonstrar a eficiência dos formatos de nova geração, pegamos um gráfico de produto transparente e uma foto, e salvamos em PNG e WebP. Os resultados mostram por que o Google recomenda o WebP.",
+    testPngTitle: "PNG (Sem perdas)",
+    testPngDesc: "Preserva 100% dos pixels com transparência. Visualmente perfeito, mas pesado e lento no celular.",
+    testWebpLosslessTitle: "WebP (Sem perdas)",
+    testWebpLosslessDesc: "100% idêntico ao PNG com transparência perfeita, mas com redução de 28% no tamanho do arquivo.",
+    testWebpLossyTitle: "WebP (Com perdas 85%)",
+    testWebpLossyDesc: "Usa compactação com perdas mantendo a transparência. Excelente qualidade para a web com tamanho 83% menor.",
+    testTakeaway: "Conclusão: Ao converter PNGs pesados para WebP sem perdas, você economiza 25-30% de banda sem perder qualidade visual. Para imagens decorativas grandes, o WebP com perdas reduz o tamanho em 80% mantendo a transparência.",
+
+    diveWebpTitle: "Análise profunda: O que é WebP?",
+    diveWebpP1: "O WebP é um formato de imagem moderno desenvolvido pelo Google e lançado em 2010. Foi construído com um objetivo principal: tornar a web mais rápida substituindo o JPEG e o PNG.",
+    diveWebpP2: "O WebP utiliza uma tecnologia de codificação preditiva derivada do codec de vídeo VP8. Ele prevê os valores dos pixels com base nos blocos vizinhos e codifica apenas a diferença, o que é muito mais eficiente que os métodos do JPEG e PNG.",
+    diveWebpAdv: "Vantagens do WebP",
+    diveWebpAdvList: [
+      "Compactação superior: 26% menor que o PNG sem perdas e 25-34% menor que o JPEG com perdas.",
+      "Transparência Alfa: Suporta fundos transparentes tanto no modo com perdas quanto sem perdas.",
+      "Suporte a animação: Suporta imagens animadas, sendo uma alternativa leve aos GIFs pesados."
+    ],
+    diveWebpDis: "Desvantagens do WebP",
+    diveWebpDisList: [
+      "Sobrecarga de CPU: Codificar WebP exige um pouco mais de processamento, embora a decodificação seja rápida.",
+      "Compatibilidade em apps antigos: Programas de design mais antigos podem precisar de plugins para abrir o WebP."
+    ],
+
+    divePngTitle: "Análise profunda: O que é um PNG?",
+    divePngP1: "PNG significa Portable Network Graphics. Desenvolvido em meados da década de 1990 como alternativa ao GIF, tem sido o padrão para imagens sem perdas de alta qualidade por três décadas.",
+    divePngP2: "O PNG utiliza o algoritmo de compactação DEFLATE. Ele foi projetado para reconstruir perfeitamente a imagem original pixel por pixel.",
+    divePngAdv: "Vantagens do PNG",
+    divePngAdvList: [
+      "Qualidade sem perdas perfeita: Editar e salvar um PNG nunca trará ruídos de compressão ou artefatos.",
+      "Suporte universal: Suportado nativamente por todos os navegadores, sistemas operacionais e aplicativos.",
+      "Renderização nítida: Ideal para capturas de tela, diagramas e textos onde a legibilidade é essencial."
+    ],
+    divePngDis: "Desventajas de PNG",
+    divePngDisList: [
+      "Tamanhos de arquivo pesados: Imagens grandes, principalmente fotos, salvas em PNG podem pesar vários megabytes.",
+      "Sem opção com perdas: Não suporta compressão com perdas sem sacrificar dimensões ou profundidade de bits."
+    ],
+
+    snippetSectionTitle: "Quando usar WebP vs PNG",
+    snippetSectionDesc: "A escolha do formato correto é essencial para melhorar a velocidade e a qualidade do site. Veja respostas diretas para as dúvidas comuns.",
+    
+    q1: "O WebP tem qualidade superior ao PNG?",
+    a1: "Não. O PNG é sem perdas e representa uma cópia exata 1:1 do original, sendo o formato de maior qualidade. O WebP suporta modos com e sem perdas. No modo sem perdas, a qualidade visual é idêntica ao PNG mas com arquivo 26% menor. O WebP com perdas descarta dados para reduzir o tamanho.",
+    
+    q2: "Qual formato devo usar para a velocidade do meu site, WebP ou PNG?",
+    a2: "Para velocidade de carregamento e SEO, use sempre WebP. Os arquivos WebP são muito menores que os PNGs, melhorando o Largest Contentful Paint (LCP). Use PNG apenas para logotipos ou gráficos que exijam precisão absoluta de pixels.",
+    
+    q3: "O WebP aceita transparência?",
+    a3: "Sim. O WebP aceita transparência (canal Alfa) em seus modos com e sem perdas. WebPs transparentes são cerca de 30% menores que PNGs transparentes, ideais para designs web modernos.",
+    
+    q4: "Por que o tamanho do arquivo WebP é menor que o PNG?",
+    a4: "Os arquivos WebP são menores porque utilizam a codificação preditiva do padrão de vídeo VP8. O algoritmo prevê as cores com base nos pixels vizinhos e grava apenas a diferença. O PNG usa o algoritmo DEFLATE, menos eficiente para encontrar padrões de imagem.",
+    
+    q5: "Quais são as desvantagens do WebP em relação ao PNG?",
+    a5: "As principais são o uso extra de CPU ao codificar (salvar em WebP exige mais processamento) e a falta de suporte nativo em alguns softwares de design antigos (anteriores a 2020). No entanto, é totalmente compatível com navegadores modernos.",
+    
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Quer converter seus arquivos PNG para WebP?",
+    ctaDesc: "Use nossa ferramenta gratuita no navegador para compactar e converter suas imagens com total segurança.",
+    ctaButton: "Testar Conversor de PNG para WebP",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "WebP vs PNG: Apakah WebP Benar-Benar Lebih Baik? (Panduan 2026)",
+    seoDescription: "WebP atau PNG? Kami menguji kedua format dalam ukuran file, transparansi, dan saluran alfa untuk melihat apakah Anda harus beralih untuk situs web Anda.",
+    title: "WebP vs PNG: Apakah WebP Benar-Benar Lebih Baik?",
+    intro: "Selama beberapa dekade, PNG adalah raja grafis web yang tak terbantahkan. Jika Anda membutuhkan logo, ikon, atau gambar dengan latar belakang transparan, Anda menggunakan PNG. Tetapi kemudian Google merilis WebP. Berikut alasan mengapa seluruh web beralih.",
+    quickAnswer: "Jawaban Singkat",
+    useWebpFor: "Gunakan WebP untuk:",
+    useWebpForDesc: "mengunggah gambar ke situs web, blog, atau aplikasi Anda untuk memaksimalkan kecepatan halaman dan SEO.",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "mendesain di Figma, menyimpan file secara lokal, atau mengirim file ke orang yang mungkin memiliki perangkat lama.",
+    converterTitle: "Konversi WebP ke PNG Instan (Gratis & Privat)",
+    differenceTitle: "Apa Perbedaan Antara WebP and PNG?",
+    differenceDesc: "Meskipun kedua format mendukung transparansi dan kompresi lossless, mereka menggunakan teknologi kompresi yang berbeda. Berikut perbandingan teknisnya.",
+    thFeature: "Fitur",
+    thWebp: "WebP (Google Next-Gen)",
+    thPng: "PNG (Portable Network Graphics)",
+    tdCompression: "Jenis Kompresi",
+    tdCompressionWebp: "Lossy & Lossless (VP8/VP8L prediktif)",
+    tdCompressionPng: "Lossless (algoritma DEFLATE)",
+    tdTransparency: "Dukungan Transparansi",
+    tdTransparencyWebp: "Ya (mendukung saluran Alpha di kedua mode)",
+    tdTransparencyPng: "Ya (mendukung saluran Alpha)",
+    tdQuality: "Kualitas Gambar",
+    tdQualityWebp: "Sangat baik (identik pada lossless, bervariasi pada lossy)",
+    tdQualityPng: "Reproduksi piksel sempurna 1:1",
+    tdMetadata: "Metadata EXIF",
+    tdMetadataWebp: "Dukungan penuh",
+    tdMetadataPng: "Dukungan terbatas/dasar",
+    tdAnimation: "Dukungan Animasi",
+    tdAnimationWebp: "Ya (animasi WebP - menggantikan GIF)",
+    tdAnimationPng: "Ya (melalui APNG, kurang umum)",
+    tdIdealFor: "Kasus Penggunaan Ideal",
+    tdIdealForWebp: "Banner web, foto, aset antarmuka, dan kecepatan halaman web",
+    tdIdealForPng: "Logo, file desain sumber, gambar dengan teks, tangkapan layar",
+    tdFileSize: "Ukuran File Khas",
+    tdFileSizeWebp: "Sangat kecil (25-30% lebih kecil dari PNG lossless)",
+    tdFileSizePng: "Besar (beban pemuatan berat)",
+    tdWebSpeed: "Kecepatan Pemuatan Web",
+    tdWebSpeedWebp: "Cepat (file ringan yang dioptimalkan)",
+    tdWebSpeedPng: "Lambat (memakan waktu lebih lama pada koneksi lambat)",
+
+    testTitle: "Tes Dunia Nyata: Ukuran File WebP vs PNG",
+    testDesc: "Untuk mendemonstrasikan efisiensi format generasi baru, kami mengambil grafis produk transparan dan foto, lalu menyimpannya sebagai PNG dan WebP. Hasilnya menunjukkan mengapa Google menyarankan WebP.",
+    testPngTitle: "PNG (Lossless)",
+    testPngDesc: "Mempertahankan 100% piksel dengan transparansi. Visual sempurna, tetapi berat dan lambat untuk pengguna seluler.",
+    testWebpLosslessTitle: "WebP (Lossless)",
+    testWebpLosslessDesc: "100% identik secara visual dengan PNG dengan transparansi sempurna, tetapi dengan pengurangan ukuran file sebesar 28%.",
+    testWebpLossyTitle: "WebP (Lossy 85%)",
+    testWebpLossyDesc: "Menggunakan kompresi lossy sambil mempertahankan transparansi. Kualitas luar biasa untuk web dengan ukuran 83% lebih kecil.",
+    testTakeaway: "Kesimpulan: Dengan mengonversi aset PNG yang berat ke WebP lossless, Anda menghemat 25-30% bandwidth tanpa kehilangan kualitas visual. Untuk gambar dekoratif besar, menggunakan WebP lossy memangkas ukuran hingga 80% dengan tetap menjaga transparansi.",
+
+    diveWebpTitle: "Analisis Mendalam: Apa itu WebP?",
+    diveWebpP1: "WebP adalah format gambar modern yang dikembangkan oleh Google dan dirilis pada tahun 2010. Format ini dibuat dengan misi tunggal: membuat web lebih cepat dengan menggantikan JPEG dan PNG.",
+    diveWebpP2: "WebP menggunakan teknologi pengkodean prediktif dari codec video VP8. Algoritma ini memprediksi nilai piksel berdasarkan blok tetangga dan hanya mengkodekan perbedaannya, yang jauh lebih efisien daripada JPEG dan PNG.",
+    diveWebpAdv: "Kelebihan WebP",
+    diveWebpAdvList: [
+      "Kompresi superior: 26% lebih kecil dari PNG lossless, dan 25-34% lebih kecil dari JPEG lossy.",
+      "Transparansi Alfa: Mendukung latar belakang transparan baik dalam mode lossy maupun lossless.",
+      "Dukungan Animasi: Mendukung gambar bergerak, alternatif ringan untuk file GIF yang besar."
+    ],
+    diveWebpDis: "Kekurangan WebP",
+    diveWebpDisList: [
+      "Beban CPU: Pengkodean WebP membutuhkan sedikit lebih banyak CPU, meskipun kecepatan dekode sangat cepat.",
+      "Kompatibilitas di Aplikasi Lama: Program desain lama mungkin memerlukan plugin tambahan untuk membuka WebP secara asli."
+    ],
+
+    divePngTitle: "Analisis Mendalam: Apa itu PNG?",
+    divePngP1: "PNG singkatan dari Portable Network Graphics. Dikembangkan pada pertengahan 1990-an sebagai alternatif bebas paten untuk GIF, format ini telah menjadi standar industri untuk gambar lossless berkualitas tinggi selama tiga dekade.",
+    divePngP2: "PNG menggunakan algoritma kompresi DEFLATE. Ini dirancang untuk merekonstruksi gambar asli secara sempurna piksel demi piksel.",
+    divePngAdv: "Kelebihan PNG",
+    divePngAdvList: [
+      "Kualitas lossless sempurna: Mengedit dan menyimpan kembali file PNG tidak akan menimbulkan noise kompresi.",
+      "Dukungan universal: Didukung secara asli oleh semua browser, sistem operasi, dan aplikasi desain.",
+      "Rendering grafis tajam: Sangat cocok untuk tangkapan layar, diagram, dan gambar dengan teks."
+    ],
+    divePngDis: "Kekurangan PNG",
+    divePngDisList: [
+      "Ukuran file besar: Gambar besar, terutama foto, yang disimpan sebagai PNG dapat dengan mudah mencapai beberapa megabyte.",
+      "Tidak ada opsi lossy: Tidak mendukung kompresi lossy tanpa mengorbankan dimensi atau kedalaman bit warna."
+    ],
+
+    snippetSectionTitle: "Kapan Menggunakan WebP vs PNG",
+    snippetSectionDesc: "Memilih format yang benar sangat penting untuk performa web dan SEO. Berikut jawaban langsung untuk pertanyaan yang sering diajukan.",
+    
+    q1: "Apakah kualitas WebP lebih tinggi daripada PNG?",
+    a1: "Tidak. PNG adalah lossless dan mewakili reproduksi piksel sempurna 1:1 dari gambar asli, menjadikannya format raster dengan kualitas tertinggi. WebP mendukung mode lossy dan lossless. Di mode lossless, kualitas WebP identik dengan PNG namun dengan ukuran file 26% lebih kecil. WebP lossy membuang data untuk memperkecil ukuran.",
+    
+    q2: "Format mana yang harus digunakan untuk kecepatan website, WebP atau PNG?",
+    a2: "Untuk kecepatan web, Core Web Vitals, dan SEO, selalu gunakan WebP. Ukuran file WebP jauh lebih kecil daripada PNG, mempercepat waktu Largest Contentful Paint (LCP). Gunakan PNG hanya untuk logo atau grafis yang memerlukan akurasi piksel absolut.",
+    
+    q3: "Apakah WebP mendukung transparansi?",
+    a3: "Ya. WebP mendukung transparansi saluran Alfa baik dalam kompresi lossy maupun lossless. File WebP transparan biasanya 30% lebih kecil daripada PNG transparan, sangat cocok untuk layout web modern.",
+    
+    q4: "Mengapa ukuran file WebP jauh lebih kecil daripada PNG?",
+    a4: "Ukuran file WebP lebih kecil karena menggunakan pengkodean prediktif dari standar video VP8. Algoritma memprediksi warna piksel berdasarkan blok terdekat dan hanya menyimpan selisihnya. PNG menggunakan algoritma DEFLATE, yang kurang efisien menemukan pola gambar.",
+    
+    q5: "Apa saja kekurangan WebP dibandingkan dengan PNG?",
+    a5: "Kekurangan utamanya adalah beban CPU saat encoding (menyimpan WebP membutuhkan daya komputasi sedikit lebih banyak) dan kurangnya dukungan asli pada beberapa program desktop lama (sebelum 2020). Namun, WebP didukung penuh oleh browser web modern.",
+    
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Ingin mengonversi file PNG Anda ke WebP?",
+    ctaDesc: "Gunakan alat gratis di browser kami untuk mengompresi dan mengonversi gambar Anda secara instan dan aman.",
+    ctaButton: "Coba Konverter PNG ke WebP",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// FAQ Schema
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 related comparisons
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "webp-vs-png" && (["WEBP", "PNG"].includes(comp.format1) || ["WEBP", "PNG"].includes(comp.format2)))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">WebP vs PNG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">WebP</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          {text.intro}
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useWebpFor}</strong> {text.useWebpForDesc}</p>
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thWebp}</th>
+                <th class="p-4">{text.thPng}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompression}</td>
+                <td class="p-4">{text.tdCompressionWebp}</td>
+                <td class="p-4">{text.tdCompressionPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTransparency}</td>
+                <td class="p-4">{text.tdTransparencyWebp}</td>
+                <td class="p-4">{text.tdTransparencyPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdQuality}</td>
+                <td class="p-4">{text.tdQualityWebp}</td>
+                <td class="p-4">{text.tdQualityPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdMetadata}</td>
+                <td class="p-4">{text.tdMetadataWebp}</td>
+                <td class="p-4">{text.tdMetadataPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnimation}</td>
+                <td class="p-4">{text.tdAnimationWebp}</td>
+                <td class="p-4">{text.tdAnimationPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdIdealFor}</td>
+                <td class="p-4">{text.tdIdealForWebp}</td>
+                <td class="p-4">{text.tdIdealForPng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4">{text.tdFileSizeWebp}</td>
+                <td class="p-4">{text.tdFileSizePng}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdWebSpeed}</td>
+                <td class="p-4">{text.tdWebSpeedWebp}</td>
+                <td class="p-4">{text.tdWebSpeedPng}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="webp-to-png" />
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.testTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          {text.testDesc}
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- PNG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg">PNG (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">850 KB</h3>
+            <p class="text-sm text-body flex-grow">{text.testPngDesc}</p>
+          </div>
+          
+          <!-- WebP Lossless Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Winner</div>
+            <div class="h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-emerald-800 font-bold text-lg">WebP (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">612 KB</h3>
+            <p class="text-sm text-body flex-grow">{text.testWebpLosslessDesc}</p>
+          </div>
+          
+          <!-- WebP Lossy Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg">WebP (Lossy 85%)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">145 KB</h3>
+            <p class="text-sm text-body flex-grow">{text.testWebpLossyDesc}</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-body leading-relaxed p-6 bg-canvas-soft rounded-lg border-l-4 border-link">
+          {text.testTakeaway}
+        </p>
+      </section>
+
+      <!-- Deep Dives -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.diveWebpTitle}</h2>
+        <p>{text.diveWebpP1}</p>
+        <p>{text.diveWebpP2}</p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">{text.diveWebpAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveWebpAdvList.map((adv) => (
+            <li>{adv}</li>
+          ))}
+        </ul>
+
+        <h3 class="text-2xl font-bold text-ink mt-8">{text.diveWebpDis}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveWebpDisList.map((dis) => (
+            <li>{dis}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li>{adv}</li>
+          ))}
+        </ul>
+
+        <h3 class="text-2xl font-bold text-ink mt-8">{text.divePngDis}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngDisList.map((dis) => (
+            <li>{dis}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases (Featured Snippet Targeting) -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="WEBP" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

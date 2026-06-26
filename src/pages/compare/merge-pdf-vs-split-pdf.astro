@@ -1,0 +1,325 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import MergePdfTool from "../../components/tools/MergePdfTool.astro";
+import SplitPdfTool from "../../components/tools/SplitPdfTool.astro";
+
+// SEO Metadata
+const seoTitle = "Merge PDF vs Split PDF: Which Document Tool Do You Need? (2026)";
+const seoDescription = "Merge PDF vs Split PDF. We compare combining multiple PDFs with splitting files. Learn when to use each and use our 100% offline tools directly.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between Merge PDF and Split PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Merge PDF combines two or more separate PDF files into a single, unified PDF document. Split PDF does the opposite, taking a single PDF file and dividing it into multiple smaller documents or extracting specific pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I merge PDF files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You should merge PDFs when you need to compile multi-part reports, combine multiple scanned receipts or invoices into a single attachment, or assemble a portfolio of work to share as one unified document."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I split a PDF file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You should split a PDF when you need to extract specific pages (like a single chapter or invoice) from a large document, remove unnecessary pages to reduce file size, or divide a bulk file into individual documents."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I merge and split PDFs offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, both our Merge PDF and Split PDF tools run completely client-side in your browser. Your documents are processed locally and are never uploaded to any server, ensuring complete privacy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does merging or splitting PDFs affect document quality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, neither merging nor splitting PDFs compresses or alters the visual content. Text, vector shapes, fonts, and images remain in their original resolution and high-fidelity quality."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "merge-pdf-vs-split-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "merge-pdf");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">Merge vs Split PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-24 rounded-2xl bg-canvas-soft font-mono text-lg font-bold text-ink border border-hairline shadow-sm text-center px-2">Merge PDF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-24 rounded-2xl bg-canvas-soft font-mono text-lg font-bold text-ink border border-hairline shadow-sm text-center px-2">Split PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">Merge PDF vs Split PDF: Which Tool Do You Need?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Need to manage your PDF files? We compare the differences between merging and splitting PDF documents, showing you when to use each method and offering free offline tools to do both.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use Merge PDF when:</strong> You want to combine multiple separate documents (like reports, scanned receipts, or essays) into a single, unified file for easier sharing or archiving.</p>
+          <p><strong class="text-ink">Use Split PDF when:</strong> You want to extract specific pages, remove unwanted pages to reduce file size, or break up a massive multi-page document into smaller standalone files.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">Comparison: Merge vs Split PDF</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both tools manipulate PDF page structures, they serve opposite purposes. Use the comparison matrix below to determine the right tool for your workflow.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">Merge PDF (Combine)</th>
+                <th class="p-4">Split PDF (Divide)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Action</td>
+                <td class="p-4">Combines separate documents</td>
+                <td class="p-4">Divides a single document</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Input</td>
+                <td class="p-4">Two or more PDF files</td>
+                <td class="p-4">One single PDF file</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Output</td>
+                <td class="p-4">One single consolidated PDF file</td>
+                <td class="p-4">Multiple PDF files or extracted pages</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Primary Use Case</td>
+                <td class="p-4">Assembling reports, compiling receipts</td>
+                <td class="p-4">Extracting chapters, separating bills</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Quality Retention</td>
+                <td class="p-4 text-success">100% Lossless (Vectors & texts kept)</td>
+                <td class="p-4 text-success">100% Lossless (Vectors & texts kept)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Document Privacy</td>
+                <td class="p-4 text-success">100% Offline (Local processing)</td>
+                <td class="p-4 text-success">100% Offline (Local processing)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Interactive Tabbed Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <div class="flex justify-center border-b border-hairline mb-8">
+          <button id="tab-merge" class="px-6 py-3 border-b-2 border-link text-link font-bold text-lg transition-colors focus:outline-none">Merge PDF</button>
+          <button id="tab-split" class="px-6 py-3 border-b-2 border-transparent text-mute hover:text-ink font-bold text-lg transition-colors focus:outline-none ml-4">Split PDF</button>
+        </div>
+        
+        <div id="tool-container-merge" class="w-full">
+          <h2 class="text-xl font-bold text-ink mb-6 text-center">Merge Multiple PDF Files (Offline & Private)</h2>
+          <MergePdfTool toolId="merge-pdf" />
+        </div>
+        
+        <div id="tool-container-split" class="w-full hidden">
+          <h2 class="text-xl font-bold text-ink mb-6 text-center">Split PDF into Pages or Sections (Offline & Private)</h2>
+          <SplitPdfTool toolId="split-pdf" />
+        </div>
+      </section>
+
+      <!-- Deep Dive: Merge PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: Merging PDFs</h2>
+        <p>
+          Merging PDFs refers to stitching multiple separate documents together in a chronological flow. Modern merging tools extract page reference trees, form dictionaries, font registries, and outline markers from each source document, uniting them inside a single destination catalog.
+        </p>
+        <p>
+          This is an excellent option when submitting complex applications where guidelines mandate a single file upload, or when building archive portfolios to ensure all supporting material stays grouped.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">Merge PDF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Consolidation:</strong> Reduces folder clutter by grouping related files.</li>
+          <li><strong>Easy Sharing:</strong> Share one email attachment instead of five.</li>
+          <li><strong>Readability:</strong> Enables reader view to flow continuously across files.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: Split PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: Splitting PDFs</h2>
+        <p>
+          Splitting PDFs does the reverse, parsing the page array catalog of a single document and exporting selected pages as brand-new PDF files. It allows you to define target extraction modes—such as pulling out a specific range of pages (e.g., pages 5-10) or splitting every single page into its own individual file.
+        </p>
+        <p>
+          This is invaluable for processing invoices sent as a consolidated bulk run, extracting single chapters from ebooks, or trimming bloated manuals to keep only the sections you reference daily.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">Split PDF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Size Reduction:</strong> Shrinks document weight by deleting unwanted pages.</li>
+          <li><strong>Targeted Focus:</strong> Extracts exactly the pages you need to share.</li>
+          <li><strong>Document Separation:</strong> Breaks bulk records into individual files.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between Merge PDF and Split PDF?</h3>
+            <p class="text-body leading-relaxed">Merge PDF combines two or more separate PDF files into a single, unified PDF document. Split PDF does the opposite, taking a single PDF file and dividing it into multiple smaller documents or extracting specific pages.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I merge PDF files?</h3>
+            <p class="text-body leading-relaxed">You should merge PDFs when you need to compile multi-part reports, combine multiple scanned receipts or invoices into a single attachment, or assemble a portfolio of work to share as one unified document.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I split a PDF file?</h3>
+            <p class="text-body leading-relaxed">You should split a PDF when you need to extract specific pages (like a single chapter or invoice) from a large document, remove unnecessary pages to reduce file size, or divide a bulk file into individual documents.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can I merge and split PDFs offline?</h3>
+            <p class="text-body leading-relaxed">Yes, both our Merge PDF and Split PDF tools run completely client-side in your browser. Your documents are processed locally and are never uploaded to any server, ensuring complete privacy.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does merging or splitting PDFs affect document quality?</h3>
+            <p class="text-body leading-relaxed">No, neither merging nor splitting PDFs compresses or alters the visual content. Text, vector shapes, fonts, and images remain in their original resolution and high-fidelity quality.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need premium PDF tools?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Try our client-side PDF tools to merge, split, rotate, and password protect your documents securely offline.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PDF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>
+
+<script>
+  (function() {
+    const btnMerge = document.getElementById('tab-merge');
+    const btnSplit = document.getElementById('tab-split');
+    const containerMerge = document.getElementById('tool-container-merge');
+    const containerSplit = document.getElementById('tool-container-split');
+
+    btnMerge?.addEventListener('click', () => {
+      btnMerge.classList.add('border-link', 'text-link');
+      btnMerge.classList.remove('border-transparent', 'text-mute', 'hover:text-ink');
+      btnSplit?.classList.remove('border-link', 'text-link');
+      btnSplit?.classList.add('border-transparent', 'text-mute', 'hover:text-ink');
+      containerMerge?.classList.remove('hidden');
+      containerSplit?.classList.add('hidden');
+    });
+
+    btnSplit?.addEventListener('click', () => {
+      btnSplit.classList.add('border-link', 'text-link');
+      btnSplit.classList.remove('border-transparent', 'text-mute', 'hover:text-ink');
+      btnMerge?.classList.remove('border-link', 'text-link');
+      btnMerge?.classList.add('border-transparent', 'text-mute', 'hover:text-ink');
+      containerSplit?.classList.remove('hidden');
+      containerMerge?.classList.add('hidden');
+    });
+  })();
+</script>

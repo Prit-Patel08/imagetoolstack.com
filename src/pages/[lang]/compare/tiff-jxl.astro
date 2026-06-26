@@ -1,0 +1,686 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "TIFF vs JXL: ¿Qué formato es mejor para archivar imágenes? (2026)",
+    seoDescription: "TIFF vs JXL (JPEG XL). Comparamos el estándar clásico de impresión con el formato de imagen de próxima generación. Conozca las diferencias y cuál usar.",
+    title: "TIFF vs JXL: ¿Qué formato es mejor?",
+    intro: "TIFF es un formato veterano que ha servido como la columna vertebral de la impresión de alta resolución y el archivo de fotografías durante décadas. JXL (JPEG XL) es el retador de vanguardia, que promete ofrecer la misma calidad sin pérdidas a una fracción de su tamaño. Comparamos sus parámetros técnicos.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use TIFF para:",
+    useTiffForDesc: "Impresión profesional, diseños de preprensa y publicación donde el soporte CMYK y la compatibilidad con el software son obligatorios.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Archivar bibliotecas de fotos masivas donde el costo de almacenamiento sea un factor, siempre que su software lo admita.",
+    differenceTitle: "¿Cuál es la diferencia entre TIFF y JXL?",
+    differenceDesc: "Aunque ambos formatos almacenan imágenes con calidad sin pérdidas, difieren mucho en edad, matemática de compresión y compatibilidad. Aquí tiene una comparación lado a lado de TIFF vs JXL (JPEG XL).",
+    thFeature: "Característica / Aspecto",
+    thTiff: "TIFF (Tagged Image File Format)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Estándar de compresión",
+    tdCompStandardTiff: "Sin pérdidas (LZW, ZIP, PackBits, sin compresión)",
+    tdCompStandardJxl: "Con y sin pérdidas (VarDCT / Modular)",
+    tdFileSize: "Tamaño de archivo promedio",
+    tdFileSizeTiff: "Muy grande (frecuentemente de 50MB a 100MB+)",
+    tdFileSizeJxl: "Diminuto (típicamente 60-80% más pequeño que TIFF)",
+    tdColorDepth: "Soporte de profundidad de color",
+    tdColorDepthTiff: "Hasta 32 bits por canal",
+    tdColorDepthJxl: "Hasta 32 bits (HDR altamente optimizado)",
+    tdBrowser: "Soporte de navegador",
+    tdBrowserTiff: "No compatible con los principales navegadores web",
+    tdBrowserJxl: "Solo soporte experimental / limitado",
+    tdPrint: "Compatibilidad de impresión",
+    tdPrintTiff: "Estándar de la industria (soporte CMYK perfecto)",
+    tdPrintJxl: "Experimental / No soportado en impresión",
+    tdTranscoding: "Transcodificación sin pérdidas",
+    tdTranscodingTiff: "No",
+    tdTranscodingJxl: "Sí (puede comprimir JPG heredados sin pérdidas en un 20%)",
+    converterTitle: "Optimizar imágenes al instante (Gratis y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es TIFF?",
+    diveTiffP1: "TIFF significa Tagged Image File Format (Formato de Archivo de Imagen Etiquetada). Desarrollado originalmente por Aldus Corporation (ahora Adobe) en 1986, TIFF se convirtió en el estándar de facto para el diseño gráfico profesional, la publicación impresa y el escaneo de escritorio.",
+    diveTiffP2: "La fuerza del formato radica en su flexibilidad. Admite múltiples modos de compresión (incluida la compresión sin pérdidas LZW y ZIP), múltiples páginas o capas, y puede almacenar imágenes en el espacio de color CMYK. Debido a que es altamente compatible con las prensas de impresión, sigue siendo el formato de archivo estándar para entregar ilustraciones listas para imprimir.",
+    diveTiffAdv: "Ventajas de TIFF",
+    diveTiffAdvList: [
+      "Soporte de impresión universal: la maquinaria de impresión admite archivos TIFF nativamente.",
+      "Archivo sin pérdidas: no introduce artefactos de compresión, conservando los datos de píxeles originales.",
+      "Contenedores flexibles: puede almacenar documentos de varias páginas y capas."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es JXL (JPEG XL)?",
+    diveJxlP1: "JPEG XL (JXL) es un estándar de codificación de imágenes de próxima generación desarrollado por el comité Joint Photographic Experts Group (JPEG) y finalizado en 2022. Fue diseñado para reemplazar tanto a los JPEG estándar como a los formatos web más nuevos como WebP o AVIF.",
+    diveJxlP2: "JXL utiliza un modelo de compresión avanzado que puede transcodificar archivos JPEG heredados en archivos contenedores JXL sin perder calidad (un proceso llamado transcodificación JPEG sin pérdidas). Esto reduce el tamaño del archivo en aproximadamente un 20% al tiempo que le permite restaurar el JPEG original bit por bit. Para imágenes crudas o archivos TIFF, JXL proporciona una compresión sin pérdidas mucho más eficiente que LZW.",
+    diveJxlAdv: "Ventajas de JXL",
+    diveJxlAdvList: [
+      "Compresión excepcional: reduce los archivos sin pérdidas en un 60% o más en comparación con TIFF.",
+      "Transcodificación JPEG sin pérdidas: ahorra un 20% de espacio en los archivos JPEG existentes.",
+      "HDR y gama amplia: soporte nativo para alta profundidad de bits y pantallas modernas."
+    ],
+    snippetSectionTitle: "Cuándo usar TIFF vs JXL",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es crucial para equilibrar la claridad visual y los costos de almacenamiento.",
+    q1: "¿Cuál es la diferencia entre TIFF y JXL (JPEG XL)?",
+    a1: "TIFF es un formato ráster sin pérdidas maduro, favorecido en la impresión y el archivo de fotografías. JXL (JPEG XL) es un formato de imagen moderno de próxima generación con algoritmos de compresión avanzados. Mientras que los archivos TIFF son muy grandes, JXL ofrece una calidad similar o idéntica a una fracción de su tamaño.",
+    q2: "¿Es JXL (JPEG XL) mejor que TIFF para archivar?",
+    a2: "Técnicamente, sí. JXL logra tamaños de archivo entre un 60% y un 80% más pequeños que TIFF mientras mantiene los mismos datos de píxeles sin pérdidas. Sin embargo, TIFF es actualmente mucho más compatible con el software, lo que lo hace más seguro para la accesibilidad a largo plazo hasta que aumente la adopción de JXL.",
+    q3: "¿Admiten los navegadores web JXL o TIFF nativamente?",
+    a3: "Ni TIFF ni JXL son ampliamente compatibles de forma nativa en los principales navegadores (Chrome, Firefox, Safari) para renderizar directamente en páginas web. Debe convertirlos a JPEG, PNG o WebP para la entrega web estándar.",
+    q4: "¿Puede JXL comprimir archivos TIFF sin perder calidad?",
+    a4: "Sí. JXL admite modos de compresión sin pérdidas extremadamente eficientes y puede transcodificar archivos TIFF en archivos contenedores JXL sin perder un solo píxel de calidad, ahorrando enormes cantidades de almacenamiento.",
+    q5: "¿Qué formato debo usar para imprimir, TIFF o JXL?",
+    a5: "Siempre use TIFF para imprimir. Las imprentas y los equipos comerciales se han estandarizado en TIFF debido a su sólido soporte para los espacios de color CMYK. JXL aún no es compatible con los flujos de trabajo de impresión estándar.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita optimizar sus imágenes digitales?",
+    ctaDesc: "Use nuestra herramienta gratuita, privada y en el navegador para comprimir y optimizar instantáneamente sus archivos JPEG y otros archivos ráster de forma segura.",
+    ctaButton: "Probar el optimizador de imágenes",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "TIFF vs JXL : Quel format est le meilleur pour l'archivage ? (2026)",
+    seoDescription: "TIFF vs JXL (JPEG XL). Nous comparons le standard d'impression classique au format d'image de nouvelle génération. Découvrez les différences et lequel utiliser.",
+    title: "TIFF vs JXL : Quel format est le meilleur ?",
+    intro: "Le TIFF es un format vétéran qui a servi de pilier à l'impression haute résolution et à l'archivage photographique pendant des décennies. Le JXL (JPEG XL) est le challenger moderne, promettant la même qualité sans perte à une fraction de la taille. Comparons leurs caractéristiques techniques.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le TIFF pour :",
+    useTiffForDesc: "L'impression professionnelle, la prépresse et l'édition où le support CMJN et la compatibilité logicielle sont obligatoires.",
+    useJxlFor: "Utilisez le JXL pour :",
+    useJxlForDesc: "L'archivage de grandes bibliothèques de photos pour économiser de l'espace, à condition que vos logiciels le prennent en charge.",
+    differenceTitle: "Quelle est la différence entre TIFF et JXL ?",
+    differenceDesc: "Bien que les deux formats préservent une qualité d'image sans perte, ils diffèrent par leur âge, leur compression et leur compatibilité. Voici une comparaison TIFF vs JXL.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "TIFF (Tagged Image File Format)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Norme de compression",
+    tdCompStandardTiff: "Sans perte (LZW, ZIP, PackBits, non compressé)",
+    tdCompStandardJxl: "Avec & Sans perte (VarDCT / Modular)",
+    tdFileSize: "Taille moyenne des fichiers",
+    tdFileSizeTiff: "Très grande (souvent de 50 Mo à 100 Mo+)",
+    tdFileSizeJxl: "Très petite (typiquement 60 à 80% plus léger que le TIFF)",
+    tdColorDepth: "Profondeur des couleurs",
+    tdColorDepthTiff: "Jusqu'à 32 bits par canal",
+    tdColorDepthJxl: "Jusqu'à 32 bits (HDR optimisé)",
+    tdBrowser: "Compatibilité navigateurs",
+    tdBrowserTiff: "Non pris en charge par les principaux navigateurs",
+    tdBrowserJxl: "Support expérimental / limité uniquement",
+    tdPrint: "Compatibilité impression",
+    tdPrintTiff: "Standard de l'industrie (support CMJN parfait)",
+    tdPrintJxl: "Expérimental / Non supporté en impression",
+    tdTranscoding: "Transcodage sans perte",
+    tdTranscodingTiff: "Non",
+    tdTranscodingJxl: "Oui (peut compresser les JPEG classiques de 20% sans perte)",
+    converterTitle: "Optimiser vos images instantanément (Gratuit & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le TIFF ?",
+    diveTiffP1: "TIFF signifie Tagged Image File Format. Développé à l'origine par Aldus (aujourd'hui Adobe) en 1986, le TIFF est devenu la norme pour la PAO et l'imprimerie professionnelle.",
+    diveTiffP2: "Ce format est très flexible. Il gère la compression LZW/ZIP sans perte, le multi-page, les calques et l'espace de couleur CMJN, indispensable pour l'impression physique.",
+    diveTiffAdv: "Avantages du TIFF",
+    diveTiffAdvList: [
+      "Support d'impression universel : Pris en charge par tous les équipements professionnels.",
+      "Archivage sans perte : Conserve l'intégralité des données d'origine.",
+      "Conteneur complet : Supporte le multi-page et les calques."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le JXL ?",
+    diveJxlP1: "JPEG XL (JXL) est la nouvelle norme finalisée en 2022 par le comité JPEG. Il vise à remplacer le JPEG ainsi que le WebP et l'AVIF.",
+    diveJxlP2: "Le JXL permet de transcoder sans perte les anciens fichiers JPEG pour économiser 20% d'espace tout en restant réversible. Pour les images brutes, sa compression sans perte est largement supérieure à celle du TIFF.",
+    diveJxlAdv: "Avantages du JXL",
+    diveJxlAdvList: [
+      "Compression exceptionnelle : Fichiers 60% plus légers que le TIFF.",
+      "Transcodage JPEG réversible : Gain d'espace instantané sur vos JPEG existants.",
+      "HDR & Wide Gamut : Prise en charge des écrans modernes."
+    ],
+    snippetSectionTitle: "Quand utiliser le TIFF ou le JXL",
+    snippetSectionDesc: "Choisir le bon format dépend de vos besoins de stockage et de partage.",
+    q1: "Quelle est la différence entre TIFF et JXL (JPEG XL) ?",
+    a1: "Le TIFF est un format professionnel classique pour l'impression et la retouche. Le JXL est un format moderne de nouvelle génération offrant une compression avancée à qualité égale.",
+    q2: "Le JXL (JPEG XL) est-il meilleur que le TIFF pour l'archivage ?",
+    a2: "Techniquement oui, car le JXL permet de réduire l'espace disque de 60 à 80% sans aucune perte. Cependant, le TIFF reste plus compatible avec les logiciels d'archivage actuels.",
+    q3: "Les navigateurs web affichent-ils le JXL ou le TIFF ?",
+    a3: "Aucun de ces deux formats n'est supporté nativement pour le web. Vous devez les convertir en JPEG, PNG ou WebP.",
+    q4: "Le JXL peut-il compresser un TIFF sans perte ?",
+    a4: "Oui. Le JXL gère la compression sans perte et peut encapsuler des données TIFF sans altérer aucun pixel.",
+    q5: "Quel format utiliser pour l'impression, TIFF ou JXL ?",
+    a5: "Utilisez toujours le TIFF. Les imprimeurs sont équipés pour le TIFF et ses profils CMJN. Le JXL n'est pas encore pris en charge par les machines d'impression.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin d'optimiser vos images ?",
+    ctaDesc: "Utilisez notre outil en ligne gratuit et local pour compresser et optimiser vos JPEG et autres formats d'images.",
+    ctaButton: "Essayer l'optimiseur d'images",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "TIFF vs. JXL: Welches Format ist besser für die Archivierung? (2026)",
+    seoDescription: "TIFF vs. JXL (JPEG XL). Wir vergleichen den klassischen Druckstandard mit dem Vektor- und Bildformat der nächsten Generation. Erfahren Sie mehr über Dateigrößen.",
+    title: "TIFF vs. JXL: Welches Format ist besser?",
+    intro: "TIFF ist ein etabliertes Format, das seit Jahrzehnten als Rückgrat für den hochauflösenden Druck und die Fotoarchivierung dient. JXL (JPEG XL) ist der moderne Herausforderer, der die gleiche verlustfreie Qualität bei einem Bruchteil der Dateigröße verspricht. Vergleichen wir die technischen Parameter.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie TIFF für:",
+    useTiffForDesc: "Professionellen Druck, Prepress-Layouts und Publikationen, bei denen CMYK-Unterstützung und Softwarekompatibilität zwingend erforderlich sind.",
+    useJxlFor: "Nutzen Sie JXL für:",
+    useJxlForDesc: "Die Archivierung großer Bildbibliotheken zur Speicherplatzeinsparung, sofern Ihre Software das Format unterstützt.",
+    differenceTitle: "Was ist der Unterschied zwischen TIFF und JXL?",
+    differenceDesc: "Obwohl beide Formate verlustfreie Qualität bieten, unterscheiden sie sich stark in Alter, Kompressionsalgorithmen und Kompatibilität. Hier ist der direkte Vergleich von TIFF vs. JXL (JPEG XL).",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "TIFF (Tagged Image File Format)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Kompressionsstandard",
+    tdCompStandardTiff: "Verlustfrei (LZW, ZIP, PackBits, unkomprimiert)",
+    tdCompStandardJxl: "Verlustbehaftet & Verlustfrei (VarDCT / Modular)",
+    tdFileSize: "Durchschnittliche Dateigröße",
+    tdFileSizeTiff: "Sehr groß (oft 50 MB bis über 100 MB)",
+    tdFileSizeJxl: "Winzig (typischerweise 60–80 % kleiner als TIFF)",
+    tdColorDepth: "Farbtiefe",
+    tdColorDepthTiff: "Bis zu 32-Bit pro Kanal",
+    tdColorDepthJxl: "Bis zu 32-Bit (hochgradig optimiertes HDR)",
+    tdBrowser: "Browser-Unterstützung",
+    tdBrowserTiff: "Wird von Webbrowsern nicht unterstützt",
+    tdBrowserJxl: "Nur experimentelle / eingeschränkte Unterstützung",
+    tdPrint: "Druckkompatibilität",
+    tdPrintTiff: "Industriestandard (perfekte CMYK-Unterstützung)",
+    tdPrintJxl: "Experimentell / nicht im Druck unterstützt",
+    tdTranscoding: "Verlustfreies Transkodieren",
+    tdTranscodingTiff: "Nein",
+    tdTranscodingJxl: "Ja (kann bestehende JPEGs verlustfrei um 20 % verkleinern)",
+    converterTitle: "Bilder sofort optimieren (Kostenlos & Lokal)",
+    diveTiffTitle: "Deep Dive: Was ist ein TIFF?",
+    diveTiffP1: "TIFF steht für Tagged Image File Format. Es wurde 1986 von Aldus (heute Adobe) entwickelt und etablierte sich schnell als Standard für Grafikdesign, Druckvorstufe und Desktop-Scanning.",
+    diveTiffP2: "Die Stärke liegt in der Flexibilität: Unterstützung für LZW/ZIP-Kompression, mehrere Seiten, Ebenen und CMYK-Farbräume für den Druck.",
+    diveTiffAdv: "Vorteile von TIFF",
+    diveTiffAdvList: [
+      "Universeller Druckstandard: Wird von allen Druckmaschinen nativ unterstützt.",
+      "Verlustfreie Archivierung: Keine Artefakte durch Komprimierung.",
+      "Flexibler Container: Kann mehrseitige Dokumente und Ebenen speichern."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist JXL (JPEG XL)?",
+    diveJxlP1: "JPEG XL (JXL) is der neue Bildstandard der JPEG-Gruppe aus dem Jahr 2022, entwickelt als moderner Nachfolger für JPEG, WebP und AVIF.",
+    diveJxlP2: "JXL ermöglicht das verlustfreie Transkodieren alter JPEGs mit 20 % Platzersparnis. Für Rohdaten oder TIFFs bietet es eine hocheffiziente verlustfreie Kompression.",
+    diveJxlAdv: "Vorteile von JXL",
+    diveJxlAdvList: [
+      "Hervorragende Kompression: Spart über 60 % Speicherplatz gegenüber TIFF.",
+      "Verlustfreie JPEG-Konvertierung: Reduziert die Größe bestehender JPEGs ohne Qualitätsverlust.",
+      "HDR & Wide Gamut: Unterstützung für modernste Bildschirme."
+    ],
+    snippetSectionTitle: "Wann nutzt man TIFF vs. JXL",
+    snippetSectionDesc: "Die Wahl des richtigen Formats spart Speicherplatz und sichert die Bildqualität.",
+    q1: "Was ist der Unterschied zwischen TIFF und JXL (JPEG XL)?",
+    a1: "TIFF ist ein etabliertes, verlustfreies Format für den Druck und die Archivierung. JXL ist ein moderner Nachfolger mit hocheffizienter Kompression bei gleicher Bildqualität.",
+    q2: "Ist JXL (JPEG XL) besser als TIFF für die Archivierung?",
+    a2: "Technisch ja, da JXL 60–80 % Speicherplatz spart. Da TIFF jedoch älter ist, bietet es derzeit noch die bessere Software-Kompatibilität.",
+    q3: "Unterstützen Browser JXL oder TIFF nativ?",
+    a3: "Nein, keines der Formate wird derzeit nativ im Browser gerendert. Für Webseiten müssen Bilder in JPEG, PNG oder WebP konvertiert werden.",
+    q4: "Kann JXL TIFF-Dateien verlustfrei komprimieren?",
+    a4: "Ja, JXL kann TIFF-Daten verlustfrei und mit hoher Effizienz verpacken, ohne dass ein Pixel verloren geht.",
+    q5: "Welches Format sollte ich für den Druck nutzen, TIFF oder JXL?",
+    a5: "Nutzen Sie immer TIFF. Druckereien arbeiten und drucken standardmäßig mit TIFF und CMYK-Profilen. JXL wird von Druckmaschinen noch nicht unterstützt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie Ihre Digitalbilder optimieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um JPEGs und andere Bilder sicher zu komprimieren.",
+    ctaButton: "Bildoptimierer testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "TIFF vs JXL: Qual formato é melhor para arquivamento? (2026)",
+    seoDescription: "TIFF vs JXL (JPEG XL). Comparamos o clássico formato de impressão com a tecnologia de imagem da próxima geração. Conheça os prós e contras.",
+    title: "TIFF vs JXL: Qual formato é melhor?",
+    intro: "O TIFF é um formato veterano que serviu como base para a impressão de alta resolução e arquivo fotográfico por décadas. O JXL (JPEG XL) é o concorrente moderno, prometendo a mesma qualidade sem perdas a uma fração do tamanho. Comparemos os seus parâmetros técnicos.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use TIFF para:",
+    useTiffForDesc: "Impressão profissional, layouts de pré-impressão e publicação onde o suporte a CMYK e compatibilidade com softwares são obrigatórios.",
+    useJxlFor: "Use JXL para:",
+    useJxlForDesc: "Arquivamento de grandes bibliotecas de fotos para poupar espaço em disco, desde que o seu software o suporte.",
+    differenceTitle: "Qual é a diferença entre TIFF e JXL?",
+    differenceDesc: "Embora ambos os formatos ofereçam qualidade de imagem sem perdas, eles diferem bastante em idade, compressão e compatibilidade. Veja o comparativo TIFF vs JXL (JPEG XL).",
+    thFeature: "Característica / Aspeto",
+    thTiff: "TIFF (Tagged Image File Format)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Padrão de compressão",
+    tdCompStandardTiff: "Sem perdas (LZW, ZIP, PackBits, não compactado)",
+    tdCompStandardJxl: "Com & Sem perdas (VarDCT / Modular)",
+    tdFileSize: "Tamanho médio do arquivo",
+    tdFileSizeTiff: "Muito grande (geralmente de 50 MB a 100 MB+)",
+    tdFileSizeJxl: "Muito pequeno (geralmente 60-80% menor que o TIFF)",
+    tdColorDepth: "Profundidade de cor",
+    tdColorDepthTiff: "Até 32 bits por canal",
+    tdColorDepthJxl: "Até 32 bits (HDR otimizado)",
+    tdBrowser: "Suporte do navegador",
+    tdBrowserTiff: "Não é suportado por navegadores da web",
+    tdBrowserJxl: "Apenas suporte experimental / limitado",
+    tdPrint: "Compatibilidade de impressão",
+    tdPrintTiff: "Padrão da indústria (suporte CMYK perfeito)",
+    tdPrintJxl: "Experimental / Não suportado em impressão",
+    tdTranscoding: "Transcodificação sem perdas",
+    tdTranscodingTiff: "Não",
+    tdTranscodingJxl: "Sim (consegue reduzir JPEGs antigos em 20% sem perdas)",
+    converterTitle: "Otimizar Imagens instantaneamente (Grátis & Privado)",
+    diveTiffTitle: "Análise profunda: O que é o TIFF?",
+    diveTiffP1: "TIFF significa Tagged Image File Format. Desenvolvido originalmente pela Aldus (hoje Adobe) em 1986, tornou-se o padrão da indústria para design, pré-impressão e digitalização profissional.",
+    diveTiffP2: "Este formato oferece alta flexibilidade: suporta compressão LZW/ZIP sem perdas, páginas múltiplas, camadas e o espaço de cor CMYK utilizado pelas gráficas.",
+    diveTiffAdv: "Vantagens do TIFF",
+    diveTiffAdvList: [
+      "Suporte de impressão universal: Aceito nativamente por todos os equipamentos profissionais.",
+      "Arquivamento sem perdas: Preserva todos os detalhes dos píxeis originais.",
+      "Contentor flexível: Suporta arquivos multi-páginas e camadas."
+    ],
+    diveJxlTitle: "Análise profunda: O que é o JXL (JPEG XL)?",
+    diveJxlP1: "JPEG XL (JXL) é um formato de próxima geração criado pelo comitê JPEG e finalizado em 2022, desenhado para substituir o JPEG clássico, o WebP e o AVIF.",
+    diveJxlP2: "O JXL permite transcodificar JPEGs antigos economizando 20% de espaço de forma totalmente reversível. Para imagens brutas ou TIFFs, ele oferece uma compressão sem perdas muito eficiente.",
+    diveJxlAdv: "Vantagens do JXL",
+    diveJxlAdvList: [
+      "Compressão soberba: Ficheiros 60% menores em comparação com o TIFF.",
+      "Transcodificação JPEG sem perdas: Reduz JPEGs existentes sem perdas.",
+      "HDR & Wide Gamut: Suporta telas modernas de alta definição."
+    ],
+    snippetSectionTitle: "Quando usar TIFF ou JXL",
+    snippetSectionDesc: "Escolher o formato correto equilibra qualidade visual e consumo de armazenamento.",
+    q1: "Qual é a diferença entre TIFF e JXL (JPEG XL)?",
+    a1: "O TIFF é o formato clássico sem perdas para impressão e arquivo profissional. O JXL é um formato moderno com compressão avançada para reduzir o espaço ocupado com a mesma qualidade.",
+    q2: "O JXL (JPEG XL) é melhor que o TIFF para arquivamento?",
+    a2: "Tecnicamente sim, pois economiza entre 60% e 80% de armazenamento sem qualquer perda. No entanto, o TIFF ainda possui maior compatibilidade com softwares de arquivo atuais.",
+    q3: "Os navegadores suportam JXL ou TIFF de forma nativa?",
+    a3: "Nenhum deles é exibido diretamente nos navegadores web normais. Terá de convertê-los para JPEG, PNG ou WebP.",
+    q4: "O JXL consegue compactar arquivos TIFF sem perdas?",
+    a4: "Sim. O JXL possui modos de compressão sem perdas muito eficientes e compacta dados de TIFFs mantendo os píxeis originais intactos.",
+    q5: "Qual formato devo utilizar para imprimir, TIFF ou JXL?",
+    a5: "Use sempre o TIFF. As gráficas estão habituadas ao TIFF e seus perfis CMYK. O JXL não possui suporte nos fluxos de impressão atuais.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa de otimizar suas fotos?",
+    ctaDesc: "Use a nossa ferramenta gratuita no navegador para comprimir e otimizar JPEGs e outras fotos raster de forma rápida e segura.",
+    ctaButton: "Testar Otimizador de Imagens",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "TIFF vs JXL: Format Mana yang Lebih Baik untuk Arsip? (2026)",
+    seoDescription: "TIFF vs JXL (JPEG XL). Kami membandingkan standar cetak klasik dengan format gambar generasi berikutnya. Pelajari perbedaan ukuran file dan kompresi.",
+    title: "TIFF vs JXL: Mana Format yang Lebih Baik?",
+    intro: "TIFF adalah format lama yang telah menjadi tulang punggung percetakan resolusi tinggi dan pengarsipan foto selama beberapa dekade. JXL (JPEG XL) adalah penantang modern, menjanjikan kualitas lossless yang sama pada ukuran file jauh lebih kecil. Mari kita bandingkan parameter teknisnya.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan TIFF untuk:",
+    useTiffForDesc: "Percetakan profesional, desain pracetak, dan penerbitan di mana dukungan CMYK dan kompatibilitas perangkat lunak adalah wajib.",
+    useJxlFor: "Gunakan JXL untuk:",
+    useJxlForDesc: "Mengarsipkan perpustakaan foto besar untuk menghemat penyimpanan, asalkan perangkat lunak Anda mendukung format ini.",
+    differenceTitle: "Apa Perbedaan Antara TIFF dan JXL?",
+    differenceDesc: "Meskipun kedua format menyimpan gambar dengan kualitas lossless, keduanya sangat berbeda dalam hal usia, kompresi, dan kompatibilitas. Berikut perbandingan tiff vs JXL (JPEG XL).",
+    thFeature: "Fitur / Aspek",
+    thTiff: "TIFF (Tagged Image File Format)",
+    thJxl: "JXL (JPEG XL)",
+    tdCompStandard: "Standar Kompresi",
+    tdCompStandardTiff: "Lossless (LZW, ZIP, PackBits, tanpa kompresi)",
+    tdCompStandardJxl: "Lossy & Lossless (VarDCT / Modular)",
+    tdFileSize: "Ukuran File Rata-rata",
+    tdFileSizeTiff: "Sangat Besar (Sering kali 50MB hingga 100MB+)",
+    tdFileSizeJxl: "Sangat Kecil (Biasanya 60-80% lebih kecil dari TIFF)",
+    tdColorDepth: "Dukungan Kedalaman Warna",
+    tdColorDepthTiff: "Hingga 32-bit per saluran",
+    tdColorDepthJxl: "Hingga 32-bit (HDR sangat dioptimalkan)",
+    tdBrowser: "Dukungan Browser",
+    tdBrowserTiff: "Tidak didukung oleh browser web populer",
+    tdBrowserJxl: "Hanya dukungan eksperimental / terbatas",
+    tdPrint: "Kompatibilitas Cetak",
+    tdPrintTiff: "Standar Industri (Dukungan profil warna CMYK sempurna)",
+    tdPrintJxl: "Eksperimental / Tidak didukung dalam cetak fisik",
+    tdTranscoding: "Transcoding Lossless",
+    tdTranscodingTiff: "Tidak",
+    tdTranscodingJxl: "Ya (Bisa mengompresi file JPEG lama sebesar 20% secara lossless)",
+    converterTitle: "Optimalkan Gambar Instan (Gratis & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu TIFF?",
+    diveTiffP1: "TIFF adalah singkatan dari Tagged Image File Format. Dikembangkan oleh Aldus (sekarang Adobe) pada tahun 1986, TIFF menjadi standar utama untuk desain grafis, pracetak, dan pemindaian desktop.",
+    diveTiffP2: "Kekuatan utama format ini terletak pada fleksibilitasnya. TIFF mendukung berbagai mode kompresi (seperti LZW/ZIP lossless), dokumen multi-halaman, lapisan, dan profil warna CMYK untuk cetak fisik.",
+    diveTiffAdv: "Kelebihan TIFF",
+    diveTiffAdvList: [
+      "Dukungan Cetak Universal: Didukung secara natif oleh mesin cetak profesional.",
+      "Arsip Lossless: Tidak merusak data gambar asli saat disimpan.",
+      "Kontainer Serbaguna: Mendukung penyimpanan multi-halaman dan lapisan gambar."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu JXL (JPEG XL)?",
+    diveJxlP1: "JPEG XL (JXL) adalah standar pengodean gambar generasi baru yang dibuat oleh komite JPEG pada tahun 2022, dirancang untuk menggantikan JPEG standar, WebP, dan AVIF.",
+    diveJxlP2: "JXL mendukung kompresi canggih untuk mengubah JPEG lama menjadi JXL dengan penghematan 20% secara reversibel. Untuk gambar mentah, kompresi lossless JXL jauh lebih efisien daripada LZW.",
+    diveJxlAdv: "Kelebihan JXL",
+    diveJxlAdvList: [
+      "Kompresi Luar Biasa: Menghemat penyimpanan hingga 60% atau lebih dibandingkan TIFF.",
+      "Transcoding JPEG Lossless: Mengompresi file JPEG tanpa mengubah kualitas piksel.",
+      "HDR & Wide Gamut: Mendukung layar modern dengan rentang warna luas."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan TIFF atau JXL",
+    snippetSectionDesc: "Memilih format yang tepat menyeimbangkan kualitas gambar dan ruang penyimpanan.",
+    q1: "Apa perbedaan antara TIFF dan JXL (JPEG XL)?",
+    a1: "TIFF adalah format raster tanpa kehilangan untuk pencetakan dan arsip foto profesional. JXL adalah format gambar modern dengan kompresi canggih untuk mengurangi ukuran file tanpa mengurangi kualitas.",
+    q2: "Apakah JXL (JPEG XL) lebih baik dari TIFF untuk pengarsipan?",
+    a2: "Secara teknis ya, karena menghemat penyimpanan 60% hingga 80% secara lossless. Namun, TIFF saat ini masih memiliki kompatibilitas perangkat lunak pengarsipan yang lebih luas.",
+    q3: "Apakah browser web mendukung JXL atau TIFF secara natif?",
+    a3: "Tidak, kedua format tidak didukung secara natif untuk rendering di halaman web. Anda harus mengubahnya ke JPEG, PNG, atau WebP terlebih dahulu.",
+    q4: "Apakah JXL bisa mengompresi file TIFF secara lossless?",
+    a4: "Ya. JXL mendukung kompresi lossless yang sangat efisien dan dapat mengemas TIFF ke wadah JXL tanpa merusak satu piksel pun.",
+    q5: "Format mana yang harus saya gunakan untuk mencetak, TIFF atau JXL?",
+    a5: "Selalu gunakan TIFF untuk mencetak. Industri cetak telah menstandardisasi format TIFF dan profil warna CMYK. JXL belum didukung oleh peralatan cetak standar.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengoptimalkan gambar digital Anda?",
+    ctaDesc: "Gunakan alat dalam browser gratis kami untuk mengompresi dan mengoptimalkan gambar JPEG secara aman.",
+    ctaButton: "Coba Pengoptimal Gambar",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "tiff-jxl")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">TIFF vs JXL</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JXL</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard || "Compression Standard"}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize || "Average File Size"}</td>
+                <td class="p-4 text-error">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth || "Color Depth Support"}</td>
+                <td class="p-4">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser || "Web Browser Support"}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-error">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint || "Print Compatibility"}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4 text-error">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding || "Lossless Transcoding"}</td>
+                <td class="p-4">No</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JXL -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="TIFF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

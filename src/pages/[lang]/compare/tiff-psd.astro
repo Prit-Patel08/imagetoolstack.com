@@ -1,0 +1,639 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import TiffToJpgTool from "../../../components/tools/TiffToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "TIFF vs PSD: Diferencia entre formatos de archivo comprimidos y de Photoshop",
+    seoDescription: "TIFF vs PSD. Comparamos Tagged Image File Format con Adobe Photoshop Documents. Conozca cuándo usar cada uno para impresión, edición y archivo.",
+    title: "TIFF vs PSD: ¿Qué formato de imagen es mejor?",
+    intro: "Comparamos un estándar de publicación y archivo de alta fidelidad con el formato de archivo de diseño nativo de Adobe. Entenda cuándo usar TIFF o PSD.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use PSD para:",
+    usePngForDesc: "Proyectos de edición digital activos en Adobe Photoshop donde necesita preservar capas separadas, máscaras, filtros inteligentes y campos de texto editables.",
+    useIcoFor: "Use TIFF para:",
+    useIcoForDesc: "Almacenar gráficos planos finales de alta resolución, imágenes maestras de archivo, documentos escaneados e imágenes destinadas a la impresión offset comercial.",
+    differenceTitle: "¿Cuál es la diferencia entre TIFF y PSD?",
+    differenceDesc: "TIFF es un formato de archivo estándar abierto multiplataforma utilizado en equipos de escaneo e impresión. PSD es el formato de contenedor propietario de Adobe optimizado para los flujos de trabajo de Photoshop.",
+    thFeature: "Característica / Aspecto",
+    thPng: "TIFF (Tagged Image File Format)",
+    thIco: "PSD (Photoshop Document)",
+    tdFileNature: "Origen del formato",
+    tdFileNaturePng: "Estándar abierto (Desarrollado por Aldus/Microsoft)",
+    tdFileNatureIco: "Propietario (Desarrollado por Adobe)",
+    tdFallback: "Aplicación principal",
+    tdFallbackPng: "Archivo, Escaneo, Impresión Comercial",
+    tdFallbackIco: "Edición Activa de Fotos y Gráficos",
+    tdPurpose: "Preservación de capas",
+    tdPurposePng: "Básico (Soportado pero limita la compatibilidad)",
+    tdPurposeIco: "Avanzado (Soporte completo para capas de ajuste, efectos, objetos inteligentes)",
+    tdResolutions: "Compatibilidad",
+    tdResolutionsPng: "Universal (Leído por casi todas las herramientas de imagen)",
+    tdResolutionsIco: "Restringido (Mejor compatibilidad dentro de las aplicaciones de Adobe)",
+    tdSize: "Soporte de navegador web",
+    tdSizePng: "No (Requiere conversión)",
+    tdSizeIco: "No (Requiere conversión)",
+    tdTrans: "Opción de compresión",
+    tdTransPng: "LZW, ZIP, PackBits o sin comprimir",
+    tdTransIco: "RLE, ZIP o sin comprimir",
+    converterTitle: "Convertir imágenes TIFF sin conexión (Privado y Seguro)",
+    divePngTitle: "Análisis profundo: ¿Qué es un TIFF?",
+    divePngP1: "TIFF (Tagged Image File Format) fue creado en 1986 por Aldus Corporation (ahora Adobe) como un estándar unificado para escáneres de escritorio. TIFF es un formato de contenedor flexible diseñado para manejar imágenes rasterizadas y etiquetas de datos. Admite espacios de color profundos y opciones de compresión sin pérdidas como LZW y ZIP.",
+    divePngP2: "TIFF es muy valorado en archivos, imágenes médicas e impresión comercial porque no introduce artefactos de compresión. Es un formato abierto, lo que significa que casi cualquier software de imágenes profesional o sistema operativo puede abrir y mostrar un archivo TIFF.",
+    divePngAdv: "Ventajas de TIFF",
+    divePngAdvList: [
+      "Estándar abierto universal: Altamente compatible con prensas de impresión y escáneres médicos.",
+      "Archivo no destructivo: Ideal para archivos maestros ya que no degrada la calidad al guardar.",
+      "Soporte multipágina: Puede almacenar múltiples imágenes o páginas dentro de un solo archivo."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es un PSD?",
+    diveIcoP1: "PSD (Photoshop Document) es el formato de archivo de proyecto nativo utilizado por Adobe Photoshop. Un archivo PSD sirve como el archivo de trabajo principal de un diseñador, preservando los datos estructurales completos de un proyecto. Esto incluye capas, máscaras, trazados vectoriales editables y objetos inteligentes.",
+    diveIcoP2: "Dado que mantiene el texto editable y los parámetros de ajuste, los diseñadores trabajan dentro de archivos PSD y solo exportan las composiciones finales a formatos planos compatibles con la web como PNG o WebP. Aunque el software de Adobe lee los archivos PSD sin problemas, abrirlos en otros programas suele acoplar las capas.",
+    diveIcoAdv: "Ventajas de PSD",
+    diveIcoAdvList: [
+      "Editabilidad completa: Mantiene capas, capas de ajuste, texto y efectos totalmente editables.",
+      "Objetos inteligentes: Permite incrustar vectores de alta resolución que escalan dinámicamente.",
+      "Operaciones no destructivas: Las máscaras y los estilos de capa se pueden cambiar sin alterar los píxeles base."
+    ],
+    q1: "¿Cuál es la diferencia entre TIFF y PSD?",
+    a1: "TIFF es un formato de imagen rasterizado estandarizado y sin pérdidas muy utilizado en impresión comercial y archivo digital. PSD es el formato de proyecto nativo de Photoshop que guarda capas, textos y trazados editables.",
+    q2: "¿Cuándo debo usar TIFF en lugar de PSD?",
+    a2: "Use PSD mientras edita su diseño en Photoshop para mantener las capas editables. Use TIFF para guardar el archivo gráfico final de alta resolución listo para enviar a una imprenta o escáner profesional.",
+    q3: "¿Puede un archivo TIFF conservar las capas de Photoshop?",
+    a3: "Sí, Photoshop permite guardar archivos TIFF con los datos de las capas intactos. Sin embargo, esto aumenta mucho el tamaño del archivo y la mayoría de los visores que no son de Adobe mostrarán la imagen acoplada.",
+    q4: "¿Cómo convierto un PSD a TIFF?",
+    a4: "Puede guardar un PSD como TIFF directamente en Photoshop mediante la opción 'Guardar como' seleccionando TIFF en el menú. Si no tiene Photoshop, puede usar GIMP u otros editores de código abierto.",
+    q5: "¿Por qué los archivos TIFF y PSD son mucho más grandes que los JPEG?",
+    a5: "Porque almacenan píxeles sin comprimir o con compresión sin pérdidas junto con múltiples capas de información para asegurar la máxima calidad, mientras que JPEG comprime los datos descartando información visual.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir imágenes TIFF a JPG?",
+    ctaDesc: "Use nuestro convertidor local de TIFF a JPG en el navegador para exportar sus archivos TIFF de forma segura y sin conexión.",
+    ctaButton: "Probar Convertidor de TIFF",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "TIFF vs PSD : différence entre les formats d'archive et Photoshop",
+    seoDescription: "TIFF vs PSD. Nous comparons le Tagged Image File Format avec les fichiers Adobe Photoshop Documents. Apprenez quand utiliser chacun d'eux.",
+    title: "TIFF vs PSD : quel format d'image est le meilleur ?",
+    intro: "Nous comparons un standard d'impression et d'archivage haute fidélité avec le format de création natif d'Adobe. Comprenez quand utiliser le TIFF ou le PSD.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le PSD pour :",
+    usePngForDesc: "Les projets de création numérique en cours sur Adobe Photoshop afin de préserver les calques séparés, masques, filtres dynamiques et textes modifiables.",
+    useIcoFor: "Utilisez le TIFF pour :",
+    useIcoForDesc: "Le stockage d'images de master haute résolution finalisées, l'archivage numérique, la numérisation et les fichiers destinés à l'imprimerie offset.",
+    differenceTitle: "Quelle est la différence entre TIFF et PSD ?",
+    differenceDesc: "Le TIFF est un format ouvert standardisé et multiplateforme utilisé par les scanners et les imprimeurs. Le PSD est le conteneur propriétaire d'Adobe optimisé pour Photoshop.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "TIFF (Tagged Image File Format)",
+    thIco: "PSD (Photoshop Document)",
+    tdFileNature: "Origine du format",
+    tdFileNaturePng: "Standard ouvert (Développé par Aldus/Microsoft)",
+    tdFileNatureIco: "Propriétaire (Développé par Adobe)",
+    tdFallback: "Application principale",
+    tdFallbackPng: "Archivage, Numérisation, Impression commerciale",
+    tdFallbackIco: "Création et retouche active d'images",
+    tdPurpose: "Préservation des calques",
+    tdPurposePng: "Basique (Possible mais limite la compatibilité)",
+    tdPurposeIco: "Avancée (Gestion complète des calques d'effet, masques, objets dynamiques)",
+    tdResolutions: "Compatibilité",
+    tdResolutionsPng: "Universelle (Lu par presque tous les logiciels d'image)",
+    tdResolutionsIco: "Restreinte (Optimisé pour l'écosystème Adobe)",
+    tdSize: "Support des navigateurs web",
+    tdSizePng: "Non (Nécessite une conversion)",
+    tdSizeIco: "Non (Nécessite une conversion)",
+    tdTrans: "Mode de compression",
+    tdTransPng: "LZW, ZIP, PackBits ou non compressé",
+    tdTransIco: "RLE, ZIP ou non compressé",
+    converterTitle: "Convertir des images TIFF hors ligne (Privé & Sécurisé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le TIFF ?",
+    divePngP1: "Le TIFF (Tagged Image File Format) a été créé en 1986 par Aldus Corporation (rachetée par Adobe) comme format standardisé pour les scanners de bureau. C'est un conteneur d'image matricielle gérant des balises de données (tags). Il supporte des codages de couleurs profonds et une compression sans perte comme le LZW et le ZIP.",
+    divePngP2: "Le TIFF est la référence absolue pour l'archivage de documents et l'imprimerie car il n'altère aucun pixel. C'est un format ouvert, ce qui garantit qu'il peut être ouvert par presque n'importe quelle application d'imagerie professionnelle.",
+    divePngAdv: "Avantages du TIFF",
+    divePngAdvList: [
+      "Standard ouvert universel : Parfaitement compatible avec les scanneurs de pointe et flasheuses d'imprimerie.",
+      "Archivage sans perte : Idéal pour conserver les originaux sans altérer leur qualité.",
+      "Gestion du multipage : Permet d'encapsuler plusieurs pages ou clichés dans un seul fichier."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le PSD ?",
+    diveIcoP1: "Le PSD (Photoshop Document) is le format de fichier projet natif d'Adobe Photoshop. Il permet au créateur de stocker l'intégralité des calques de retouche, masques de fusion, textes éditables, tracés vectoriels et filtres de son document de travail.",
+    diveIcoP2: "Puisqu'il conserve les calques éditables, les designers travaillent dans le PSD puis exportent la composition finale dans des formats plats adaptés au web (PNG, JPEG, WebP). Les logiciels tiers ont du mal à exploiter l'historique et les calques complexes d'un PSD.",
+    diveIcoAdv: "Avantages du PSD",
+    diveIcoAdvList: [
+      "Modificabilité complète : Les calques, textes et filtres restent 100 % modifiables.",
+      "Objets dynamiques : Permet d'intégrer des visuels vectoriels extensibles.",
+      "Édition non destructive : Application de masques et styles de calques sans écraser les pixels."
+    ],
+    q1: "Quelle est la différence entre TIFF et PSD ?",
+    a1: "Le TIFF est un format d'image matricielle standardisé sans perte pour l'archivage et l'impression professionnelle. Le PSD est le format de projet Photoshop qui préserve vos calques, textes et filtres modifiables.",
+    q2: "Quand utiliser le TIFF plutôt que le PSD ?",
+    a2: "Utilisez le PSD lors de la phase de création de votre design pour modifier les calques à tout moment. Utilisez le TIFF pour exporter votre image finale en haute résolution afin de l'imprimer.",
+    q3: "Un fichier TIFF peut-il contenir des calques Photoshop ?",
+    a3: "Oui, Photoshop permet de sauvegarder les calques dans un fichier TIFF. Cependant, cela alourdit considérablement le fichier et les logiciels non-Adobe ignoreront généralement ces calques.",
+    q4: "Comment convertir un PSD en TIFF ?",
+    a4: "Ouvrez le PSD dans Adobe Photoshop et faites 'Enregistrer sous' en choisissant le format TIFF. Si vous ne possédez pas Photoshop, vous pouvez utiliser GIMP.",
+    q5: "Pourquoi les fichiers TIFF et PSD sont-ils plus lourds que les JPEG ?",
+    a5: "Parce qu'ils stockent l'image sans perte de qualité ou avec tous les calques d'édition individuels, alors que le JPEG compresse l'image de manière agressive avec perte.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir vos TIFF en JPG ?",
+    ctaDesc: "Utilisez notre convertisseur TIFF en JPG hors ligne gratuit pour exporter vos fichiers TIFF en JPG légers de manière sécurisée.",
+    ctaButton: "Essayer le convertisseur TIFF",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "TIFF vs. PSD: Unterschied zwischen Archiv- und Photoshop-Dateien",
+    seoDescription: "TIFF vs. PSD. Wir vergleichen Tagged Image File Format mit Adobe Photoshop Documents. Erfahren Sie alles über die Nutzung für Druck und Archivierung.",
+    title: "TIFF vs. PSD: Welches Bildformat ist besser?",
+    intro: "Wir vergleichen ein verlustfreies Druck- und Archivierungsformat mit Adobes nativem Photoshop-Dateiformat. Erfahren Sie, wann Sie TIFF oder PSD nutzen.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie PSD für:",
+    usePngForDesc: "Aktive Bildbearbeitungs- und Designprojekte in Adobe Photoshop, bei denen Sie Ebenen, Masken, Texte und Filter bearbeitbar halten müssen.",
+    useIcoFor: "Nutzen Sie TIFF für:",
+    useIcoForDesc: "Die Speicherung fertiger hochauflösender Grafiken, die digitale Archivierung von Masterdateien, Scans und Daten für den kommerziellen Druck.",
+    differenceTitle: "Was ist der Unterschied zwischen TIFF und PSD?",
+    differenceDesc: "TIFF ist ein plattformübergreifendes, offenes Standardformat für Druckereien und Scanner. PSD ist Adobes proprietärer Container, optimiert für Photoshop-Workflows.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "TIFF (Tagged Image File Format)",
+    thIco: "PSD (Photoshop Document)",
+    tdFileNature: "Format-Herkunft",
+    tdFileNaturePng: "Offener Standard (Entwickelt von Aldus/Microsoft)",
+    tdFileNatureIco: "Proprietär (Entwickelt von Adobe)",
+    tdFallback: "Hauptanwendung",
+    tdFallbackPng: "Archivierung, Scannen, kommerzieller Druck",
+    tdFallbackIco: "Aktive Foto- und Grafikbearbeitung",
+    tdPurpose: "Ebenenerhalt",
+    tdPurposePng: "Basis (Möglich, schränkt aber die Kompatibilität ein)",
+    tdPurposeIco: "Fortgeschritten (Volle Unterstützung für Einstellungsebenen, Effekte, Smartobjekte)",
+    tdResolutions: "Kompatibilität",
+    tdResolutionsPng: "Universal (Wird von fast allen Bildprogrammen gelesen)",
+    tdResolutionsIco: "Eingeschränkt (Optimiert für Adobe-Anwendungen)",
+    tdSize: "Webbrowser-Unterstützung",
+    tdSizePng: "Nein (Erfordert Konvertierung)",
+    tdSizeIco: "Nein (Erfordert Konvertierung)",
+    tdTrans: "Komprimierungsmethoden",
+    tdTransPng: "LZW, ZIP, PackBits oder unkomprimiert",
+    tdTransIco: "RLE, ZIP oder unkomprimiert",
+    converterTitle: "TIFF-Bilder offline konvertieren (Privat & Sicher)",
+    divePngTitle: "Deep Dive: Was ist TIFF?",
+    divePngP1: "TIFF steht für Tagged Image File Format. Es wurde 1986 von der Aldus Corporation (heute Adobe) als einheitlicher Standard für Scanner entwickelt. TIFF ist ein flexibles Containerformat, das Rasterbilder und Datenfelder speichert. Es unterstützt tiefe Farbräume und verlustfreie Kompressionsverfahren wie LZW und ZIP.",
+    divePngP2: "TIFF wird in der Archivierung, medizinischen Bildgebung und im Druck sehr geschätzt, da es keinerlei Qualitätsverluste verursacht. Als offenes Format kann es von fast jeder Bildbearbeitungssoftware problemlos geöffnet werden.",
+    divePngAdv: "Vorteile von TIFF",
+    divePngAdvList: [
+      "Offener Universalstandard: Sehr gute Kompatibilität mit Druckmaschinen und Scannern.",
+      "Verlustfreie Archivierung: Perfekt für Master-Dateien, da wiederholtes Speichern die Qualität nicht mindert.",
+      "Mehrseitige Dateien: Kann mehrere Seiten oder Bilder in einer Datei speichern."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist PSD?",
+    diveIcoP1: "PSD steht für Photoshop Document. Es ist das native Bildformat von Adobe Photoshop. Eine PSD-Datei dient als Arbeitsdatei des Designers und speichert die gesamte Struktur eines Projekts: Ebenen, Masken, Vektoren, Texte und Effekte.",
+    diveIcoP2: "Da es Texte und Bearbeitungsschritte editierbar hält, arbeiten Designer in PSD-Dateien und exportieren das Endergebnis in flache Formate wie PNG oder WebP. Nicht-Adobe-Software kann PSDs oft nur flachgerendert lesen.",
+    diveIcoAdv: "Vorteile von PSD",
+    diveIcoAdvList: [
+      "Volle Editierbarkeit: Hält Ebenen, Filter, Texte und Effekte vollständig veränderbar.",
+      "Smartobjekte: Ermöglicht das Einbetten hochauflösender Vektorgrafiken ohne Qualitätsverlust.",
+      "Zerstörungsfreie Bearbeitung: Masken und Stile können jederzeit korrigiert werden."
+    ],
+    q1: "Was ist der Unterschied zwischen TIFF und PSD?",
+    a1: "TIFF ist ein weithin genutztes, verlustfreies Format für Print und Archiv. PSD ist das Arbeitsformat von Photoshop, das Ebenen und Filter editierbar hält.",
+    q2: "Wann sollte ich TIFF statt PSD verwenden?",
+    a2: "Nutzen Sie PSD während der Bearbeitung des Layouts. Verwenden Sie TIFF, um das fertige Bild verlustfrei an eine Druckerei oder zur Langzeitarchivierung zu senden.",
+    q3: "Kann eine TIFF-Datei Photoshop-Ebenen speichern?",
+    a3: "Ja, Photoshop kann TIFF-Dateien inklusive Ebenendaten speichern. Dies vergrößert die Datei jedoch stark und externe Programme ignorieren diese Ebenen meist.",
+    q4: "Wie konvertiere ich PSD in TIFF?",
+    a4: "Speichern Sie das PSD direkt in Photoshop als TIFF über 'Speichern unter'. Alternativ können Sie Open-Source-Programme wie GIMP dafür nutzen.",
+    q5: "Warum sind TIFF- und PSD-Dateien so viel größer als JPEGs?",
+    a5: "Weil sie unkomprimierte Pixeldaten oder verlustfreie Kompressionsformate sowie komplexe Ebenenstrukturen nutzen, um maximale Bildqualität zu bewahren.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie TIFF-Dateien in JPG umwandeln?",
+    ctaDesc: "Nutzen Sie unseren Offline-TIFF-zu-JPG-Konverter im Browser, um TIFF-Bilder sicher in webfreundliche JPGs zu exportieren.",
+    ctaButton: "TIFF-Konverter starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "TIFF vs PSD: Diferença entre os formatos de Arquivo e Photoshop",
+    seoDescription: "TIFF vs PSD. Comparamos Tagged Image File Format com arquivos Photoshop Documents. Saiba quando usar cada um para edição e impressão.",
+    title: "TIFF vs PSD: Qual formato de imagem é melhor?",
+    intro: "Comparamos um padrão de alta fidelidade para impressão e arquivamento com o formato nativo da Adobe. Entenda quando usar TIFF ou PSD.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use PSD para:",
+    usePngForDesc: "Projetos ativos de edição no Adobe Photoshop onde precisa preservar camadas separadas, máscaras, filtros e textos editáveis.",
+    useIcoFor: "Use TIFF para:",
+    useIcoForDesc: "Salvar gráficos finais de alta resolução, imagens master para arquivo, documentos escaneados e imagens para impressão offset.",
+    differenceTitle: "Qual é a diferença entre TIFF e PSD?",
+    differenceDesc: "O TIFF é um formato padrão aberto multiplataforma usado em scanners e impressoras. O PSD é o formato proprietário da Adobe otimizado para o Photoshop.",
+    thFeature: "Recurso / Aspeto",
+    thPng: "TIFF (Tagged Image File Format)",
+    thIco: "PSD (Photoshop Document)",
+    tdFileNature: "Origem do formato",
+    tdFileNaturePng: "Padrão Aberto (Desenvolvido por Aldus/Microsoft)",
+    tdFileNatureIco: "Proprietário (Desenvolvido pela Adobe)",
+    tdFallback: "Aplicação principal",
+    tdFallbackPng: "Arquivamento, Escaneamento, Impressão Comercial",
+    tdFallbackIco: "Edição ativa de fotos e gráficos",
+    tdPurpose: "Preservação de camadas",
+    tdPurposePng: "Básica (Suportado mas limita a compatibilidade)",
+    tdPurposeIco: "Avançada (Suporte total para camadas de ajuste, efeitos, objetos inteligentes)",
+    tdResolutions: "Compatibilidade",
+    tdResolutionsPng: "Universal (Lido por quase todos os programas de imagem)",
+    tdResolutionsIco: "Restrito (Melhor compatibilidade dentro de apps Adobe)",
+    tdSize: "Suporte a navegadores web",
+    tdSizePng: "Não (Exige conversão)",
+    tdSizeIco: "Não (Exige conversão)",
+    tdTrans: "Opção de compressão",
+    tdTransPng: "LZW, ZIP, PackBits ou sem compressão",
+    tdTransIco: "RLE, ZIP ou sem compressão",
+    converterTitle: "Converter imagens TIFF offline (Privado & Seguro)",
+    divePngTitle: "Análise profunda: O que é um TIFF?",
+    divePngP1: "O TIFF (Tagged Image File Format) foi criado em 1986 pela Aldus Corporation (hoje Adobe) como padrão para scanners de mesa. É um contêiner flexível projetado para lidar com imagens rasterizadas e tags de dados. Oferece suporte a cores profundas e compressão sem perdas (LZW/ZIP).",
+    divePngP2: "O TIFF é muito valorizado no arquivamento e impressão comercial porque não insere artefatos de compactação. É um formato aberto, o que garante que quase qualquer aplicativo de imagem possa abri-lo.",
+    divePngAdv: "Vantagens do TIFF",
+    divePngAdvList: [
+      "Padrão aberto universal: Altamente compatível com impressoras e scanners médicos.",
+      "Arquivamento sem perdas: Ideal para arquivos master, pois não perde qualidade ao salvar.",
+      "Suporte multipágina: Pode guardar várias páginas ou imagens no mesmo arquivo."
+    ],
+    diveIcoTitle: "Análise profunda: O que é um PSD?",
+    diveIcoP1: "O PSD (Photoshop Document) é o formato nativo do Adobe Photoshop. Ele funciona como o arquivo de trabalho principal do designer, salvando as camadas, máscaras, textos editáveis e filtros aplicados ao projeto.",
+    diveIcoP2: "Como mantém os elementos editáveis, os designers trabalham no PSD e só exportam o resultado final para formatos web planos (PNG/WebP). Programas de terceiros costumam abrir o PSD com limitações de camadas.",
+    diveIcoAdv: "Vantagens do PSD",
+    diveIcoAdvList: [
+      "Edição completa: Camadas, filtros, textos e efeitos permanecem editáveis.",
+      "Objetos inteligentes: Permite embutir vetores de alta resolução sem perder qualidade.",
+      "Processamento não destrutivo: Aplique máscaras e efeitos sem alterar os pixels originais."
+    ],
+    q1: "Qual é a diferença entre TIFF e PSD?",
+    a1: "O TIFF é um formato rasterizado sem perdas padrão usado em impressão comercial e arquivos. O PSD é o formato de trabalho nativo do Photoshop com suporte a camadas editáveis.",
+    q2: "Quando devo usar TIFF em vez de PSD?",
+    a2: "Use o PSD enquanto edita a imagem no Photoshop para manter as camadas. Use o TIFF para salvar o arquivo de alta qualidade finalizado para impressão.",
+    q3: "Um arquivo TIFF pode salvar camadas do Photoshop?",
+    a3: "Sim, o Photoshop permite salvar TIFFs mantendo as camadas. Mas isso torna o arquivo muito pesado e visualizadores comuns apenas exibirão a versão achatada.",
+    q4: "Como converter um PSD para TIFF?",
+    a4: "Abra o PSD no Photoshop e use 'Salvar como', escolhendo a extensão TIFF. Sem o Photoshop, você pode fazer isso em softwares gratuitos como o GIMP.",
+    q5: "Por que arquivos TIFF e PSD são muito maiores que JPEGs?",
+    a5: "Eles guardam os dados sem compactação agressiva ou com várias camadas de informação para manter a fidelidade máxima, diferentemente da compressão com perdas do JPEG.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa converter imagens TIFF para JPG?",
+    ctaDesc: "Use nosso conversor de TIFF para JPG local e privado no navegador para converter seus arquivos offline.",
+    ctaButton: "Testar Conversor de TIFF",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "TIFF vs PSD: Perbedaan antara Format Arsip dan Photoshop",
+    seoDescription: "TIFF vs PSD. Kami membandingkan Tagged Image File Format dengan Adobe Photoshop Documents. Pelajari kegunaan masing-masing format untuk cetak dan edit.",
+    title: "TIFF vs PSD: Format Gambar Mana yang Lebih Baik?",
+    intro: "Membandingkan format standar cetak dan arsip kualitas tinggi dengan format desain native dari Adobe. Pahami kapan harus menggunakan TIFF atau PSD.",
+    quickAnswer: "Jawaban Singkat",
+    usePngFor: "Gunakan PSD untuk:",
+    usePngForDesc: "Proyek pengeditan grafis aktif di Adobe Photoshop yang membutuhkan penyimpanan lapisan (layer), masker, filter cerdas, dan teks agar tetap bisa diedit.",
+    useIcoFor: "Gunakan TIFF untuk:",
+    useIcoForDesc: "Menyimpan gambar hasil akhir resolusi tinggi, file master arsip digital, dokumen hasil pemindaian, dan gambar untuk pencetakan offset komersial.",
+    differenceTitle: "Apa Perbedaan antara TIFF dan PSD?",
+    differenceDesc: "TIFF adalah format file standar terbuka lintas platform yang digunakan pada pemindai dan mesin cetak. PSD adalah format kontainer native milik Adobe yang dioptimalkan untuk alur kerja Photoshop.",
+    thFeature: "Fitur / Aspek",
+    thPng: "TIFF (Tagged Image File Format)",
+    thIco: "PSD (Photoshop Document)",
+    tdFileNature: "Asal Format",
+    tdFileNaturePng: "Standar Terbuka (Dikembangkan oleh Aldus/Microsoft)",
+    tdFileNatureIco: "Native/Milik Sendiri (Dikembangkan oleh Adobe)",
+    tdFallback: "Aplikasi Utama",
+    tdFallbackPng: "Pengarsipan, Pemindaian, Cetak Komersial",
+    tdFallbackIco: "Pengeditan Aktif Foto dan Grafis",
+    tdPurpose: "Penyimpanan Lapisan (Layer)",
+    tdPurposePng: "Dasar (Didukung namun membatasi kompatibilitas)",
+    tdPurposeIco: "Tingkat Lanjut (Dukungan penuh untuk layer penyesuaian, efek, smart object)",
+    tdResolutions: "Kompatibilitas",
+    tdResolutionsPng: "Universal (Dibaca oleh hampir semua alat gambar)",
+    tdResolutionsIco: "Terbatas (Terbaik untuk ekosistem aplikasi Adobe)",
+    tdSize: "Dukungan Peramban Web",
+    tdSizePng: "Tidak (Memerlukan konversi)",
+    tdSizeIco: "Tidak (Memerlukan konversi)",
+    tdTrans: "Pilihan Kompresi",
+    tdTransPng: "LZW, ZIP, PackBits, atau Tanpa Kompresi",
+    tdTransIco: "RLE, ZIP, atau Tanpa Kompresi",
+    converterTitle: "Konversi Gambar TIFF secara Offline (Privat & Aman)",
+    divePngTitle: "Analisis Mendalam: Apa itu TIFF?",
+    divePngP1: "TIFF (Tagged Image File Format) dibuat pada tahun 1986 oleh Aldus Corporation (sekarang Adobe) sebagai standar pemindai desktop. TIFF adalah format kontainer fleksibel untuk gambar raster dan tag data. Format ini mendukung warna mendalam dan kompresi lossless seperti LZW dan ZIP.",
+    divePngP2: "TIFF sangat dihargai dalam pengarsipan, pencitraan medis, dan cetak komersial karena tidak menghasilkan artefak kompresi. Sebagai format terbuka, hampir semua perangkat lunak gambar profesional dapat membuka file TIFF.",
+    divePngAdv: "Kelebihan TIFF",
+    divePngAdvList: [
+      "Standar Terbuka Universal: Sangat kompatibel dengan mesin cetak dan pemindai medis.",
+      "Arsip Non-Destruktif: Ideal untuk file master karena tidak merusak kualitas saat disimpan ulang.",
+      "Dukungan Halaman Ganda: Dapat menyimpan beberapa gambar atau halaman dalam satu file."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu PSD?",
+    diveIcoP1: "PSD (Photoshop Document) adalah format proyek native milik Adobe Photoshop. File PSD berfungsi sebagai file kerja utama desainer, menyimpan seluruh struktur proyek termasuk layer, masker, jalur vektor, teks, dan smart object.",
+    diveIcoP2: "Karena menjaga elemen tetap bisa diedit, desainer bekerja di file PSD dan hanya mengekspor hasil akhirnya ke format datar seperti PNG atau WebP. Program non-Adobe sering kali membuka file PSD dalam bentuk layer yang sudah disatukan.",
+    diveIcoAdv: "Kelebihan PSD",
+    diveIcoAdvList: [
+      "Dapat Diedit Sepenuhnya: Menjaga layer, filter, teks, dan efek tetap bisa diubah kapan saja.",
+      "Smart Object: Memungkinkan penyematan vektor resolusi tinggi tanpa pecah saat diskalakan.",
+      "Pengeditan Non-Destruktif: Masker dan gaya layer dapat diubah tanpa merusak piksel asli."
+    ],
+    q1: "Apa perbedaan antara TIFF dan PSD?",
+    a1: "TIFF adalah format raster lossless standar untuk cetak dan arsip digital. PSD adalah format proyek Photoshop yang menyimpan layer, teks, dan filter agar tetap bisa diedit.",
+    q2: "Kapan saya harus menggunakan TIFF daripada PSD?",
+    a2: "Gunakan PSD saat Anda masih mengedit gambar di Photoshop agar layer tetap tersimpan. Gunakan TIFF untuk mengekspor gambar hasil akhir berkualitas tinggi untuk dikirim ke percetakan.",
+    q3: "Apakah file TIFF bisa menyimpan layer Photoshop?",
+    a3: "Ya, Photoshop memungkinkan Anda menyimpan file TIFF dengan data layer tetap utuh. Namun, ukuran file akan membengkak dan program non-Adobe hanya akan menampilkan gambar yang sudah disatukan.",
+    q4: "Bagaimana cara mengubah file PSD ke TIFF?",
+    a4: "Buka file PSD di Photoshop lalu pilih 'Save As' dan pilih opsi format TIFF. Jika tidak memiliki Photoshop, Anda bisa menggunakan program gratis seperti GIMP.",
+    q5: "Mengapa file TIFF dan PSD jauh lebih besar daripada JPEG?",
+    a5: "Karena keduanya menyimpan piksel gambar tanpa kompresi kasar (atau menggunakan kompresi lossless) serta menyimpan banyak layer data, berbeda dengan JPEG yang membuang data gambar demi ukuran kecil.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi gambar TIFF ke JPG?",
+    ctaDesc: "Gunakan konverter TIFF ke JPG lokal kami di peramban untuk mengekspor file TIFF Anda secara offline dan aman.",
+    ctaButton: "Coba Konverter TIFF",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const t = pageTranslations[locale];
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": t.seoTitle,
+      "description": t.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": t.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "tiff-psd")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={t.seoTitle} description={t.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{t.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{t.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">TIFF vs PSD</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PSD</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{t.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{t.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {t.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{t.usePngFor}</strong> {t.usePngForDesc}</p>
+          <p><strong class="text-ink">{t.useIcoFor}</strong> {t.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{t.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">{t.differenceDesc}</p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{t.thFeature}</th>
+                <th class="p-4">{t.thPng}</th>
+                <th class="p-4">{t.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFileNature}</td>
+                <td class="p-4 text-success">{t.tdFileNaturePng}</td>
+                <td class="p-4">{t.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFallback}</td>
+                <td class="p-4">{t.tdFallbackPng}</td>
+                <td class="p-4 text-success">{t.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdPurpose}</td>
+                <td class="p-4">{t.tdPurposePng}</td>
+                <td class="p-4 text-success">{t.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdResolutions}</td>
+                <td class="p-4 text-success">{t.tdResolutionsPng}</td>
+                <td class="p-4">{t.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdSize}</td>
+                <td class="p-4 text-error">{t.tdSizePng}</td>
+                <td class="p-4 text-error">{t.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdTrans}</td>
+                <td class="p-4">{t.tdTransPng}</td>
+                <td class="p-4">{t.tdTransIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{t.converterTitle}</h2>
+        <TiffToJpgTool toolId="tiff-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.divePngTitle}</h2>
+        <p>{t.divePngP1}</p>
+        <p>{t.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PSD -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.diveIcoTitle}</h2>
+        <p>{t.diveIcoP1}</p>
+        <p>{t.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{t.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q1}</h3>
+            <p class="text-body leading-relaxed">{t.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q2}</h3>
+            <p class="text-body leading-relaxed">{t.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q3}</h3>
+            <p class="text-body leading-relaxed">{t.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q4}</h3>
+            <p class="text-body leading-relaxed">{t.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q5}</h3>
+            <p class="text-body leading-relaxed">{t.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{t.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{t.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {t.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="TIFF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

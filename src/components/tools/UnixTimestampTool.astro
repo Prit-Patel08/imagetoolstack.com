@@ -1,0 +1,332 @@
+---
+// Unix Timestamp Converter Component
+---
+<div id="epoch-tool-root" class="w-full flex flex-col gap-8 max-w-4xl mx-auto">
+  <!-- Live Clock Card -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+    <div>
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-mute mb-2">Current Unix Epoch Time</h3>
+      <div id="current-epoch" class="text-4xl md:text-5xl font-mono font-bold text-link tabular-nums leading-none">
+        Loading...
+      </div>
+      <p class="text-xs text-mute mt-2">Seconds elapsed since January 1, 1970 UTC</p>
+    </div>
+    <div class="flex items-center gap-3 w-full md:w-auto">
+      <button id="pause-btn" class="flex-1 md:flex-initial btn-secondary flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium">
+        <svg id="pause-icon" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span id="pause-text">Pause</span>
+      </button>
+      <button id="copy-current-btn" class="flex-1 md:flex-initial btn-primary flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+        Copy Time
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Epoch to Human Converter Card -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+      <div>
+        <h3 class="text-lg font-bold text-ink">Convert Epoch to Date</h3>
+        <p class="text-sm text-body mt-1">Translate a numeric timestamp into a readable datetime.</p>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div>
+          <label for="input-epoch" class="block text-sm font-medium text-ink mb-1.5">Unix Timestamp</label>
+          <input type="text" id="input-epoch" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 font-mono text-sm focus:border-link focus:ring-1 focus:ring-link outline-none" placeholder="e.g. 1782372273">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Date Output</label>
+          <div class="flex flex-col gap-3">
+            <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+              <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-0.5">GMT / UTC Time</span>
+              <span id="output-utc" class="text-sm font-semibold text-ink font-mono select-all">--</span>
+            </div>
+            <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+              <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-0.5">Local Time Zone</span>
+              <span id="output-local" class="text-sm font-semibold text-ink font-mono select-all">--</span>
+            </div>
+            <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+              <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-0.5">ISO 8601 String</span>
+              <span id="output-iso" class="text-sm font-semibold text-ink font-mono select-all">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Human to Epoch Converter Card -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+      <div>
+        <h3 class="text-lg font-bold text-ink">Convert Date to Epoch</h3>
+        <p class="text-sm text-body mt-1">Select a calendar date and generate its Unix value.</p>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div>
+          <label for="input-date" class="block text-sm font-medium text-ink mb-1.5">Calendar Date & Time</label>
+          <input type="datetime-local" id="input-date" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Unix Value Output</label>
+          <div class="flex flex-col gap-3">
+            <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-0.5">Epoch (Seconds)</span>
+                <span id="output-seconds" class="text-sm font-semibold text-ink font-mono select-all">--</span>
+              </div>
+              <button id="copy-sec-btn" class="text-link hover:text-link-hover p-1.5 rounded hover:bg-link/5 transition-colors" title="Copy">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+              </button>
+            </div>
+            <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline flex items-center justify-between">
+              <div>
+                <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-0.5">Epoch (Milliseconds)</span>
+                <span id="output-millis" class="text-sm font-semibold text-ink font-mono select-all">--</span>
+              </div>
+              <button id="copy-ms-btn" class="text-link hover:text-link-hover p-1.5 rounded hover:bg-link/5 transition-colors" title="Copy">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Developer Snippets Card -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div>
+      <h3 class="text-lg font-bold text-ink">Developer Code Reference</h3>
+      <p class="text-sm text-body mt-1">Quick commands to fetch current timestamp or parse epoch dates in different languages.</p>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="flex overflow-x-auto border-b border-hairline pb-px gap-4 snap-x" style="scrollbar-width: none; -ms-overflow-style: none;">
+      {['JavaScript', 'Python', 'Go', 'Java', 'Ruby', 'PHP'].map((lang, index) => (
+        <button class={`snippet-tab whitespace-nowrap pb-3 text-sm font-medium transition-colors ${index === 0 ? 'text-link border-b-2 border-link font-semibold' : 'text-mute hover:text-ink border-b-2 border-transparent'}`} data-lang={lang.toLowerCase()}>
+          {lang}
+        </button>
+      ))}
+    </div>
+
+    <!-- Code Block Output -->
+    <div class="relative bg-canvas-soft-2 border border-hairline rounded-xl overflow-hidden p-5">
+      <button id="copy-snippet-btn" class="absolute top-4 right-4 bg-canvas border border-hairline p-2 rounded-lg hover:bg-canvas-soft text-mute hover:text-ink transition-all shadow-sm" title="Copy Code">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+      </button>
+      <pre class="overflow-x-auto text-xs md:text-sm font-mono text-body pr-8 select-all" id="code-snippet-pre">Loading snippet...</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let ticking = true;
+    let timer: number | undefined;
+
+    // Element references
+    const currentEpochEl = document.getElementById('current-epoch')!;
+    const pauseBtn = document.getElementById('pause-btn')!;
+    const pauseIcon = document.getElementById('pause-icon')!;
+    const pauseText = document.getElementById('pause-text')!;
+    const copyCurrentBtn = document.getElementById('copy-current-btn')!;
+
+    const inputEpoch = document.getElementById('input-epoch') as HTMLInputElement;
+    const outputUtc = document.getElementById('output-utc')!;
+    const outputLocal = document.getElementById('output-local')!;
+    const outputIso = document.getElementById('output-iso')!;
+
+    const inputDate = document.getElementById('input-date') as HTMLInputElement;
+    const outputSeconds = document.getElementById('output-seconds')!;
+    const outputMillis = document.getElementById('output-millis')!;
+    const copySecBtn = document.getElementById('copy-sec-btn')!;
+    const copyMsBtn = document.getElementById('copy-ms-btn')!;
+
+    const snippetTabs = document.querySelectorAll('.snippet-tab');
+    const codeSnippetPre = document.getElementById('code-snippet-pre')!;
+    const copySnippetBtn = document.getElementById('copy-snippet-btn')!;
+
+    // Code snippets dictionary
+    const snippets: Record<string, string> = {
+      javascript: `// Get current Unix Timestamp (seconds)
+const seconds = Math.floor(Date.now() / 1000);
+
+// Convert Unix Timestamp to Date
+const date = new Date(1782372273 * 1000);
+console.log(date.toUTCString());`,
+      python: `# Get current Unix Timestamp (seconds)
+import time
+seconds = int(time.time())
+
+# Convert Unix Timestamp to Date
+from datetime import datetime
+date = datetime.fromtimestamp(1782372273)
+print(date.strftime('%Y-%m-%d %H:%M:%S'))`,
+      go: `// Get current Unix Timestamp (seconds)
+package main
+import (
+    "fmt"
+    "time"
+)
+func main() {
+    seconds := time.Now().Unix()
+
+    // Convert Unix Timestamp to Date
+    date := time.Unix(1782372273, 0)
+    fmt.Println(date.UTC())
+}`,
+      java: `// Get current Unix Timestamp (seconds)
+long seconds = System.currentTimeMillis() / 1000L;
+
+// Convert Unix Timestamp to Date
+java.util.Date date = new java.util.Date(1782372273 * 1000L);
+System.out.println(date.toString());`,
+      ruby: `# Get current Unix Timestamp (seconds)
+seconds = Time.now.to_i
+
+# Convert Unix Timestamp to Date
+date = Time.at(1782372273)
+puts date.utc`,
+      php: `<?php
+// Get current Unix Timestamp (seconds)
+$seconds = time();
+
+// Convert Unix Timestamp to Date
+$date = date('Y-m-d H:i:s', 1782372273);
+echo $date;
+?>`
+    };
+
+    // Initialize snippet output
+    let activeLang = 'javascript';
+    function updateSnippet() {
+      codeSnippetPre.textContent = snippets[activeLang].trim();
+    }
+    updateSnippet();
+
+    // Tab event handlers
+    snippetTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        snippetTabs.forEach(t => {
+          t.classList.remove('text-link', 'border-link', 'font-semibold');
+          t.classList.add('text-mute', 'border-transparent');
+        });
+        tab.classList.add('text-link', 'border-link', 'font-semibold');
+        tab.classList.remove('text-mute', 'border-transparent');
+        activeLang = tab.getAttribute('data-lang') || 'javascript';
+        updateSnippet();
+      });
+    });
+
+    // Copy handlers
+    function setupCopy(btn: HTMLElement, textGetter: () => string) {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(textGetter()).then(() => {
+          const originalHtml = btn.innerHTML;
+          btn.innerHTML = `<svg class="h-4 w-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+          setTimeout(() => { btn.innerHTML = originalHtml; }, 1500);
+        });
+      });
+    }
+    setupCopy(copyCurrentBtn, () => Math.floor(Date.now() / 1000).toString());
+    setupCopy(copySecBtn, () => outputSeconds.textContent || '');
+    setupCopy(copyMsBtn, () => outputMillis.textContent || '');
+    setupCopy(copySnippetBtn, () => codeSnippetPre.textContent || '');
+
+    // Current time ticker
+    function tick() {
+      const nowSec = Math.floor(Date.now() / 1000);
+      currentEpochEl.textContent = nowSec.toString();
+    }
+    tick();
+    timer = window.setInterval(tick, 1000);
+
+    // Pause/Resume ticker
+    pauseBtn.addEventListener('click', () => {
+      if (ticking) {
+        window.clearInterval(timer);
+        ticking = false;
+        pauseText.textContent = 'Resume';
+        pauseIcon.innerHTML = `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      } else {
+        tick();
+        timer = window.setInterval(tick, 1000);
+        ticking = true;
+        pauseText.textContent = 'Pause';
+        pauseIcon.innerHTML = `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+    });
+
+    // Epoch converter logic
+    function convertEpoch() {
+      const valStr = inputEpoch.value.trim();
+      if (!valStr) {
+        outputUtc.textContent = '--';
+        outputLocal.textContent = '--';
+        outputIso.textContent = '--';
+        return;
+      }
+      
+      const num = parseInt(valStr, 10);
+      if (isNaN(num)) {
+        outputUtc.textContent = 'Invalid Timestamp';
+        outputLocal.textContent = 'Invalid Timestamp';
+        outputIso.textContent = 'Invalid Timestamp';
+        return;
+      }
+
+      // Detect if milliseconds (13 digits or more) or seconds
+      const isMillis = valStr.length >= 13;
+      const msValue = isMillis ? num : num * 1000;
+
+      try {
+        const date = new Date(msValue);
+        if (isNaN(date.getTime())) {
+          throw new Error();
+        }
+        outputUtc.textContent = date.toUTCString();
+        outputLocal.textContent = date.toString();
+        outputIso.textContent = date.toISOString();
+      } catch (e) {
+        outputUtc.textContent = 'Error Parsing';
+        outputLocal.textContent = 'Error Parsing';
+        outputIso.textContent = 'Error Parsing';
+      }
+    }
+    inputEpoch.addEventListener('input', convertEpoch);
+    // Initialize default converter value to now
+    inputEpoch.value = Math.floor(Date.now() / 1000).toString();
+    convertEpoch();
+
+    // Date to Epoch converter logic
+    function convertDate() {
+      const dateStr = inputDate.value;
+      if (!dateStr) {
+        outputSeconds.textContent = '--';
+        outputMillis.textContent = '--';
+        return;
+      }
+
+      const date = new Date(dateStr);
+      const ms = date.getTime();
+      if (isNaN(ms)) {
+        outputSeconds.textContent = 'Invalid Date';
+        outputMillis.textContent = 'Invalid Date';
+        return;
+      }
+
+      outputSeconds.textContent = Math.floor(ms / 1000).toString();
+      outputMillis.textContent = ms.toString();
+    }
+    inputDate.addEventListener('input', convertDate);
+    // Initialize picker to current date-time (in local time zone string formatted for datetime-local input)
+    const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+    inputDate.value = localISOTime;
+    convertDate();
+  });
+</script>

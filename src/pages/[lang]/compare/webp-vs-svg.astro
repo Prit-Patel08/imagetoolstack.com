@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import VectorizerTool from "../../../components/tools/VectorizerTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "WebP vs SVG: ¿Qué formato de imagen es mejor? (2026)",
+    seoDescription: "¿WebP o SVG? Comparamos el formato rasterizado moderno WebP con el vector SVG. Aprenda cuándo usar cada uno en diseño web y rendimiento.",
+    title: "WebP vs SVG: ¿Qué formato de imagen es mejor?",
+    intro: "¿Necesita optimizar el rendimiento de su sitio web? Comparamos el formato moderno de píxeles WebP con los gráficos vectoriales SVG basados en código.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use WebP para:",
+    usePngForDesc: "Contenido web fotográfico, banners detallados, ilustraciones digitales y gráficos complejos con alta densidad de color y gradientes naturales.",
+    useIcoFor: "Use SVG para:",
+    useIcoForDesc: "Iconos de interfaz de usuario, logotipos corporativos, diagramas estructurales y arte vectorial geométrico que debe escalarse de manera infinita sin pixelarse ni borrarse.",
+    differenceTitle: "¿Cuál es la diferencia entre WebP y SVG?",
+    differenceDesc: "WebP es un formato rasterizado basado en píxeles que utiliza algoritmos modernos de compresión con y sin pérdidas, mientras que SVG es una descripción matemática en XML de formas y curvas.",
+    thFeature: "Característica / Aspecto",
+    thPng: "WebP (Formato Rasterizado)",
+    thIco: "SVG (Formato Vectorial)",
+    tdFileNature: "Estructura de imagen",
+    tdFileNaturePng: "Cuadrícula de píxeles de colores",
+    tdFileNatureIco: "Código XML que define líneas y curvas",
+    tdFallback: "Escalado infinito",
+    tdFallbackPng: "No (Se pixela cuando se amplía)",
+    tdFallbackIco: "Sí (Resolución perfecta a cualquier tamaño)",
+    tdPurpose: "Idoneidad fotográfica",
+    tdPurposePng: "Excelente (Alta compresión para fotos)",
+    tdPurposeIco: "Pobre (Crea archivos gigantescos)",
+    tdResolutions: "Inserción en código",
+    tdResolutionsPng: "No (Requiere Base64 o rutas de archivo tradicionales)",
+    tdResolutionsIco: "Sí (Se puede incrustar código SVG directamente en HTML)",
+    tdSize: "Animación",
+    tdSizePng: "Sí (Cuadros de WebP animado)",
+    tdSizeIco: "Sí (CSS, SMIL, JavaScript)",
+    tdTrans: "Transparencia",
+    tdTransPng: "Sí (Canal alfa sin pérdidas)",
+    tdTransIco: "Sí (Transparencia a nivel de trazado)",
+    tdAnim: "Interactividad y estilos",
+    tdAnimPng: "No (Salida rasterizada estática)",
+    tdAnimIco: "Sí (Se pueden cambiar los trazados con CSS y JS)",
+    converterTitle: "Vectorizar WebP a SVG (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es WebP?",
+    divePngP1: "WebP es un formato de imagen rasterizada moderno desarrollado por Google, diseñado específicamente para ofrecer una compresión superior con y sin pérdidas en la web. Basado en técnicas derivadas del códec VP8, logra archivos mucho más pequeños que PNG y JPEG con la misma calidad visual.",
+    divePngP2: "Como formato rasterizado, almacena los datos de color en una cuadrícula fija de píxeles, lo que le permite ser ideal para fotos y gradientes. Sin embargo, al depender de una cuadrícula, la imagen se volverá borrosa o pixelada si se amplía más allá de sus dimensiones nativas.",
+    divePngAdv: "Ventajas de WebP",
+    divePngAdvList: [
+      "Compresión superior: Archivos mucho más ligeros que PNG y JPG.",
+      "Transparencia rica: Admite canal alfa sin generar un peso excesivo.",
+      "Ideal para fotos: El estándar recomendado para imágenes de carga rápida."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es SVG?",
+    diveIcoP1: "SVG son las siglas de Scalable Vector Graphics (Gráficos Vectoriales Redimensionables). Es un estándar abierto basado en XML desarrollado por el W3C. En lugar de guardar píxeles de color en una cuadrícula, almacena fórmulas matemáticas de formas, líneas, curvas y colores.",
+    diveIcoP2: "Esta representación matemática permite que las imágenes se redimensionen de forma infinita. Ya sea en un móvil pequeño o en una pantalla de alta densidad de píxeles, un SVG siempre se mostrará perfectamente nítido. Además, al ser código XML, los desarrolladores pueden interactuar con los elementos del SVG usando CSS o JS.",
+    diveIcoAdv: "Ventajas de SVG",
+    diveIcoAdvList: [
+      "Resolución infinita: Nitidez absoluta en cualquier tamaño o densidad de pantalla.",
+      "Código editable: Se puede colorear y animar directamente con hojas de estilo CSS o JS.",
+      "Sin peticiones HTTP extra: Puede insertarse directamente en el código de la página web."
+    ],
+    q1: "¿Cuál es la diferencia entre WebP y SVG?",
+    a1: "WebP es un formato rasterizado basado en píxeles ideal para fotos comprimidas en la web. SVG es un formato vectorial basado en código XML que define líneas y formas, permitiendo una escalabilidad infinita.",
+    q2: "¿Cuándo debo usar WebP en lugar de SVG?",
+    a2: "Use WebP para fotografías, banners de alta definición o ilustraciones complejas con muchos colores. Use SVG para logotipos, iconos de interfaces y gráficos simples que necesiten nitidez sin importar el tamaño de la pantalla.",
+    q3: "¿Se puede convertir WebP a SVG?",
+    a3: "Sí, es posible convertir WebP a SVG trazando los bordes de la imagen para crear rutas vectoriales. Puede usar nuestra herramienta de vectorización offline directamente en el navegador.",
+    q4: "¿Cuál es mejor para la velocidad de carga de un sitio?",
+    a4: "SVG es mejor para elementos UI sencillos y logotipos porque el código XML es sumamente pequeño y se puede insertar directamente en el HTML. WebP es mejor para fotografías, ya que los archivos vectoriales de fotos serían inmensos.",
+    q5: "¿Soportan WebP y SVG animaciones?",
+    a5: "Sí, ambos. WebP admite animaciones basadas en fotogramas secuenciales, mientras que SVG admite animaciones basadas en código mediante CSS, SMIL o JavaScript.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Quiere vectorizar sus imágenes?",
+    ctaDesc: "Use nuestro vectorizador offline en su navegador para convertir sus archivos WebP, PNG o JPG en vectores SVG limpios.",
+    ctaButton: "Probar Vectorizador SVG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "WebP vs SVG : quel format d'image est le meilleur ? (2026)",
+    seoDescription: "WebP ou SVG ? Nous comparons le format matriciel moderne WebP avec le format vectoriel SVG. Choisissez le bon format pour le web.",
+    title: "WebP vs SVG : quel format d'image est le meilleur ?",
+    intro: "Besoin d'optimiser les performances de votre site web ? Nous comparons le format moderne WebP basé sur des pixels aux graphiques vectoriels SVG basés sur du code.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le WebP pour :",
+    usePngForDesc: "Le contenu web photographique, les bannières détaillées, les illustrations numériques et les visuels riches avec des dégradés de couleurs complexes.",
+    useIcoFor: "Utilisez le SVG pour :",
+    useIcoForDesc: "Les icônes d'interface utilisateur, les logos d'entreprise, les diagrammes et le graphisme géométrique qui doit être redimensionnable à l'infini.",
+    differenceTitle: "Quelle est la différence entre WebP et SVG ?",
+    differenceDesc: "Le WebP est un format matriciel qui enregistre les détails sous forme de pixels, tandis que le SVG est un format vectoriel décrivant les formes sous forme de formules mathématiques XML.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "WebP (Format Matriciel)",
+    thIco: "SVG (Format Vectoriel)",
+    tdFileNature: "Structure de l'image",
+    tdFileNaturePng: "Grille de pixels colorés",
+    tdFileNatureIco: "Code XML décrivant des lignes et courbes",
+    tdFallback: "Redimensionnement infini",
+    tdFallbackPng: "Non (Pixellisation en cas d'agrandissement)",
+    tdFallbackIco: "Oui (Résolution parfaite à toutes les tailles)",
+    tdPurpose: "Rendu des photographies",
+    tdPurposePng: "Excellent (Forte compression pour les photos)",
+    tdPurposeIco: "Médiocre (Fichiers trop lourds, affichage lent)",
+    tdResolutions: "Insertion dans le code",
+    tdResolutionsPng: "Non (Requiert du Base64 ou des fichiers)",
+    tdResolutionsIco: "Oui (Possibilité d'intégrer l'image en ligne dans le HTML)",
+    tdSize: "Animation",
+    tdSizePng: "Oui (Images WebP animées)",
+    tdSizeIco: "Oui (CSS, SMIL, JavaScript)",
+    tdTrans: "Transparence",
+    tdTransPng: "Oui (Canal alpha sans perte)",
+    tdTransIco: "Oui (Transparence par tracé)",
+    tdAnim: "Interactivité et styles",
+    tdAnimPng: "Non (Format statique exporté)",
+    tdAnimIco: "Oui (Modifiable avec du code CSS ou JS)",
+    converterTitle: "Vectoriser WebP en SVG (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le WebP ?",
+    divePngP1: "Le WebP est un format d'image moderne développé par Google pour offrir une compression supérieure sur le web. En s'appuyant sur des méthodes issues du codec VP8, les fichiers WebP sont considérablement plus légers que les PNG ou JPG.",
+    divePngP2: "En tant que format matriciel (raster), il gère à merveille les pixels des photos. Cependant, la définition étant fixe, un agrandissement excessif provoquera une pixellisation ou un flou visuel.",
+    divePngAdv: "Avantages du WebP",
+    divePngAdvList: [
+      "Compression optimale : Fichiers beaucoup plus légers que JPG et PNG.",
+      "Transparence performante : Canal alpha léger.",
+      "Idéal pour le web : Recommandé pour accélérer le chargement des pages."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le SVG ?",
+    diveIcoP1: "Le SVG (Scalable Vector Graphics) est un format d'image vectoriel basé sur XML et standardisé par le W3C. Plutôt que de stocker des pixels, il enregistre des équations mathématiques de points, de lignes et de couleurs.",
+    diveIcoP2: "Cela lui confère une netteté absolue quelle que soit la taille d'affichage. Comme il s'agit de code, les développeurs peuvent également le modifier avec du CSS ou du JavaScript.",
+    diveIcoAdv: "Avantages du SVG",
+    diveIcoAdvList: [
+      "Résolution infinie : Rendu parfait sur toutes les densités d'écrans.",
+      "Code stylable : Modifiable en temps réel avec CSS et JS.",
+      "Optimisation HTTP : Peut être inséré directement dans le code source."
+    ],
+    q1: "Quelle est la différence entre WebP et SVG ?",
+    a1: "Le WebP est un format matriciel (pixels) idéal pour les photos compressées. Le SVG est un format vectoriel (code) idéal pour les logos et illustrations redimensionnables à l'infini.",
+    q2: "Quand utiliser le WebP plutôt que le SVG ?",
+    a2: "Utilisez le WebP pour les photos, bannières et images complexes. Utilisez le SVG pour les logos, icônes d'interface et graphiques simples.",
+    q3: "Peut-on convertir un WebP en SVG ?",
+    a3: "Oui, en traçant les contours de l'image pour recréer des chemins vectoriels. Notre outil de vectorisation hors ligne vous permet de le faire dans votre navigateur.",
+    q4: "Lequel est le meilleur pour la vitesse d'un site web ?",
+    a4: "Le SVG est meilleur pour les logos et icônes simples en raison de son poids infime en code. Le WebP reste indispensable pour les photographies.",
+    q5: "Les formats WebP et SVG gèrent-ils l'animation ?",
+    a5: "Oui, le WebP gère les animations par images successives (comme le GIF). Le SVG gère des animations fluides codées avec CSS, SMIL ou JavaScript.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de vectoriser vos images ?",
+    ctaDesc: "Essayez notre vectoriseur hors ligne pour transformer vos fichiers WebP, PNG ou JPG en fichiers vectoriels SVG nets.",
+    ctaButton: "Essayer le Vectoriseur SVG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "WebP vs. SVG: Welches Bildformat ist besser? (2026)",
+    seoDescription: "WebP oder SVG? Wir vergleichen das moderne Rasterformat WebP mit dem Vektorformat SVG. Erfahren Sie mehr über Web-Performance und Skalierung.",
+    title: "WebP vs. SVG: Welches Bildformat ist besser?",
+    intro: "Müssen Sie Ihr Web-Performance optimieren? Wir vergleichen das pixelbasierte WebP-Format mit codebasierten SVG-Vektorgrafiken.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie WebP für:",
+    usePngForDesc: "Fotografische Webinhalte, detailreiche Banner, digitale Kunstwerke und komplexe Bilder mit hoher Farbdichte und feinen Verläufen.",
+    useIcoFor: "Nutzen Sie SVG für:",
+    useIcoForDesc: "UI-Icons, Firmenlogos, Diagramme und geometrische Vektorgrafiken, die ohne Qualitätsverlust frei skalierbar sein müssen.",
+    differenceTitle: "Was ist der Unterschied zwischen WebP und SVG?",
+    differenceDesc: "WebP ist ein pixelbasiertes Rasterformat mit moderner verlustbehafteter und verlustfreier Komprimierung. SVG ist ein codebasiertes Vektorformat.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "WebP (Rasterformat)",
+    thIco: "SVG (Vektorformat)",
+    tdFileNature: "Bildstruktur",
+    tdFileNaturePng: "Raster aus farbigen Pixeln",
+    tdFileNatureIco: "XML-Code, der Linien und Formen definiert",
+    tdFallback: "Unbegrenzte Skalierung",
+    tdFallbackPng: "Nein (Wird beim Vergrößern pixelig)",
+    tdFallbackIco: "Ja (Perfekte Schärfe bei jeder Größe)",
+    tdPurpose: "Fototauglichkeit",
+    tdPurposePng: "Hervorragend (Hohe Kompression für Fotos)",
+    tdPurposeIco: "Schlecht (Erzeugt extrem große Codedateien)",
+    tdResolutions: "Code-Einbettung",
+    tdResolutionsPng: "Nein (Benötigt Base64 oder Dateipfade)",
+    tdResolutionsIco: "Ja (Kann direkt in den HTML-Code eingebunden werden)",
+    tdSize: "Animation",
+    tdSizePng: "Ja (Animiertes WebP)",
+    tdSizeIco: "Ja (CSS, SMIL, JavaScript)",
+    tdTrans: "Transparenz",
+    tdTransPng: "Ja (Verlustfreier Alpha-Kanal)",
+    tdTransIco: "Ja (Ebenen-Transparenz)",
+    tdAnim: "Interaktivität",
+    tdAnimPng: "Nein (Statisches Rasterbild)",
+    tdAnimIco: "Ja (Pfade sind mit CSS und JS steuerbar)",
+    converterTitle: "WebP in SVG Vektor umwandeln (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist WebP?",
+    divePngP1: "WebP ist ein von Google entwickeltes Web-Bildformat, das eine effiziente Bildkomprimierung bietet. Durch moderne Kodierungsverfahren sind WebP-Bilder deutlich kleiner als PNGs und JPEGs.",
+    divePngP2: "Als Rasterformat speichert WebP die Farbinformationen in einem festen Koordinatennetz aus Pixeln. Für hochauflösende Fotos ist es die ideale Wahl, beim extremen Zoomen verliert es jedoch an Schärfe.",
+    divePngAdv: "Vorteile von WebP",
+    divePngAdvList: [
+      "Starke Kompression: Kleinere Bilddateien als JPG und PNG.",
+      "Transparenz: Unterstützt Alpha-Transparenz bei geringem Dateigewicht.",
+      "Ideal für Fotos: Der Standard für schnelle Ladezeiten im Web."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist SVG?",
+    diveIcoP1: "SVG steht für Scalable Vector Graphics und ist ein vom W3C entwickelter offener XML-Standard. Statt Bildpunkte in einem Raster zu speichern, werden Formen, Kurven und Farben mathematisch berechnet.",
+    diveIcoP2: "Diese mathematische Struktur erlaubt unbegrenzte Skalierung. SVGs sind auf jedem Bildschirm gestochen scharf. Entwickler können den XML-Code zudem direkt per Stylesheet verändern.",
+    diveIcoAdv: "Vorteile von SVG",
+    diveIcoAdvList: [
+      "Frei skalierbar: Perfekt scharf auf Displays aller Größen und Auflösungen.",
+      "Editierbarer Code: Kann direkt mit CSS und JavaScript angepasst werden.",
+      "Reduzierte HTTP-Requests: Kann inline in den Quellcode geschrieben werden."
+    ],
+    q1: "Was ist der Unterschied zwischen WebP und SVG?",
+    a1: "WebP ist ein Rasterformat, das Bilder aus Pixeln aufbaut. SVG ist ein XML-Vektorformat, das auf mathematischen Koordinaten basiert und unbegrenzt skalierbar ist.",
+    q2: "Wann sollte ich WebP statt SVG nutzen?",
+    a2: "Nutzen Sie WebP für Fotos und komplexe Grafiken mit vielen Farben. Nutzen Sie SVG für Logos, Icons und einfache Illustrationen.",
+    q3: "Kann ich WebP-Bilder in SVG umwandeln?",
+    a3: "Ja. Mit unserem Offline-Vektorisierungstool können Sie WebP-Rasterbilder in Vektordateien umwandeln (tracen).",
+    q4: "Was ist besser für die Webseiten-Ladezeit?",
+    a4: "SVG ist für einfache Icons und Logos unschlagbar, da der Code extrem klein ist. Für komplexe Bilder und Fotos ist WebP die beste Wahl.",
+    q5: "Unterstützen WebP und SVG Animationen?",
+    a5: "Ja, beide. WebP unterstützt Einzelbild-Animationen (ähnlich wie GIFs). SVG unterstützt Code-Animationen über CSS oder JavaScript.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Bilder in SVG umwandeln?",
+    ctaDesc: "Nutzen Sie unseren Offline-Vectorizer, um WebP-, PNG- oder JPG-Bilder direkt im Browser in Vektorgrafiken umzuwandeln.",
+    ctaButton: "SVG-Vectorizer starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "WebP vs SVG: Qual formato de imagem é melhor? (2026)",
+    seoDescription: "WebP ou SVG? Comparamos o formato rasterizado moderno WebP com o vetor SVG. Saiba qual usar para otimização e velocidade no web design.",
+    title: "WebP vs SVG: Qual formato de imagem é melhor?",
+    intro: "Precisa otimizar o desempenho do seu site? Comparamos o formato rasterizado baseado em pixels WebP com os gráficos vetoriais baseados em código SVG.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use WebP para:",
+    usePngForDesc: "Fotos digitais, banners detalhados, ilustrações complexas com muitos degradês e imagens gerais que exigem alta compressão.",
+    useIcoFor: "Use SVG para:",
+    useIcoForDesc: "Ícones de interface, logotipos corporativos, diagramas estruturais e qualquer elemento gráfico que precise ser ampliado sem perder definição.",
+    differenceTitle: "Qual é a diferença entre WebP e SVG?",
+    differenceDesc: "O WebP é um formato rasterizado baseado em grade de pixels que oferece alta compactação. O SVG é um formato vetorial XML que descreve linhas e formas geometricamente.",
+    thFeature: "Característica / Aspeto",
+    thPng: "WebP (Formato Rasterizado)",
+    thIco: "SVG (Formato Vetorial)",
+    tdFileNature: "Estrutura da imagem",
+    tdFileNaturePng: "Grade de pixels coloridos",
+    tdFileNatureIco: "Código XML definindo linhas e curvas",
+    tdFallback: "Escalabilidade infinita",
+    tdFallbackPng: "Não (Fica pixelado se for ampliado)",
+    tdFallbackIco: "Sim (Resolução perfeita em qualquer tamanho)",
+    tdPurpose: "Uso em fotografias",
+    tdPurposePng: "Excelente (Alta compressão para fotos)",
+    tdPurposeIco: "Ruim (Gera arquivos gigantescos de código)",
+    tdResolutions: "Inserção de código",
+    tdResolutionsPng: "Não (Exige tags de imagem ou Base64)",
+    tdResolutionsIco: "Sim (Pode ser inserido inline diretamente no HTML)",
+    tdSize: "Animação",
+    tdSizePng: "Sim (WebP animado)",
+    tdSizeIco: "Sim (CSS, SMIL, JavaScript)",
+    tdTrans: "Transparência",
+    tdTransPng: "Sim (Canal alfa com compressão)",
+    tdTransIco: "Sim (Transparência nos caminhos)",
+    tdAnim: "Estilização",
+    tdAnimPng: "Não (Arquivo de pixel estático)",
+    tdAnimIco: "Sim (Caminhos modificáveis com CSS/JS)",
+    converterTitle: "Vetorizar WebP para SVG (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é o WebP?",
+    divePngP1: "O WebP é um formato de imagem moderno desenvolvido pela Google para oferecer melhor compactação para fotos no web design. Baseado em tecnologias do codec de vídeo VP8, ele cria arquivos muito menores que JPEG e PNG.",
+    divePngP2: "Por ser rasterizado, o WebP trabalha com coordenadas fixas de pixels. Embora excelente para exibir fotos ricas, ele perderá definição se for exibido em tamanhos muito superiores ao original.",
+    divePngAdv: "Vantagens do WebP",
+    divePngAdvList: [
+      "Compactação excelente: Arquivos muito mais leves na internet.",
+      "Transparência integrada: Canal alfa leve.",
+      "Padrão moderno: Ideal para acelerar o carregamento de fotos."
+    ],
+    diveIcoTitle: "Análise profunda: O que é o SVG?",
+    diveIcoP1: "O SVG (Scalable Vector Graphics) é um formato de imagem baseado em XML recomendado pelo W3C. Ao invés de salvar pixels, ele guarda instruções matemáticas para desenhar caminhos, pontos e cores.",
+    diveIcoP2: "Essa estrutura matemática garante nitidez em qualquer tela. Sendo composto de código XML, os programadores podem aplicar estilos de CSS e criar animações interativas facilmente.",
+    diveIcoAdv: "Vantagens do SVG",
+    diveIcoAdvList: [
+      "Nitidez absoluta: Roda perfeitamente em telas Retina e de alta definição.",
+      "Código editável: Permite alteração de cores diretamente nas folhas de estilo.",
+      "Economia de conexões: Pode ser incorporado diretamente no HTML do site."
+    ],
+    q1: "Qual é a diferença entre WebP e SVG?",
+    a1: "O WebP é um formato rasterizado baseado em pixels para fotos compactadas. O SVG é um formato vetorial baseado em código XML para gráficos escaláveis e logos.",
+    q2: "Quando usar WebP em vez de SVG?",
+    a2: "Use WebP para fotos e ilustrações coloridas realistas. Use SVG para marcas, logos, diagramas e ícones do sistema.",
+    q3: "É possível converter WebP para SVG?",
+    a3: "Sim, ao vetorizar os contornos da imagem rasterizada. O nosso vetorizador offline permite que você faça isso de forma rápida e segura no seu navegador.",
+    q4: "Qual é melhor para a velocidade do site?",
+    a4: "O SVG é excelente para gráficos simples por ter arquivos de texto pequenos. Para fotos e imagens realistas, o WebP é a melhor opção.",
+    q5: "WebP e SVG suportam animação?",
+    a5: "Sim, o WebP suporta animações baseadas em quadros (tipo GIF). O SVG suporta animações complexas e interativas via CSS e JavaScript.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparaciones",
+    ctaTitle: "Precisa vetorizar as suas imagens?",
+    ctaDesc: "Utilize nosso vetorizador offline para transformar arquivos WebP, PNG ou JPG em vetores SVG limpos e escaláveis.",
+    ctaButton: "Testar Vetorizador SVG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "WebP vs SVG: Mana Format Gambar yang Lebih Baik? (2026)",
+    seoDescription: "WebP atau SVG? Kami membandingkan format raster WebP dengan format vektor SVG. Pelajari kapan harus menggunakannya untuk kecepatan web dan skalabilitas.",
+    title: "WebP vs SVG: Mana Format Gambar yang Lebih Baik?",
+    intro: "Ingin mengoptimalkan performa situs web Anda? Kami membandingkan format piksel WebP modern dengan grafis vektor SVG berbasis kode.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan WebP untuk:",
+    usePngForDesc: "Konten web fotografis, banner detail, karya seni digital, dan grafis kompleks dengan kepadatan warna tinggi dan gradasi alami.",
+    useIcoFor: "Gunakan SVG untuk:",
+    useIcoForDesc: "Ikon antarmuka pengguna, logo perusahaan, diagram struktural, dan seni vektor geometris yang harus diubah ukurannya tanpa pecah.",
+    differenceTitle: "Apa Perbedaan Antara WebP dan SVG?",
+    differenceDesc: "WebP adalah format raster berbasis piksel yang menggunakan algoritma kompresi modern, sedangkan SVG adalah deskripsi matematika XML untuk bentuk dan kurva.",
+    thFeature: "Fitur / Aspek",
+    thPng: "WebP (Format Raster)",
+    thIco: "SVG (Format Vektor)",
+    tdFileNature: "Struktur Gambar",
+    tdFileNaturePng: "Kotak-kotak piksel berwarna",
+    tdFileNatureIco: "Kode XML yang menentukan garis dan kurva",
+    tdFallback: "Skala Tanpa Batas",
+    tdFallbackPng: "Tidak (Gambar pecah jika diperbesar)",
+    tdFallbackIco: "Ya (Ketajaman sempurna di semua ukuran)",
+    tdPurpose: "Kecocokan Foto",
+    tdPurposePng: "Sangat Baik (Kompresi tinggi untuk foto)",
+    tdPurposeIco: "Buruk (Menghasilkan file kode yang sangat besar)",
+    tdResolutions: "Penyematan Kode",
+    tdResolutionsPng: "Tidak (Memerlukan Base64 atau jalur file biasa)",
+    tdResolutionsIco: "Ya (Dapat menyematkan SVG langsung ke HTML)",
+    tdSize: "Animasi",
+    tdSizePng: "Ya (WebP animasi)",
+    tdSizeIco: "Ya (CSS, SMIL, JavaScript)",
+    tdTrans: "Transparansi",
+    tdTransPng: "Ya (Saluran alfa lossless)",
+    tdTransIco: "Ya (Transparansi tingkat jalur)",
+    tdAnim: "Interaktivitas & Gaya",
+    tdAnimPng: "Tidak (Output raster statis)",
+    tdAnimIco: "Ya (Dapat mengubah gaya jalur dengan CSS/JS)",
+    converterTitle: "Vektorkan WebP ke SVG (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu WebP?",
+    divePngP1: "WebP adalah format gambar raster modern yang dikembangkan oleh Google, dirancang khusus untuk memberikan kompresi gambar web yang lebih efisien. Menggunakan teknologi VP8, file WebP jauh lebih kecil dibanding PNG dan JPEG.",
+    divePngP2: "Sebagai format raster, WebP menyimpan data warna pada kisi piksel tetap. Ini sangat bagus untuk foto. Namun, karena berbasis kisi piksel, ia akan kabur atau pecah jika diperbesar melampaui ukuran aslinya.",
+    divePngAdv: "Kelebihan WebP",
+    divePngAdvList: [
+      "Kompresi Unggul: Ukuran file jauh lebih kecil dibanding PNG dan JPG.",
+      "Transparansi Kaya: Mendukung transparansi alfa dengan file kecil.",
+      "Sangat Baik untuk Foto: Standar format gambar web saat ini."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu SVG?",
+    diveIcoP1: "SVG singkatan dari Scalable Vector Graphics. Ini adalah standar format gambar vektor berbasis XML yang dikembangkan oleh W3C. Alih-alih menyimpan kisi piksel, SVG menyimpan garis dan bentuk secara matematis.",
+    diveIcoP2: "Representasi matematika ini memungkinkan skalabilitas tanpa batas. Gambar SVG akan selalu tajam di layar apa pun. Karena berbasis XML, pengembang dapat memodifikasinya menggunakan CSS dan JS.",
+    diveIcoAdv: "Kelebihan SVG",
+    diveIcoAdvList: [
+      "Skalabilitas Sempurna: Selalu tajam di resolusi dan zoom apa pun.",
+      "Kode Dapat Diedit: Dapat diwarnai dan dianimasikan dengan CSS/JS.",
+      "Tanpa Permintaan HTTP: Dapat ditulis langsung di dalam HTML web."
+    ],
+    q1: "Apa perbedaan antara WebP dan SVG?",
+    a1: "WebP adalah format raster berbasis piksel untuk foto terkompresi. SVG adalah format vektor berbasis kode XML yang mendefinisikan bentuk, memungkinkan skalabilitas tak terbatas.",
+    q2: "Kapan saya harus menggunakan WebP dibanding SVG?",
+    a2: "Gunakan WebP untuk foto, banner berdefinisi tinggi, dan ilustrasi dengan gradasi warna padat. Gunakan SVG untuk logo, ikon UI, dan grafis sederhana.",
+    q3: "Apakah WebP bisa diubah ke SVG?",
+    a3: "Ya, Anda dapat menelusuri tepi gambar raster WebP untuk membuat jalur vektor SVG. Anda dapat menggunakan alat penelusuran (vectorizer) offline kami di peramban.",
+    q4: "Mana yang lebih baik untuk kecepatan situs web?",
+    a4: "SVG sangat bagus untuk grafis sederhana karena ukuran file kodenya sangat kecil. WebP tetap menjadi pilihan utama untuk menampilkan foto.",
+    q5: "Apakah WebP dan SVG mendukung animasi?",
+    a5: "Ya, keduanya mendukung animasi. WebP menggunakan animasi berbasis bingkai (seperti GIF). SVG menggunakan animasi berbasis kode dengan CSS atau JS.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Ingin mengubah gambar Anda menjadi vektor?",
+    ctaDesc: "Gunakan vectorizer offline kami untuk mengonversi gambar WebP, PNG, atau JPG Anda menjadi vektor SVG secara instan.",
+    ctaButton: "Coba SVG Vectorizer",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "webp-vs-svg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "vectorizer");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">WebP vs SVG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">WebP</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useIcoFor}</strong> {text.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileNature}</td>
+                <td class="p-4">{text.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{text.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFallback}</td>
+                <td class="p-4 text-error">{text.tdFallbackPng}</td>
+                <td class="p-4 text-success">{text.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPurpose}</td>
+                <td class="p-4 text-success">{text.tdPurposePng}</td>
+                <td class="p-4 text-error">{text.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdResolutions}</td>
+                <td class="p-4">{text.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{text.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4 text-success">{text.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-success">{text.tdTransIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnim}</td>
+                <td class="p-4 text-error">{text.tdAnimPng}</td>
+                <td class="p-4 text-success">{text.tdAnimIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <VectorizerTool toolId="webp-to-svg" />
+      </section>
+
+      <!-- Deep Dive: WebP -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveIcoTitle}</h2>
+        <p>{text.diveIcoP1}</p>
+        <p>{text.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="WebP" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

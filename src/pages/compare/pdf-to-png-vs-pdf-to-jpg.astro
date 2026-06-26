@@ -1,0 +1,280 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import PdfToJpgTool from "../../components/tools/PdfToJpgTool.astro";
+
+// SEO Metadata
+const seoTitle = "PDF to PNG vs PDF to JPG: Which Conversion Should You Use? (2026)";
+const seoDescription = "Compare PDF to PNG vs PDF to JPG conversion workflows. Learn when to choose PNG for sharp text and transparency or JPG for small file sizes and universal sharing.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between converting PDF to PNG and PDF to JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Converting PDF to PNG produces high-quality, lossless images that preserve text sharpness and background transparency. Converting PDF to JPG creates lossy, compressed files that are much smaller in size, making them ideal for web page loading and emailing, though text may lose some crispness."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I convert PDF to PNG instead of JPG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Convert PDF to PNG when the document contains fine text, vector line art, logos, or needs transparent layers. Since PNG is a lossless format, it preserves the exact pixel details of the original document without blurring or introducing compression artifacts around letters."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I convert PDF to JPG instead of PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Convert PDF to JPG when you want to minimize storage and page load times, such as sharing slides or photo portfolios via email or uploading images to a website. JPG files are significantly smaller than PNGs and are supported universally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does converting PDF to JPG preserve transparency?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The JPG format does not support transparency. When you convert a PDF page containing a transparent background to JPG, the transparent areas will automatically be filled with a solid color, usually white."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which conversion is better for scanned documents?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If the scanned document is mostly text and needs to remain readable, PNG is better because it avoids introducing artifacts around text. However, if the scan contains mostly rich photography and the file size needs to be small, JPG is the preferred choice."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "pdf-to-png-vs-pdf-to-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "pdf-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PDF to PNG vs PDF to JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-28 rounded-2xl bg-canvas-soft font-mono text-xl font-bold text-ink border border-hairline shadow-sm px-2 text-center">PDF to PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-28 rounded-2xl bg-canvas-soft font-mono text-xl font-bold text-ink border border-hairline shadow-sm px-2 text-center">PDF to JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">PDF to PNG vs PDF to JPG</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Need to convert a document into images? The choice between PDF to PNG and PDF to JPG depends on whether you value pixel-perfect text clarity and transparency (PNG) or lightweight file sizes for easy sharing (JPG). Let's compare both routes.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Choose PDF to PNG if:</strong> The document has tiny text, screenshots, logos, or transparent backgrounds that must remain pixel-perfect and readable.</p>
+          <p><strong class="text-ink">Choose PDF to JPG if:</strong> You are converting photos, slides, or large booklets to share over email, upload to a gallery, or save storage space.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between PDF to PNG and PDF to JPG?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          When rendering pages of a PDF to flat image files, each conversion pipeline processes pixels and compression differently.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">PDF to PNG Conversion</th>
+                <th class="p-4">PDF to JPG Conversion</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Scheme</td>
+                <td class="p-4 text-success">Lossless (Preserves 100% of detail)</td>
+                <td class="p-4">Lossy (Discards details for space)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Text Crispness</td>
+                <td class="p-4 text-success">Perfect (Ideal for small fonts & line art)</td>
+                <td class="p-4">Good (May have minor compression halos)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4 text-success">Yes (Preserves transparent backgrounds)</td>
+                <td class="p-4 text-error">No (Replaces transparent areas with white)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Relative File Size</td>
+                <td class="p-4 text-error">Larger (Especially for complex graphic pages)</td>
+                <td class="p-4 text-success">Smaller (highly compressed and lighter)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Optimal Documents</td>
+                <td class="p-4">Infographics, text scans, charts, logos</td>
+                <td class="p-4">Presentations, photo ebooks, slides</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert PDF pages Instantly (Offline & Private)</h2>
+        <PdfToJpgTool toolId="pdf-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: PDF to PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: PDF to PNG Workflow</h2>
+        <p>
+          Converting a PDF page to PNG converts vector structures and embedded fonts into a lossless raster image. Because PNG uses DEFLATE compression (a mathematical method that keeps 100% of the pixel data), the output is extremely clean. Text and drawings maintain their crisp borders, and there are no fuzzy halos.
+        </p>
+        <p>
+          Additionally, if your PDF has transparency (for instance, a logo on a transparent page), the PNG will preserve this transparent alpha channel. This is perfect for clipping graphical elements from a document.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PDF to PNG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Text Clarity:</strong> Lossless rendering makes small text easy to read.</li>
+          <li><strong>Transparent Canvas:</strong> Keeps document transparency intact.</li>
+          <li><strong>Zero Compression Artifacts:</strong> Ideal for charts, line graphs, and vector icons.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF to JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: PDF to JPG Workflow</h2>
+        <p>
+          Converting a PDF page to JPG flattens the layout and processes it through lossy JPEG compression algorithms. JPG is designed specifically to store smooth color variations while discarding high-frequency visual changes (like the sharp borders of text characters). 
+        </p>
+        <p>
+          This makes PDF to JPG conversions ideal for documents that contain photographs or illustrations, resulting in file sizes that are often 70% to 90% smaller than a corresponding PNG. However, if the page is mostly text, you might notice small artifacts (fuzziness) around the letters when zooming in.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PDF to JPG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Maximum File Reduction:</strong> Highly efficient compression results in very small files.</li>
+          <li><strong>Easy Sharing:</strong> Smaller sizes make sharing via email, chat, or social media easy.</li>
+          <li><strong>Universal Integration:</strong> Great for posting page-by-page slideshows on websites.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between converting PDF to PNG and PDF to JPG?</h3>
+            <p class="text-body leading-relaxed">Converting PDF to PNG produces high-quality, lossless images that preserve text sharpness and background transparency. Converting PDF to JPG creates lossy, compressed files that are much smaller in size, making them ideal for web page loading and emailing, though text may lose some crispness.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I convert PDF to PNG instead of JPG?</h3>
+            <p class="text-body leading-relaxed">Convert PDF to PNG when the document contains fine text, vector line art, logos, or needs transparent layers. Since PNG is a lossless format, it preserves the exact pixel details of the original document without blurring or introducing compression artifacts around letters.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I convert PDF to JPG instead of PNG?</h3>
+            <p class="text-body leading-relaxed">Convert PDF to JPG when you want to minimize storage and page load times, such as sharing slides or photo portfolios via email or uploading images to a website. JPG files are significantly smaller than PNGs and are supported universally.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does converting PDF to JPG preserve transparency?</h3>
+            <p class="text-body leading-relaxed">No. The JPG format does not support transparency. When you convert a PDF page containing a transparent background to JPG, the transparent areas will automatically be filled with a solid color, usually white.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which conversion is better for scanned documents?</h3>
+            <p class="text-body leading-relaxed">If the scanned document is mostly text and needs to remain readable, PNG is better because it avoids introducing artifacts around text. However, if the scan contains mostly rich photography and the file size needs to be small, JPG is the preferred choice.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert PDF documents to images?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, offline PDF tool to instantly extract all pages into sharp images inside your browser securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PDF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

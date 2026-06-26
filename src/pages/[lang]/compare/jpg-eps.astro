@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "JPG vs EPS: Diferencia entre formatos de imagen web e impresos",
+    seoDescription: "JPG vs EPS. Comparamos imágenes rasterizadas JPG con archivos vectoriales EPS de Adobe. Conozca cuándo usar cada uno para web y diseño.",
+    title: "JPG vs EPS: ¿Qué formato de imagen es mejor?",
+    intro: "¿Está eligiendo entre un JPEG basado en píxeles y un contenedor PostScript basado en vectores? Comparamos las diferencias entre JPG y EPS.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use JPG para:",
+    usePngForDesc: "Pantallas digitales, sitios web, fotos y uso compartido general donde se requieren tamaños de archivo pequeños y una amplia compatibilidad.",
+    useIcoFor: "Use EPS para:",
+    useIcoForDesc: "Logotipos de marcas, diseños de letreros, ilustraciones vectoriales de alta resolución y diseños de publicación destinados a imprentas comerciales.",
+    differenceTitle: "¿Cuál es la diferencia entre JPG y EPS?",
+    differenceDesc: "JPG es un gráfico rasterizado de cuadrícula de píxeles diseñado para pantallas de visualización, mientras que EPS es un formato de descripción vectorial PostScript diseñado para imprentas.",
+    thFeature: "Característica / Aspecto",
+    thPng: "JPG (Joint Photographic Experts Group)",
+    thIco: "EPS (PostScript encapsulado)",
+    tdFileNature: "Categoría de imagen",
+    tdFileNaturePng: "Rasterizado (cuadrícula basada en píxeles)",
+    tdFileNatureIco: "Vectorial (trazados matemáticos de coordenadas)",
+    tdFallback: "Escalado infinito",
+    tdFallbackPng: "No (Se pixela cuando se amplía)",
+    tdFallbackIco: "Sí (Resolución perfecta a cualquier escala)",
+    tdPurpose: "Idoneidad fotográfica",
+    tdPurposePng: "Excelente (Optimizado para fotos del mundo real)",
+    tdPurposeIco: "Pobre (Crea archivos gigantes)",
+    tdResolutions: "Modelos de color",
+    tdResolutionsPng: "Solo RGB (diseñado para pantallas)",
+    tdResolutionsIco: "CMYK y RGB (optimizado para diseño impreso)",
+    tdSize: "Soporte web",
+    tdSizePng: "Universal (Compatible con todos los navegadores)",
+    tdSizeIco: "No (Requiere conversión)",
+    tdTrans: "Tamaño de archivo",
+    tdTransPng: "Pequeño y muy comprimido",
+    tdTransIco: "Grande (Almacena listas de coordenadas)",
+    tdAnim: "Transparencia",
+    tdAnimPng: "No (Solo fondos sólidos)",
+    tdAnimIco: "Sí (Compatible con trazados vectoriales)",
+    converterTitle: "Comprimir exportaciones JPG (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es un JPG?",
+    divePngP1: "JPG (o JPEG) son las siglas de Joint Photographic Experts Group. Introducido en 1992, se convirtió en el formato estándar para fotografía digital. Utiliza algoritmos de compresión con pérdida para eliminar detalles innecesarios y reducir el peso del archivo.",
+    divePngP2: "Como formato rasterizado, almacena colores en una cuadrícula fija de píxeles. Es idóneo para renderizar fotos con degradados suaves, pero pierde nitidez o se pixela si se amplía más allá de sus dimensiones originales.",
+    divePngAdv: "Ventajas de JPG",
+    divePngAdvList: [
+      "Compatibilidad total: Soportado por absolutamente todos los navegadores y visualizadores.",
+      "Tamaño ligero: Reduce los tiempos de carga web significativamente.",
+      "Optimización de fotos: Excelente fidelidad para capturas fotográficas complejas."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es un EPS?",
+    diveIcoP1: "EPS significa Encapsulated PostScript. Diseñado por Adobe a finales de la década de 1980, fue creado para transferir trazados vectoriales, fuentes y maquetas de páginas a sistemas de impresión comercial. Está escrito en lenguaje de descripción PostScript.",
+    diveIcoP2: "En el mundo editorial y de impresión industrial, el EPS es muy valorado por su soporte CMYK nativo y su capacidad de escalar logos y vectores sin perder definición en vallas publicitarias o empaques.",
+    diveIcoAdv: "Ventajas de EPS",
+    diveIcoAdvList: [
+      "Escalado vectorial infinito: Las curvas y los textos nunca pierden nitidez.",
+      "Espacio de color CMYK: Indispensable para igualar las tintas de las prensas de impresión.",
+      "Estabilidad: Estándar clásico y confiable compatible con equipos de preimpresión antiguos."
+    ],
+    q1: "¿Cuál es la diferencia entre JPG y EPS?",
+    a1: "JPG es una imagen rasterizada basada en píxeles ideal para publicar fotos en la web. EPS es un formato vectorial de Adobe basado en código PostScript diseñado para impresión profesional.",
+    q2: "¿Cuándo debo usar JPG en lugar de EPS?",
+    a2: "Use JPG para publicar fotos en su sitio web, redes sociales o compartirlas por correo. Use EPS cuando envíe archivos a un impresor comercial para un cartel o logotipo gigante.",
+    q3: "¿Se puede convertir un JPG a EPS?",
+    a3: "Sí, aunque al guardar un JPG en un contenedor EPS, la imagen seguirá siendo rasterizada (compuesta por píxeles) en lugar de convertirse mágicamente en vectores trazados matemáticamente.",
+    q4: "¿Por qué los archivos EPS son tan grandes?",
+    a4: "EPS guarda coordenadas matemáticas, fuentes integradas e imágenes de vista previa sin comprimir. JPG utiliza compresión DCT con pérdida para descartar detalles innecesarios de píxeles.",
+    q5: "¿Los navegadores web muestran archivos EPS?",
+    a5: "No, los navegadores no admiten EPS de forma nativa. Debe convertirlos a formatos como SVG (para vectores) o JPG/WebP (para imágenes generales) para mostrarlos en la web.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita optimizar sus archivos JPG?",
+    ctaDesc: "Use nuestro compresor de imágenes local en el navegador para optimizar y reducir sus exportaciones de JPG sin perder calidad.",
+    ctaButton: "Probar Compresor de JPG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "JPG vs EPS : différence entre les formats image web et impression",
+    seoDescription: "JPG vs EPS. Nous comparons les images matricielles JPG avec les fichiers vectoriels EPS d'Adobe. Apprenez quand utiliser chacun d'eux.",
+    title: "JPG vs EPS : quel format d'image est le meilleur ?",
+    intro: "Vous hésitez entre un JPEG basé sur des pixels et un conteneur PostScript vectoriel ? Nous comparons les différences entre le JPG et l'EPS.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le JPG pour :",
+    usePngForDesc: "L'affichage numérique, les sites web, les photos et le partage général où de petites tailles et une compatibilité maximale sont requises.",
+    useIcoFor: "Utilisez l'EPS pour :",
+    useIcoForDesc: "Les logos, la signalétique, les illustrations vectorielles haute résolution et les mises en page destinées aux imprimeurs professionnels.",
+    differenceTitle: "Quelle est la différence entre JPG et EPS ?",
+    differenceDesc: "Le JPG est une image matricielle (pixels) conçue pour les écrans, alors que l'EPS est un format vectoriel PostScript optimisé pour l'imprimerie.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "JPG (Joint Photographic Experts Group)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Catégorie d'image",
+    tdFileNaturePng: "Matricielle (grille de pixels)",
+    tdFileNatureIco: "Vectorielle (tracés mathématiques)",
+    tdFallback: "Redimensionnement infini",
+    tdFallbackPng: "Non (Pixellisation en cas d'agrandissement)",
+    tdFallbackIco: "Oui (Netteté parfaite à n'importe quelle échelle)",
+    tdPurpose: "Adapté aux photos",
+    tdPurposePng: "Excellent (Optimisé pour les photos réelles)",
+    tdPurposeIco: "Médiocre (Fichiers trop lourds, affichage lent)",
+    tdResolutions: "Espaces colorimétriques",
+    tdResolutionsPng: "RVB uniquement (conçu pour les écrans)",
+    tdResolutionsIco: "CMJN et RVB (optimisé pour l'imprimerie)",
+    tdSize: "Support web",
+    tdSizePng: "Universel (Pris en charge par tous les navigateurs)",
+    tdSizeIco: "Non (Requiert une conversion)",
+    tdTrans: "Taille de fichier",
+    tdTransPng: "Léger et très compressé",
+    tdTransIco: "Volumineux (stocke des listes de coordonnées)",
+    tdAnim: "Transparence",
+    tdAnimPng: "Non (Fond opaque uniquement)",
+    tdAnimIco: "Oui (Supporté dans les tracés vectoriels)",
+    converterTitle: "Compresser les exports JPG (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le JPG ?",
+    divePngP1: "Le JPG (ou JPEG) signifie Joint Photographic Experts Group. Introduit en 1992, il est rapidement devenu la norme pour la photographie numérique. Il utilise une compression avec perte pour réduire la taille des fichiers en supprimant les détails superflus.",
+    divePngP2: "En tant que format matriciel (raster), il gère à merveille les pixels des photos. Cependant, la définition étant fixe, un agrandissement excessif provoquera une pixellisation ou un flou visuel.",
+    divePngAdv: "Avantages du JPG",
+    divePngAdvList: [
+      "Compatibilité totale : Affichage correct sur tous les navigateurs et outils.",
+      "Poids plume : Fichiers optimisés pour réduire les temps de chargement web.",
+      "Rendu photo : Excellent traitement des dégradés de couleurs."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que l'EPS ?",
+    diveIcoP1: "L'EPS (Encapsulated PostScript) a été développé par Adobe à la fin des années 1980 pour transférer des dessins vectoriels et des mises en page vers les systèmes d'impression professionnelle. Il est écrit dans le langage PostScript.",
+    diveIcoP2: "Il reste indispensable dans le domaine de l'imprimerie car il supporte la colorimétrie CMJN (CMYK) et permet aux traceurs industriels de découper ou d'imprimer des tracés géométriques complexes sans perte.",
+    diveIcoAdv: "Avantages de l'EPS",
+    diveIcoAdvList: [
+      "Vectoriel infini : Les tracés restent parfaitement nets quel que soit le zoom.",
+      "Prise en charge du CMJN : Essentiel pour respecter les profils d'encre physiques.",
+      "Format d'impression standard : Reconnu par les anciens traceurs et flasheuses."
+    ],
+    q1: "Quelle est la différence entre JPG et EPS ?",
+    a1: "Le JPG est une image matricielle basée sur des pixels pour la photo web. L'EPS est un format vectoriel Adobe basé sur le code PostScript pour l'impression professionnelle.",
+    q2: "Quand utiliser le JPG plutôt que l'EPS ?",
+    a2: "Utilisez le JPG pour afficher vos photos sur les sites web, e-mails ou réseaux. Utilisez l'EPS pour envoyer vos logos ou tracés vectoriels à un imprimeur professionnel.",
+    q3: "Peut-on convertir un JPG en EPS ?",
+    a3: "Oui, mais comme le JPG est composé de pixels, l'EPS contiendra simplement l'image matricielle encapsulée sans la transformer en tracés vectoriels mathématiques.",
+    q4: "Pourquoi les fichiers EPS sont-ils si lourds ?",
+    a4: "L'EPS conserve les descriptions mathématiques des tracés vectoriels, les polices de caractères et des vignettes non compressées. Le JPG utilise une compression avec perte.",
+    q5: "Les navigateurs web affichent-ils l'EPS ?",
+    a5: "Non, l'EPS n'est pas lisible par les navigateurs web. Vous devez d'abord le convertir en SVG (pour le vectoriel) ou JPG/WebP (pour l'affichage standard) pour le web.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de compresser vos JPG ?",
+    ctaDesc: "Utilisez notre compresseur d'images hors ligne pour réduire instantanément le poids de vos JPG exportés sans perte de qualité.",
+    ctaButton: "Essayer le compresseur JPG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "JPG vs. EPS: Unterschied zwischen Web- und Druckbildformaten",
+    seoDescription: "JPG vs. EPS. Wir vergleichen JPG-Rasterbilder mit EPS-Vektordateien von Adobe. Erfahren Sie, wann Sie welches Format für Design nutzen.",
+    title: "JPG vs. EPS: Welches Bildformat ist besser?",
+    intro: "Entscheiden Sie sich zwischen einem pixelbasierten JPEG und einem vektorbasierten PostScript-Container? Wir vergleichen JPG und EPS.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie JPG für:",
+    usePngForDesc: "Digitale Displays, Webseiten, Fotos und allgemeinen Austausch, bei dem kleine Dateigrößen und universelle Kompatibilität erforderlich sind.",
+    useIcoFor: "Nutzen Sie EPS für:",
+    useIcoForDesc: "Markenlogos, Schildentwürfe, hochauflösende Vektorillustrationen und Layouts für kommerzielle Druckereien.",
+    differenceTitle: "Was ist der Unterschied zwischen JPG und EPS?",
+    differenceDesc: "JPG ist ein Rasterformat aus Pixeln für Bildschirme. EPS ist ein PostScript-Vektorformat, das für Druckmaschinen entwickelt wurde.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "JPG (Joint Photographic Experts Group)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Bildkategorie",
+    tdFileNaturePng: "Rastergrafik (pixelbasiert)",
+    tdFileNatureIco: "Vektorgrafik (mathematische Pfade)",
+    tdFallback: "Unbegrenzte Skalierung",
+    tdFallbackPng: "Nein (Wird beim Vergrößern pixelig)",
+    tdFallbackIco: "Ja (Perfekte Schärfe bei jeder Größe)",
+    tdPurpose: "Fototauglichkeit",
+    tdPurposePng: "Hervorragend (Optimiert für Fotos)",
+    tdPurposeIco: "Schlecht (Erzeugt extrem große Codedateien)",
+    tdResolutions: "Farbmodelle",
+    tdResolutionsPng: "Nur RGB (für Bildschirme)",
+    tdResolutionsIco: "CMYK und RGB (für den Druck optimiert)",
+    tdSize: "Web-Unterstützung",
+    tdSizePng: "Universell (Von allen Browsern unterstützt)",
+    tdSizeIco: "Nein (Muss konvertiert werden)",
+    tdTrans: "Dateigröße",
+    tdTransPng: "Klein und hochkomprimiert",
+    tdTransIco: "Groß (Speichert Koordinatenlisten)",
+    tdAnim: "Transparenz",
+    tdAnimPng: "Nein (Nur feste Hintergründe)",
+    tdAnimIco: "Ja (In Vektorpfaden unterstützt)",
+    converterTitle: "JPG-Bilder komprimieren (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist JPG?",
+    divePngP1: "JPG (oder JPEG) steht für Joint Photographic Experts Group. Das 1992 eingeführte Format wurde zum Standard für digitale Fotografie. Es nutzt verlustbehaftete Komprimierung, um Dateigrößen drastisch zu reduzieren.",
+    divePngP2: "Als Rasterformat speichert JPG Farbinformationen in einem festen Koordinatennetz aus Pixeln. Es eignet sich hervorragend für Fotos, verliert beim extremen Vergrößern jedoch an Schärfe.",
+    divePngAdv: "Vorteile von JPG",
+    divePngAdvList: [
+      "Universelle Kompatibilität: Wird überall fehlerfrei geladen.",
+      "Kleine Ladezeiten: Reduziert Bandbreitenverbrauch im Web.",
+      "Fotobastiert: Perfekt für reale Aufnahmen und komplexe Farbverläufe."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist EPS?",
+    diveIcoP1: "EPS steht für Encapsulated PostScript. Es wurde Ende der 1980er-Jahre von Adobe als zuverlässiges Format entwickelt, um Vektoren, Texte und Layouts zwischen Programmen und Drucksystemen zu übertragen. Es ist in PostScript-Code geschrieben.",
+    diveIcoP2: "Im professionellen Druck ist EPS unersetzbar, da es den CMYK-Farbraum unterstützt und Linien für Schneideplotter oder Druckplatten fehlerfrei übergibt.",
+    diveIcoAdv: "Vorteile von EPS",
+    diveIcoAdvList: [
+      "Verlustfreie Skalierung: Vektorpfade und Texte bleiben in jeder Größe scharf.",
+      "CMYK-Unterstützung: Wichtig für farbechte Druckergebnisse.",
+      "Druckmaschinenkompatibel: Der Standard für professionelle Druckpressen."
+    ],
+    q1: "Was ist der Unterschied zwischen JPG und EPS?",
+    a1: "JPG ist ein Rasterformat aus Pixeln, perfekt für Fotos im Web. EPS ist ein XML-Vektorformat von Adobe für den Print- und Layoutbereich.",
+    q2: "Wann sollte ich JPG statt EPS nutzen?",
+    a2: "Nutzen Sie JPG für Webseiten, Social Media und Bildschirme. Nutzen Sie EPS, wenn Sie Vektorlogos an eine Druckerei senden.",
+    q3: "Kann ich JPG in EPS umwandeln?",
+    a3: "Ja, aber da JPG pixelbasiert ist, wird das Foto im EPS-Container nicht automatisch in mathematische Vektoren umgewandelt.",
+    q4: "Warum sind EPS-Dateien oft größer als JPG?",
+    a4: "EPS speichert unkomprimierte Vektordaten, Schriften und Metadaten. JPG nutzt DCT-Komprimierung, um Pixelinformationen platzsparend zu verkleinern.",
+    q5: "Unterstützen Webbrowser EPS-Dateien?",
+    a5: "Nein. Konvertieren Sie diese zuvor in SVG für Vektoren oder in JPG/WebP für Rasterbilder im Web.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie JPG-Dateien komprimieren?",
+    ctaDesc: "Nutzen Sie unseren Offline-Bildkompressor im Browser, um exportierte JPGs ohne Qualitätsverlust zu verkleinern.",
+    ctaButton: "JPG-Kompressor starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "JPG vs EPS: Diferença entre Imagens Web e Impressão",
+    seoDescription: "JPG vs EPS. Comparamos as imagens rasterizadas JPG com os arquivos vetoriais EPS da Adobe. Saiba quando usar cada um.",
+    title: "JPG vs EPS: Qual formato de imagem é melhor?",
+    intro: "Escolhendo entre o JPEG baseado em pixels e o contêiner PostScript baseado em vetores? Comparamos as diferenças entre JPG e EPS.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use JPG para:",
+    usePngForDesc: "Exibições digitais, sites, fotos e compartilhamento geral onde tamanhos de arquivo pequenos e compatibilidade ampla são cruciais.",
+    useIcoFor: "Use EPS para:",
+    useIcoForDesc: "Logotipos de marcas, design de placas, ilustrações vetoriais e layouts destinados a gráficas comerciais.",
+    differenceTitle: "Qual é a diferença entre JPG e EPS?",
+    differenceDesc: "O JPG é um formato de grade de pixels rasterizado para telas digitais. O EPS é um arquivo de descrição vetorial PostScript feito para impressão física.",
+    thFeature: "Característica / Aspeto",
+    thPng: "JPG (Joint Photographic Experts Group)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Categoria da imagem",
+    tdFileNaturePng: "Rasterizado (baseado em pixels)",
+    tdFileNatureIco: "Vetorial (caminhos baseados em fórmulas matemáticas)",
+    tdFallback: "Ampliação infinita",
+    tdFallbackPng: "Não (Fica pixelado se for ampliado)",
+    tdFallbackIco: "Sim (Resolução perfeita em qualquer tamanho)",
+    tdPurpose: "Uso em fotos",
+    tdPurposePng: "Excelente (Alta fidelidade para fotos reais)",
+    tdPurposeIco: "Ruim (Gera arquivos gigantescos de código)",
+    tdResolutions: "Formatos de cores",
+    tdResolutionsPng: "Apenas RGB (desenhado para telas)",
+    tdResolutionsIco: "CMYK e RGB (preparado para gráficas)",
+    tdSize: "Suporte na web",
+    tdSizePng: "Universal (Compatível com todos os navegadores)",
+    tdSizeIco: "Não (Exige conversão prévia)",
+    tdTrans: "Tamanho do arquivo",
+    tdTransPng: "Pequeno e altamente comprimido",
+    tdTransIco: "Grande (Guarda listas de coordenadas)",
+    tdAnim: "Transparência",
+    tdAnimPng: "Não (Apenas fundos sólidos)",
+    tdAnimIco: "Sim (Compatível com caminhos vectoriais)",
+    converterTitle: "Comprimir arquivos JPG (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é o JPG?",
+    divePngP1: "O JPG (ou JPEG) significa Joint Photographic Experts Group. Lançado em 1992, virou o formato de imagem universal para fotografias digitais. Ele usa compressão com perda para remover dados redundantes e salvar espaço.",
+    divePngP2: "Como formato rasterizado, ele trabalha com uma grade de pixels. É excelente para exibir fotos ricas com degradês suaves, mas ficará pixelado se for ampliado além do tamanho original.",
+    divePngAdv: "Vantagens do JPG",
+    divePngAdvList: [
+      "Compatibilidade universal: Roda em qualquer navegador e visualizador.",
+      "Tamanho leve: Perfeito para agilizar o carregamento de sites.",
+      "Excelente para fotos: Processamento perfeito de detalhes fotográficos."
+    ],
+    diveIcoTitle: "Análise profunda: O que é o EPS?",
+    diveIcoP1: "EPS significa Encapsulated PostScript. Criado pela Adobe nos anos 80, ele foi feito para transferir elementos vetoriais e esquemas de páginas entre sistemas gráficos e impressoras profissionais.",
+    diveIcoP2: "No mercado gráfico profissional, o formato EPS é muito valorizado pelo suporte nativo ao espaço de cores CMYK, essencial para garantir a fidelidade de cor nas prensas físicas e impressoras industriais.",
+    diveIcoAdv: "Vantagens do EPS",
+    diveIcoAdvList: [
+      "Resolução vetorial ilimitada: Bordas e textos perfeitamente definidos em qualquer tamanho.",
+      "Suporte a CMYK: Essencial para acertos de tintas físicas.",
+      "Compatibilidade gráfica: Muito aceito em impressoras industriais antigas."
+    ],
+    q1: "Qual é a diferença entre JPG e EPS?",
+    a1: "O JPG é um arquivo rasterizado baseado em pixels para fotos web. O EPS é um formato vetorial da Adobe focado em impressão e design profissional.",
+    q2: "Quando usar JPG em vez de EPS?",
+    a2: "Use JPG para publicar fotos no seu site, redes sociais ou compartilhá-las por e-mail. Use EPS para enviar logotipos e materiais gráficos a uma gráfica.",
+    q3: "Posso converter JPG para EPS?",
+    a3: "Sim, porém como o JPG é rasterizado, a conversão simplesmente colocará a imagem pixelada dentro da embalagem EPS, sem transformá-la em vetor real.",
+    q4: "Por que arquivos EPS são maiores que os JPG?",
+    a4: "EPS guarda vetores crus e dados brutos de layout. O JPG usa compactação com perda DCT para descartar detalhes invisíveis de pixels.",
+    q5: "Navegadores rodam arquivos EPS?",
+    a5: "No, navegadores não exibem EPS de forma nativa. Para o web, exporte para SVG (vetorial) ou JPG/WebP (rasterizado).",
+    faqTitle: "Frequently Asked Questions",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa comprimir as suas imagens JPG?",
+    ctaDesc: "Use a nossa ferramenta offline para otimizar os arquivos JPG exportados e acelerar a velocidade do seu site.",
+    ctaButton: "Testar Compressor de JPG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "JPG vs EPS: Perbedaan Format Gambar Web dan Cetak",
+    seoDescription: "JPG vs EPS. Kami membandingkan gambar raster JPG dengan file vektor EPS Adobe. Pelajari kapan harus menggunakannya.",
+    title: "JPG vs EPS: Mana Format Gambar yang Lebih Baik?",
+    intro: "Memilih antara JPEG berbasis piksel dan kontainer PostScript berbasis vektor? Kami membandingkan perbedaan antara JPG dan EPS.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan JPG untuk:",
+    usePngForDesc: "Tampilan digital, situs web, foto, dan berbagi umum di mana ukuran file kecil dan kompatibilitas luas sangat penting.",
+    useIcoFor: "Gunakan EPS untuk:",
+    useIcoForDesc: "Logo merek, desain papan nama, ilustrasi vektor resolusi tinggi, dan tata letak publikasi untuk mesin cetak komersial.",
+    differenceTitle: "Apa Perbedaan Antara JPG dan EPS?",
+    differenceDesc: "JPG adalah grafis raster kisi piksel yang dirancang untuk layar tampilan, sedangkan EPS adalah format deskripsi vektor PostScript yang dirancang untuk mesin cetak.",
+    thFeature: "Fitur / Aspek",
+    thPng: "JPG (Joint Photographic Experts Group)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Kategori Gambar",
+    tdFileNaturePng: "Raster (berbasis piksel)",
+    tdFileNatureIco: "Vektor (berbasis rumus matematika)",
+    tdFallback: "Skala Tanpa Batas",
+    tdFallbackPng: "Tidak (Gambar pecah jika diperbesar)",
+    tdFallbackIco: "Ya (Ketajaman sempurna di semua ukuran)",
+    tdPurpose: "Kecocokan Foto",
+    tdPurposePng: "Sangat Baik (Optimasi untuk foto asli)",
+    tdPurposeIco: "Buruk (Menghasilkan file kode yang sangat besar)",
+    tdResolutions: "Model Warna",
+    tdResolutionsPng: "Hanya RGB (untuk layar)",
+    tdResolutionsIco: "CMYK dan RGB (dioptimalkan untuk cetak)",
+    tdSize: "Dukungan Web",
+    tdSizePng: "Universal (Didukung oleh semua browser web)",
+    tdSizeIco: "Tidak (Memerlukan konversi)",
+    tdTrans: "Ukuran File",
+    tdTransPng: "Kecil dan sangat terkompresi",
+    tdTransIco: "Besar (Menyimpan daftar koordinat)",
+    tdAnim: "Transparansi",
+    tdAnimPng: "Tidak (Hanya latar belakang solid)",
+    tdAnimIco: "Ya (Didukung dalam jalur vektor)",
+    converterTitle: "Kompres Ekspor JPG (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu JPG?",
+    divePngP1: "JPG (atau JPEG) singkatan dari Joint Photographic Experts Group. Diperkenalkan pada tahun 1992, format ini menjadi standar untuk fotografi digital. Menggunakan algoritma kompresi lossy untuk memangkas ukuran file gambar.",
+    divePngP2: "Sebagai format raster, JPG menyimpan data warna pada kisi piksel tetap. Ini sangat bagus untuk foto. Namun, ia akan kabur atau pecah jika diperbesar melampaui ukuran aslinya.",
+    divePngAdv: "Kelebihan JPG",
+    divePngAdvList: [
+      "Kompatibilitas Universal: Ditampilkan dengan benar di browser mana pun.",
+      "Ukuran Ringan: Mengurangi waktu pemuatan halaman web.",
+      "Sangat Baik untuk Foto: Gradasi warna foto ditampilkan dengan halus."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu EPS?",
+    diveIcoP1: "EPS singkatan dari Encapsulated PostScript. Dikembangkan oleh Adobe pada akhir 1980-an, format ini dirancang untuk memindahkan gambar vektor dan teks antar program tata letak dan cetak.",
+    diveIcoP2: "File EPS sangat berharga dalam percetakan profesional karena mendukung ruang warna CMYK untuk pencetakan fisik dan memastikan garis pemotongan mesin cetak tetap akurat.",
+    diveIcoAdv: "Kelebihan EPS",
+    diveIcoAdvList: [
+      "Skalabilitas Vektor Murni: Teks dan garis tetap tajam sempurna pada ukuran baliho sekalipun.",
+      "Mendukung CMYK: Penting untuk mencocokkan warna tinta pada mesin cetak fisik.",
+      "Standar Percetakan: Didukung oleh sebagian besar mesin cetak profesional."
+    ],
+    q1: "Apa perbedaan antara JPG and EPS?",
+    a1: "JPG adalah file gambar raster berbasis kisi piksel untuk foto web. EPS adalah format vektor Adobe berdasarkan kode PostScript untuk pencetakan komersial.",
+    q2: "Kapan saya harus menggunakan JPG dibanding EPS?",
+    a2: "Gunakan JPG untuk menampilkan foto di situs web, email, atau media sosial. Gunakan EPS ketika mengirimkan file logo ke percetakan komersial.",
+    q3: "Apakah JPG bisa diubah ke EPS?",
+    a3: "Ya, namun karena JPG adalah format raster, file EPS tersebut hanya akan membungkus piksel foto tersebut tanpa menjadikannya vektor garis matematis.",
+    q4: "Mengapa ukuran file EPS lebih besar daripada JPG?",
+    a4: "EPS menyimpan data vektor mentah dan preview tanpa kompresi. JPG menggunakan kompresi DCT lossy untuk memperkecil data piksel.",
+    q5: "Apakah browser web mendukung format EPS?",
+    a5: "Tidak, browser web tidak mendukung EPS secara langsung. Anda harus mengonversinya terlebih dahulu ke format seperti SVG atau JPG/WebP untuk web.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengompresi gambar JPG Anda?",
+    ctaDesc: "Gunakan kompresor gambar offline browser kami untuk mengoptimalkan file JPG hasil ekspor Anda secara instan.",
+    ctaButton: "Coba Kompresor JPG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "jpg-eps")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">JPG vs EPS</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">EPS</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useIcoFor}</strong> {text.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileNature}</td>
+                <td class="p-4">{text.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{text.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFallback}</td>
+                <td class="p-4 text-error">{text.tdFallbackPng}</td>
+                <td class="p-4 text-success">{text.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPurpose}</td>
+                <td class="p-4 text-success">{text.tdPurposePng}</td>
+                <td class="p-4 text-error">{text.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdResolutions}</td>
+                <td class="p-4">{text.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{text.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4 text-error">{text.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-error">{text.tdTransIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnim}</td>
+                <td class="p-4 text-error">{text.tdAnimPng}</td>
+                <td class="p-4 text-success">{text.tdAnimIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: EPS -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveIcoTitle}</h2>
+        <p>{text.diveIcoP1}</p>
+        <p>{text.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="JPG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

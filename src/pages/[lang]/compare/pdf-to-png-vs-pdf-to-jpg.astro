@@ -1,0 +1,666 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import PdfToJpgTool from "../../../components/tools/PdfToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PDF a PNG vs PDF a JPG: ¿Qué conversión debería usar? (2026)",
+    seoDescription: "Compare los flujos de conversión de PDF a PNG vs PDF a JPG. Conozca cuándo elegir PNG para texto nítido y transparencia o JPG para archivos pequeños.",
+    title: "PDF a PNG vs PDF a JPG",
+    intro: "¿Necesita convertir un documento en imágenes? La elección entre PDF a PNG y PDF a JPG depende de si valora la claridad del texto y la transparencia (PNG) o un tamaño de archivo ligero para compartir fácilmente (JPG). Comparemos ambas opciones.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Elija PDF a PNG si:",
+    useTiffForDesc: "El documento tiene texto pequeño, capturas de pantalla, logotipos o fondos transparentes que deben permanecer nítidos y legibles.",
+    useJxlFor: "Elija PDF a JPG si:",
+    useJxlForDesc: "Está convirtiendo fotos, diapositivas o folletos grandes para compartirlos por correo electrónico, subirlos a una galería o ahorrar espacio de almacenamiento.",
+    differenceTitle: "¿Cuál es la diferencia entre PDF a PNG y PDF a JPG?",
+    differenceDesc: "Al renderizar páginas de un PDF en archivos de imagen planos, cada flujo de conversión procesa los píxeles y la compresión de manera diferente.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "Conversión de PDF a PNG",
+    thJxl: "Conversión de PDF a JPG",
+    tdCompStandard: "Esquema de compresión",
+    tdCompStandardTiff: "Sin pérdidas (Preserva el 100% de los detalles)",
+    tdCompStandardJxl: "Con pérdidas (Descarta detalles para ahorrar espacio)",
+    tdFileSize: "Nitidez del texto",
+    tdFileSizeTiff: "Perfecta (Ideal para fuentes pequeñas y arte lineal)",
+    tdFileSizeJxl: "Buena (Puede presentar halos de compresión menores)",
+    tdColorDepth: "Soporte de transparencia",
+    tdColorDepthTiff: "Sí (Conserva los fondos transparentes)",
+    tdColorDepthJxl: "No (Reemplaza las áreas transparentes con blanco)",
+    tdBrowser: "Tamaño de archivo relativo",
+    tdBrowserTiff: "Más grande (Especialmente para páginas con gráficos complejos)",
+    tdBrowserJxl: "Más pequeño (Altamente comprimido y ligero)",
+    tdPrint: "Documentos óptimos",
+    tdPrintTiff: "Infografías, escaneos de texto, gráficos, logotipos",
+    tdPrintJxl: "Presentaciones, libros de fotos, diapositivas",
+    converterTitle: "Convertir páginas de PDF al instante (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: Conversión de PDF a PNG",
+    diveTiffP1: "Convertir una página de PDF a PNG transforma las estructuras vectoriales y las fuentes incrustadas en una imagen ráster sin pérdidas. Dado que PNG utiliza la compresión DEFLATE (un método matemático que mantiene el 100% de los datos de píxeles), el resultado es extremadamente limpio. El texto y los dibujos mantienen sus bordes definidos, sin halos difusos.",
+    diveTiffP2: "Además, si su PDF tiene transparencia (por ejemplo, un logotipo en una página transparente), el PNG conservará este canal alfa transparente. Esto es ideal para recortar elementos gráficos de un documento.",
+    diveTiffAdv: "Ventajas de PDF a PNG",
+    diveTiffAdvList: [
+      "Claridad de texto: El renderizado sin pérdidas hace que el texto pequeño sea fácil de leer.",
+      "Lienzo transparente: Mantiene intacta la transparencia del documento.",
+      "Sin artefactos de compresión: Ideal para diagramas, gráficos de líneas e iconos vectoriales."
+    ],
+    diveJxlTitle: "Análisis profundo: Conversión de PDF a JPG",
+    diveJxlP1: "Convertir una página de PDF a JPG aplana el diseño y lo procesa mediante algoritmos de compresión JPEG con pérdida. JPG está diseñado específicamente para almacenar variaciones de color suaves mientras descarta los cambios visuales de alta frecuencia (como los bordes afilados de los caracteres de texto).",
+    diveJxlP2: "Esto hace que las conversiones de PDF a JPG sean ideales para documentos que contienen fotografías o ilustraciones, lo que da como resultado tamaños de archivo que a menudo son entre un 70% y un 90% más pequeños que el PNG correspondiente. Sin embargo, si la página es principalmente texto, podría notar pequeños artefactos (borrosidad) alrededor de las letras al hacer zoom.",
+    diveJxlAdv: "Ventajas de PDF a JPG",
+    diveJxlAdvList: [
+      "Reducción máxima de archivo: La compresión altamente eficiente produce archivos muy pequeños.",
+      "Fácil de compartir: Los tamaños pequeños facilitan el envío por correo, chat o redes sociales.",
+      "Integración universal: Excelente para publicar presentaciones página por página en sitios web."
+    ],
+    snippetSectionTitle: "Cuándo usar la conversión a PNG o JPG",
+    snippetSectionDesc: "Elegir la ruta de conversión correcta ayuda a mantener la claridad del texto o a reducir el consumo de almacenamiento.",
+    q1: "¿Cuál es la diferencia entre convertir PDF a PNG y PDF a JPG?",
+    a1: "La conversión de PDF a PNG produce imágenes sin pérdidas de alta calidad que conservan la nitidez del texto y la transparencia del fondo. La conversión a JPG genera archivos comprimidos con pérdida mucho más pequeños, ideales para compartir o subir a la web.",
+    q2: "¿Cuándo debo convertir un PDF a PNG en lugar de JPG?",
+    a2: "Convierta a PNG si el PDF contiene texto pequeño, gráficos vectoriales, esquemas o logotipos transparentes. Al ser sin pérdidas, el PNG conserva los bordes nítidos de las letras sin añadir borrosidad.",
+    q3: "¿Cuándo debo convertir un PDF a JPG en lugar de PNG?",
+    a3: "Use la conversión a JPG si desea optimizar el almacenamiento o enviar por correo electrónico folletos de fotos o presentaciones de diapositivas. Los JPG son significativamente más ligeros y fáciles de descargar.",
+    q4: "¿Conserva la transparencia la conversión de PDF a JPG?",
+    a4: "No. El formato JPG no admite transparencia. Al convertir un PDF con fondo transparente a JPG, las áreas transparentes se rellenarán automáticamente con un color sólido, generalmente blanco.",
+    q5: "¿Qué conversión es mejor para documentos escaneados?",
+    a5: "Si el escaneo es de texto y requiere máxima legibilidad, PNG es superior porque evita artefactos alrededor de las palabras. Si el escaneo es de fotos de alta resolución o arte complejo, JPG es preferible para ahorrar espacio.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir documentos PDF a imágenes?",
+    ctaDesc: "Use nuestra herramienta local y gratuita para extraer instantáneamente todas las páginas de su PDF en imágenes nítidas directamente en su navegador.",
+    ctaButton: "Probar convertidor PDF a imagen",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PDF en PNG vs PDF en JPG : Quelle conversion choisir ? (2026)",
+    seoDescription: "Comparez les processus de conversion PDF en PNG vs PDF en JPG. Découvrez quand choisir PNG pour le texte net et la transparence ou JPG pour les petits fichiers.",
+    title: "PDF en PNG vs PDF en JPG",
+    intro: "Besoin de convertir un document en images ? Le choix entre PDF en PNG et PDF en JPG dépend de l'importance que vous accordez à la netteté du texte et à la transparence (PNG) ou à la légèreté des fichiers pour le partage (JPG). Comparons les deux solutions.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Choisissez PDF en PNG si :",
+    useTiffForDesc: "Le document contient du texte fin, des captures d'écran, des logos ou des fonds transparents qui doivent rester nets et lisibles.",
+    useJxlFor: "Choisissez PDF en JPG si :",
+    useJxlForDesc: "Vous convertissez des photos, des présentations ou des livrets volumineux à partager par e-mail, à publier sur le web ou pour économiser de l'espace.",
+    differenceTitle: "Quelle est la différence entre PDF en PNG et PDF en JPG ?",
+    differenceDesc: "Lors du rendu des pages de PDF sous forme d'images plates, chaque processus applique une compression et un traitement des pixels différents.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "Conversion PDF en PNG",
+    thJxl: "Conversion PDF en JPG",
+    tdCompStandard: "Type de compression",
+    tdCompStandardTiff: "Sans perte (Préserve 100 % des détails)",
+    tdCompStandardJxl: "Avec perte (Supprime des détails pour l'espace)",
+    tdFileSize: "Netteté du texte",
+    tdFileSizeTiff: "Parfaite (Idéale pour les petits caractères & tracés)",
+    tdFileSizeJxl: "Bonne (Peut présenter de légers halos de compression)",
+    tdColorDepth: "Prise en charge de la transparence",
+    tdColorDepthTiff: "Oui (Conserve les arrière-plans transparents)",
+    tdColorDepthJxl: "Non (Remplace la transparence par du blanc)",
+    tdBrowser: "Taille de fichier relative",
+    tdBrowserTiff: "Plus grande (Surtout pour les pages riches en graphiques)",
+    tdBrowserJxl: "Plus petite (Fortement compressée et légère)",
+    tdPrint: "Documents recommandés",
+    tdPrintTiff: "Infographies, numérisations de textes, graphiques, logos",
+    tdPrintJxl: "Présentations, livres photo, diaporamas",
+    converterTitle: "Convertir des pages PDF instantanément (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Conversion PDF en PNG",
+    diveTiffP1: "La conversion de pages PDF en PNG convertit les structures vectorielles et polices en une image matricielle sans perte. Comme le PNG utilise la compression DEFLATE (qui conserve l'intégralité des pixels), le rendu est parfaitement propre. Le texte et les contours restent nets et précis sans aucun flou.",
+    diveTiffP2: "De plus, si votre PDF comporte de la transparence (comme un logo), le PNG préservera ce canal alpha transparent. C'est idéal pour isoler des éléments d'un document.",
+    diveTiffAdv: "Avantages de PDF en PNG",
+    diveTiffAdvList: [
+      "Clarté du texte : Le rendu sans perte rend les petits caractères faciles à lire.",
+      "Arrière-plan transparent : Préserve la transparence du document d'origine.",
+      "Aucun artefact : Parfait pour les graphiques, schémas et icônes vectorielles."
+    ],
+    diveJxlTitle: "Analyse approfondie : Conversion PDF en JPG",
+    diveJxlP1: "La conversion de pages PDF en JPG aplatit la mise en page et applique l'algorithme de compression JPEG. Le JPG est conçu pour enregistrer des variations de couleurs douces tout en éliminant les variations brutales comme les contours de texte.",
+    diveJxlP2: "Ceci rend le JPG idéal pour les documents illustrés ou contenant des photos, générant des fichiers 70 % à 90 % plus légers que le PNG. Cependant, si le document contient principalement du texte, un flou peut apparaître autour des lettres au zoom.",
+    diveJxlAdv: "Avantages de PDF en JPG",
+    diveJxlAdvList: [
+      "Compression maximale : Fichiers légers faciles à stocker.",
+      "Partage facilité : Tailles optimales pour les e-mails, chats et réseaux sociaux.",
+      "Rendu universel : Idéal pour publier des diaporamas de pages sur le web."
+    ],
+    snippetSectionTitle: "Quand utiliser la conversion PNG ou JPG",
+    snippetSectionDesc: "Sélectionner la bonne conversion préserve la lisibilité ou réduit le poids de stockage.",
+    q1: "Quelle est la différence entre convertir un PDF en PNG et un PDF en JPG ?",
+    a1: "La conversion en PNG offre des images sans perte de haute qualité préservant le texte net et la transparence. La conversion en JPG génère des fichiers avec perte beaucoup plus compressés et légers.",
+    q2: "Quand dois-je convertir mon PDF en PNG plutôt qu'en JPG ?",
+    a2: "Choisissez le PNG si le document présente des petits caractères, des logos transparents ou des graphiques. Le PNG évite tout flou autour du texte.",
+    q3: "Quand dois-je convertir mon PDF en JPG plutôt qu'en PNG ?",
+    a3: "Préférez le JPG pour les diaporamas, les albums photo ou pour envoyer des documents par e-mail afin de limiter la taille de la pièce jointe.",
+    q4: "La conversion PDF en JPG conserve-t-elle la transparence ?",
+    a4: "Non. Le format JPG ne prend pas en charge la transparence. Les zones transparentes du PDF seront remplacées par du blanc lors de l'export en JPG.",
+    q5: "Quelle conversion est la meilleure pour les scans de documents ?",
+    a5: "Pour les scans textuels devant rester lisibles, préférez le PNG. Pour les scans de photos d'art ou de paysages, le JPG sera plus adapté pour économiser du stockage.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des PDF en images ?",
+    ctaDesc: "Utilisez notre outil local et gratuit pour extraire instantanément les pages de vos PDF en images nettes dans votre navigateur.",
+    ctaButton: "Essayer le convertisseur PDF en image",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PDF in PNG vs. PDF in JPG: Welche Konvertierung nutzen? (2026)",
+    seoDescription: "Vergleichen Sie PDF in PNG und PDF in JPG Konvertierungen. Erfahren Sie, wann Sie PNG für scharfen Text und Transparenz oder JPG für kleine Dateien wählen.",
+    title: "PDF in PNG vs. PDF in JPG",
+    intro: "Müssen Sie ein Dokument in Bilder umwandeln? Die Wahl zwischen PDF in PNG und PDF in JPG hängt davon ab, ob Sie gestochen scharfen Text und Transparenz (PNG) oder kleine Dateigrößen zum Teilen (JPG) bevorzugen. Vergleichen wir beide Wege.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Wählen Sie PDF in PNG, wenn:",
+    useTiffForDesc: "Das Dokument kleinen Text, Screenshots, Logos oder transparente Hintergründe enthält, die perfekt lesbar bleiben müssen.",
+    useJxlFor: "Wählen Sie PDF in JPG, wenn:",
+    useJxlForDesc: "Sie Fotos, Präsentationen oder große Broschüren konvertieren, um sie per E-Mail zu teilen, ins Web zu stellen oder Speicherplatz zu sparen.",
+    differenceTitle: "Was ist der Unterschied zwischen PDF in PNG und PDF in JPG?",
+    differenceDesc: "Beim Rendern von PDF-Seiten in flache Bilddateien verarbeiten die Konvertierungsmethoden Pixel und Kompression unterschiedlich.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "PDF-in-PNG-Konvertierung",
+    thJxl: "PDF-in-JPG-Konvertierung",
+    tdCompStandard: "Kompressionstyp",
+    tdCompStandardTiff: "Verlustfrei (Erhält 100 % der Details)",
+    tdCompStandardJxl: "Verlustbehaftet (Verwirft Details für Speicherplatz)",
+    tdFileSize: "Textscharfe",
+    tdFileSizeTiff: "Perfekt (Ideal für kleine Schriften & Strichzeichnungen)",
+    tdFileSizeJxl: "Gut (Kann leichte Kompressionsartefakte aufweisen)",
+    tdColorDepth: "Transparenz-Unterstützung",
+    tdColorDepthTiff: "Ja (Erhält transparente Hintergründe)",
+    tdColorDepthJxl: "Nein (Ersetzt transparente Bereiche durch Weiß)",
+    tdBrowser: "Relative Dateigröße",
+    tdBrowserTiff: "Größer (Besonders bei grafisch komplexen Seiten)",
+    tdBrowserJxl: "Kleiner (Stark komprimiert und kompakt)",
+    tdPrint: "Optimale Dokumente",
+    tdPrintTiff: "Infografiken, Textscans, Diagramme, Logos",
+    tdPrintJxl: "Präsentationen, Fotobücher, Folien",
+    converterTitle: "PDF-Seiten sofort konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: PDF-in-PNG-Konvertierung",
+    diveTiffP1: "Die Konvertierung einer PDF-Seite in ein PNG wandelt Vektorstrukturen und Schriftarten in ein verlustfreies Rasterbild um. Da PNG die DEFLATE-Kompression nutzt (die alle Pixeldaten erhält), ist die Ausgabe extrem sauber. Text und Grafiken behalten scharfe Kanten ohne unscharfe Ränder.",
+    diveTiffP2: "Wenn Ihre PDF-Datei Transparenz enthält (z. B. ein Logo auf transparentem Hintergrund), bleibt dieser transparente Alphakanal im PNG erhalten. Das ist ideal, um Grafikelemente aus Dokumenten zu isolieren.",
+    diveTiffAdv: "Vorteile von PDF in PNG",
+    diveTiffAdvList: [
+      "Textscharfe: Verlustfreies Rendern macht auch sehr kleinen Text perfekt lesbar.",
+      "Transparenter Hintergrund: Erhält die Transparenz des Originaldokuments.",
+      "Keine Kompressionsfehler: Ideal für Diagramme, Linienzeichnungen und Symbole."
+    ],
+    diveJxlTitle: "Deep Dive: PDF-in-JPG-Konvertierung",
+    diveJxlP1: "Die Umwandlung einer PDF-Seite in ein JPG flacht das Layout ab und wendet die verlustbehaftete JPEG-Kompression an. JPG ist darauf ausgelegt, weiche Farbverläufe zu speichern, während harte Kontraste (wie die Ränder von Textbuchstaben) leicht weichgezeichnet werden.",
+    diveJxlP2: "Dies macht PDF in JPG ideal für Dokumente mit Fotos oder Bildern. Die Dateigrößen sind oft 70 % bis 90 % kleiner als bei PNG. Bei reinem Text können beim Heranzoomen jedoch leichte Artefakte um die Buchstaben herum sichtbar werden.",
+    diveJxlAdv: "Vorteile von PDF in JPG",
+    diveJxlAdvList: [
+      "Maximale Speicherersparnis: Hocheffiziente Kompression erzeugt sehr kleine Dateien.",
+      "Einfaches Teilen: Optimaler Dateiversand über E-Mail, Chat oder Webseiten.",
+      "Universelle Nutzung: Perfekt für Diashows oder Webalben aus PDF-Seiten."
+    ],
+    snippetSectionTitle: "Wann nutzt man die Konvertierung in PNG oder JPG",
+    snippetSectionDesc: "Die Wahl des richtigen Konvertierungspfades sichert die Lesbarkeit oder spart Speicherplatz.",
+    q1: "Was ist der Unterschied zwischen PDF-in-PNG und PDF-in-JPG?",
+    a1: "Die Umwandlung in PNG liefert verlustfreie Bilder in hoher Qualität mit scharfem Text und Transparenz. Die Konvertierung in JPG erzeugt stark komprimierte, verlustbehaftete Dateien, die viel kleiner und einfacher zu teilen sind.",
+    q2: "Wann sollte ich PDF in PNG umwandeln statt in JPG?",
+    a2: "Nutzen Sie PNG, wenn die PDF-Datei Texte, Diagramme oder transparente Logos enthält. PNG vermeidet jegliche Unschärfe um die Buchstaben herum.",
+    q3: "Wann sollte ich PDF in JPG umwandeln statt in PNG?",
+    a3: "Wählen Sie JPG für Präsentationen, Fotodokumente oder wenn Sie Dateien per E-Mail versenden möchten, um die Speichergröße gering zu halten.",
+    q4: "Bleibt bei PDF in JPG die Transparenz erhalten?",
+    a4: "Nein. Das JPG-Format unterstützt keine Transparenz. Transparente Bereiche einer PDF-Seite werden beim Konvertieren automatisch weiß gefärbt.",
+    q5: "Welche Konvertierung ist besser für gescannte Dokumente?",
+    a5: "Für reine Textscans ist PNG besser, um die Lesbarkeit des Textes ohne Kompressionsfehler zu wahren. Für Scans von Fotos oder farbintensiven Grafiken ist JPG besser geeignet.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie PDF-Dokumente in Bilder konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um PDF-Seiten offline und sicher in Bilder zu extrahieren.",
+    ctaButton: "PDF-in-Bild-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PDF para PNG vs PDF para JPG: Qual conversão usar? (2026)",
+    seoDescription: "Compare os fluxos de conversão de PDF para PNG vs PDF para JPG. Entenda quando escolher PNG para ter textos nítidos e transparência ou JPG para arquivos compactos.",
+    title: "PDF para PNG vs PDF para JPG",
+    intro: "Precisa de converter um documento em imagens? A escolha entre PDF para PNG e PDF para JPG depende se você prefere nitidez extrema de texto e transparência (PNG) ou arquivos leves para compartilhamento fácil (JPG). Vamos analisar ambas as opções.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Escolha PDF para PNG se:",
+    useTiffForDesc: "O documento possui textos pequenos, prints, logotipos ou fundos transparentes que precisam continuar nítidos e legíveis.",
+    useJxlFor: "Escolha PDF para JPG se:",
+    useJxlForDesc: "Você está convertendo fotos, slides de apresentações ou apostilas pesadas para enviar por e-mail, colocar em sites ou economizar espaço de armazenamento.",
+    differenceTitle: "Qual é a diferença entre converter PDF para PNG e PDF para JPG?",
+    differenceDesc: "Ao renderizar páginas de PDF para arquivos de imagem chapados, cada conversão processa os pixels e a compactação de forma distinta.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "Conversão de PDF para PNG",
+    thJxl: "Conversão de PDF para JPG",
+    tdCompStandard: "Tipo de compactação",
+    tdCompStandardTiff: "Sem perdas (Preserva 100% dos detalhes)",
+    tdCompStandardJxl: "Com perdas (Descarta detalhes para poupar espaço)",
+    tdFileSize: "Nitidez de textos",
+    tdFileSizeTiff: "Perfeita (Ideal para fontes miúdas e traços finos)",
+    tdFileSizeJxl: "Boa (Pode apresentar pequenos halos de compactação)",
+    tdColorDepth: "Suporte a transparência",
+    tdColorDepthTiff: "Sim (Mantém fundos transparentes)",
+    tdColorDepthJxl: "Não (Preenche partes transparentes com branco)",
+    tdBrowser: "Tamanho de arquivo relativo",
+    tdBrowserTiff: "Maior (Especialmente em páginas cheias de grafismos)",
+    tdBrowserJxl: "Menor (Altamente compactado e muito mais leve)",
+    tdPrint: "Documentos ideais",
+    tdPrintTiff: "Infográficos, documentos de texto, tabelas, logos",
+    tdPrintJxl: "Apresentações, e-books de fotos, slides",
+    converterTitle: "Converter páginas de PDF instantaneamente (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: Conversão de PDF para PNG",
+    diveTiffP1: "A conversão de páginas de PDF para PNG transforma vetores e fontes em imagens raster sem perdas. Como o formato PNG usa a compactação DEFLATE (que retém todos os pixels originais), o resultado visual é impecável. Os contornos das letras continuam nítidos, sem borrar.",
+    diveTiffP2: "Além disso, se a sua página PDF tem fundo transparente (como logotipos), o PNG manterá essa transparência ativa através do canal alfa, permitindo recortar elementos facilmente.",
+    diveTiffAdv: "Vantagens do PDF para PNG",
+    diveTiffAdvList: [
+      "Leitura Nítida: A compactação sem perdas deixa textos pequenos fáceis de ler.",
+      "Fundo Transparente: Mantém o fundo transparente do documento intacto.",
+      "Sem Ruídos Visuais: Ideal para infográficos, vetores e ícones gráficos."
+    ],
+    diveJxlTitle: "Análise profunda: Conversão de PDF para JPG",
+    diveJxlP1: "Converter PDF para JPG achata o documento e o compacta usando algoritmos JPEG com perdas. O JPG foca em armazenar gradientes suaves enquanto limpa variações de contraste muito fortes (como as bordas de fontes de texto).",
+    diveJxlP2: "Isso torna o JPG excelente para apostilas ilustradas ou relatórios com fotos, gerando arquivos 70% a 90% menores do que o PNG equivalente. Porém, páginas cheias de texto podem exibir pequenos borrões perto das letras ao aproximar o zoom.",
+    diveJxlAdv: "Vantagens do PDF para JPG",
+    diveJxlAdvList: [
+      "Compactação Extrema: Produz arquivos leves que poupam espaço em disco.",
+      "Compartilhamento Ágil: Tamanhos ideais para enviar por WhatsApp, e-mail ou redes.",
+      "Integração Rápida: Ótimo para exibir slides de páginas em carrosséis de sites."
+    ],
+    snippetSectionTitle: "Quando usar conversão para PNG ou JPG",
+    snippetSectionDesc: "A escolha da conversão correta garante a leitura perfeita do texto ou reduz custos de armazenamento.",
+    q1: "Qual é a diferença entre converter PDF para PNG e PDF para JPG?",
+    a1: "A conversão para PNG gera imagens sem perdas de alta definição, mantendo textos nítidos e a transparência. A conversão para JPG cria arquivos com perdas bem compactados e muito mais leves.",
+    q2: "Quando devo converter meu PDF em PNG em vez de JPG?",
+    a2: "Converta para PNG quando houver textos miúdos, gráficos de linhas ou logotipos com transparência. O PNG evita distorções ao redor das palavras.",
+    q3: "Quando devo converter meu PDF em JPG em vez de PNG?",
+    a3: "Prefira JPG para apresentações de slides, portfólios de fotos ou para enviar apostilas por e-mail sem estourar o limite de tamanho do anexo.",
+    q4: "A conversão de PDF para JPG preserva a transparência?",
+    a4: "Não. O formato JPG não suporta transparência. Quaisquer áreas transparentes do PDF original ficarão com fundo branco no JPG final.",
+    q5: "Qual conversão é a melhor para escaneamento de papéis?",
+    a5: "Para escaneamentos com muitos textos finos, converta para PNG para ter boa leitura. Se o papel escaneado possuir muitas fotos ou ilustrações coloridas, prefira JPG.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "¿Precisa de converter documentos PDF em imagens?",
+    ctaDesc: "Use a nossa ferramenta gratuita no navegador para extrair as páginas do PDF em imagens nítidas de forma 100% offline.",
+    ctaButton: "Testar conversor PDF para imagem",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PDF ke PNG vs PDF ke JPG: Konversi Mana yang Harus Anda Gunakan? (2026)",
+    seoDescription: "Bandingkan alur kerja konversi PDF ke PNG vs PDF ke JPG. Pelajari kapan harus memilih PNG untuk teks tajam dan transparansi atau JPG untuk ukuran kecil.",
+    title: "PDF ke PNG vs PDF ke JPG",
+    intro: "Perlu mengubah dokumen PDF menjadi gambar? Pilihan antara PDF ke PNG dan PDF ke JPG tergantung pada apakah Anda mengutamakan ketajaman teks dan transparansi (PNG) atau ukuran file kecil agar mudah dibagikan (JPG). Mari bandingkan keduanya.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Pilih PDF ke PNG jika:",
+    useTiffForDesc: "Dokumen memiliki teks kecil, tangkapan layar, logo, atau latar belakang transparan yang harus tetap tajam dan mudah dibaca.",
+    useJxlFor: "Pilih PDF ke JPG jika:",
+    useJxlForDesc: "Anda mengonversi foto, presentasi slide, atau buklet besar untuk dibagikan via email, diunggah ke web, atau untuk menghemat penyimpanan.",
+    differenceTitle: "Apa Perbedaan Antara PDF ke PNG dan PDF ke JPG?",
+    differenceDesc: "Saat merender halaman PDF menjadi file gambar, setiap alur konversi memproses piksel dan kompresi dengan cara yang berbeda.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "Konversi PDF ke PNG",
+    thJxl: "Konversi PDF ke JPG",
+    tdCompStandard: "Skema Kompresi",
+    tdCompStandardTiff: "Lossless (Menjaga 100% detail piksel)",
+    tdCompStandardJxl: "Lossy (Membuang detail demi hemat ruang)",
+    tdFileSize: "Ketajaman Teks",
+    tdFileSizeTiff: "Sempurna (Ideal untuk teks kecil & gambar garis)",
+    tdFileSizeJxl: "Cukup Baik (Mungkin memiliki buram kompresi tipis)",
+    tdColorDepth: "Dukungan Transparansi",
+    tdColorDepthTiff: "Ya (Mempertahankan latar belakang transparan)",
+    tdColorDepthJxl: "Tidak (Mengganti area transparan dengan warna putih)",
+    tdBrowser: "Ukuran File Relatif",
+    tdBrowserTiff: "Lebih Besar (Terutama untuk halaman kaya grafis)",
+    tdBrowserJxl: "Lebih Kecil (Sangat terkompresi dan ringan)",
+    tdPrint: "Dokumen Optimal",
+    tdPrintTiff: "Infografis, scan teks, bagan, logo",
+    tdPrintJxl: "Presentasi, e-book foto, slide presentasi",
+    converterTitle: "Konversi halaman PDF Instan (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Konversi PDF ke PNG",
+    diveTiffP1: "Mengonversi halaman PDF ke PNG akan mengubah struktur vektor dan font yang tertanam menjadi gambar raster lossless. Karena PNG menggunakan kompresi DEFLATE (metode matematika yang menjaga 100% data piksel), hasilnya sangat bersih. Teks dan garis grafis mempertahankan tepi tajamnya tanpa buram kompresi.",
+    diveTiffP2: "Selain itu, jika dokumen PDF Anda memiliki latar belakang transparan (seperti logo), format PNG akan mempertahankan transparansi ini. Ini sangat ideal jika Anda ingin memotong elemen grafis tertentu dari dokumen.",
+    diveTiffAdv: "Kelebihan PDF ke PNG",
+    diveTiffAdvList: [
+      "Ketajaman Teks: Rendering lossless membuat huruf kecil tetap mudah dibaca.",
+      "Kanvas Transparan: Menjaga transparansi dokumen asli tetap utuh.",
+      "Bebas Gangguan Gambar: Sangat baik untuk grafik garis, tabel, dan ikon vektor."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Konversi PDF ke JPG",
+    diveJxlP1: "Mengonversi halaman PDF ke JPG akan menyatukan seluruh tata letak dan memprosesnya melalui algoritma kompresi JPEG lossy. Format JPG dirancang khusus untuk menyimpan transisi warna halus pada foto sembari membuang detail kontras tinggi (seperti tepian huruf teks).",
+    diveJxlP2: "Ini membuat konversi PDF ke JPG sangat ideal untuk dokumen yang berisi banyak foto atau ilustrasi, menghasilkan file yang sering kali 70% hingga 90% lebih kecil dibanding PNG. Namun, jika dokumen didominasi teks, Anda mungkin melihat sedikit buram di sekitar huruf saat diperbesar.",
+    diveJxlAdv: "Kelebihan PDF ke JPG",
+    diveJxlAdvList: [
+      "Pemangkasan File Maksimal: Kompresi sangat efisien menghasilkan file yang sangat ringan.",
+      "Kemudahan Berbagi: Ukuran kecil sangat ideal untuk dikirim via email, chat, atau media sosial.",
+      "Integrasi Web Cepat: Sangat baik untuk menampilkan halaman dokumen sebagai slide di situs web."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan Konversi PNG atau JPG",
+    snippetSectionDesc: "Memilih konversi yang tepat membantu menjaga kejelasan teks atau menghemat pemakaian ruang penyimpanan.",
+    q1: "Apa perbedaan antara mengonversi PDF ke PNG dan PDF ke JPG?",
+    a1: "Konversi ke PNG menghasilkan gambar tanpa kehilangan (lossless) berkualitas tinggi yang mempertahankan ketajaman teks dan transparansi. Konversi ke JPG membuat file terkompresi dengan kehilangan (lossy) yang jauh lebih kecil dan ringan.",
+    q2: "Kapan saya harus mengubah PDF ke PNG dibanding JPG?",
+    a2: "Gunakan PNG jika dokumen PDF Anda memiliki banyak teks kecil, grafik vektor, bagan, atau logo transparan. PNG menjaga tepian tulisan tetap tajam.",
+    q3: "Kapan saya harus mengubah PDF ke JPG dibanding PNG?",
+    a3: "Pilih JPG untuk presentasi slide, portofolio foto, atau saat mengirim file dokumen via email agar tidak melebihi batas lampiran.",
+    q4: "Apakah konversi PDF ke JPG mempertahankan latar belakang transparan?",
+    a4: "Tidak. Format JPG tidak mendukung transparansi. Latar belakang transparan pada dokumen PDF Anda akan otomatis diubah menjadi warna putih saat diexport ke JPG.",
+    q5: "Konversi mana yang lebih baik untuk dokumen hasil scan?",
+    a5: "Untuk hasil scan teks agar tetap terbaca dengan jelas, PNG adalah pilihan terbaik. Namun, jika lembar hasil scan didominasi foto berwarna warni, JPG lebih cocok untuk menghemat memori.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi dokumen PDF ke gambar?",
+    ctaDesc: "Gunakan alat gratis dalam browser kami untuk mengekstrak halaman PDF ke gambar secara instan dan aman offline.",
+    ctaButton: "Coba Pengonversi PDF ke Gambar",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "pdf-to-png-vs-pdf-to-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "pdf-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PDF to PNG vs PDF to JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-28 rounded-2xl bg-canvas-soft font-mono text-xl font-bold text-ink border border-hairline shadow-sm px-2 text-center">PDF to PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-28 rounded-2xl bg-canvas-soft font-mono text-xl font-bold text-ink border border-hairline shadow-sm px-2 text-center">PDF to JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-success">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-error">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4">{text.tdPrintTiff}</td>
+                <td class="p-4">{text.tdPrintJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <PdfToJpgTool toolId="pdf-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: PDF to PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF to JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PDF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

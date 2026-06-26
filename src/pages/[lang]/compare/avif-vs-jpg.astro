@@ -1,0 +1,640 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+const pageTranslations = {
+  es: {
+    seoTitle: "AVIF vs JPG: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿AVIF o JPG? Comparamos el moderno formato de imagen AVIF con el clásico estándar JPG. Conozca las diferencias de compresión, tamaños de archivo, calidad y compatibilidad.",
+    title: "AVIF vs JPG: ¿Qué formato es mejor?",
+    intro: "Comparamos el formato moderno AVIF con el tradicional JPG para ayudarlo a optimizar la velocidad de carga de su sitio web, el tamaño de sus archivos y sus métricas de Core Web Vitals.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use AVIF para:",
+    useTiffForDesc: "Imágenes de sitios web, gráficos de portada y portafolios digitales donde busque el menor tamaño de archivo posible y tiempos de carga rápidos sin perder calidad.",
+    useJxlFor: "Use JPG para:",
+    useJxlForDesc: "Compatibilidad con sistemas heredados, compartir archivos sin conexión o entrega a clientes que usen ordenadores antiguos o software sin soporte para AVIF.",
+    differenceTitle: "¿Cuál es la diferencia entre AVIF y JPG?",
+    differenceDesc: "La diferencia radica en la tecnología de compresión. JPG es un formato rasterizado con pérdidas de 8 bits establecido en los años 90, mientras que AVIF se basa en el moderno códec de video AV1.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "AVIF (AV1 Image File Format)",
+    thJxl: "JPG (Joint Photographic Experts Group)",
+    tdCompStandard: "Algoritmo de compresión",
+    tdCompStandardTiff: "AV1 Intra-frame (Avanzado)",
+    tdCompStandardJxl: "Transformada de Coseno Discreta (DCT)",
+    tdFileSize: "Tamaño del archivo",
+    tdFileSizeTiff: "Extremadamente pequeño (hasta 50% menor que JPG)",
+    tdFileSizeJxl: "Estándar a grande",
+    tdColorDepth: "Soporte de transparencia",
+    tdColorDepthTiff: "Sí (soporta canal Alfa)",
+    tdColorDepthJxl: "No (fondos sólidos)",
+    tdBrowser: "Color y HDR",
+    tdBrowserTiff: "Hasta 12 bits (soporte HDR)",
+    tdBrowserJxl: "Estrictamente 8 bits (solo SDR)",
+    tdPrint: "Soporte de navegadores",
+    tdPrintTiff: "~97%+ (Todos los navegadores modernos)",
+    tdPrintJxl: "100% universal",
+    tdTranscoding: "Animación",
+    tdTranscodingTiff: "Sí (AVIFS)",
+    tdTranscodingJxl: "No",
+    converterTitle: "Convertir AVIF a JPG (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es AVIF?",
+    diveTiffP1: "AVIF significa AV1 Image File Format. Desarrollado por la Alliance for Open Media (AOMedia) en 2019, AVIF encapsula datos de imagen comprimidos con el códec de video AV1, libre de regalías, dentro del contenedor ISOBMFF.",
+    diveTiffP2: "Debido a su avanzada compresión, AVIF es ideal para el renderizado web moderno. Maneja transparencias complejas, amplias gamas de color HDR y límites de gráficos definidos sin los artefactos comunes del JPG.",
+    diveTiffAdv: "Ventajas de AVIF",
+    diveTiffAdvList: [
+      "Compresión superior: Reduce el peso de las imágenes a la mitad en comparación con JPG.",
+      "Transparencia real: Permite canales de opacidad alfa, reemplazando a PNG para fotos.",
+      "Color profundo de 12 bits: Soporta pantallas de alto rango dinámico sin bandas de color."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es JPG?",
+    diveJxlP1: "JPG se estableció a principios de la década de 1990 como el estándar para fotografía digital. Utiliza compresión con pérdidas al convertir las imágenes al espacio de color YCbCr, submuestreando detalles y aplicando DCT en bloques de píxeles.",
+    diveJxlP2: "Aunque es universalmente compatible, tiene límites estructurales importantes: no admite transparencia, canales HDR ni animaciones, y la compresión fuerte degrada los detalles rápidamente.",
+    diveJxlAdv: "Ventajas de JPG",
+    diveJxlAdvList: [
+      "Soporte universal: Funciona en todos los ordenadores, navegadores e impresoras.",
+      "Decodificación rápida: Requiere muy poca potencia de procesamiento.",
+      "Comportamiento predecible: Se muestra de forma idéntica en cualquier pantalla."
+    ],
+    q1: "¿Cuál es la diferencia entre AVIF y JPG?",
+    a1: "AVIF se basa en el códec de video AV1 y ofrece compresión de nueva generación. JPG es el formato clásico de 1992 que utiliza compresión DCT estándar. AVIF ofrece la misma calidad visual a la mitad de tamaño.",
+    q2: "¿Es AVIF mejor que el JPG?",
+    a2: "Sí, técnicamente es superior en todo. Ofrece hasta un 50% mejor compresión, admite transparencias (canal alfa), animaciones y colores HDR de hasta 12 bits.",
+    q3: "¿Soportan los navegadores AVIF?",
+    a3: "Sí, a partir de 2026, AVIF tiene soporte nativo en más del 97% de los navegadores modernos, incluyendo Chrome, Safari, Firefox y Edge.",
+    q4: "¿Cuando debería usar JPG en lugar de AVIF?",
+    a4: "Solo cuando la compatibilidad universal sea prioritaria, como en clientes de correo antiguos, programas corporativos antiguos o editores que aún no decodifiquen AVIF.",
+    q5: "¿Por qué el tamaño de AVIF es mucho menor?",
+    a5: "Porque aprovecha los avances del códec AV1, con predicciones direccionales eficientes y filtros que superan el modelo básico de bloques de 8x8 de JPG.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita comprimir sus imágenes?",
+    ctaDesc: "Utilice nuestro Compresor de Imágenes gratuito y local para optimizar sus archivos de manera rápida y segura sin enviar datos a servidores externos.",
+    ctaButton: "Probar el Compresor de Imágenes",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "AVIF vs JPG : Quel format d'image est le meilleur ? (Comparatif 2026)",
+    seoDescription: "AVIF ou JPG ? Nous comparons le format moderne AVIF avec le standard classique JPG. Découvrez les gains de taille, la qualité et le support navigateur.",
+    title: "AVIF vs JPG : Quel format est le meilleur ?",
+    intro: "Nous comparons le format de pointe AVIF avec le format classique JPG pour vous aider à optimiser la vitesse de chargement, le poids des fichiers et les Core Web Vitals.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez l'AVIF pour :",
+    useTiffForDesc: "Les images de site web, les images de couverture de blog et les portfolios numériques afin d'obtenir la plus petite taille de fichier possible sans perte de netteté.",
+    useJxlFor: "Utilisez le JPG pour :",
+    useJxlForDesc: "La compatibilité avec les systèmes hérités, le partage de fichiers hors ligne ou l'envoi à des clients possédant du matériel ancien ne supportant pas l'AVIF.",
+    differenceTitle: "Quelle est la différence entre AVIF et JPG ?",
+    differenceDesc: "La différence réside dans la technologie de compression. Le JPG est un format classique compressé en 8 bits via DCT, tandis que l'AVIF utilise le processeur vidéo moderne AV1.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "AVIF (AV1 Image File Format)",
+    thJxl: "JPG (Joint Photographic Experts Group)",
+    tdCompStandard: "Algorithme de compression",
+    tdCompStandardTiff: "AV1 Intra-frame (Avancé)",
+    tdCompStandardJxl: "Transformée en cosinus discrète (DCT)",
+    tdFileSize: "Taille de fichier type",
+    tdFileSizeTiff: "Extrêmement petite (jusqu'à 50 % de moins que le JPG)",
+    tdFileSizeJxl: "Standard à grande",
+    tdColorDepth: "Gestion de la transparence",
+    tdColorDepthTiff: "Oui (prend en charge le canal Alpha)",
+    tdColorDepthJxl: "Non (fond uni)",
+    tdBrowser: "Couleurs et HDR",
+    tdBrowserTiff: "Jusqu'à 12 bits (compatible HDR)",
+    tdBrowserJxl: "Strictement 8 bits (SDR uniquement)",
+    tdPrint: "Compatibilité navigateur",
+    tdPrintTiff: "~97 % + (Tous les navigateurs modernes)",
+    tdPrintJxl: "100 % universelle",
+    tdTranscoding: "Animation",
+    tdTranscodingTiff: "Oui (AVIFS)",
+    tdTranscodingJxl: "Non",
+    converterTitle: "Convertir AVIF en JPG (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que l'AVIF ?",
+    diveTiffP1: "L'AVIF signifie AV1 Image File Format. Développé par l'Alliance for Open Media (AOMedia) en 2019, il compresse les images avec le codec vidéo ouvert et gratuit AV1, encapsulé dans un conteneur ISOBMFF.",
+    diveTiffP2: "Grâce à cette technologie, l'AVIF est idéal pour le web moderne. Il gère les transparences fines, les couleurs HDR étendues et les contours graphiques nets sans générer le flou caractéristique du JPG.",
+    diveTiffAdv: "Avantages de l'AVIF",
+    diveTiffAdvList: [
+      "Compression exceptionnelle : Réduit le poids de 50 % par rapport au JPG à qualité équivalente.",
+      "Transparence réelle : Gère le canal alpha, idéal pour remplacer le PNG sur les photos.",
+      "Profondeur 12 bits : Évite les bandes de dégradés (color banding) sur les écrans HDR."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le JPG ?",
+    diveJxlP1: "Le JPG a été conçu au début des années 1990 comme le standard de la photographie numérique. Il applique une compression avec perte en convertissant les images dans l'espace colorimétrique YCbCr et en appliquant une DCT par blocs.",
+    diveJxlP2: "Bien qu'il soit universellement compatible, il est limité : pas de transparence, pas de HDR, pas d'animation, et de fortes compressions nuisent rapidement à la clarté du texte et des formes géométriques.",
+    diveJxlAdv: "Avantages du JPG",
+    diveJxlAdvList: [
+      "Compatibilité totale : Fonctionne sur tous les ordinateurs, téléphones et imprimantes.",
+      "Décodage rapide : Demande très peu de ressources CPU pour s'afficher.",
+      "Rendu prévisible : S'affiche de manière identique partout."
+    ],
+    q1: "Quelle est la différence entre AVIF et JPG ?",
+    a1: "L'AVIF est basé sur le codec vidéo AV1 et propose une compression moderne hautement efficace. Le JPG est un format datant de 1992 utilisant la compression DCT. L'AVIF offre la même qualité à moitié prix en octets.",
+    q2: "L'AVIF est-il meilleur que le JPG ?",
+    a2: "Oui, l'AVIF est techniquement supérieur en tous points : il est deux fois plus léger à qualité égale, prend en charge la transparence et le codage 12 bits/HDR.",
+    q3: "Les navigateurs supportent-ils l'AVIF ?",
+    a3: "Oui, en 2026, l'AVIF est supporté nativement par plus de 97 % des navigateurs internet modernes (Chrome, Safari, Firefox, Edge).",
+    q4: "Quand utiliser le JPG à la place de l'AVIF ?",
+    a4: "Uniquement lorsque vous visez une compatibilité universelle, comme pour des e-mails envoyés à de vieux clients de messagerie ou des logiciels d'entreprise obsolètes.",
+    q5: "Pourquoi l'AVIF est-il si léger ?",
+    a5: "Grâce aux algorithmes avancés du codec AV1 (prédiction directionnelle, filtres de boucle) qui compressent l'image bien mieux que la DCT par blocs rigides du JPG.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de compresser vos images ?",
+    ctaDesc: "Utilisez notre compresseur local et gratuit pour réduire vos images sans les envoyer sur un serveur externe.",
+    ctaButton: "Essayer le compresseur d'images",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "AVIF vs. JPG: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "AVIF oder JPG? Wir vergleichen das moderne AVIF-Format mit dem klassischen JPG-Standard. Erfahren Sie mehr über Kompression, Dateigrößen und Support.",
+    title: "AVIF vs. JPG: Welches Format ist besser?",
+    intro: "Wir vergleichen das moderne AVIF-Bildformat mit dem klassischen JPG-Format, um Ihnen bei der Optimierung von Website-Ladezeiten und Core Web Vitals zu helfen.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie AVIF für:",
+    useTiffForDesc: "Website-Bilder, Blog-Grafiken und Online-Portfolios, um bei minimaler Dateigröße und schnellen Ladezeiten die beste Bildqualität zu erzielen.",
+    useJxlFor: "Nutzen Sie JPG für:",
+    useJxlForDesc: "Kompatibilität mit Altsystemen, Offline-Dateifreigabe oder die Übergabe an Kunden mit älterer Software ohne AVIF-Unterstützung.",
+    differenceTitle: "Was ist der Unterschied zwischen AVIF und JPG?",
+    differenceDesc: "Der Unterschied liegt in der Kompressionstechnologie. JPG ist ein klassisches 8-Bit-Rasterformat, während AVIF auf dem modernen AV1-Videocodec basiert.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "AVIF (AV1 Image File Format)",
+    thJxl: "JPG (Joint Photographic Experts Group)",
+    tdCompStandard: "Kompressionsalgorithmus",
+    tdCompStandardTiff: "AV1 Intra-frame (Modern)",
+    tdCompStandardJxl: "Diskrete Kosinustransformation (DCT)",
+    tdFileSize: "Dateigröße",
+    tdFileSizeTiff: "Extrem klein (bis zu 50% kleiner als JPG)",
+    tdFileSizeJxl: "Standard bis groß",
+    tdColorDepth: "Transparenz",
+    tdColorDepthTiff: "Ja (unterstützt Alpha-Kanal)",
+    tdColorDepthJxl: "Nein (Hintergrund wird weiß)",
+    tdBrowser: "Farbtiefe & HDR",
+    tdBrowserTiff: "Bis zu 12-Bit (HDR-Unterstützung)",
+    tdBrowserJxl: "Streng 8-Bit (nur SDR)",
+    tdPrint: "Browser-Support",
+    tdPrintTiff: "~97%+ (Alle modernen Browser)",
+    tdPrintJxl: "100% universell",
+    tdTranscoding: "Animation",
+    tdTranscodingTiff: "Ja (AVIFS)",
+    tdTranscodingJxl: "Nein",
+    converterTitle: "AVIF in JPG konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist AVIF?",
+    diveTiffP1: "AVIF steht für AV1 Image File Format. Es wurde 2019 von der Alliance for Open Media (AOMedia) entwickelt und speichert Bilddaten, die mit dem lizenzgebührenfreien AV1-Videocodec komprimiert wurden, in einem ISOBMFF-Container.",
+    diveTiffP2: "Wegen seiner hocheffizienten Kompression ist AVIF ideal für das Web. Es unterstützt Transparenz, Wide-Gamut-HDR und scharfe geometrische Kanten ohne die typischen Block-Artefakte älterer Formate.",
+    diveTiffAdv: "Vorteile von AVIF",
+    diveTiffAdvList: [
+      "Überlegene Kompression: Halbiert das Dateigewicht im Vergleich zu JPG bei gleicher Qualität.",
+      "Transparenzen: Ermöglicht Alpha-Kanäle, perfekt als PNG-Ersatz für Fotos.",
+      "12-Bit Farbtiefe: Verhindert Farbabstufungen auf modernen HDR-Displays."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist JPG?",
+    diveJxlP1: "JPG wurde Anfang der 1990er-Jahre als Standard für die Digitalfotografie etabliert. Es komprimiert verlustbehaftet durch Farbunterabtastung und diskrete Kosinustransformation (DCT) in 8x8 Pixelblöcken.",
+    diveJxlP2: "Obwohl es überall funktioniert, ist es stark limitiert: Es gibt keine Transparenzen, kein HDR, keine Animationen, und hohe Kompressionsraten erzeugen unschöne Artefakte an Texten und Kanten.",
+    diveJxlAdv: "Vorteile von JPG",
+    diveJxlAdvList: [
+      "Universelle Kompatibilität: Läuft auf 100% aller Rechner, Browser und Drucker.",
+      "Schnelle Dekodierung: Benötigt extrem wenig Rechenleistung zur Darstellung.",
+      "Konsistenz: Zeigt Bilder in jeder Umgebung zuverlässig an."
+    ],
+    q1: "Was ist der Unterschied zwischen AVIF und JPG?",
+    a1: "AVIF basiert auf dem AV1-Codec und bietet moderne Kompressionstechniken. JPG stammt aus dem Jahr 1992 und nutzt DCT-Kompression. AVIF bietet die gleiche Qualität bei halber Dateigröße.",
+    q2: "Ist AVIF besser als JPG?",
+    a2: "Ja, AVIF ist technisch in jeder Hinsicht überlegen: Es ist bis zu 50% kleiner, unterstützt Transparenzen und HDR-Inhalte.",
+    q3: "Unterstützen alle Browser AVIF?",
+    a3: "Ja, in 2026 wird AVIF von über 97% aller modernen Webbrowser (Chrome, Safari, Firefox, Edge) nativ unterstützt.",
+    q4: "Wann sollte ich JPG statt AVIF verwenden?",
+    a4: "Nur wenn absolute Abwärtskompatibilität erforderlich ist, wie für alte E-Mail-Clients oder ältere Bildbearbeitungssoftware.",
+    q5: "Warum ist AVIF so viel kleiner?",
+    a5: "Da es die intra-frame Codierung von AV1 verwendet. Diese nutzt Richtungsprädiktionen und Schleifenfilter, um visuelle Details viel platzsparender als die starren 8x8-Blöcke von JPG zu sichern.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Ihre Bilder komprimieren?",
+    ctaDesc: "Nutzen Sie unseren kostenlosen, lokalen Bildkomprimierer im Browser, um Dateien ohne Daten-Upload zu optimieren.",
+    ctaButton: "Bildkomprimierer testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "AVIF vs JPG: Qual formato de imagem é melhor? (Comparativo 2026)",
+    seoDescription: "AVIF ou JPG? Comparamos o moderno formato AVIF com o clássico padrão JPG. Entenda sobre compactação, tamanho de arquivo, qualidade e suporte.",
+    title: "AVIF vs JPG: Qual formato é melhor?",
+    intro: "Comparamos o formato de última geração AVIF com o tradicional JPG para ajudar você a otimizar a velocidade de carregamento e as métricas Core Web Vitals.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use AVIF para:",
+    useTiffForDesc: "Imagens de sites, banners de blogs e portfólios digitais onde você deseja o menor tamanho de arquivo com máxima nitidez visual.",
+    useJxlFor: "Use JPG para:",
+    useJxlForDesc: "Compatibilidade com sistemas legados, envio de arquivos offline ou entrega para clientes com softwares antigos sem suporte a AVIF.",
+    differenceTitle: "Qual é a diferença entre AVIF e JPG?",
+    differenceDesc: "A diferença está na tecnologia. O JPG é um formato de 8 bits lançado nos anos 90, enquanto o AVIF é baseado no moderno codec de vídeo AV1.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "AVIF (AV1 Image File Format)",
+    thJxl: "JPG (Joint Photographic Experts Group)",
+    tdCompStandard: "Algoritmo de compressão",
+    tdCompStandardTiff: "AV1 Intra-frame (Avançado)",
+    tdCompStandardJxl: "Transformada de Cosseno Discreta (DCT)",
+    tdFileSize: "Tamanho do arquivo",
+    tdFileSizeTiff: "Extremamente pequeno (até 50% menor que JPG)",
+    tdFileSizeJxl: "Padrão a grande",
+    tdColorDepth: "Transparência de fundo",
+    tdColorDepthTiff: "Sim (suporta canal Alfa)",
+    tdColorDepthJxl: "Não (fundo fica sólido)",
+    tdBrowser: "Profundidade de cor",
+    tdBrowserTiff: "Até 12 bits (suporte a HDR)",
+    tdBrowserJxl: "Estritamente 8 bits (apenas SDR)",
+    tdPrint: "Compatibilidade web",
+    tdPrintTiff: "~97%+ (Todos os browsers modernos)",
+    tdPrintJxl: "100% universal",
+    tdTranscoding: "Animação",
+    tdTranscodingTiff: "Sim (AVIFS)",
+    tdTranscodingJxl: "Não",
+    converterTitle: "Converter AVIF para JPG (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é AVIF?",
+    diveTiffP1: "AVIF significa AV1 Image File Format. Desenvolvido pela Alliance for Open Media (AOMedia) em 2019, o AVIF compacta imagens usando o codec de vídeo aberto e livre de royalties AV1, empacotado em um contêiner ISOBMFF.",
+    diveTiffP2: "Pelo seu algoritmo avançado, o AVIF é ideal para sites modernos. Ele renderiza transparências complexas, gama de cores HDR e detalhes geométricos sem os blocos de ruído comuns do JPG.",
+    diveTiffAdv: "Vantagens do AVIF",
+    diveTiffAdvList: [
+      "Compressão excelente: Corta o tamanho do arquivo pela metade em relação ao JPG.",
+      "Transparência real: Suporta canal alfa, servindo como substituto do PNG.",
+      "Profundidade 12 bits: Evita efeitos de faixas de cores em telas de alta definição."
+    ],
+    diveJxlTitle: "Análise profunda: O que é JPG?",
+    diveJxlP1: "O JPG foi estabelecido nos anos 90 como padrão para fotos digitais. Ele usa compressão com perdas convertendo a imagem para o espaço YCbCr e aplicando DCT por blocos.",
+    diveJxlP2: "Embora seja compatível com tudo, ele é limitado: sem transparência, sem HDR, sem animações, e altas taxas de compressão rapidamente borram textos e linhas finas.",
+    diveJxlAdv: "Vantagens do JPG",
+    diveJxlAdvList: [
+      "Suporte universal: Roda em 100% dos computadores, impressoras e celulares.",
+      "Decodificação rápida: Exige muito pouco processamento para ser exibido.",
+      "Consistência: Renderiza de forma estável e idêntica em qualquer sistema."
+    ],
+    q1: "Qual é a diferença entre AVIF e JPG?",
+    a1: "O AVIF é baseado no codec AV1 com compressão moderna. O JPG é o formato clássico de 1992 com compressão DCT. O AVIF gera a mesma imagem com metade do tamanho.",
+    q2: "O AVIF é melhor que o JPG?",
+    a2: "Sim, o AVIF é superior. Oferece 50% de ganho de espaço, suporta transparências de fundo e HDR nativamente.",
+    q3: "Os navegadores suportam AVIF?",
+    a3: "Sim, em 2026, o AVIF é aceito nativamente por mais de 97% dos navegadores atuais (Chrome, Safari, Firefox, Edge).",
+    q4: "Quando usar JPG em vez de AVIF?",
+    a4: "Apenas quando a compatibilidade total for necessária, como em e-mails antigos ou softwares legados de escritório.",
+    q5: "Por que o AVIF é tão pequeno?",
+    a5: "Por utilizar técnicas do codec AV1 (previsão direcional e filtros), que compactam de forma inteligente sem ficar restrito aos blocos 8x8 do JPG.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa comprimir as suas imagens?",
+    ctaDesc: "Use o nosso compressor local gratuito para otimizar suas imagens de forma rápida e segura sem subir arquivos para servidores.",
+    ctaButton: "Testar compressor de imagem",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "AVIF vs JPG: Mana Format Gambar yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "AVIF atau JPG? Kami membandingkan format gambar AVIF modern dengan standar JPG klasik. Pelajari efisiensi kompresi, ukuran file, dan dukungannya.",
+    title: "AVIF vs JPG: Mana Format yang Lebih Baik?",
+    intro: "Kami membandingkan format modern AVIF dengan format tradisional JPG untuk membantu Anda mempercepat loading website dan performa Core Web Vitals.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan AVIF untuk:",
+    useTiffForDesc: "Gambar situs web, gambar utama blog, dan portofolio digital yang membutuhkan ukuran file sekecil mungkin dan pemuatan cepat tanpa mengurangi kualitas gambar.",
+    useJxlFor: "Gunakan JPG untuk:",
+    useJxlForDesc: "Kompatibilitas dengan sistem lama, berbagi file secara offline, atau pengiriman gambar ke klien dengan komputer lawas yang belum mendukung AVIF.",
+    differenceTitle: "Apa Perbedaan Antara AVIF dan JPG?",
+    differenceDesc: "Perbedaan utama ada pada teknologi kompresi. JPG adalah format 8-bit lawas tahun 90-an, sedangkan AVIF didasarkan pada codec video AV1 modern.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "AVIF (AV1 Image File Format)",
+    thJxl: "JPG (Joint Photographic Experts Group)",
+    tdCompStandard: "Algoritma Kompresi",
+    tdCompStandardTiff: "AV1 Intra-frame (Canggih)",
+    tdCompStandardJxl: "Discrete Cosine Transform (DCT)",
+    tdFileSize: "Ukuran File",
+    tdFileSizeTiff: "Sangat kecil (hingga 50% lebih kecil dari JPG)",
+    tdFileSizeJxl: "Standar hingga besar",
+    tdColorDepth: "Dukungan Transparansi",
+    tdColorDepthTiff: "Ya (mendukung saluran Alpha)",
+    tdColorDepthJxl: "Tidak (latar belakang menjadi putih)",
+    tdBrowser: "Kedalaman Warna",
+    tdBrowserTiff: "Hingga 12-bit (mendukung HDR)",
+    tdBrowserJxl: "Terbatas 8-bit (hanya SDR)",
+    tdPrint: "Dukungan Browser",
+    tdPrintTiff: "~97%+ (Semua browser modern)",
+    tdPrintJxl: "100% universal",
+    tdTranscoding: "Dukungan Animasi",
+    tdTranscodingTiff: "Ya (AVIFS)",
+    tdTranscodingJxl: "Tidak",
+    converterTitle: "Konversi AVIF ke JPG (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu AVIF?",
+    diveTiffP1: "AVIF singkatan dari AV1 Image File Format. Dikembangkan oleh Alliance for Open Media (AOMedia) tahun 2019, AVIF mengompresi gambar menggunakan codec video AV1 yang bebas royalti, dibungkus dalam wadah ISOBMFF.",
+    diveTiffP2: "Karena efisiensi kompresinya yang luar biasa, AVIF sangat ideal untuk web modern. AVIF dapat menangani transparansi halus, rentang warna HDR, dan detail gambar yang tajam tanpa blur piksel kasar seperti JPG.",
+    diveTiffAdv: "Kelebihan AVIF",
+    diveTiffAdvList: [
+      "Kompresi Superior: Memangkas ukuran file hingga 50% dibanding JPG dengan kualitas visual yang sama.",
+      "Transparansi Sebenarnya: Mendukung opacity saluran alpha, menjadi pengganti PNG yang ideal.",
+      "Warna Mendalam 12-bit: Mendukung monitor HDR tanpa adanya color banding."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu JPG?",
+    diveJxlP1: "JPG diluncurkan awal tahun 1990-an sebagai standar default fotografi digital. JPG menggunakan kompresi lossy dengan mengubah gambar ke ruang warna YCbCr, lalu menerapkan DCT pada blok kisi piksel.",
+    diveJxlP2: "Meskipun didukung secara universal, JPG memiliki keterbatasan struktural: tidak mendukung transparansi, HDR, atau animasi, dan kompresi yang terlalu tinggi akan merusak detail gambar.",
+    diveJxlAdv: "Kelebihan JPG",
+    diveJxlAdvList: [
+      "Dukungan Mutlak: Berfungsi pada 100% perangkat komputer, browser, dan printer.",
+      "Dekode Cepat: Memerlukan daya proses CPU yang sangat kecil untuk memuat gambar.",
+      "Hasil Konsisten: Renders secara identik pada semua layar monitor."
+    ],
+    q1: "Apa perbedaan antara AVIF dan JPG?",
+    a1: "AVIF didasarkan pada codec video AV1 dengan kompresi tingkat tinggi. JPG adalah format klasik tahun 1992 dengan kompresi DCT. AVIF memberikan kualitas gambar yang setara dengan setengah ukuran file JPG.",
+    q2: "Apakah AVIF lebih baik daripada JPG?",
+    a2: "Ya, secara teknis AVIF jauh lebih unggul dalam segala aspek: file 50% lebih kecil, mendukung transparansi, dan HDR.",
+    q3: "Apakah semua browser mendukung AVIF?",
+    a3: "Ya, per tahun 2026, AVIF didukung secara native oleh lebih dari 97% browser modern seperti Chrome, Safari, Firefox, dan Edge.",
+    q4: "Kapan saya sebaiknya menggunakan JPG dibanding AVIF?",
+    a4: "Hanya saat Anda memerlukan jaminan kompatibilitas universal 100% pada sistem komputer yang sangat lama atau email client lawas.",
+    q5: "Mengapa file AVIF bisa jauh lebih kecil?",
+    a5: "Karena menggunakan teknologi intra-frame codec AV1 yang memiliki prediksi spasial dan filter loop, mengungguli model kompresi blok piksel 8x8 statis pada JPG.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Ingin mengompres gambar Anda?",
+    ctaDesc: "Gunakan alat kompresi offline gratis kami di browser untuk mengecilkan ukuran file Anda secara lokal tanpa unggah data.",
+    ctaButton: "Coba Kompresor Gambar",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "avif-vs-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">AVIF vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">AVIF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-error">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-success">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-error">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-success">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-error">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-error">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="avif-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: AVIF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="AVIF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

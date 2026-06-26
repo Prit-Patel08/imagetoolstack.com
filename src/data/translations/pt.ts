@@ -61,6 +61,10 @@ export const pt = {
     pdf: {
       name: "Ferramentas PDF",
       description: "Combine, divida, comprima e converta documentos PDF localmente no seu navegador."
+    },
+    "time-date": {
+      name: "Hora e Data",
+      description: "Converta carimbos de data/hora, calcule datas, verifique a idade exata e compare fusos horários localmente no seu navegador."
     }
   },
   toolTemplates: {

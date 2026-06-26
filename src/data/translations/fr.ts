@@ -61,6 +61,10 @@ export const fr = {
     pdf: {
       name: "Outils PDF",
       description: "Fusionnez, divisez, compressez et convertissez des documents PDF localement dans votre navigateur."
+    },
+    "time-date": {
+      name: "Heure & Date",
+      description: "Convertissez des horodatages, calculez des dates, vérifiez l'âge exact et comparez des fuseaux horaires localement dans votre navigateur."
     }
   },
   toolTemplates: {

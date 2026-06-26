@@ -1,0 +1,291 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import HeicToJpgTool from "../../components/tools/HeicToJpgTool.astro";
+
+// SEO Metadata
+const seoTitle = "HEIC vs JXL: Which Next-Gen Format is Better? (2026)";
+const seoDescription = "HEIC vs JXL (JPEG XL). We compare Apple's HEIC format with the royalty-free next-gen JXL standard. Learn about compression, quality, and browser support.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between HEIC and JXL (JPEG XL)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HEIC is based on the HEVC video standard and is Apple's default image format for saving camera storage. JXL (JPEG XL) is a modern, royalty-free image standard optimized for both web performance and high-fidelity photography archiving. While HEIC is patent-encumbered, JXL is fully open-source and supports lossless compression."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is JXL better than HEIC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, JXL is technically superior. JXL offers royalty-free open licensing, native lossless compression modes, wide color depth up to 32-bit float (compared to HEIC's 10-bit), and unique lossless transcoding of legacy JPG files to reduce size without quality loss."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do web browsers support HEIC or JXL natively?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Neither format is widely supported by standard browsers. HEIC only renders natively in Safari on Apple devices. JXL is not enabled by default in major browsers like Chrome, Firefox, or Safari, requiring users to toggle experimental developer flags."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert HEIC files to JXL?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, you can convert HEIC to JXL using command-line tools like ImageMagick or specialized image editors. However, since browsers cannot display either format natively, you should convert HEIC to JPG or WebP for web publishing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why should I use HEIC instead of JXL today?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You should use HEIC when capturing photos on an iPhone or iPad, as it is highly integrated into iOS for storage efficiency. For any other cross-platform sharing or archiving, JXL or JPG is preferred due to royalty limits on HEIC."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-jxl")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs JXL</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JXL</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">HEIC vs JXL: Which Image Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          We compare Apple's default HEIC image standard against the open-source, next-generation JXL (JPEG XL) format. Understand how they differ in compression, features, licensing, and device compatibility.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use HEIC for:</strong> Storing mobile photos captured on iOS devices to minimize local storage usage while maintaining excellent camera quality.</p>
+          <p><strong class="text-ink">Use JXL for:</strong> Archiving high-fidelity photos losslessly, web design prototyping, and professional graphic design workflows where royalty-free open standards and lossless JPEG conversion are required.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between HEIC and JXL?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          The difference lies in compression standards and licensing. HEIC requires royalty licensing and uses HEVC-based lossy structures, while JXL is a royalty-free open standard optimized for both lossy and lossless coding.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">HEIC (High Efficiency Image Container)</th>
+                <th class="p-4">JXL (JPEG XL)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Licensing / Royalties</td>
+                <td class="p-4 text-error">Patent-encumbered (Requires fees)</td>
+                <td class="p-4 text-success">Open-source & Royalty-free</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Lossless Compression</td>
+                <td class="p-4">Limited / Rarely supported</td>
+                <td class="p-4 text-success">Fully supported natively</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Lossless JPG Transcoding</td>
+                <td class="p-4 text-error">No</td>
+                <td class="p-4 text-success">Yes (Shrinks JPGs ~20% reversibly)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Max Color Depth</td>
+                <td class="p-4">10-bit (HDR support)</td>
+                <td class="p-4 text-success">Up to 32-bit float (Ultra HDR)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Apple Native Support</td>
+                <td class="p-4 text-success">Yes (iOS/macOS Camera default)</td>
+                <td class="p-4 text-error">No</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Browser Support</td>
+                <td class="p-4 text-error">Safari only (Apple platforms)</td>
+                <td class="p-4 text-error">Experimental (Requires developer flags)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Multi-Page & Layers</td>
+                <td class="p-4 text-success">Yes</td>
+                <td class="p-4 text-success">Yes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert HEIC to JPG (Offline & Private)</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is HEIC?</h2>
+        <p>
+          HEIC stands for High Efficiency Image Container. It is the file name extension chosen by Apple for its implementation of the HEIF (High Efficiency Image File Format) standard. Introduced in iOS 11, HEIC encodes images using the HEVC (H.265) video compression codec.
+        </p>
+        <p>
+          HEIC is excellent at saving storage space, reducing file sizes by up to 50% compared to JPG at the same visual quality. However, because HEIC is patent-encumbered, it requires licensing fees, which has stalled native support in major operating systems and web browsers outside the Apple ecosystem.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">HEIC Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Storage Saver:</strong> Compresses images down to half the size of JPGs.</li>
+          <li><strong>Multi-image Containers:</strong> Can store bursts, live photos, and depth maps in a single file.</li>
+          <li><strong>Apple Ecosystem:</strong> Works flawlessly across all Apple hardware and photo clouds.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JXL -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is JXL?</h2>
+        <p>
+          JXL (JPEG XL) was created to modernize image compression without licensing limitations. It is an open, royalty-free standard that supports lossy coding (VarDCT) and lossless modular coding (Modular).
+        </p>
+        <p>
+          For photographers, JXL is an outstanding archiving format. Unlike HEIC, JXL supports lossless coding natively and has a unique "lossless transcoding" feature for JPEGs. JXL files can compress existing JPGs by 20% immediately and reconstruct the original JPG binary bit-for-bit on demand, keeping archives safe and convertible.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">JXL Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Royalty-Free:</strong> Fully open-source and free from patent licensing restrictions.</li>
+          <li><strong>True Lossless Mode:</strong> Compresses original image sensors without losing a single pixel.</li>
+          <li><strong>Bit-Perfect Transcoding:</strong> Shrinks existing JPG assets losslessly with instant revertability.</li>
+          <li><strong>Wide Gamut & HDR:</strong> Natively supports HDR colors for high-end rendering.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between HEIC and JXL (JPEG XL)?</h3>
+            <p class="text-body leading-relaxed">HEIC is based on the HEVC video standard and is Apple's default image format for saving camera storage. JXL (JPEG XL) is a modern, royalty-free image standard optimized for both web performance and high-fidelity photography archiving. While HEIC is patent-encumbered, JXL is fully open-source and supports lossless compression.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Is JXL better than HEIC?</h3>
+            <p class="text-body leading-relaxed">Yes, JXL is technically superior. JXL offers royalty-free open licensing, native lossless compression modes, wide color depth up to 32-bit float (compared to HEIC's 10-bit), and unique lossless transcoding of legacy JPG files to reduce size without quality loss.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Do web browsers support HEIC or JXL natively?</h3>
+            <p class="text-body leading-relaxed">Neither format is widely supported by standard browsers. HEIC only renders natively in Safari on Apple devices. JXL is not enabled by default in major browsers like Chrome, Firefox, or Safari, requiring users to toggle experimental developer flags.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can I convert HEIC files to JXL?</h3>
+            <p class="text-body leading-relaxed">Yes, you can convert HEIC to JXL using command-line tools like ImageMagick or specialized image editors. However, since browsers cannot display either format natively, you should convert HEIC to JPG or WebP for web publishing.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why should I use HEIC instead of JXL today?</h3>
+            <p class="text-body leading-relaxed">You should use HEIC when capturing photos on an iPhone or iPad, as it is highly integrated into iOS for storage efficiency. For any other cross-platform sharing or archiving, JXL or JPG is preferred due to royalty limits on HEIC.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert HEIC photos?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, client-side HEIC Converter to convert your iPhone photos into universal JPG files instantly and securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="HEIC" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

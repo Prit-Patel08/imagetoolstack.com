@@ -1,0 +1,202 @@
+---
+// Age Calculator Tool Component
+---
+<div id="age-calc-root" class="w-full flex flex-col gap-8 max-w-4xl mx-auto">
+  <!-- Inputs Card -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div class="flex flex-col gap-1.5 w-full">
+      <label for="birth-date" class="text-sm font-semibold text-ink">Date of Birth</label>
+      <input type="date" id="birth-date" value="1995-01-01" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+    </div>
+    
+    <div class="flex flex-col gap-1.5 w-full">
+      <label for="age-at-date" class="text-sm font-semibold text-ink">Age at the Date of</label>
+      <input type="date" id="age-at-date" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+    </div>
+  </div>
+
+  <!-- Primary Results Block -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4">
+    <h3 class="text-sm font-semibold uppercase tracking-wider text-mute">Exact Age Result</h3>
+    <div id="age-res-primary" class="text-3xl md:text-4xl font-extrabold text-link leading-tight">
+      --
+    </div>
+    <div id="age-res-detail" class="text-sm text-body">
+      --
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Birthday Countdown Card -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6 items-center text-center justify-between">
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-mute mb-2">Next Birthday Countdown</h3>
+        <div id="birthday-countdown" class="text-2xl font-bold text-ink leading-tight font-mono">
+          --
+        </div>
+      </div>
+      <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline w-full">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Time Remaining</span>
+        <span id="birthday-ticking-clock" class="text-xl font-bold text-link font-mono tabular-nums">--h --m --s</span>
+      </div>
+    </div>
+
+    <!-- Lifetime Statistics Card -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-4">
+      <h3 class="text-sm font-semibold uppercase tracking-wider text-mute mb-2">Your Lifetime in Numbers</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-widest block">Total Months</span>
+          <span id="stat-months" class="text-base font-bold text-ink font-mono mt-1 block">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-widest block">Total Weeks</span>
+          <span id="stat-weeks" class="text-base font-bold text-ink font-mono mt-1 block">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-widest block">Total Days</span>
+          <span id="stat-days" class="text-base font-bold text-ink font-mono mt-1 block">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-widest block">Total Hours</span>
+          <span id="stat-hours" class="text-base font-bold text-ink font-mono mt-1 block">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-3 rounded-lg border border-hairline col-span-2">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-widest block">Total Minutes</span>
+          <span id="stat-minutes" class="text-base font-bold text-ink font-mono mt-1 block">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const birthDateInput = document.getElementById('birth-date') as HTMLInputElement;
+    const ageAtDateInput = document.getElementById('age-at-date') as HTMLInputElement;
+
+    const ageResPrimary = document.getElementById('age-res-primary')!;
+    const ageResDetail = document.getElementById('age-res-detail')!;
+
+    const bdayCountdown = document.getElementById('birthday-countdown')!;
+    const bdayTickingClock = document.getElementById('birthday-ticking-clock')!;
+
+    const statMonths = document.getElementById('stat-months')!;
+    const statWeeks = document.getElementById('stat-weeks')!;
+    const statDays = document.getElementById('stat-days')!;
+    const statHours = document.getElementById('stat-hours')!;
+    const statMinutes = document.getElementById('stat-minutes')!;
+
+    // Set ageAtDate default to today
+    const today = new Date();
+    const localToday = today.toISOString().split('T')[0];
+    ageAtDateInput.value = localToday;
+
+    let countdownTimer: number | undefined;
+
+    function calculateAge() {
+      const birthStr = birthDateInput.value;
+      const targetStr = ageAtDateInput.value;
+
+      if (!birthStr || !targetStr) {
+        ageResPrimary.textContent = '--';
+        ageResDetail.textContent = '--';
+        bdayCountdown.textContent = '--';
+        bdayTickingClock.textContent = '--';
+        statMonths.textContent = '--';
+        statWeeks.textContent = '--';
+        statDays.textContent = '--';
+        statHours.textContent = '--';
+        statMinutes.textContent = '--';
+        return;
+      }
+
+      const birthDate = new Date(birthStr);
+      const targetDate = new Date(targetStr);
+
+      if (birthDate > targetDate) {
+        ageResPrimary.textContent = 'Birth date is in the future!';
+        ageResDetail.textContent = 'Please select a birth date prior to the target date.';
+        return;
+      }
+
+      // 1. Exact age calculation (Years, Months, Days)
+      let y = targetDate.getFullYear() - birthDate.getFullYear();
+      let m = targetDate.getMonth() - birthDate.getMonth();
+      let d = targetDate.getDate() - birthDate.getDate();
+
+      if (d < 0) {
+        m--;
+        const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
+        d += prevMonth.getDate();
+      }
+
+      if (m < 0) {
+        y--;
+        m += 12;
+      }
+
+      ageResPrimary.textContent = `${y} Year${y !== 1 ? 's' : ''}, ${m} Month${m !== 1 ? 's' : ''}, ${d} Day${d !== 1 ? 's' : ''}`;
+      ageResDetail.textContent = `Or exactly ${y * 12 + m} months and ${d} days old.`;
+
+      // 2. Lifetime Stats
+      const timeDiff = targetDate.getTime() - birthDate.getTime();
+      const totalDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+      const totalWeeks = Math.floor(totalDays / 7);
+      const remainingDays = totalDays % 7;
+      const totalMonths = (y * 12) + m;
+      const totalHours = totalDays * 24;
+      const totalMinutes = totalHours * 60;
+
+      statMonths.textContent = totalMonths.toLocaleString();
+      statWeeks.textContent = `${totalWeeks.toLocaleString()} weeks, ${remainingDays} days`;
+      statDays.textContent = totalDays.toLocaleString();
+      statHours.textContent = totalHours.toLocaleString();
+      statMinutes.textContent = totalMinutes.toLocaleString();
+
+      // 3. Next Birthday Countdown & Ticking Clock
+      window.clearInterval(countdownTimer);
+
+      function updateCountdown() {
+        // We calculate countdown to next birthday relative to the active targetDate/Time
+        const now = new Date();
+        const nextBdayYear = targetDate.getFullYear() + ( (targetDate.getMonth() > birthDate.getMonth() || (targetDate.getMonth() === birthDate.getMonth() && targetDate.getDate() >= birthDate.getDate())) ? 1 : 0 );
+        const nextBday = new Date(nextBdayYear, birthDate.getMonth(), birthDate.getDate(), 0, 0, 0);
+        
+        let diffMs = nextBday.getTime() - targetDate.getTime();
+        
+        // If ageAtDate is today, we can ticking clock down to real time!
+        if (targetStr === localToday) {
+          const currentRealTime = new Date();
+          nextBday.setFullYear(currentRealTime.getFullYear() + ( (currentRealTime.getMonth() > birthDate.getMonth() || (currentRealTime.getMonth() === birthDate.getMonth() && currentRealTime.getDate() >= birthDate.getDate())) ? 1 : 0 ));
+          diffMs = nextBday.getTime() - currentRealTime.getTime();
+        }
+
+        if (diffMs < 0) {
+          bdayCountdown.textContent = 'Happy Birthday!';
+          bdayTickingClock.textContent = '00h 00m 00s';
+          return;
+        }
+
+        const totalDiffDays = Math.floor(diffMs / (1000 * 3600 * 24));
+        const remMs = diffMs % (1000 * 3600 * 24);
+        const remHours = Math.floor(remMs / (1000 * 3600));
+        const remMinMs = remMs % (1000 * 3600);
+        const remMins = Math.floor(remMinMs / (1000 * 60));
+        const remSecMs = remMinMs % (1000 * 60);
+        const remSecs = Math.floor(remSecMs / 1000);
+
+        bdayCountdown.textContent = `${totalDiffDays} Day${totalDiffDays !== 1 ? 's' : ''} remaining`;
+        bdayTickingClock.textContent = `${remHours.toString().padStart(2, '0')}h ${remMins.toString().padStart(2, '0')}m ${remSecs.toString().padStart(2, '0')}s`;
+      }
+
+      updateCountdown();
+      countdownTimer = window.setInterval(updateCountdown, 1000);
+    }
+
+    [birthDateInput, ageAtDateInput].forEach(el => {
+      el.addEventListener('input', calculateAge);
+    });
+    calculateAge();
+  });
+</script>

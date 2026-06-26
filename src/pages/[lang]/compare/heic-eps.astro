@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import HeicToJpgTool from "../../../components/tools/HeicToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "HEIC vs EPS: ¿Qué formato de imagen es mejor? (2026)",
+    seoDescription: "HEIC vs EPS. Comparamos el formato de imagen de alta eficiencia de Apple con los archivos vectoriales EPS de Adobe. Conozca cuándo usar cada uno.",
+    title: "HEIC vs EPS: ¿Qué formato de imagen es mejor?",
+    intro: "¿Necesita guardar fotos o diseñar recursos vectoriales de alta calidad? Comparamos el formato moderno HEIC de Apple con el formato de impresión profesional EPS de Adobe.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use HEIC para:",
+    usePngForDesc: "Fotografía digital en dispositivos iOS y ahorro de espacio de almacenamiento sin perder riqueza de color o detalles.",
+    useIcoFor: "Use EPS para:",
+    useIcoForDesc: "Escalar logotipos profesionales, diagramas vectoriales y diseños de publicación destinados a impresión industrial de alta resolución.",
+    differenceTitle: "¿Cuál es la diferencia entre HEIC y EPS?",
+    differenceDesc: "HEIC es una imagen rasterizada basada en píxeles que utiliza compresión de vídeo HEVC, mientras que EPS es un archivo de descripción vectorial PostScript optimizado para impresión.",
+    thFeature: "Característica / Aspecto",
+    thPng: "HEIC (Formato de imagen de alta eficiencia)",
+    thIco: "EPS (PostScript encapsulado)",
+    tdFileNature: "Estructura de imagen",
+    tdFileNaturePng: "Rasterizado (cuadrícula basada en píxeles)",
+    tdFileNatureIco: "Vectorial (trazados matemáticos de coordenadas)",
+    tdFallback: "Escalado infinito",
+    tdFallbackPng: "No (Se pixela cuando se amplía)",
+    tdFallbackIco: "Sí (Resolución perfecta a cualquier escala)",
+    tdPurpose: "Idoneidad fotográfica",
+    tdPurposePng: "Excelente (Gran detalle, colores Display P3)",
+    tdPurposeIco: "Pobre (No diseñado para fotos de cámara digital)",
+    tdResolutions: "Softwares principales",
+    tdResolutionsPng: "Apple Photos, cámara nativa de iOS",
+    tdResolutionsIco: "Adobe Illustrator, CorelDraw, QuarkXPress",
+    tdSize: "Modelos de color",
+    tdSizePng: "RGB (profundidad de color de hasta 16 bits)",
+    tdSizeIco: "CMYK y RGB (optimizado para impresión)",
+    tdTrans: "Compresión",
+    tdTransPng: "Pérdida ultraeficiente (HEVC/H.265)",
+    tdTransIco: "Vectores sin pérdidas o mapas de bits sin comprimir",
+    tdAnim: "Soporte en navegador web",
+    tdAnimPng: "No (Requiere conversión)",
+    tdAnimIco: "No (Requiere conversión)",
+    converterTitle: "Convertir HEIC a JPG offline (Sin subir archivos al servidor)",
+    divePngTitle: "Análisis profundo: ¿Qué es HEIC?",
+    divePngP1: "HEIC (contenedor de imagen de alta eficiencia) es el formato de archivo estándar adoptado por Apple a partir de iOS 11. Se basa en el estándar HEIF y utiliza algoritmos de compresión HEVC (codificación de vídeo de alta eficiencia) avanzados para almacenar datos fotográficos ricos.",
+    divePngP2: "Los archivos HEIC admiten perfiles de color de hasta 16 bits (lo que permite una captura de color Display P3 en pantallas de teléfonos modernos) y pueden agrupar varias imágenes, ráfagas, máscaras alfa y live photos en un solo archivo. Ocupan aproximadamente la mitad del espacio de un JPEG.",
+    divePngAdv: "Ventajas de HEIC",
+    divePngAdvList: [
+      "La mitad del tamaño: La compresión eficiente ahorra gigabytes de almacenamiento en el dispositivo.",
+      "Profundidad de color extendida: Admite perfiles de color de 10 y 16 bits para fotos realistas.",
+      "Contenedores: Guarda ediciones, miniaturas, mapas de profundidad y fotos animadas en un paquete."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es un EPS?",
+    diveIcoP1: "EPS significa Encapsulated PostScript (PostScript Encapsulado). Desarrollado por Adobe a fines de la década de 1980, fue diseñado como un vehículo confiable para transferir formas vectoriales, fuentes y diseños entre programas gráficos y controladores de impresión. Está escrito en código PostScript.",
+    diveIcoP2: "Un archivo EPS es muy valorado en la impresión industrial porque admite vistas previas rasterizadas de alta resolución junto con curvas matemáticas y canales de color CMYK. Esto lo hace perfecto para la impresión de vallas publicitarias y diseños de empaques.",
+    diveIcoAdv: "Ventajas de EPS",
+    diveIcoAdvList: [
+      "Escalado vectorial infinito: Las líneas y la tipografía permanecen perfectamente nítidas.",
+      "Soporte de color CMYK: Esencial para hacer coincidir los valores de tinta en prensas de impresión física.",
+      "Estabilidad heredada: Ampliamente compatible con equipos de preimpresión profesionales antiguos."
+    ],
+    q1: "¿Cuál es la diferencia entre HEIC y EPS?",
+    a1: "HEIC es un formato rasterizado moderno de Apple optimizado para almacenar fotos digitales con alta compresión. EPS es un formato vectorial de Adobe diseñado para gráficos impresos a gran escala.",
+    q2: "¿Cuándo debo usar HEIC en lugar de EPS?",
+    a2: "Use HEIC para guardar fotografías de su iPhone y ahorrar espacio sin perder calidad. Use EPS para crear logotipos vectoriales o diseños publicitarios para impresión comercial.",
+    q3: "¿Se puede convertir HEIC a EPS?",
+    a3: "Sí, aunque al ser HEIC una imagen de píxeles, la conversión simplemente colocará la foto dentro de un contenedor EPS sin convertirla en vectores matemáticos.",
+    q4: "¿Por qué los archivos EPS son más grandes que los HEIC?",
+    a4: "EPS almacena datos vectoriales puros o mapas de bits sin comprimir junto con información de preimpresión. HEIC utiliza la tecnología de compresión moderna de vídeo HEVC.",
+    q5: "¿Son compatibles los navegadores web con HEIC y EPS?",
+    a5: "No, ninguno de los dos formatos es compatible de forma nativa por los navegadores. Para mostrarlos en la web, primero debe convertirlos a formatos como JPG, PNG o WebP.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir fotos HEIC?",
+    ctaDesc: "Convierta sus archivos HEIC de iPhone de forma segura y privada a formato JPG con nuestra herramienta local en el navegador.",
+    ctaButton: "Probar Convertidor HEIC",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "HEIC vs EPS : quel format d'image est le meilleur ? (2026)",
+    seoDescription: "HEIC vs EPS. Nous comparons le format d'image haute efficacité d'Apple avec les fichiers vectoriels EPS d'Adobe. Apprenez quand les utiliser.",
+    title: "HEIC vs EPS : quel format d'image est le meilleur ?",
+    intro: "Besoin de stocker des photos ou de concevoir des ressources vectorielles professionnelles ? Nous comparons le format moderne HEIC d'Apple au format d'impression professionnel EPS d'Adobe.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le HEIC pour :",
+    usePngForDesc: "La photographie numérique sur les appareils iOS pour économiser de l'espace sans perdre la richesse des couleurs ou les détails.",
+    useIcoFor: "Utilisez l'EPS pour :",
+    useIcoForDesc: "Les logos professionnels, les schémas vectoriels et les mises en page destinés à une impression industrielle haute résolution.",
+    differenceTitle: "Quelle est la différence entre HEIC et EPS ?",
+    differenceDesc: "Le HEIC est une image matricielle (pixels) utilisant la compression vidéo HEVC, tandis que l'EPS est un fichier de description vectoriel PostScript conçu pour l'impression.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "HEIC (Format d'image haute efficacité)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Structure de l'image",
+    tdFileNaturePng: "Matricielle (grille de pixels)",
+    tdFileNatureIco: "Vectorielle (tracés mathématiques)",
+    tdFallback: "Agrandissement infini",
+    tdFallbackPng: "Non (Pixellisation en cas d'agrandissement)",
+    tdFallbackIco: "Oui (Netteté parfaite à n'importe quelle échelle)",
+    tdPurpose: "Adapté aux photos",
+    tdPurposePng: "Excellent (Détails riches, profil Display P3)",
+    tdPurposeIco: "Médiocre (Non conçu pour les photos numériques)",
+    tdResolutions: "Logiciels principaux",
+    tdResolutionsPng: "Apple Photos, application appareil photo iOS",
+    tdResolutionsIco: "Adobe Illustrator, CorelDraw, QuarkXPress",
+    tdSize: "Espaces colorimétriques",
+    tdSizePng: "RVB (jusqu'à 16 bits de profondeur)",
+    tdSizeIco: "CMJN et RVB (optimisé pour les presses d'imprimerie)",
+    tdTrans: "Compression",
+    tdTransPng: "Ultra-efficace avec perte (HEVC/H.265)",
+    tdTransIco: "Vecteurs sans perte ou bitmaps non compressés",
+    tdAnim: "Support navigateur web",
+    tdAnimPng: "Non (Requiert une conversion)",
+    tdAnimIco: "Non (Requiert une conversion)",
+    converterTitle: "Convertir HEIC en JPG hors ligne (Privé & Sécurisé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le HEIC ?",
+    divePngP1: "Le HEIC (High Efficiency Image Container) est le format standard adopté par Apple depuis iOS 11. Basé sur la norme HEIF, il exploite la compression HEVC (H.265) pour stocker les images.",
+    divePngP2: "Il gère des couleurs jusqu'à 16 bits pour un affichage parfait sur les écrans Display P3 et permet d'encapsuler plusieurs photos (comme les rafales ou les Live Photos) dans un fichier tout en pesant deux fois moins lourd qu'un JPEG.",
+    divePngAdv: "Avantages du HEIC",
+    divePngAdvList: [
+      "Taille divisée par deux : Permet d'économiser beaucoup de stockage sur votre appareil.",
+      "Profondeur de couleur étendue : Gère les profils 10 et 16 bits pour des photos réalistes.",
+      "Conteneur polyvalent : Stocke les modifications, les vignettes et les cartes de profondeur."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que l'EPS ?",
+    diveIcoP1: "L'EPS (Encapsulated PostScript) a été conçu par Adobe à la fin des années 1980 pour transférer des dessins vectoriels et des mises en page vers les systèmes d'impression professionnelle. Il est écrit dans le langage de description de page PostScript.",
+    diveIcoP2: "Il reste indispensable dans le domaine de l'imprimerie car il supporte la colorimétrie CMJN (CMYK) et permet aux traceurs industriels de découper ou d'imprimer des tracés géométriques complexes sans perte.",
+    diveIcoAdv: "Avantages de l'EPS",
+    diveIcoAdvList: [
+      "Vectoriel infini : Les tracés restent parfaitement nets quel que soit le zoom.",
+      "Prise en charge du CMJN : Essentiel pour respecter les profils d'encre physiques.",
+      "Format standard d'impression : Reconnu par les anciens traceurs et flasheuses."
+    ],
+    q1: "Quelle est la différence entre HEIC et EPS ?",
+    a1: "Le HEIC est un format d'image matriciel moderne d'Apple optimisé pour stocker les photos avec une forte compression. L'EPS est un format vectoriel d'Adobe conçu pour l'impression industrielle.",
+    q2: "Quand utiliser le HEIC plutôt que l'EPS ?",
+    a2: "Utilisez le HEIC pour conserver les photos prises avec vos appareils iOS. Utilisez l'EPS pour envoyer vos logos ou mises en page vectorielles à un imprimeur professionnel.",
+    q3: "Peut-on convertir un HEIC en EPS ?",
+    a3: "Oui, mais comme le HEIC est composé de pixels, l'EPS contiendra simplement la photo matricielle encapsulée sans la transformer en tracés vectoriels.",
+    q4: "Pourquoi les fichiers EPS sont-ils plus lourds que les HEIC ?",
+    a4: "L'EPS conserve les descriptions mathématiques des tracés vectoriels ou des pixels bruts non compressés, tandis que le HEIC utilise des algorithmes modernes de codage vidéo HEVC.",
+    q5: "Les navigateurs web affichent-ils le HEIC et l'EPS ?",
+    a5: "Non, aucun des deux formats n'est lisible par les navigateurs web. Vous devez d'abord les convertir en JPG, PNG ou WebP pour les publier.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir vos photos HEIC ?",
+    ctaDesc: "Convertissez vos fichiers HEIC d'iPhone de manière sécurisée et locale en format JPG grâce à notre outil de conversion hors ligne.",
+    ctaButton: "Essayer le convertisseur HEIC",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "HEIC vs. EPS: Welches Bildformat ist besser? (2026)",
+    seoDescription: "HEIC vs. EPS. Wir vergleichen Apples hocheffizientes Bildformat mit Adobes EPS-Vektordateien. Erfahren Sie, wann Sie welches Format nutzen.",
+    title: "HEIC vs. EPS: Welches Bildformat ist besser?",
+    intro: "Müssen Sie Fotos auf Ihrem Telefon sichern oder Vektorgrafiken für den Druck entwerfen? Wir vergleichen Apples HEIC-Format mit Adobes EPS-Druckformat.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie HEIC für:",
+    usePngForDesc: "Digitale Fotografie auf iOS-Geräten, um Speicherplatz zu sparen, ohne Farbtiefe oder Details einzubüßen.",
+    useIcoFor: "Nutzen Sie EPS für:",
+    useIcoForDesc: "Professionelle Logos, Vektordiagramme und Drucklayouts, die für den hochauflösenden industriellen Druck bestimmt sind.",
+    differenceTitle: "Was ist der Unterschied zwischen HEIC und EPS?",
+    differenceDesc: "HEIC ist ein pixelbasiertes Rasterbild mit HEVC-Videokomprimierung, während EPS eine für den Druck optimierte PostScript-Vektorbeschreibung ist.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Bildstruktur",
+    tdFileNaturePng: "Rastergrafik (pixelbasiert)",
+    tdFileNatureIco: "Vektorgrafik (mathematische Pfade)",
+    tdFallback: "Unbegrenzte Skalierung",
+    tdFallbackPng: "Nein (Wird beim Vergrößern pixelig)",
+    tdFallbackIco: "Ja (Perfekte Schärfe bei jeder Skalierung)",
+    tdPurpose: "Fototauglichkeit",
+    tdPurposePng: "Hervorragend (Hohe Details, Display P3 Farben)",
+    tdPurposeIco: "Schlecht (Nicht für Fotos geeignet)",
+    tdResolutions: "Hauptsoftware",
+    tdResolutionsPng: "Apple Fotos, iOS-Kamera",
+    tdResolutionsIco: "Adobe Illustrator, CorelDraw, QuarkXPress",
+    tdSize: "Farbmodelle",
+    tdSizePng: "RGB (bis zu 16-Bit Farbtiefe)",
+    tdSizeIco: "CMYK und RGB (für den Druck optimiert)",
+    tdTrans: "Komprimierung",
+    tdTransPng: "Hocheffiziente verlustbehaftete HEVC-Kompression",
+    tdTransIco: "Verlustfreie Vektoren oder unkomprimierte Bitmaps",
+    tdAnim: "Webbrowser-Unterstützung",
+    tdAnimPng: "Nein (Muss konvertiert werden)",
+    tdAnimIco: "Nein (Muss konvertiert werden)",
+    converterTitle: "HEIC in JPG offline konvertieren (Sicher & Privat)",
+    divePngTitle: "Deep Dive: Was ist HEIC?",
+    divePngP1: "HEIC (High Efficiency Image Container) ist das von Apple seit iOS 11 genutzte Standard-Fotoformat. Es basiert auf dem HEIF-Standard und komprimiert Bilddaten hocheffizient mittels HEVC (H.265).",
+    divePngP2: "HEIC-Dateien unterstützen Farbtiefen von bis zu 16-Bit (Display P3) und können mehrere Bilder, Bildserien, Tiefenkarten und Live Photos in einer einzigen Datei bündeln, bei nur halber Größe einer JPG-Datei.",
+    divePngAdv: "Vorteile von HEIC",
+    divePngAdvList: [
+      "Halbe Dateigröße: Hocheffiziente Kompression spart Speicherplatz auf iPhones.",
+      "Erweiterte Farbtiefe: Unterstützt 10- und 16-Bit-Farbprofile für lebensechte Aufnahmen.",
+      "Praktischer Container: Sichert Bearbeitungsschritte, Vorschaubilder und Live-Aufnahmen in einer Datei."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist EPS?",
+    diveIcoP1: "EPS steht für Encapsulated PostScript. Es wurde Ende der 1980er-Jahre von Adobe als zuverlässiges Format entwickelt, um Vektoren, Texte und Layouts zwischen Programmen und Drucksystemen zu übertragen.",
+    diveIcoP2: "Im professionellen Druck ist EPS unersetzbar, da es den CMYK-Farbraum perfekt unterstützt und Linien für Schneideplotter oder Druckplatten fehlerfrei übergibt.",
+    diveIcoAdv: "Vorteile von EPS",
+    diveIcoAdvList: [
+      "Verlustfreie Skalierung: Vektorpfade und Texte bleiben in jeder Größe absolut scharf.",
+      "CMYK-Unterstützung: Wichtig für farbechte Druckergebnisse auf echten Druckpressen.",
+      "Druck-Standard: Universell kompatibel mit professionellen Druckmaschinen."
+    ],
+    q1: "Was ist der Unterschied zwischen HEIC und EPS?",
+    a1: "HEIC ist ein modernes Rasterbildformat von Apple für Fotos mit starker Komprimierung. EPS ist ein klassisches Vektorformat von Adobe für den Druckbereich.",
+    q2: "Wann sollte ich HEIC statt EPS verwenden?",
+    a2: "Nutzen Sie HEIC zum Sichern Ihrer Handyfotos. Nutzen Sie EPS, wenn Sie Vektorlogos oder Layouts an eine Druckerei senden.",
+    q3: "Kann ich HEIC in EPS umwandeln?",
+    a3: "Ja, aber da HEIC pixelbasiert ist, wird das Foto im EPS-Container nicht automatisch in mathematische Vektoren umgewandelt.",
+    q4: "Warum sind EPS-Dateien oft größer als HEIC?",
+    a4: "EPS speichert unkomprimierte Vektordaten oder Bitmaps. HEIC nutzt modernste, hocheffiziente HEVC-Videokodierungsverfahren zur Fotokomprimierung.",
+    q5: "Zeigen Webbrowser HEIC- und EPS-Dateien an?",
+    a5: "Nein, beide Formate werden von Browsern nicht nativ unterstützt. Konvertieren Sie diese zuvor in JPG, PNG oder WebP.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie HEIC-Fotos umwandeln?",
+    ctaDesc: "Konvertieren Sie Ihre HEIC-Dateien vom iPhone offline und sicher in das kompatible JPG-Format direkt im Browser.",
+    ctaButton: "HEIC-Konverter starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "HEIC vs EPS: Qual formato de imagem é melhor? (2026)",
+    seoDescription: "HEIC vs EPS. Comparamos o formato de imagem de alta eficiência da Apple com arquivos vetoriais EPS da Adobe. Saiba quando usar cada um.",
+    title: "HEIC vs EPS: Qual formato de imagem é melhor?",
+    intro: "Precisa salvar fotos ou criar artes vetoriais para impressão? Comparamos o formato moderno HEIC da Apple com o formato profissional de impressão EPS da Adobe.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use HEIC para:",
+    usePngForDesc: "Fotografias tiradas em dispositivos iOS para economizar espaço de armazenamento sem comprometer a riqueza de cores ou detalhes.",
+    useIcoFor: "Use EPS para:",
+    useIcoForDesc: "Logotipos profissionais, ilustrações vetoriais e layouts destinados a impressão comercial de grande porte e alta definição.",
+    differenceTitle: "Qual é a diferença entre HEIC e EPS?",
+    differenceDesc: "O HEIC é um formato rasterizado baseado em pixels que usa compressão HEVC, ao passo que o EPS é um arquivo de descrição vetorial PostScript feito para impressão física.",
+    thFeature: "Característica / Aspeto",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Estrutura da imagem",
+    tdFileNaturePng: "Rasterizado (baseado em pixels)",
+    tdFileNatureIco: "Vetorial (caminhos baseados em fórmulas matemáticas)",
+    tdFallback: "Ampliação infinita",
+    tdFallbackPng: "Não (Fica pixelado se for ampliado)",
+    tdFallbackIco: "Sim (Resolução perfeita em qualquer tamanho)",
+    tdPurpose: "Uso em fotos",
+    tdPurposePng: "Excelente (Fidelidade rica de cores Display P3)",
+    tdPurposeIco: "Ruim (Não recomendado para fotos de câmera digital)",
+    tdResolutions: "Softwares principais",
+    tdResolutionsPng: "Apple Photos, câmera padrão do iOS",
+    tdResolutionsIco: "Adobe Illustrator, CorelDraw, QuarkXPress",
+    tdSize: "Formatos de cores",
+    tdSizePng: "RGB (profundidade de cores de até 16 bits)",
+    tdSizeIco: "CMYK e RGB (preparado para gráficas)",
+    tdTrans: "Compressão",
+    tdTransPng: "Perda altamente eficiente (HEVC/H.265)",
+    tdTransIco: "Vetores sem perdas ou bitmaps brutos",
+    tdAnim: "Suporte de navegadores",
+    tdAnimPng: "Não (Requer conversão prévia)",
+    tdAnimIco: "Não (Requer conversão prévia)",
+    converterTitle: "Converter HEIC para JPG Offline (Sem envio de dados para servidores)",
+    divePngTitle: "Análise profunda: O que é o HEIC?",
+    divePngP1: "O HEIC (High Efficiency Image Container) é o formato padrão da Apple a partir do iOS 11. Baseado no padrão HEIF, ele adota os algoritmos de compressão de vídeo HEVC (H.265) para armazenar imagens fotográficas.",
+    divePngP2: "Ele armazena cores em até 16 bits (perfeito para o perfil Display P3 dos novos iPhones) e consegue salvar sequências de fotos, edições e mapas de profundidade num só arquivo que pesa metade de um JPEG comum.",
+    divePngAdv: "Vantagens do HEIC",
+    divePngAdvList: [
+      "Metade do peso: Excelente economia de armazenamento em celulares.",
+      "Alta gama de cores: Suporte a fotos ricas de 10 e 16 bits.",
+      "Função contêiner: Agrupa sequências de disparos e live photos de forma inteligente."
+    ],
+    diveIcoTitle: "Análise profunda: O que é o EPS?",
+    diveIcoP1: "EPS significa Encapsulated PostScript. Criado pela Adobe nos anos 80, ele foi feito para transferir elementos vetoriais e esquemas de páginas entre sistemas gráficos e impressoras profissionais.",
+    diveIcoP2: "No mercado gráfico profissional, o formato EPS é muito valorizado pelo suporte nativo ao espaço de cores CMYK, essencial para garantir a fidelidade de cor nas prensas físicas e impressoras industriais.",
+    diveIcoAdv: "Vantagens do EPS",
+    diveIcoAdvList: [
+      "Resolução vetorial ilimitada: Bordas e textos perfeitamente definidos em qualquer tamanho.",
+      "Suporte a CMYK: Essencial para acertos de tintas físicas.",
+      "Compatibilidade gráfica: Muito aceito em impressoras industriais antigas."
+    ],
+    q1: "Qual é a diferença entre HEIC e EPS?",
+    a1: "O HEIC é um formato de imagem rasterizado da Apple de alta compressão para fotos. O EPS é um formato vetorial da Adobe focado em impressão e design profissional.",
+    q2: "Quando usar HEIC em vez de EPS?",
+    a2: "Use HEIC para guardar as fotos do seu telefone economizando espaço. Use EPS para enviar logos e artes vetoriais para impressão física.",
+    q3: "Posso converter HEIC para EPS?",
+    a3: "Sim, porém como o HEIC é rasterizado, a conversão colocará a imagem pixelada dentro da embalagem EPS, sem transformá-la em vetor real.",
+    q4: "Por que arquivos EPS são maiores que os HEIC?",
+    a4: "EPS guarda vetores crus e dados brutos de layout. O HEIC adota compactação de vídeo moderna HEVC para diminuir o peso das fotos.",
+    q5: "Navegadores web rodam arquivos HEIC ou EPS?",
+    a5: "Não, nenhum dos dois formatos funciona diretamente na internet. Você precisa exportar para JPG, PNG ou WebP antes de publicá-los.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa converter fotos do iPhone?",
+    ctaDesc: "Converta os seus arquivos HEIC de forma local, rápida e com privacidade absoluta para JPG usando nossa ferramenta offline.",
+    ctaButton: "Testar Conversor HEIC",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "HEIC vs EPS: Mana Format Gambar yang Lebih Baik? (2026)",
+    seoDescription: "HEIC vs EPS. Kami membandingkan format gambar efisiensi tinggi Apple dengan file vektor EPS Adobe. Pelajari kapan harus menggunakannya.",
+    title: "HEIC vs EPS: Mana Format Gambar yang Lebih Baik?",
+    intro: "Perlu menyimpan foto atau merancang aset vektor berkualitas tinggi? Kami membandingkan format HEIC modern Apple dengan format cetak profesional EPS Adobe.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan HEIC untuk:",
+    usePngForDesc: "Fotografi digital di perangkat iOS dan menghemat ruang penyimpanan tanpa mengorbankan kekayaan warna atau detail foto.",
+    useIcoFor: "Gunakan EPS untuk:",
+    useIcoForDesc: "Skalabilitas logo profesional, diagram vektor, dan tata letak publikasi yang ditujukan untuk pencetakan industri resolusi tinggi.",
+    differenceTitle: "Apa Perbedaan Antara HEIC dan EPS?",
+    differenceDesc: "HEIC adalah format gambar raster berbasis piksel yang menggunakan kompresi video HEVC, sedangkan EPS adalah deskripsi vektor PostScript yang dioptimalkan untuk cetak.",
+    thFeature: "Fitur / Aspek",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "EPS (Encapsulated PostScript)",
+    tdFileNature: "Struktur Gambar",
+    tdFileNaturePng: "Raster (berbasis piksel)",
+    tdFileNatureIco: "Vektor (berbasis rumus matematika)",
+    tdFallback: "Skala Tanpa Batas",
+    tdFallbackPng: "Tidak (Gambar pecah jika diperbesar)",
+    tdFallbackIco: "Ya (Ketajaman sempurna di semua ukuran)",
+    tdPurpose: "Kecocokan Foto",
+    tdPurposePng: "Sangat Baik (Detail tinggi, warna Display P3)",
+    tdPurposeIco: "Buruk (Tidak ditujukan untuk foto kamera digital)",
+    tdResolutions: "Perangkat Lunak Utama",
+    tdResolutionsPng: "Apple Photos, kamera bawaan iOS",
+    tdResolutionsIco: "Adobe Illustrator, CorelDraw, QuarkXPress",
+    tdSize: "Model Warna",
+    tdSizePng: "RGB (hingga kedalaman warna 16-bit)",
+    tdSizeIco: "CMYK dan RGB (dioptimalkan untuk cetak)",
+    tdTrans: "Kompresi",
+    tdTransPng: "Kompresi lossy ultra-efisien (HEVC/H.265)",
+    tdTransIco: "Vektor lossless atau bitmap tanpa kompresi",
+    tdAnim: "Dukungan Browser Web",
+    tdAnimPng: "Tidak (Memerlukan konversi)",
+    tdAnimIco: "Tidak (Memerlukan konversi)",
+    converterTitle: "Konversi HEIC ke JPG Offline (Aman & Tanpa Upload)",
+    divePngTitle: "Analisis Mendalam: Apa itu HEIC?",
+    divePngP1: "HEIC adalah format file gambar standar yang digunakan Apple sejak iOS 11. Format ini didasarkan pada standar HEIF dan menggunakan teknologi kompresi video HEVC (H.265) untuk mengemas data foto.",
+    divePngP2: "File HEIC mendukung profil warna hingga 16-bit (Display P3) dan dapat mengemas beberapa foto, rangkaian foto seri, serta peta kedalaman (depth map) dalam satu file dengan ukuran setengah dari JPEG.",
+    divePngAdv: "Kelebihan HEIC",
+    divePngAdvList: [
+      "Ukuran Setengah dari JPEG: Kompresi cerdas menghemat memori penyimpanan iPhone.",
+      "Kedalaman Warna Luas: Mendukung profil warna 10-bit dan 16-bit untuk foto alami.",
+      "Fitur Wadah: Menyimpan Live Photo, foto burst, dan riwayat edit dalam satu file."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu EPS?",
+    diveIcoP1: "EPS singkatan dari Encapsulated PostScript. Dikembangkan oleh Adobe pada akhir 1980-an, format ini dirancang untuk memindahkan gambar vektor dan teks antar program tata letak dan cetak.",
+    diveIcoP2: "File EPS sangat berharga dalam dunia percetakan profesional karena mendukung ruang warna CMYK untuk pencetakan fisik dan memastikan garis pemotongan mesin cetak tetap akurat.",
+    diveIcoAdv: "Kelebihan EPS",
+    diveIcoAdvList: [
+      "Skalabilitas Vektor Murni: Teks dan garis tetap tajam sempurna pada ukuran baliho sekalipun.",
+      "Mendukung CMYK: Penting untuk mencocokkan warna tinta pada mesin cetak fisik.",
+      "Standar Percetakan Lama: Didukung oleh sebagian besar mesin cetak profesional."
+    ],
+    q1: "Apa perbedaan antara HEIC dan EPS?",
+    a1: "HEIC adalah format raster modern Apple untuk foto terkompresi. EPS adalah format vektor Adobe yang digunakan untuk pencetakan profesional berskala besar.",
+    q2: "Kapan saya harus menggunakan HEIC dibanding EPS?",
+    a2: "Gunakan HEIC untuk menyimpan foto dari iPhone Anda. Gunakan EPS jika Anda mengirimkan logo atau materi visual ke percetakan fisik.",
+    q3: "Apakah HEIC bisa diubah ke EPS?",
+    a3: "Ya, namun karena HEIC adalah format raster, file EPS tersebut hanya akan membungkus piksel foto tersebut tanpa menjadikannya vektor garis matematis.",
+    q4: "Mengapa file EPS lebih besar daripada HEIC?",
+    a4: "EPS menyimpan data vektor mentah atau bitmap tak terkompresi. HEIC menggunakan kompresi berbasis video modern (HEVC) untuk meminimalkan ukuran file foto.",
+    q5: "Apakah browser web mendukung format HEIC dan EPS?",
+    a5: "Tidak, browser web tidak mendukung keduanya secara langsung. Anda harus mengonversinya terlebih dahulu ke format ramah web seperti JPG, PNG, atau WebP.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi foto HEIC?",
+    ctaDesc: "Konversi foto HEIC dari iPhone Anda menjadi file JPG secara aman dan privat menggunakan peramban Anda.",
+    ctaButton: "Coba Konverter HEIC",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-eps")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs EPS</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">EPS</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useIcoFor}</strong> {text.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileNature}</td>
+                <td class="p-4">{text.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{text.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFallback}</td>
+                <td class="p-4 text-error">{text.tdFallbackPng}</td>
+                <td class="p-4 text-success">{text.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPurpose}</td>
+                <td class="p-4 text-success">{text.tdPurposePng}</td>
+                <td class="p-4 text-error">{text.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdResolutions}</td>
+                <td class="p-4">{text.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{text.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4 text-success">{text.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-success">{text.tdTransIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnim}</td>
+                <td class="p-4 text-error">{text.tdAnimPng}</td>
+                <td class="p-4 text-error">{text.tdAnimIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: EPS -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveIcoTitle}</h2>
+        <p>{text.diveIcoP1}</p>
+        <p>{text.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="HEIC" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

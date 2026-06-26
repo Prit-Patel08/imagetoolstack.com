@@ -32,15 +32,23 @@ const schema = {
           "name": "What is the difference between WebP and PNG?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Both WebP and PNG support transparent backgrounds (alpha channels) and lossless compression. However, WebP uses a much more advanced compression algorithm developed by Google, allowing it to achieve the exact same visual quality at roughly 26% smaller file sizes."
+            "text": "The main difference between WebP and PNG is compression efficiency. WebP uses predictive coding and advanced entropy algorithms to compress images, achieving file sizes that are 26% smaller than PNG for lossless compression and up to 80% smaller for lossy compression, while supporting identical alpha transparency."
           }
         },
         {
           "@type": "Question",
-          "name": "Should I use WebP instead of PNG for my website?",
+          "name": "Is WebP higher quality than PNG?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Google actively rewards websites that use next-gen formats like WebP with faster load times and better SEO rankings. You should convert all heavy PNG assets to WebP for web delivery."
+            "text": "No. PNG is lossless and represents a perfect 1:1 pixel reproduction of the original image, making it the highest quality raster format. WebP supports both lossless and lossy compression. In WebP lossless mode, the visual quality is identical to PNG but at a much smaller file size. In WebP lossy mode, files are extremely small, but some high-frequency detail is discarded."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format should I use for website speed, WebP or PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For website speed, Core Web Vitals, and SEO, always use WebP. WebP file sizes are substantially smaller than PNG, leading to faster Largest Contentful Paint (LCP) speeds. Only use PNG for raw graphics, logos, or icons that require absolute pixel accuracy."
           }
         },
         {
@@ -48,7 +56,15 @@ const schema = {
           "name": "Does WebP support transparency?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, WebP fully supports transparency (alpha channels) just like PNG, but typically uses 30% fewer bytes to encode the transparent data."
+            "text": "Yes. WebP supports 24-bit RGB color representation along with an 8-bit alpha channel for transparency in both its lossy and lossless compression modes. Transparent WebP files are typically 30% smaller than transparent PNG files."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the disadvantages of WebP compared to PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The main disadvantages of WebP compared to PNG are slightly higher CPU overhead when encoding files, and limited native support in some legacy graphic applications or very old web browsers (pre-2020). However, modern browsers natively support WebP with over 96% global coverage."
           }
         }
       ]
@@ -104,6 +120,67 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
         <div class="space-y-4 text-body text-lg">
           <p><strong class="text-ink">Use WebP for:</strong> uploading images to your website, blog, or app to maximize page speed and SEO.</p>
           <p><strong class="text-ink">Use PNG for:</strong> designing in Figma, saving assets locally, or sending files to people who might have older devices.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between WebP and PNG?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both formats support transparency and lossless encoding, they utilize completely different compression technologies. Here is a side-by-side technical comparison of WebP vs PNG.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">WebP (Google Next-Gen)</th>
+                <th class="p-4">PNG (Portable Network Graphics)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Type</td>
+                <td class="p-4">Lossy & Lossless (VP8/VP8L predictive math)</td>
+                <td class="p-4">Lossless (DEFLATE algorithm)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4">Yes (supports Alpha Channel in both modes)</td>
+                <td class="p-4">Yes (supports Alpha Channel)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Image Quality</td>
+                <td class="p-4">Excellent (identical in lossless, variable in lossy)</td>
+                <td class="p-4">Perfect 1:1 pixel reproduction</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">EXIF Metadata</td>
+                <td class="p-4">Full support</td>
+                <td class="p-4">Limited/basic support</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Animation Support</td>
+                <td class="p-4">Yes (WebP Animation - replaces GIF)</td>
+                <td class="p-4">Yes (via APNG, less common)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Ideal Use Case</td>
+                <td class="p-4">Web banners, photos, UI assets, and page speed</td>
+                <td class="p-4">Logos, source design files, text, screenshots</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Typical File Size</td>
+                <td class="p-4">Extremely small (25-30% smaller than PNG lossless)</td>
+                <td class="p-4">Large (heavy payloads)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Web Loading Speed</td>
+                <td class="p-4">Fast (optimized lightweight files)</td>
+                <td class="p-4">Slow (takes longer on mobile/slow connections)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -208,21 +285,84 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
         </ul>
       </section>
 
-      <!-- HTML FAQs -->
+      <!-- Detailed Comparisons & Use Cases (Featured Snippet Targeting) -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">When to Use WebP vs PNG</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          Choosing the right file format is crucial for balancing visual clarity and web performance. Below are direct answers to the most common queries regarding WebP and PNG.
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">Is WebP higher quality than PNG?</h3>
+            <p class="leading-relaxed">
+              <strong>No. PNG is lossless</strong> and represents a perfect 1:1 pixel reproduction of the original image, making it the highest quality format for master files. WebP supports both lossy and lossless modes. In WebP lossless mode, the visual quality is identical to PNG but at a 26% smaller file size. In lossy mode, WebP discards visual details to achieve a much smaller size.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">Which format should I use for website speed, WebP or PNG?</h3>
+            <p class="leading-relaxed">
+              <strong>For website speed, always use WebP.</strong> Modern browsers load WebP much faster than legacy PNGs because they are 25-30% lighter. This directly improves Largest Contentful Paint (LCP) and SEO rankings. Only use PNG for raw graphics, logos, or icons that require absolute pixel accuracy.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">Does WebP support transparency?</h3>
+            <p class="leading-relaxed">
+              <strong>Yes. WebP supports alpha channel transparency</strong> just like PNG, in both its lossy and lossless modes. In lossless mode, transparent WebP files are typically 30% smaller than transparent PNG files, making them ideal for modern web overlays and transparent layouts.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">Why is WebP file size much smaller than PNG?</h3>
+            <p class="leading-relaxed">
+              WebP files are smaller because <strong>they use predictive coding</strong> from the VP8 video standard. The algorithm predicts the colors of pixels based on neighboring blocks and only stores the difference. PNG uses the older DEFLATE algorithm, which is less efficient at finding mathematical patterns in image data.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">What are the disadvantages of WebP compared to PNG?</h3>
+            <p class="leading-relaxed">
+              The main disadvantages are <strong>CPU overhead</strong> during file encoding (saving a WebP takes slightly more computing power than saving a PNG) and lack of native support in older legacy desktop apps (pre-2020). However, WebP is universally supported in modern web browsers.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
       <section class="mb-16">
         <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
         <div class="space-y-6">
           <div class="bg-canvas-soft rounded-xl p-6">
             <h3 class="text-xl font-bold text-ink mb-3">What is the difference between WebP and PNG?</h3>
-            <p class="text-body leading-relaxed">Both WebP and PNG support transparent backgrounds (alpha channels) and lossless compression. However, WebP uses a much more advanced compression algorithm developed by Google, allowing it to achieve the exact same visual quality at roughly 26% smaller file sizes.</p>
+            <p class="text-body leading-relaxed">
+              The main difference between WebP and PNG is compression efficiency. WebP uses predictive coding and advanced entropy algorithms to compress images, achieving file sizes that are 26% smaller than PNG for lossless compression and up to 80% smaller for lossy compression, while supporting identical alpha transparency.
+            </p>
           </div>
           <div class="bg-canvas-soft rounded-xl p-6">
-            <h3 class="text-xl font-bold text-ink mb-3">Should I use WebP instead of PNG for my website?</h3>
-            <p class="text-body leading-relaxed">Yes. Google actively rewards websites that use next-gen formats like WebP with faster load times and better SEO rankings. You should convert all heavy PNG assets to WebP for web delivery.</p>
+            <h3 class="text-xl font-bold text-ink mb-3">Is WebP higher quality than PNG?</h3>
+            <p class="text-body leading-relaxed">
+              No. PNG is lossless and represents a perfect 1:1 pixel reproduction of the original image, making it the highest quality raster format. WebP supports both lossless and lossy compression. In WebP lossless mode, the visual quality is identical to PNG but at a much smaller file size. In WebP lossy mode, files are extremely small, but some high-frequency detail is discarded.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format should I use for website speed, WebP or PNG?</h3>
+            <p class="text-body leading-relaxed">
+              For website speed, Core Web Vitals, and SEO, always use WebP. WebP file sizes are substantially smaller than PNG, leading to faster Largest Contentful Paint (LCP) speeds. Only use PNG for raw graphics, logos, or icons that require absolute pixel accuracy.
+            </p>
           </div>
           <div class="bg-canvas-soft rounded-xl p-6">
             <h3 class="text-xl font-bold text-ink mb-3">Does WebP support transparency?</h3>
-            <p class="text-body leading-relaxed">Yes, WebP fully supports transparency (alpha channels) just like PNG, but typically uses 30% fewer bytes to encode the transparent data.</p>
+            <p class="text-body leading-relaxed">
+              Yes. WebP supports 24-bit RGB color representation along with an 8-bit alpha channel for transparency in both its lossy and lossless compression modes. Transparent WebP files are typically 30% smaller than transparent PNG files.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What are the disadvantages of WebP compared to PNG?</h3>
+            <p class="text-body leading-relaxed">
+              The main disadvantages of WebP compared to PNG are slightly higher CPU overhead when encoding files, and limited native support in some legacy graphic applications or very old web browsers (pre-2020). However, modern browsers natively support WebP with over 96% global coverage.
+            </p>
           </div>
         </div>
       </section>

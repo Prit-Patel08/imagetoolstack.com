@@ -1,0 +1,681 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import MergePdfTool from "../../../components/tools/MergePdfTool.astro";
+import SplitPdfTool from "../../../components/tools/SplitPdfTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+const pageTranslations = {
+  es: {
+    seoTitle: "Combinar PDF vs Dividir PDF: ¿Qué herramienta necesita? (2026)",
+    seoDescription: "Combinar PDF vs Dividir PDF. Comparamos la acción de combinar varios PDFs con dividir archivos. Conozca cuándo usar cada método y use nuestras herramientas offline.",
+    title: "Combinar PDF vs Dividir PDF: ¿Qué herramienta necesita?",
+    intro: "¿Necesita gestionar sus archivos PDF? Comparamos las diferencias entre combinar y dividir documentos PDF, mostrándole cuándo usar cada método y ofreciéndole herramientas locales gratuitas para ambos.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use Combinar PDF cuando:",
+    useTiffForDesc: "Desea combinar varios documentos separados (como informes, recibos escaneados o ensayos) en un solo archivo para compartirlos o archivarlos más fácilmente.",
+    useJxlFor: "Use Dividir PDF cuando:",
+    useJxlForDesc: "Desea extraer páginas específicas, eliminar páginas no deseadas para reducir el tamaño del archivo, o dividir un documento grande de varias páginas en archivos independientes más pequeños.",
+    differenceTitle: "Comparativa: Combinar vs Dividir PDF",
+    differenceDesc: "Aunque ambas herramientas manipulan las páginas de un PDF, sirven para propósitos opuestos. Utilice la siguiente tabla para determinar la herramienta adecuada.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "Combinar PDF",
+    thJxl: "Dividir PDF",
+    tdCompStandard: "Acción",
+    tdCompStandardTiff: "Combina documentos separados",
+    tdCompStandardJxl: "Divide un único documento",
+    tdFileSize: "Entrada",
+    tdFileSizeTiff: "Dos o más archivos PDF",
+    tdFileSizeJxl: "Un único archivo PDF",
+    tdColorDepth: "Salida",
+    tdColorDepthTiff: "Un solo archivo PDF consolidado",
+    tdColorDepthJxl: "Varios archivos PDF o páginas extraídas",
+    tdBrowser: "Caso de uso principal",
+    tdBrowserTiff: "Ensamblar informes, recopilar recibos",
+    tdBrowserJxl: "Extraer capítulos, separar facturas masivas",
+    tdPrint: "Retención de calidad",
+    tdPrintTiff: "100% sin pérdidas (mantiene vectores y texto)",
+    tdPrintJxl: "100% sin pérdidas (mantiene vectores y texto)",
+    tdTranscoding: "Privacidad del documento",
+    tdTranscodingTiff: "100% offline (procesamiento local)",
+    tdTranscodingJxl: "100% offline (procesamiento local)",
+    converterTitle: "Herramienta PDF Offline (Merge & Split)",
+    diveTiffTitle: "Análisis profundo: Combinar PDFs",
+    diveTiffP1: "Combinar PDFs consiste en unir varios archivos en un flujo cronológico. Nuestras herramientas extraen las referencias de las páginas, los diccionarios de formularios y los registros de fuentes de cada documento de origen para unirlos en un único catálogo final.",
+    diveTiffP2: "Esta es una excelente opción cuando se envían solicitudes complejas que exigen un solo archivo subido, o al compilar portafolios para garantizar que todo el material de apoyo se mantenga agrupado.",
+    diveTiffAdv: "Ventajas de Combinar PDF",
+    diveTiffAdvList: [
+      "Consolidación: Reduce el desorden de carpetas al agrupar archivos relacionados.",
+      "Fácil de compartir: Comparta un único archivo adjunto de correo en lugar de cinco.",
+      "Lectura continua: Permite una lectura fluida a través de varios archivos."
+    ],
+    diveJxlTitle: "Análisis profundo: Dividir PDFs",
+    diveJxlP1: "Dividir PDFs hace lo contrario, analizando el catálogo de páginas de un solo documento y exportando las seleccionadas como archivos nuevos. Permite definir rangos de extracción o dividir cada página en un archivo individual.",
+    diveJxlP2: "Esto es invaluable para procesar facturas enviadas en bloque, extraer capítulos individuales de libros electrónicos o recortar manuales extensos para conservar solo las páginas que consulta a diario.",
+    diveJxlAdv: "Ventajas de Dividir PDF",
+    diveJxlAdvList: [
+      "Reducción de tamaño: Reduce el peso del documento eliminando páginas no deseadas.",
+      "Enfoque selectivo: Extrae exactamente las páginas que necesita compartir.",
+      "Separación de archivos: Divide registros masivos en archivos individuales."
+    ],
+    q1: "¿Cuál es la diferencia entre Combinar PDF y Dividir PDF?",
+    a1: "Combinar PDF une dos o más archivos en un único documento. Dividir PDF hace lo contrario, dividiendo un único archivo PDF en varios documentos más pequeños o extrayendo páginas específicas.",
+    q2: "¿Cuándo debo combinar archivos PDF?",
+    a2: "Debe combinar PDFs cuando necesite compilar informes multiparte, unir varios recibos o facturas escaneadas en un único archivo adjunto, o armar un portafolio de trabajo.",
+    q3: "¿Cuándo debo dividir un archivo PDF?",
+    a3: "Debe dividir un PDF cuando necesite extraer páginas específicas (como un solo capítulo o factura) de un documento grande, o eliminar páginas innecesarias para reducir el tamaño.",
+    q4: "¿Puedo combinar y dividir PDFs offline?",
+    a4: "Sí, ambas herramientas se ejecutan completamente en el cliente, en su navegador. Sus documentos se procesan localmente y nunca se suben a ningún servidor, garantizando total privacidad.",
+    q5: "¿Afecta la calidad de los documentos al combinar o dividir PDFs?",
+    a5: "No, ninguno de los procesos comprime ni altera el contenido visual. El texto, las formas vectoriales y las imágenes conservan su resolución y calidad original.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita herramientas de PDF premium?",
+    ctaDesc: "Pruebe nuestras herramientas locales para combinar, dividir, rotar y proteger con contraseña sus documentos PDF de forma segura offline.",
+    ctaButton: "Probar Combinador de PDF",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "Fusionner PDF vs Diviser PDF : Quel outil choisir ? (2026)",
+    seoDescription: "Fusionner PDF vs Diviser PDF. Nous comparons la fusion de plusieurs fichiers PDF avec la division de document. Utilisez nos outils 100 % locaux.",
+    title: "Fusionner PDF vs Diviser PDF : Quel outil choisir ?",
+    intro: "Besoin de manipuler vos fichiers PDF ? Nous comparons la fusion et la division de documents, en vous indiquant quand utiliser chaque méthode, avec des outils gratuits et locaux.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Fusionnez les PDF pour :",
+    useTiffForDesc: "Rassembler plusieurs fichiers distincts (rapports, reçus numérisés, devoirs) en un seul document consolidé, plus facile à partager.",
+    useJxlFor: "Divisez les PDF pour :",
+    useJxlForDesc: "Extraire des pages spécifiques, retirer des pages superflues pour alléger le fichier ou découper un gros document en plusieurs fichiers autonomes.",
+    differenceTitle: "Comparatif : Fusionner vs Diviser PDF",
+    differenceDesc: "Bien que ces deux outils modifient l'organisation des pages, ils répondent à des besoins opposés. Utilisez le tableau ci-dessous pour choisir.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "Fusionner PDF",
+    thJxl: "Diviser PDF",
+    tdCompStandard: "Action",
+    tdCompStandardTiff: "Assemble des documents séparés",
+    tdCompStandardJxl: "Découpe un document unique",
+    tdFileSize: "Entrée",
+    tdFileSizeTiff: "Deux fichiers PDF ou plus",
+    tdFileSizeJxl: "Un seul fichier PDF",
+    tdColorDepth: "Sortie",
+    tdColorDepthTiff: "Un unique fichier PDF consolidé",
+    tdColorDepthJxl: "Plusieurs fichiers PDF ou pages extraites",
+    tdBrowser: "Usage principal",
+    tdBrowserTiff: "Compilation de rapports, assemblage de factures",
+    tdBrowserJxl: "Extraction de chapitres, séparation de reçus groupés",
+    tdPrint: "Maintien de la qualité",
+    tdPrintTiff: "100 % sans perte (textes et vecteurs préservés)",
+    tdPrintJxl: "100 % sans perte (textes et vecteurs préservés)",
+    tdTranscoding: "Confidentialité",
+    tdTranscodingTiff: "100 % hors ligne (traitement local)",
+    tdTranscodingJxl: "100 % hors ligne (traitement local)",
+    converterTitle: "Outil PDF Hors ligne (Fusion & Division)",
+    diveTiffTitle: "Analyse approfondie : Fusionner des PDF",
+    diveTiffP1: "La fusion de PDF permet de lier plusieurs fichiers de manière chronologique. Notre outil extrait les arbres de pages, les dictionnaires de formulaires et les polices de chaque document source pour les assembler dans un catalogue unique.",
+    diveTiffP2: "C'est l'option idéale pour soumettre des dossiers administratifs qui imposent un envoi de fichier unique, ou pour regrouper tous vos travaux dans un portfolio consolidé.",
+    diveTiffAdv: "Avantages de la fusion",
+    diveTiffAdvList: [
+      "Consolidation : Réduit l'encombrement des dossiers en regroupant les fichiers liés.",
+      "Envoi simplifié : Partagez une seule pièce jointe au lieu de cinq.",
+      "Flux continu : Permet une lecture fluide et ininterrompue d'un fichier à l'autre."
+    ],
+    diveJxlTitle: "Analyse approfondie : Diviser des PDF",
+    diveJxlP1: "La division extrait des pages spécifiques d'un catalogue de document pour les enregistrer comme nouveaux fichiers PDF autonomes. Vous pouvez définir des plages de pages précises ou séparer chaque page individuellement.",
+    diveJxlP2: "Ce procédé est incontournable pour séparer des factures issues d'un publipostage, isoler un chapitre d'un e-book, ou élaguer un manuel pour n'en garder que la notice essentielle.",
+    diveJxlAdv: "Avantages de la division",
+    diveJxlAdvList: [
+      "Allègement de fichier : Supprime les pages inutiles pour réduire le poids.",
+      "Partage ciblé : Extrait uniquement les pages que vous souhaitez diffuser.",
+      "Séparation documentaire : Découpe les archives volumineuses en sous-fichiers."
+    ],
+    q1: "Quelle est la différence entre Fusionner PDF et Diviser PDF ?",
+    a1: "La fusion réunit deux fichiers ou plus en un seul. La division extrait des pages d'un fichier existant pour créer plusieurs documents distincts ou isoler des extraits.",
+    q2: "Quand dois-je fusionner des fichiers PDF ?",
+    a2: "Fusionnez vos PDF pour compiler des rapports complexes, assembler des factures et des reçus dans un seul e-mail, ou partager un portfolio professionnel d'une seule pièce.",
+    q3: "Quand dois-je diviser un fichier PDF ?",
+    a3: "Divisez un PDF pour isoler un chapitre ou un devis d'un gros document, supprimer les annexes superflues pour réduire le poids, ou trier des factures groupées.",
+    q4: "Puis-je fusionner et diviser des PDF hors ligne ?",
+    a4: "Oui, nos outils s'exécutent entièrement côté client dans votre navigateur. Vos PDF sont traités localement et ne sont jamais envoyés sur un serveur, préservant votre vie privée.",
+    q5: "Est-ce que la qualité du document est modifiée lors de ces actions ?",
+    a5: "Non, ces processus ne compressent pas et ne modifient pas le rendu visuel. Les textes, les polices et les dessins vectoriels conservent leur définition d'origine.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin d'outils PDF premium ?",
+    ctaDesc: "Essayez nos outils locaux pour fusionner, diviser, pivoter et protéger par mot de passe vos PDF de façon simple et sécurisée.",
+    ctaButton: "Essayer le fusionneur PDF",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PDF zusammenfügen vs. PDF teilen: Welches Tool brauchen Sie? (2026)",
+    seoDescription: "PDF zusammenfügen vs. PDF teilen. Wir vergleichen das Kombinieren und Aufteilen von PDF-Dokumenten. Erfahren Sie mehr über unsere 100% lokalen Offline-Tools.",
+    title: "PDF zusammenfügen vs. PDF teilen: Welches Tool brauchen Sie?",
+    intro: "Müssen Sie Ihre PDF-Dokumente verwalten? Wir vergleichen das Zusammenfügen und Teilen von PDFs, zeigen Anwendungsfälle und stellen kostenlose Offline-Tools bereit.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "PDF zusammenfügen für:",
+    useTiffForDesc: "Das Kombinieren mehrerer Dokumente (wie Berichte, gescannte Quittungen oder Aufsätze) in einer einzigen Datei für den einfachen E-Mail-Versand.",
+    useJxlFor: "PDF teilen für:",
+    useJxlForDesc: "Das Extrahieren bestimmter Seiten, das Löschen unerwünschter Seiten zur Dateiverkleinerung oder das Aufteilen eines Handbuchs in einzelne Dateien.",
+    differenceTitle: "Vergleich: PDF zusammenfügen vs. teilen",
+    differenceDesc: "Obwohl beide Tools Seitenstrukturen verändern, verfolgen sie gegensätzliche Zwecke. Die Tabelle zeigt Ihnen die genauen Unterschiede.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "PDF zusammenfügen",
+    thJxl: "PDF teilen",
+    tdCompStandard: "Aktion",
+    tdCompStandardTiff: "Kombiniert separate Dokumente",
+    tdCompStandardJxl: "Teilt ein einzelnes Dokument auf",
+    tdFileSize: "Eingang",
+    tdFileSizeTiff: "Zwei oder mehr PDF-Dateien",
+    tdFileSizeJxl: "Eine einzelne PDF-Datei",
+    tdColorDepth: "Ausgang",
+    tdColorDepthTiff: "Eine konsolidierte PDF-Datei",
+    tdColorDepthJxl: "Mehrere PDF-Dateien oder Seitenextrakte",
+    tdBrowser: "Haupt-Anwendungsfall",
+    tdBrowserTiff: "Berichte zusammenstellen, Belege bündeln",
+    tdBrowserJxl: "Kapitel herauslösen, Sammelrechnungen trennen",
+    tdPrint: "Qualitätserhalt",
+    tdPrintTiff: "100% verlustfrei (Vektoren & Texte bleiben erhalten)",
+    tdPrintJxl: "100% verlustfrei (Vektoren & Texte bleiben erhalten)",
+    tdTranscoding: "Datenschutz",
+    tdTranscodingTiff: "100% Offline (Lokale Verarbeitung)",
+    tdTranscodingJxl: "100% Offline (Lokale Verarbeitung)",
+    converterTitle: "Offline PDF-Tool (Zusammenfügen & Teilen)",
+    diveTiffTitle: "Deep Dive: PDF-Zusammenfügung",
+    diveTiffP1: "Das Zusammenfügen von PDFs verknüpft Seitenstrukturen in einer chronologischen Reihenfolge. Das Tool extrahiert Seitenreferenzen, Formular-Metadaten und Schriftarten-Registrierungen, um diese in einem neuen Dokumentenkatalog zu bündeln.",
+    diveTiffP2: "Dies ist ideal für Bewerbungen, die nur den Upload einer einzelnen Datei erlauben, oder um Belege gesammelt für die Steuererklärung vorzubereiten.",
+    diveTiffAdv: "Vorteile der Zusammenfügung",
+    diveTiffAdvList: [
+      "Ordnung: Reduziert das Chaos im Dateisystem durch die Bündelung.",
+      "Teilen: Senden Sie einen E-Mail-Anhang statt vieler einzelner Dokumente.",
+      "Lesbarkeit: Ermöglicht ein unterbrechungsfreies Lesen über mehrere Kapitel."
+    ],
+    diveJxlTitle: "Deep Dive: PDF-Teilung",
+    diveJxlP1: "Das Teilen von PDFs macht das Gegenteil: Es durchläuft das Seitenverzeichnis und exportiert ausgewählte Seiten als eigenständige PDF-Dateien. Sie können feste Seitenbereiche festlegen oder jede Seite einzeln speichern.",
+    diveJxlP2: "Dies ist unverzichtbar, um einzelne Rechnungen aus Sammeldokumenten zu trennen, Kapitel aus Fachbüchern zu isolieren oder Handbücher auf den relevanten Teil zu kürzen.",
+    diveJxlAdv: "Vorteile der Teilung",
+    diveJxlAdvList: [
+      "Größenreduktion: Löscht ungenutzte Seiten, um die Datei kleiner zu machen.",
+      "Fokus: Extrahiert exakt die Seiten, die weitergegeben werden sollen.",
+      "Strukturierung: Teilt Archivstapel in handliche Unterdateien."
+    ],
+    q1: "Was ist der Unterschied zwischen PDF zusammenfügen und PDF teilen?",
+    a1: "Das Zusammenfügen kombiniert zwei oder mehr Dateien zu einem Dokument. Das Teilen extrahiert Seiten aus einer Datei, um mehrere kleinere Dokumente zu erzeugen.",
+    q2: "Wann sollte ich PDFs zusammenfügen?",
+    q2_text: "Wann sollte ich PDFs zusammenfügen?",
+    a2: "Fügen Sie PDFs zusammen, wenn Sie mehrteilige Berichte bündeln, Rechnungen gesammelt per Mail senden oder ein Portfolio als einzelne Datei erstellen möchten.",
+    q3: "Wann sollte ich PDFs teilen?",
+    a3: "Teilen Sie ein PDF, wenn Sie einzelne Seiten extrahieren, Anhänge löschen oder eine Sammelrechnung in Einzeldokumente aufteilen müssen.",
+    q4: "Kann ich PDFs auch offline bearbeiten?",
+    a4: "Ja, unsere Tools laufen vollständig im Client-Browser. Dokumente werden lokal auf Ihrem Rechner verarbeitet und niemals auf Server hochgeladen.",
+    q5: "Geht beim Zusammenfügen oder Teilen Qualität verloren?",
+    a5: "Nein, die visuelle Qualität bleibt unberührt. Texte, Vektorgrafiken und eingebettete Bilder werden verlustfrei kopiert.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Brauchen Sie Premium-PDF-Tools?",
+    ctaDesc: "Nutzen Sie unsere lokalen Tools, um PDFs offline sicher zusammenzufügen, zu teilen, zu drehen oder zu verschlüsseln.",
+    ctaButton: "PDF-Fusion testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "Juntar PDF vs Dividir PDF: Qual ferramenta você precisa? (2026)",
+    seoDescription: "Juntar PDF vs Dividir PDF. Comparamos a ação de combinar PDFs com a divisão de páginas. Conheça as diferenças e use as nossas ferramentas offline.",
+    title: "Juntar PDF vs Dividir PDF: Qual ferramenta você precisa?",
+    intro: "Precisa organizar os seus arquivos? Comparamos as diferenças entre mesclar e dividir documentos PDF, ajudando você a escolher e fornecendo ferramentas locais gratuitas.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Mescle arquivos PDF quando:",
+    useTiffForDesc: "Quiser combinar vários documentos isolados (como relatórios, recibos digitalizados ou artigos) em um único arquivo unificado.",
+    useJxlFor: "Divida arquivos PDF quando:",
+    useJxlForDesc: "Desejar extrair páginas específicas, deletar anexos pesados para diminuir a dimensão do arquivo ou quebrar um PDF longo em vários arquivos isolados.",
+    differenceTitle: "Comparativo: Juntar vs Dividir PDF",
+    differenceDesc: "Embora ambas as opções alterem a estrutura das páginas de um PDF, elas possuem objetivos contrários. Veja a tabela comparativa.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "Juntar PDF",
+    thJxl: "Dividir PDF",
+    tdCompStandard: "Ação",
+    tdCompStandardTiff: "Combina documentos isolados",
+    tdCompStandardJxl: "Separa um único documento",
+    tdFileSize: "Entrada",
+    tdFileSizeTiff: "Dois ou mais arquivos PDF",
+    tdFileSizeJxl: "Um único arquivo PDF",
+    tdColorDepth: "Saída",
+    tdColorDepthTiff: "Um arquivo PDF final consolidado",
+    tdColorDepthJxl: "Múltiplos arquivos PDF ou páginas extraídas",
+    tdBrowser: "Uso mais comum",
+    tdBrowserTiff: "Organizar relatórios, compilar notas fiscais",
+    tdBrowserJxl: "Separar capítulos de livros, isolar boletos",
+    tdPrint: "Conservação da qualidade",
+    tdPrintTiff: "100% sem perdas (preserva textos e vetores)",
+    tdPrintJxl: "100% sem perdas (preserva textos e vetores)",
+    tdTranscoding: "Privacidade",
+    tdTranscodingTiff: "100% offline (processamento local no navegador)",
+    tdTranscodingJxl: "100% offline (processamento local no navegador)",
+    converterTitle: "Ferramenta PDF Offline (Juntar & Dividir)",
+    diveTiffTitle: "Análise profunda: Juntar PDFs",
+    diveTiffP1: "Mesclar PDFs significa agrupar diferentes arquivos em ordem cronológica. O nosso script extrai referências de páginas, campos de formulário e definições de fontes de cada arquivo, montando um novo catálogo unificado.",
+    diveTiffP2: "É a escolha ideal para enviar dossiês de candidatura que limitam a submissão a um único anexo, ou para centralizar faturas de prestação de contas.",
+    diveTiffAdv: "Vantagens de juntar PDFs",
+    diveTiffAdvList: [
+      "Organização: Limpa o espaço de trabalho juntando faturas dispersas.",
+      "Facilidade de envio: Anexe apenas um arquivo na mensagem.",
+      "Leitura linear: Navegue por documentos contínuos sem abrir múltiplos arquivos."
+    ],
+    diveJxlTitle: "Análise profunda: Dividir PDFs",
+    diveJxlP1: "A divisão analisa o diretório de páginas do PDF de entrada, exportando as páginas escolhidas como arquivos PDF novos e independentes. Você pode separar páginas específicas ou quebrar todas de uma vez.",
+    diveJxlP2: "Excelente para separar notas fiscais geradas em lotes, isolar partes específicas de apostilas ou remover páginas de capa pesadas para encolher a dimensão do arquivo.",
+    diveJxlAdv: "Vantagens de dividir PDFs",
+    diveJxlAdvList: [
+      "Redução de tamanho: Elimina páginas pesadas e desnecessárias do documento.",
+      "Foco no envio: Compartilhe apenas os trechos exatos que interessam.",
+      "Desmembramento: Quebra relatórios volumosos em fatias menores."
+    ],
+    q1: "Qual é a diferença entre Juntar PDF e Dividir PDF?",
+    a1: "Juntar PDFs combina vários arquivos em um só. Dividir PDFs separa páginas de um arquivo para gerar documentos individuais menores.",
+    q2: "Quando devo mesclar arquivos PDF?",
+    a2: "Use a mesclagem para unir relatórios com vários capítulos, compilar comprovantes de viagem em um e-mail ou fazer um arquivo de portfólio profissional.",
+    q3: "Quando devo dividir um PDF?",
+    a3: "Divida um PDF para extrair uma página de contrato, remover páginas em branco ou separar boletos de faturamento.",
+    q4: "Posso juntar e dividir PDFs sem internet?",
+    a4: "Sim, os nossos utilitários funcionam 100% client-side no seu browser. Os arquivos são processados localmente e nunca sobem para servidores externos.",
+    q5: "A qualidade do texto muda ao juntar ou dividir?",
+    a5: "Não, as operações de organização de páginas não comprimem nem distorcem textos e imagens vectoriais originais.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa de ferramentas de PDF premium?",
+    ctaDesc: "Experimente as nossas ferramentas offline locais para mesclar, fatiar, rotacionar e trancar PDFs com segurança.",
+    ctaButton: "Testar mesclador de PDF",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "Gabung PDF vs Pisah PDF: Alat Mana yang Anda Butuhkan? (2026)",
+    seoDescription: "Gabung PDF vs Pisah PDF. Kami membandingkan penggabungan beberapa file PDF dengan pemisahan halaman. Pelajari kapan harus menggunakannya secara offline.",
+    title: "Gabung PDF vs Pisah PDF: Alat Mana yang Anda Butuhkan?",
+    intro: "Perlu merapikan file dokumen Anda? Kami membandingkan perbedaan antara menggabungkan (merge) dan memisahkan (split) PDF, lengkap dengan alat gratis secara lokal.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan Gabung PDF saat:",
+    useTiffForDesc: "Anda ingin menyatukan beberapa dokumen terpisah (seperti laporan berkala, kwitansi, atau tugas kuliah) menjadi satu file terpadu.",
+    useJxlFor: "Gunakan Pisah PDF saat:",
+    useJxlForDesc: "Anda ingin mengambil halaman tertentu saja, menghapus lampiran tak terpakai, atau memotong file PDF tebal menjadi beberapa file kecil.",
+    differenceTitle: "Perbandingan: Gabung vs Pisah PDF",
+    differenceDesc: "Meskipun kedua alat ini mengelola halaman PDF, keduanya memiliki fungsi berlawanan. Gunakan tabel di bawah ini untuk menentukan pilihan.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "Gabung PDF",
+    thJxl: "Pisah PDF",
+    tdCompStandard: "Tindakan",
+    tdCompStandardTiff: "Menyatukan file-file terpisah",
+    tdCompStandardJxl: "Memotong dokumen tunggal",
+    tdFileSize: "Input",
+    tdFileSizeTiff: "Dua file PDF atau lebih",
+    tdFileSizeJxl: "Satu file PDF saja",
+    tdColorDepth: "Output",
+    tdColorDepthTiff: "Satu file PDF gabungan yang rapi",
+    tdColorDepthJxl: "Beberapa file PDF kecil atau ekstraksi halaman",
+    tdBrowser: "Kasus Penggunaan Utama",
+    tdBrowserTiff: "Menyusun laporan bulanan, menyatukan nota",
+    tdBrowserJxl: "Mengambil bab buku, memisah invoice massal",
+    tdPrint: "Kualitas Dokumen",
+    tdPrintTiff: "100% Lossless (Vektor & teks tidak berubah)",
+    tdPrintJxl: "100% Lossless (Vektor & teks tidak berubah)",
+    tdTranscoding: "Privasi File",
+    tdTranscodingTiff: "100% Offline (Proses lokal di browser)",
+    tdTranscodingJxl: "100% Offline (Proses lokal di browser)",
+    converterTitle: "Alat PDF Offline (Gabung & Pisah)",
+    diveTiffTitle: "Analisis Mendalam: Menggabungkan PDF",
+    diveTiffP1: "Menggabungkan PDF melibatkan penataan halaman-halaman dari file sumber ke dalam susunan baru. Alat kami membaca struktur halaman, formulir, dan registry font setiap dokumen untuk disatukan dalam satu katalog file baru.",
+    diveTiffP2: "Ini adalah opsi terbaik untuk mengirim lampiran pendaftaran yang membatasi unggahan satu file saja, atau merapikan arsip laporan bulanan perusahaan.",
+    diveTiffAdv: "Kelebihan Menggabungkan PDF",
+    diveTiffAdvList: [
+      "Kerapihan: Mengurangi file yang berserakan di folder penyimpanan.",
+      "Kemudahan Kirim: Cukup melampirkan satu file di email daripada lima file terpisah.",
+      "Membaca Lancar: Membaca dokumen panjang tanpa perlu berganti-ganti jendela file."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Memisahkan PDF",
+    diveJxlP1: "Pemisahan PDF melakukan hal sebaliknya, yaitu memotong katalog halaman PDF utama dan mengekspor halaman tertentu ke dalam file PDF baru. Anda dapat memilih rentang halaman tertentu atau memisah tiap halaman.",
+    diveJxlP2: "Fitur ini sangat penting saat memotong invoice massal yang dikirim dalam satu file besar, mengambil bab tertentu dari e-book, atau memotong panduan manual agar menyisakan bab penting saja.",
+    diveJxlAdv: "Kelebihan Memisahkan PDF",
+    diveJxlAdvList: [
+      "Mengurangi Ukuran: Menghapus halaman tidak penting agar file menjadi ringan.",
+      "Kirim Spesifik: Hanya mengirimkan bab atau halaman yang perlu dibagikan saja.",
+      "Pemisahan Arsip: Memecah dokumen tumpukan tebal menjadi bagian kecil."
+    ],
+    q1: "Apa perbedaan antara Gabung PDF dan Pisah PDF?",
+    a1: "Menggabungkan PDF menyatukan dua file atau lebih menjadi satu file baru. Memisahkan PDF memotong halaman dari file PDF yang sudah ada untuk dijadikan dokumen mandiri yang lebih kecil.",
+    q2: "Kapan saya sebaiknya menggabungkan file PDF?",
+    a2: "Gunakan penggabungan untuk menyusun proposal yang terdiri dari beberapa bagian, mengumpulkan nota belanjaan untuk reimbursement, atau membuat satu file portofolio.",
+    q3: "Kapan saya sebaiknya memisahkan file PDF?",
+    a3: "Pisahkan PDF saat Anda hanya butuh mencetak lembar persetujuan saja, menghapus halaman kosong, atau memisah lembar tagihan.",
+    q4: "Apakah aman menggabungkan dan memisah PDF di situs ini?",
+    a4: "Sangat aman. Alat kami berjalan 100% secara lokal di browser Anda. Dokumen Anda tidak pernah diunggah ke server mana pun.",
+    q5: "Apakah kualitas PDF akan berkurang saat digabungkan atau dipotong?",
+    a5: "Tidak, proses ini hanya menata ulang susunan halaman dan tidak melakukan kompresi data. Teks dan elemen vektor tetap tajam seperti aslinya.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Butuh alat PDF premium lainnya?",
+    ctaDesc: "Coba rangkaian alat lokal kami untuk menggabungkan, memotong, memutar, dan mengunci PDF secara aman offline.",
+    ctaButton: "Coba Penggabung PDF",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "merge-pdf-vs-split-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "merge-pdf");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">Merge vs Split PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-24 rounded-2xl bg-canvas-soft font-mono text-lg font-bold text-ink border border-hairline shadow-sm text-center px-2">Merge PDF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-24 rounded-2xl bg-canvas-soft font-mono text-lg font-bold text-ink border border-hairline shadow-sm text-center px-2">Split PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4">{text.tdFileSizeTiff}</td>
+                <td class="p-4">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4">{text.tdColorDepthTiff}</td>
+                <td class="p-4">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4">{text.tdBrowserTiff}</td>
+                <td class="p-4">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-success">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Interactive Tabbed Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <div class="flex justify-center border-b border-hairline mb-8">
+          <button id="tab-merge" class="px-6 py-3 border-b-2 border-link text-link font-bold text-lg transition-colors focus:outline-none">Merge PDF</button>
+          <button id="tab-split" class="px-6 py-3 border-b-2 border-transparent text-mute hover:text-ink font-bold text-lg transition-colors focus:outline-none ml-4">Split PDF</button>
+        </div>
+        
+        <div id="tool-container-merge" class="w-full">
+          <h2 class="text-xl font-bold text-ink mb-6 text-center">Merge PDF</h2>
+          <MergePdfTool toolId="merge-pdf" />
+        </div>
+        
+        <div id="tool-container-split" class="w-full hidden">
+          <h2 class="text-xl font-bold text-ink mb-6 text-center">Split PDF</h2>
+          <SplitPdfTool toolId="split-pdf" />
+        </div>
+      </section>
+
+      <!-- Deep Dive: Merge PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: Split PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PDF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>
+
+<script>
+  (function() {
+    const btnMerge = document.getElementById('tab-merge');
+    const btnSplit = document.getElementById('tab-split');
+    const containerMerge = document.getElementById('tool-container-merge');
+    const containerSplit = document.getElementById('tool-container-split');
+
+    btnMerge?.addEventListener('click', () => {
+      btnMerge.classList.add('border-link', 'text-link');
+      btnMerge.classList.remove('border-transparent', 'text-mute', 'hover:text-ink');
+      btnSplit?.classList.remove('border-link', 'text-link');
+      btnSplit?.classList.add('border-transparent', 'text-mute', 'hover:text-ink');
+      containerMerge?.classList.remove('hidden');
+      containerSplit?.classList.add('hidden');
+    });
+
+    btnSplit?.addEventListener('click', () => {
+      btnSplit.classList.add('border-link', 'text-link');
+      btnSplit.classList.remove('border-transparent', 'text-mute', 'hover:text-ink');
+      btnMerge?.classList.remove('border-link', 'text-link');
+      btnMerge?.classList.add('border-transparent', 'text-mute', 'hover:text-ink');
+      containerSplit?.classList.remove('hidden');
+      containerMerge?.classList.add('hidden');
+    });
+  })();
+</script>

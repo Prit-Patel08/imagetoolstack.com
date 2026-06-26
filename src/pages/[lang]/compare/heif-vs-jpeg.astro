@@ -1,0 +1,687 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import HeicToJpgTool from "../../../components/tools/HeicToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "HEIF vs JPEG: ¿Qué formato de imagen es mejor? (Comparativa 2026)",
+    seoDescription: "¿HEIF o JPEG? Comparamos el formato de imagen moderno de alta eficiencia con el estándar clásico JPEG. Conozca las diferencias de compresión y tamaño.",
+    title: "HEIF vs JPEG: ¿Qué formato es mejor?",
+    intro: "HEIF es el formato predeterminado de Apple para fotos, que promete una alta fidelidad visual a la mitad del costo de almacenamiento de un JPEG estándar. Pero, ¿la falta de compatibilidad con navegadores y dispositivos no pertenecientes a Apple compensa sus ventajas? Evaluemos HEIF vs JPEG.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use HEIF para:",
+    useTiffForDesc: "Capturar imágenes en iPhones y dispositivos móviles compatibles para ahorrar espacio en iCloud mientras se conservan los detalles de color HDR.",
+    useJxlFor: "Use JPEG para:",
+    useJxlForDesc: "Publicar fotos en la web, compartir archivos con usuarios que no usan Apple y enviar archivos multimedia a dispositivos antiguos donde la compatibilidad es crucial.",
+    differenceTitle: "¿Cuál es la diferencia entre HEIF y JPEG?",
+    differenceDesc: "Aunque JPEG ha sido el estándar mundial durante décadas, HEIF representa un avance significativo en eficiencia de compresión y soporte de funciones.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "HEIF (High Efficiency Image Format)",
+    thJxl: "JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Estándar de compresión",
+    tdCompStandardTiff: "HEVC / H.265 (Compresión de video moderna)",
+    tdCompStandardJxl: "DCT / JPEG (Compresión clásica de imagen)",
+    tdFileSize: "Tamaño de archivo promedio",
+    tdFileSizeTiff: "Diminuto (Hasta un 50% más pequeño que JPEG)",
+    tdFileSizeJxl: "Moderado (Mayor uso de almacenamiento)",
+    tdColorDepth: "Soporte de profundidad de color",
+    tdColorDepthTiff: "Hasta 16 bits por canal (Soporte HDR)",
+    tdColorDepthJxl: "Solo 8 bits por canal (SDR, propenso a banding)",
+    tdBrowser: "Soporte de transparencia",
+    tdBrowserTiff: "Sí (Transparencia de canal alfa)",
+    tdBrowserJxl: "No (Fondo de color sólido solamente)",
+    tdPrint: "Soporte de navegador",
+    tdPrintTiff: "Limitado (Safari en plataformas Apple solamente)",
+    tdPrintJxl: "Universal (Soportado por todas las plataformas web)",
+    tdTranscoding: "Contenedores multi-imagen",
+    tdTranscodingTiff: "Sí (Puede almacenar ráfagas, live photos y audio)",
+    tdTranscodingJxl: "No (Almacena solo una capa rasterizada plana)",
+    converterTitle: "Convertir HEIF a JPEG al instante (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es HEIF?",
+    diveTiffP1: "HEIF significa High Efficiency Image Format (Formato de Imagen de Alta Eficiencia). Finalizado en 2015 por el grupo MPEG, HEIF fue adoptado por Apple en iOS 11 como el formato de cámara por defecto (utilizando la extensión `.heic`).",
+    diveTiffP2: "En lugar de comprimir píxeles de manera individual, HEIF aprovecha algoritmos de compresión de video del códec HEVC. Esto permite guardar fotos de alta resolución a una fracción de su tamaño habitual. Además, HEIF es un contenedor: puede guardar múltiples fotos (ráfagas), mapas de profundidad, transparencias e incluso pistas de audio.",
+    diveTiffAdv: "Ventajas de HEIF",
+    diveTiffAdvList: [
+      "Compresión superior: Reduce a la mitad el almacenamiento en comparación con JPEG.",
+      "Alto rango dinámico (HDR): Admite hasta 16 bits de color por canal.",
+      "Contenedores ricos: Puede empaquetar secuencias de animación e información de profundidad."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es JPEG?",
+    diveJxlP1: "JPEG (Joint Photographic Experts Group) es el formato de imagen más compatible del planeta. Lanzado en 1992, utiliza compresión DCT. Al descartar datos visuales que el ojo humano no percibe con facilidad, reduce el archivo para fotografías.",
+    diveJxlP2: "Sin embargo, como JPEG fue construido a principios de los 90, carece de funciones modernas. Solo admite profundidad de color de 8 bits (lo que provoca banding de color en gradientes) y no admite transparencias ni capas de edición.",
+    diveJxlAdv: "Ventajas de JPEG",
+    diveJxlAdvList: [
+      "Compatibilidad universal: Visible en cualquier pantalla y sistema operativo web.",
+      "Bajo costo de procesamiento: Decodificación simple y veloz en cualquier chip.",
+      "Soporte web nativo: Integrado de manera nativa en navegadores."
+    ],
+    snippetSectionTitle: "Cuándo usar HEIF vs JPEG",
+    snippetSectionDesc: "Elegir el formato de archivo correcto le ayuda a equilibrar el almacenamiento y la compatibilidad.",
+    q1: "¿Cuál es la diferencia entre HEIF y JPEG?",
+    a1: "HEIF utiliza compresión HEVC moderna para lograr fotos que ocupan la mitad de espacio que JPEG con la misma calidad. JPEG es el estándar universal de 1992 pero su compresión es menos eficiente.",
+    q2: "¿Qué formato tiene mayor calidad: HEIF o JPEG?",
+    a2: "HEIF es superior en calidad. Admite profundidad de color de 16 bits (evitando el banding de color) y captura mejor los detalles finos sin distorsiones de compresión.",
+    q3: "¿Por qué no todos los dispositivos admiten HEIF?",
+    a3: "HEIF requiere licencias de decodificación para el códec HEVC (H.265). Al ser de pago para algunos fabricantes, muchos sistemas operativos no lo integran de manera nativa.",
+    q4: "¿Admite el formato HEIF transparencias?",
+    a4: "Sí. A diferencia de JPEG, que rellena la transparencia con color plano, HEIF admite un canal alfa para fondos transparentes similar a PNG.",
+    q5: "¿Cómo puedo convertir archivos HEIF a JPEG?",
+    a5: "Puede convertir HEIF a JPEG de manera privada y local en su navegador utilizando nuestro convertidor. Esto genera un archivo JPEG compatible con cualquier pantalla.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir archivos HEIF a JPEG?",
+    ctaDesc: "Use nuestra herramienta gratuita en el navegador para convertir y compartir sus fotos HEIF en formato JPEG universal.",
+    ctaButton: "Probar convertidor HEIF a JPEG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "HEIF vs JPEG : Quel format d'image est le meilleur ? (Comparaison 2026)",
+    seoDescription: "HEIF ou JPEG ? Nous comparons le format d'image moderne haute efficacité avec le standard JPEG classique. Découvrez les différences de compression et de taille.",
+    title: "HEIF vs JPEG : Quel format est le meilleur ?",
+    intro: "Le HEIF est le format par défaut des appareils Apple, promettant une haute fidélité visuelle à la moitié du coût de stockage d'un JPEG standard. Mais le manque de support universel sur le web et les appareils non-Apple compense-t-il ses avantages ? Évaluons HEIF vs JPEG.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le HEIF pour :",
+    useTiffForDesc: "Capturer des images sur iPhone et appareils compatibles afin de réduire de moitié le stockage iCloud tout en conservant les détails HDR.",
+    useJxlFor: "Utilisez le JPEG pour :",
+    useJxlForDesc: "Publier des photos sur le web, partager avec des utilisateurs non-Apple et envoyer des fichiers sur des appareils anciens où la compatibilité est cruciale.",
+    differenceTitle: "Quelle est la différence entre HEIF et JPEG ?",
+    differenceDesc: "Bien que le JPEG soit le standard mondial depuis des décennies, le HEIF représente un bond en avant dans l'efficacité de la compression.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "HEIF (High Efficiency Image Format)",
+    thJxl: "JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Norme de compression",
+    tdCompStandardTiff: "HEVC / H.265 (Compression vidéo moderne)",
+    tdCompStandardJxl: "DCT / JPEG (Compression d'image classique)",
+    tdFileSize: "Taille moyenne du fichier",
+    tdFileSizeTiff: "Très petite (Jusqu'à 50% plus léger que le JPEG)",
+    tdFileSizeJxl: "Modérée (Espace disque plus important)",
+    tdColorDepth: "Profondeur des couleurs",
+    tdColorDepthTiff: "Jusqu'à 16 bits par canal (Support HDR)",
+    tdColorDepthJxl: "8 bits par canal uniquement (SDR, sujet aux bandes)",
+    tdBrowser: "Gestion de la transparence",
+    tdBrowserTiff: "Oui (Transparence par canal alpha)",
+    tdBrowserJxl: "Non (Arrière-plan de couleur unie uniquement)",
+    tdPrint: "Compatibilité navigateurs",
+    tdPrintTiff: "Limitée (Safari sur les plateformes Apple uniquement)",
+    tdPrintJxl: "Universelle (Pris en charge sur toutes les plateformes)",
+    tdTranscoding: "Conteneurs multi-images",
+    tdTranscodingTiff: "Oui (Peut stocker des rafales, live photos et de l'audio)",
+    tdTranscodingJxl: "Non (Stocke une seule couche matricielle plate)",
+    converterTitle: "Convertir HEIF en JPEG instantanément (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le HEIF ?",
+    diveTiffP1: "HEIF signifie High Efficiency Image Format. Finalisé en 2015 par le groupe MPEG, le HEIF a été adopté par Apple en iOS 11 comme format par défaut de l'appareil photo (sous l'extension `.heic`).",
+    diveTiffP2: "Au lieu de compresser individuellement chaque pixel, le HEIF utilise les algorithmes du codec vidéo HEVC. Cela permet d'enregistrer des photos haute résolution en utilisant très peu d'espace. C'est également un conteneur : il peut stocker plusieurs clichés (rafales), des cartes de profondeur et de l'audio.",
+    diveTiffAdv: "Avantages du HEIF",
+    diveTiffAdvList: [
+      "Compression supérieure : Réduit de moitié le stockage comparé au JPEG.",
+      "Plage dynamique élevée (HDR) : Gère jusqu'à 16 bits de couleur par canal.",
+      "Conteneurs complets : Peut inclure des animations et des données 3D."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le JPEG ?",
+    diveJxlP1: "Le JPEG (Joint Photographic Experts Group) est le format d'image le plus compatible. Publié en 1992, il utilise la compression DCT. En éliminant les données de couleurs superflues, il offre des fichiers de taille modérée pour les photos.",
+    diveJxlP2: "Cependant, conçu au début des années 90, il ne dispose pas des fonctionnalités modernes. Il est limité à 8 bits de couleur et ne gère pas la transparence ou les calques de travail.",
+    diveJxlAdv: "Avantages du JPEG",
+    diveJxlAdvList: [
+      "Compatibilité totale : Lisible sur tous les écrans, navigateurs et systèmes.",
+      "Léger en calcul : Décodage simple ne nécessitant pas de processeur puissant.",
+      "Support natif du web : Intégration immédiate dans tous les navigateurs."
+    ],
+    snippetSectionTitle: "Quand utiliser le HEIF ou le JPEG",
+    snippetSectionDesc: "Choisir le bon format dépend de vos contraintes de stockage et de partage.",
+    q1: "Quelle est la différence entre HEIF et JPEG ?",
+    a1: "Le HEIF utilise une compression vidéo HEVC moderne pour réduire les fichiers de 50 % comparé au JPEG à qualité égale. Le JPEG est plus ancien et moins performant en stockage.",
+    q2: "Lequel a la meilleure qualité, HEIF ou JPEG ?",
+    a2: "Le HEIF offre une meilleure qualité : il gère le 16 bits (évitant les effets de bandes) et préserve mieux les détails sans défauts de compression.",
+    q3: "Pourquoi certains appareils ne lisent-ils pas le HEIF ?",
+    q3_text: "Pourquoi certains appareils ne lisent-ils pas le HEIF ?",
+    a3: "Le format HEIF nécessite des licences de décodage matériel HEVC (H.265) payantes, ce qui freine son intégration native sur tous les systèmes.",
+    q4: "Le HEIF prend-il en charge la transparence ?",
+    a4: "Oui, contrairement au JPEG, le HEIF prend en charge la transparence par canal alpha, similaire au PNG.",
+    q5: "Comment convertir des fichiers HEIF en JPEG ?",
+    a5: "Vous pouvez convertir vos HEIF en JPEG localement dans votre navigateur grâce à notre outil. Cela génère un fichier JPEG universel.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des fichiers HEIF en JPEG ?",
+    ctaDesc: "Utilisez notre outil gratuit pour convertir et partager vos photos HEIF en JPEG universels.",
+    ctaButton: "Essayer le convertisseur HEIF en JPEG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "HEIF vs. JPEG: Welches Bildformat ist besser? (2026 Vergleich)",
+    seoDescription: "HEIF oder JPEG? Wir vergleichen das moderne hocheffiziente Bildformat mit dem klassischen JPEG-Standard. Erfahren Sie mehr über Kompression und Dateigrößen.",
+    title: "HEIF vs. JPEG: Welches Format ist besser?",
+    intro: "HEIF ist Apples Standard-Kameraformat, das hohe visuelle Qualität bei der Hälfte des Speicherplatzes eines JPEGs verspricht. Aber wiegt die fehlende Browser- und Betriebssystemkompatibilität die Vorteile auf? Vergleichen wir HEIF vs. JPEG.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie HEIF für:",
+    useTiffForDesc: "Die Aufnahme auf iPhones und kompatiblen Mobilgeräten, um iCloud-Speicherplatz bei hoher Farbtiefe (HDR) zu sparen.",
+    useJxlFor: "Nutzen Sie JPEG für:",
+    useJxlForDesc: "Das Veröffentlichen von Fotos im Web, das Teilen mit Nicht-Apple-Nutzern und die Nutzung auf älteren Geräten, auf denen Kompatibilität entscheidend ist.",
+    differenceTitle: "Was ist der Unterschied zwischen HEIF und JPEG?",
+    differenceDesc: "Während JPEG seit Jahrzehnten der weltweite Standard ist, bringt HEIF einen großen Fortschritt in puncto Kompressionseffizienz.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "HEIF (High Efficiency Image Format)",
+    thJxl: "JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Kompressionsstandard",
+    tdCompStandardTiff: "HEVC / H.265 (Moderne Videokompression)",
+    tdCompStandardJxl: "DCT / JPEG (Klassische Bildkompression)",
+    tdFileSize: "Durchschnittliche Dateigröße",
+    tdFileSizeTiff: "Sehr klein (Bis zu 50 % kleiner als JPEG)",
+    tdFileSizeJxl: "Mittel (Größerer Speicherbedarf)",
+    tdColorDepth: "Farbtiefe",
+    tdColorDepthTiff: "Bis zu 16-Bit (HDR-Unterstützung)",
+    tdColorDepthJxl: "Nur 8-Bit (SDR, anfällig für Banding)",
+    tdBrowser: "Transparenz-Unterstützung",
+    tdBrowserTiff: "Ja (Alpha-Kanal-Transparenz)",
+    tdBrowserJxl: "Nein (Nur einfarbiger Hintergrund)",
+    tdPrint: "Browser-Unterstützung",
+    tdPrintTiff: "Eingeschränkt (Nur Safari auf Apple-Geräten)",
+    tdPrintJxl: "Universell (Von allen Plattformen unterstützt)",
+    tdTranscoding: "Multi-Bild-Container",
+    tdTranscodingTiff: "Ja (Speichert Serienaufnahmen, Live-Fotos & Audio)",
+    tdTranscodingJxl: "Nein (Speichert nur eine flache Bildebene)",
+    converterTitle: "HEIF sofort in JPEG konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist HEIF?",
+    diveTiffP1: "HEIF steht für High Efficiency Image Format. Es wurde 2015 von der MPEG-Gruppe entwickelt und von Apple ab iOS 11 als Standardformat der iPhone-Kamera (unter der Endung `.heic`) eingeführt.",
+    diveTiffP2: "Statt Pixel einzeln zu komprimieren, nutzt HEIF Algorithmen des HEVC-Videocodecs. Dadurch lassen sich hochauflösende Fotos platzsparend speichern. Zudem ist es ein Containerformat: Es kann Serienaufnahmen, Tiefenkarten, Transparenzen und Audio in einer Datei sichern.",
+    diveTiffAdv: "Vorteile von HEIF",
+    diveTiffAdvList: [
+      "Hervorragende Kompression: Spart die Hälfte des Speicherplatzes gegenüber JPEG.",
+      "HDR-Unterstützung: Bis zu 16-Bit Farbtiefe pro Kanal.",
+      "Umfangreicher Container: Kann Animationen, Belichtungsreihen und 3D-Daten sichern."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist JPEG?",
+    diveJxlP1: "JPEG (Joint Photographic Experts Group) ist das kompatibelste Bildformat weltweit. Es wurde 1992 veröffentlicht und nutzt DCT-Kompression. Durch das Verwerfen feiner Farbinformationen werden Dateigrößen reduziert.",
+    diveJxlP2: "Da JPEG jedoch Anfang der 90er Jahre entwickelt wurde, fehlen ihm moderne Features. Es ist auf 8-Bit Farbtiefe begrenzt (was zu Banding in Farbverläufen führen kann) und bietet keinen Support für Transparenz.",
+    diveJxlAdv: "Vorteile von JPEG",
+    diveJxlAdvList: [
+      "100 % Kompatibilität: Läuft nativ auf jedem Browser und Betriebssystem.",
+      "Geringer Rechenaufwand: Schnelle Dekodierung auf allen Geräten.",
+      "Nativer Web-Support: Problemlos in jedes HTML-Image-Tag integrierbar."
+    ],
+    snippetSectionTitle: "Wann nutzt man HEIF oder JPEG",
+    snippetSectionDesc: "Wählen Sie das Format passend zu Ihren Speicher- und Kompatibilitätsanforderungen.",
+    q1: "Was ist der Unterschied zwischen HEIF und JPEG?",
+    a1: "HEIF nutzt moderne H.265-Videokompression, um Bilder um 50 % gegenüber JPEG zu verkleinern. JPEG ist älter und verbraucht deutlich mehr Speicherplatz.",
+    q2: "Welches Format hat die bessere Qualität: HEIF oder JPEG?",
+    a2: "HEIF bietet die bessere Qualität. Es unterstützt 16-Bit-Farbtiefe (verhindert Banding) und zeichnet Details ohne störende Kompressionsfehler auf.",
+    q3: "Warum unterstützt nicht jedes Gerät HEIF?",
+    a3: "Für die Dekodierung des HEVC-Codecs fallen Lizenzgebühren an. Einige Betriebssysteme und Browser integrieren HEIF daher nicht standardmäßig.",
+    q4: "Unterstützt HEIF transparente Hintergründe?",
+    a4: "Ja, im Gegensatz zu JPEG unterstützt HEIF Alpha-Transparenzen ähnlich wie PNG.",
+    q5: "Wie konvertiere ich HEIF in JPEG?",
+    a5: "Nutzen Sie unser kostenloses Browser-Tool, um HEIF-Bilder offline und sicher in universelle JPEGs umzuwandeln.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie HEIF-Dateien in JPEG konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Offline-Browser-Tool, um Bilder sicher in JPEGs umzuwandeln.",
+    ctaButton: "HEIF-in-JPEG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "HEIF vs JPEG: Qual formato de imagem é melhor? (Comparativo 2026)",
+    seoDescription: "¿HEIF ou JPEG? Comparamos o formato de imagem moderno com o clássico padrão JPEG. Conheça as diferenças de compactação, cores e peso.",
+    title: "HEIF vs JPEG: Qual formato é melhor?",
+    intro: "O HEIF é o formato padrão da Apple para fotos, oferecendo alta fidelidade visual com metade do consumo de espaço de um JPEG normal. Mas será que a falta de suporte em navegadores e aparelhos compensa? Vamos avaliar o HEIF vs JPEG.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use HEIF para:",
+    useTiffForDesc: "Capturar fotos em iPhones e celulares compatíveis para economizar espaço de armazenamento mantendo alta profundidade de cores HDR.",
+    useJxlFor: "Use JPEG para:",
+    useJxlForDesc: "Postar fotos na internet, compartilhar com usuários do Windows/Android e enviar arquivos para aparelhos antigos onde a compatibilidade é essencial.",
+    differenceTitle: "Qual é a diferença entre HEIF e JPEG?",
+    differenceDesc: "Enquanto o JPEG continua sendo o padrão mundial, o HEIF traz avanços notáveis em eficiência de compactação e funcionalidades extras.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "HEIF (High Efficiency Image Format)",
+    thJxl: "JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Tipo de compactação",
+    tdCompStandardTiff: "HEVC / H.265 (Compactação moderna de vídeo)",
+    tdCompStandardJxl: "DCT / JPEG (Compactação clássica de imagem)",
+    tdFileSize: "Tamanho médio do arquivo",
+    tdFileSizeTiff: "Muito pequeno (Até 50% menor que o JPEG)",
+    tdFileSizeJxl: "Moderado (Maior consumo de espaço em disco)",
+    tdColorDepth: "Profundidade de cores",
+    tdColorDepthTiff: "Até 16 bits por canal (Suporta HDR)",
+    tdColorDepthJxl: "Apenas 8 bits por canal (SDR, sujeito a banding)",
+    tdBrowser: "Suporte a transparência",
+    tdBrowserTiff: "Sim (Transparência com canal alfa)",
+    tdBrowserJxl: "Não (Apenas fundo de cor sólida)",
+    tdPrint: "Compatibilidade do navegador",
+    tdPrintTiff: "Limitado (Apenas Safari nos sistemas Apple)",
+    tdPrintJxl: "Universal (Suportado por todas as plataformas)",
+    tdTranscoding: "Contêiner Multi-imagem",
+    tdTranscodingTiff: "Sim (Pode agrupar ráfagas, live photos e áudio)",
+    tdTranscodingJxl: "Não (Apenas uma camada de imagem estática)",
+    converterTitle: "Converter HEIF para JPEG instantaneamente (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é o HEIF?",
+    diveTiffP1: "HEIF significa High Efficiency Image Format (Formato de Imagem de Alta Eficiência). Criado em 2015 pelo grupo MPEG, foi adotado como padrão pela Apple no iOS 11 sob a extensão `.heic`.",
+    diveTiffP2: "Em vez de processar pixels de forma tradicional, o HEIF utiliza as tecnologias do codec de vídeo HEVC (H.265). Isso permite salvar arquivos leves sem perder qualidade. Sendo um contêiner, ele pode guardar múltiplas fotos, mapas de profundidade 3D e faixas de som.",
+    diveTiffAdv: "Vantagens do HEIF",
+    diveTiffAdvList: [
+      "Compactação superior: Poupa metade do espaço em disco frente ao JPEG.",
+      "Alto Rango Dinâmico (HDR): Suporta até 16 bits por canal evitando distorções.",
+      "Contêiner multifuncional: Guarda ráfagas, transparências e animações juntas."
+    ],
+    diveJxlTitle: "Análise profunda: O que é o JPEG?",
+    diveJxlP1: "O JPEG (Joint Photographic Experts Group) é o formato mais compatível do mundo. Lançado em 1992, utiliza compactação DCT para reduzir arquivos de fotos descartando detalhes que os olhos humanos não notam com facilidade.",
+    diveJxlP2: "Por ter sido criado nos anos 90, carece de funções modernas. É limitado a 8 bits de cor (propício a banding em gradientes) e não possui suporte nativo a fundos transparentes.",
+    diveJxlAdv: "Vantagens do JPEG",
+    diveJxlAdvList: [
+      "Compatibilidade Total: Abre em qualquer tela e sistema sem extensões.",
+      "Leitura Rápida: Não exige chips potentes para decodificação das fotos.",
+      "Desenvolvimento ágil: Integrado diretamente nas tags de imagem da web."
+    ],
+    snippetSectionTitle: "Quando usar HEIF ou JPEG",
+    snippetSectionDesc: "A decisão do formato ideal ajuda a equilibrar o consumo de disco e o alcance do arquivo.",
+    q1: "Qual é a diferença entre HEIF e JPEG?",
+    a1: "O HEIF compacta imagens usando tecnologia HEVC para gerar arquivos 50% mais leves que o JPEG com o mesmo visual. O JPEG é o padrão universal antigo.",
+    q2: "Qual tem maior qualidade, HEIF ou JPEG?",
+    a2: "O HEIF tem qualidade superior. Suporta profundidades de 16 bits evitando falhas de cores em gradientes e mantendo detalhes finos intactos.",
+    q3: "Por que nem todos os aparelhos abrem HEIF?",
+    a3: "O codec HEVC (H.265) exige o pagamento de licenças de hardware, o que impede que alguns sistemas operacionais ofereçam suporte nativo de graça.",
+    q4: "O HEIF suporta transparências de fundo?",
+    a4: "Sim, diferente do JPEG, o HEIF suporta canal alfa para transparências assim como o PNG.",
+    q5: "Como posso converter fotos HEIF em JPEG?",
+    a5: "Você pode converter HEIF para JPEG offline e com total privacidade no navegador usando o nosso convertidor, gerando JPEGs universais.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "¿Precisa de converter arquivos HEIF para JPEG?",
+    ctaDesc: "Use a nossa ferramenta gratuita integrada para converter as suas fotos HEIF em formato JPEG universal.",
+    ctaButton: "Testar conversor HEIF para JPEG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "HEIF vs JPEG: Format Gambar Mana yang Lebih Baik? (Perbandingan 2026)",
+    seoDescription: "HEIF atau JPEG? Kami membandingkan format gambar modern berefisiensi tinggi dengan standar JPEG klasik. Pelajari perbedaan kompresi dan ukuran file.",
+    title: "HEIF vs JPEG: Mana Format yang Lebih Baik?",
+    intro: "HEIF adalah format default kamera Apple, menjanjikan ketajaman gambar tinggi dengan setengah penggunaan memori dibanding JPEG standar. Namun, apakah kurangnya dukungan perangkat non-Apple sebanding dengan efisiensinya? Mari kita bandingkan HEIF vs JPEG.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan HEIF untuk:",
+    useTiffForDesc: "Mengambil gambar di iPhone dan perangkat seluler yang kompatibel untuk menghemat memori iCloud sambil menjaga detail warna HDR.",
+    useJxlFor: "Gunakan JPEG untuk:",
+    useJxlForDesc: "Mempublikasikan foto ke web, membagikan file ke pengguna Windows/Android, dan menggunakan file pada perangkat lama yang mengutamakan kompatibilitas.",
+    differenceTitle: "Apa Perbedaan Antara HEIF dan JPEG?",
+    differenceDesc: "Meskipun JPEG telah menjadi standar global selama beberapa dekade, HEIF menghadirkan lompatan besar dalam hal efisiensi kompresi.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "HEIF (High Efficiency Image Format)",
+    thJxl: "JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Standar Kompresi",
+    tdCompStandardTiff: "HEVC / H.265 (Kompresi video modern)",
+    tdCompStandardJxl: "DCT / JPEG (Kompresi gambar klasik)",
+    tdFileSize: "Ukuran File Rata-rata",
+    tdFileSizeTiff: "Sangat kecil (Hingga 50% lebih kecil dibanding JPEG)",
+    tdFileSizeJxl: "Sedang (Penggunaan penyimpanan lebih besar)",
+    tdColorDepth: "Dukungan Kedalaman Warna",
+    tdColorDepthTiff: "Hingga 16-bit (Mendukung HDR)",
+    tdColorDepthJxl: "Hanya 8-bit (SDR, rentan terhadap banding warna)",
+    tdBrowser: "Dukungan Transparansi",
+    tdBrowserTiff: "Ya (Transparansi saluran alpha)",
+    tdBrowserJxl: "Tidak (Hanya latar belakang warna solid)",
+    tdPrint: "Dukungan Browser",
+    tdPrintTiff: "Terbatas (Hanya Safari di perangkat Apple)",
+    tdPrintJxl: "Universal (Didukung oleh semua platform web)",
+    tdTranscoding: "Wadah Multi-gambar",
+    tdTranscodingTiff: "Ya (Dapat menyimpan burst foto, live photos, & audio)",
+    tdTranscodingJxl: "Tidak (Hanya menyimpan satu lapisan gambar datar)",
+    converterTitle: "Konversi HEIF ke JPEG Instan (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu HEIF?",
+    diveTiffP1: "HEIF singkatan dari High Efficiency Image Format. Dirilis pada tahun 2015 oleh MPEG Group, HEIF diadopsi oleh Apple sejak iOS 11 sebagai format kamera default (dengan ekstensi `.heic`).",
+    diveTiffP2: "Bukannya mengompresi piksel secara individual, HEIF menggunakan algoritma kompresi video dari codec HEVC. Ini memungkinkan foto resolusi tinggi disimpan dengan sangat hemat. HEIF juga merupakan wadah: dapat menyimpan burst foto, kedalaman peta 3D, transparansi, dan audio dalam satu file.",
+    diveTiffAdv: "Kelebihan HEIF",
+    diveTiffAdvList: [
+      "Kompresi Superior: Menghemat setengah memori penyimpanan dibanding JPEG.",
+      "Dukungan HDR: Kedalaman warna hingga 16-bit per saluran untuk gradasi halus.",
+      "Wadah Kaya Fitur: Dapat menyimpan animasi, rangkaian foto, dan data kedalaman."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu JPEG?",
+    diveJxlP1: "JPEG (Joint Photographic Experts Group) adalah format gambar paling kompatibel di dunia. Dirilis pada tahun 1992, ia menggunakan kompresi DCT. Dengan membuang detail warna yang tidak terlalu diperhatikan mata manusia, JPEG memangkas file foto.",
+    diveJxlP2: "Namun, karena dirancang awal 90-an, JPEG tidak memiliki fitur modern. JPEG terbatas pada kedalaman warna 8-bit (menyebabkan banding pada gradasi warna) dan tidak mendukung transparansi latar belakang.",
+    diveJxlAdv: "Kelebihan JPEG",
+    diveJxlAdvList: [
+      "Kompatibilitas 100%: Dapat dibuka langsung di browser web dan sistem operasi mana pun.",
+      "Proses Ringan: Dekode gambar yang sederhana sehingga cepat dimuat di semua perangkat.",
+      "Dukungan Web Native: Terintegrasi langsung dengan tag gambar HTML di semua browser."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan HEIF atau JPEG",
+    snippetSectionDesc: "Pilihlah format yang sesuai dengan kebutuhan memori dan kompatibilitas perangkat Anda.",
+    q1: "Apa perbedaan antara HEIF dan JPEG?",
+    a1: "HEIF menggunakan kompresi video H.265 modern untuk memperkecil file gambar hingga 50% dibanding JPEG dengan kualitas yang setara. JPEG adalah standar lama yang memakai lebih banyak ruang.",
+    q2: "Format mana yang memiliki kualitas lebih baik: HEIF atau JPEG?",
+    a2: "HEIF menawarkan kualitas lebih baik. Ia mendukung warna 16-bit (mencegah banding warna) dan merekam detail tanpa gangguan kompresi.",
+    q3: "Mengapa tidak semua perangkat mendukung HEIF?",
+    a3: "Penggunaan codec HEVC (H.265) pada HEIF membutuhkan lisensi berbayar. Akibatnya, sebagian sistem operasi dan browser tidak mengintegrasikannya secara default.",
+    q4: "Apakah HEIF mendukung transparansi latar belakang?",
+    a4: "Ya, tidak seperti JPEG, HEIF mendukung transparansi saluran alpha mirip seperti format PNG.",
+    q5: "Bagaimana cara mengubah HEIF menjadi JPEG?",
+    a5: "Anda dapat memakai alat web gratis kami untuk mengompresi dan mengubah gambar HEIF menjadi file JPEG secara offline dan aman di browser.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi file HEIF ke JPEG?",
+    ctaDesc: "Gunakan alat gratis dalam browser kami untuk mengonversi gambar HEIF Anda ke format JPEG secara offline dan aman.",
+    ctaButton: "Coba Pengonversi HEIF ke JPEG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heif-vs-jpeg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIF vs JPEG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPEG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-success">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-error">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-success">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-error">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-error">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4 text-success">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-error">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: HEIF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPEG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="JPEG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

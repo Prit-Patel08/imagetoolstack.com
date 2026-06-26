@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import IcoConverterTool from "../../../components/tools/IcoConverterTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs ICO: ¿Qué formato es mejor para Favicons? (2026)",
+    seoDescription: "PNG vs ICO. Comparamos Portable Network Graphics con el contenedor de iconos heredado ICO. Conozca cuándo usar cada uno en diseño web y favicons.",
+    title: "PNG vs ICO: ¿Qué formato es mejor?",
+    intro: "¿Necesita diseñar un favicon web o icono de aplicación? Comparamos el formato moderno PNG con el contenedor clásico ICO para evaluar rendimiento y compatibilidad.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Iconos de aplicaciones web, logotipos de alta resolución, gráficos tipo vector y elementos web estándar para aprovechar mejores tasas de compresión y un peso reducido.",
+    useIcoFor: "Use ICO para:",
+    useIcoForDesc: "El archivo favicon.ico principal en el directorio raíz de su sitio web e iconos de aplicación del sistema operativo para garantizar soporte completo en sistemas heredados y navegadores antiguos.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y ICO?",
+    differenceDesc: "La distinción principal radica en que PNG es un archivo de imagen rasterizado único que utiliza compresión sin pérdidas deflate, mientras que ICO es un directorio contenedor que permite empaquetar múltiples resoluciones en un único archivo binario.",
+    thFeature: "Característica / Aspecto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "ICO (Icon Container Format)",
+    tdFileNature: "Naturaleza del archivo",
+    tdFileNaturePng: "Imagen rasterizada única",
+    tdFileNatureIco: "Contenedor de múltiples resoluciones",
+    tdPurpose: "Propósito principal",
+    tdPurposePng: "Gráficos web generales, UI, recursos de texto",
+    tdPurposeIco: "Favicons de sitios web, iconos de aplicaciones OS",
+    tdResolutions: "Resoluciones admitidas",
+    tdResolutionsPng: "Una sola resolución por archivo",
+    tdResolutionsIco: "Múltiples tamaños (16px a 256px) en un solo archivo",
+    tdSize: "Eficiencia de tamaño",
+    tdSizePng: "Muy eficiente (compresión sin pérdidas deflate)",
+    tdSizeIco: "Mayor peso (al empaquetar múltiples imágenes)",
+    tdTrans: "Transparencia",
+    tdTransPng: "Sí (canal alfa de 8 bits)",
+    tdTransIco: "Sí (completamente compatible)",
+    tdFallback: "Compatibilidad universal de favicon",
+    tdFallbackPng: "No (los navegadores antiguos requieren obligatoriamente .ico)",
+    tdFallbackIco: "Sí (compatible de manera universal por todos los clientes)",
+    tdAnim: "Animación",
+    tdAnimPng: "Sí (APNG)",
+    tdAnimIco: "No",
+    converterTitle: "Convertir PNG a ICO Favicon (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es un PNG?",
+    divePngP1: "PNG son las siglas de Portable Network Graphics. Diseñado a finales de la década de 1990 para sustituir al formato GIF, utiliza un algoritmo de compresión sin pérdidas de tipo deflate para mantener la calidad intacta sin artefactos de compresión.",
+    divePngP2: "PNG es el formato más común para gráficos web planos gracias a su transparencia integrada con canal alfa. Admite bordes suaves y degradados limpios, aunque está limitado a una única resolución por archivo de imagen.",
+    divePngAdv: "Ventajas de PNG",
+    divePngAdvList: [
+      "Calidad sin pérdidas: Píxeles perfectos sin artefactos visuales.",
+      "Canal alfa: Soporte para transparencias translúcidas con bordes suaves.",
+      "Peso optimizado: Tamaños de archivo muy compactos para elementos individuales."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es un ICO?",
+    diveIcoP1: "ICO es un formato de archivo contenedor desarrollado originalmente por Microsoft para almacenar los iconos de interfaz de Windows y, posteriormente, adaptado para favicons web. A diferencia de las imágenes normales, un archivo ICO es un contenedor binario capaz de almacenar copias de la misma imagen en diferentes tamaños (como 16x16, 32x32, 48x48 o 256x256 píxeles).",
+    diveIcoP2: "Esto es sumamente importante para los favicons en la web, ya que los navegadores e indexadores pueden solicitar de manera automática el tamaño exacto que requiere el contexto de visualización (por ejemplo, 16x16 para la pestaña del navegador o 32x32 para el escritorio).",
+    diveIcoAdv: "Ventajas de ICO",
+    diveIcoAdvList: [
+      "Contenedor multi-resolución: Empaqueta múltiples tamaños de forma nativa.",
+      "Compatibilidad total: Sigue siendo el estándar absoluto para indexadores y navegadores antiguos.",
+      "Iconos de sistema: Requerido por Windows para archivos ejecutables y accesos directos."
+    ],
+    q1: "¿Cuál es la diferencia entre PNG y ICO?",
+    a1: "PNG es un formato de imagen rasterizada única optimizada para gráficos web e ilustraciones. ICO es un contenedor que permite empaquetar múltiples resoluciones de una imagen en un solo archivo, utilizado principalmente para favicons e iconos de escritorio.",
+    q2: "¿Cuándo debo usar ICO en lugar de PNG?",
+    a2: "Debe usar ICO para el archivo 'favicon.ico' en el directorio raíz de su servidor web para asegurar la compatibilidad con todos los navegadores, marcadores y rastreadores de búsqueda. Para cualquier otro elemento gráfico del diseño web, use PNG.",
+    q3: "¿Se puede convertir un PNG a ICO?",
+    a3: "Sí, es posible convertir cualquier PNG cuadrado en un archivo de icono ICO usando nuestra herramienta gratuita y local en su navegador web.",
+    q4: "¿Admiten los navegadores modernos favicons en formato PNG?",
+    a4: "Sí, todos los navegadores modernos admiten archivos PNG como favicons utilizando la etiqueta HTML rel='icon'. Sin embargo, mantener un favicon.ico de respaldo sigue siendo recomendado para evitar errores 404 de rastreadores web antiguos.",
+    q5: "¿Por qué los archivos ICO suelen ser más grandes que los PNG?",
+    a5: "Los archivos ICO son contenedores. Si un ICO contiene múltiples versiones del mismo diseño a diferentes escalas (por ejemplo, 16x16, 32x32 y 48x48 píxeles), el tamaño total de la suma de todas ellas será mayor que el de un único archivo PNG.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Quiere generar iconos personalizados?",
+    ctaDesc: "Pruebe nuestro generador de favicons offline y procese sus imágenes PNG de forma 100% privada y segura directamente en su navegador.",
+    ctaButton: "Probar Generador de Favicon",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs ICO : quel format est le meilleur pour les favicons ? (2026)",
+    seoDescription: "PNG vs ICO. Nous comparons le Portable Network Graphics avec le conteneur d'icônes hérité ICO. Découvrez quand utiliser chaque format pour le web.",
+    title: "PNG vs ICO : quel format est le meilleur ?",
+    intro: "Besoin de créer un favicon de site web ou une icône d'application ? Nous comparons le format moderne PNG avec le conteneur classique ICO pour évaluer les performances et la compatibilité.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "Les icônes d'applications web, les logos haute résolution, les graphismes vectoriels et les éléments de page standards pour bénéficier d'une meilleure compression et d'un poids réduit.",
+    useIcoFor: "Utilisez l'ICO pour :",
+    useIcoForDesc: "Le fichier favicon.ico principal dans le dossier racine du site et les icônes d'applications du système d'exploitation pour garantir une compatibilité totale avec les systèmes hérités.",
+    differenceTitle: "Quelle est la différence entre PNG et ICO ?",
+    differenceDesc: "La différence majeure réside dans le fait que le PNG est une image matricielle unique compressée sans perte avec deflate, tandis que l'ICO est un conteneur qui stocke plusieurs tailles d'une même icône dans un seul fichier.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "ICO (Icon Container Format)",
+    tdFileNature: "Nature du fichier",
+    tdFileNaturePng: "Image matricielle unique",
+    tdFileNatureIco: "Conteneur de plusieurs résolutions",
+    tdPurpose: "Objectif principal",
+    tdPurposePng: "Graphismes web, UI, éléments de texte",
+    tdPurposeIco: "Favicons de sites web, icônes d'applications OS",
+    tdResolutions: "Résolutions supportées",
+    tdResolutionsPng: "Une seule résolution par fichier",
+    tdResolutionsIco: "Plusieurs tailles (16px à 256px) dans un fichier",
+    tdSize: "Efficacité de taille",
+    tdSizePng: "Très efficace (compression sans perte deflate)",
+    tdSizeIco: "Plus lourd (emballe plusieurs résolutions)",
+    tdTrans: "Transparence",
+    tdTransPng: "Oui (canal alpha 8 bits)",
+    tdTransIco: "Oui (complètement supporté)",
+    tdFallback: "Compatibilité universelle favicon",
+    tdFallbackPng: "Non (les anciens navigateurs exigent le format .ico)",
+    tdFallbackIco: "Oui (supporté universellement par tous les navigateurs)",
+    tdAnim: "Animation",
+    tdAnimPng: "Oui (APNG)",
+    tdAnimIco: "Non",
+    converterTitle: "Convertir PNG en ICO Favicon (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    divePngP1: "Le format PNG (Portable Network Graphics) a été développé à la fin des années 1990 comme alternative libre au GIF. Il utilise l'algorithme de compression sans perte deflate pour préserver chaque détail de l'image.",
+    divePngP2: "C'est le format incontournable pour les logos et illustrations du web grâce à son canal alpha qui permet de gérer les transparences avec des dégradés lisses, bien qu'il ne contienne qu'une seule taille par fichier.",
+    divePngAdv: "Avantages du PNG",
+    divePngAdvList: [
+      "Qualité sans perte : Rendu net sans artefact de compression.",
+      "Transparence alpha : Idéal pour les contours lissés sur n'importe quel fond.",
+      "Poids optimisé : Très léger pour des fichiers individuels."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que l'ICO ?",
+    diveIcoP1: "Le format ICO est un conteneur d'icônes conçu à l'origine par Microsoft pour le système Windows, puis adopté comme norme pour les favicons des sites web. Contrairement à une image classique, l'ICO est un fichier binaire qui encapsule plusieurs versions de la même image à différentes résolutions (par exemple 16x16, 32x32, 48x48 ou 256x256 pixels).",
+    diveIcoP2: "Cela est indispensable pour les favicons puisque le navigateur ou le moteur de recherche choisira dynamiquement le format d'image le plus adapté à l'écran.",
+    diveIcoAdv: "Avantages de l'ICO",
+    diveIcoAdvList: [
+      "Conteneur multi-tailles : Regroupe plusieurs dimensions d'icône.",
+      "Standard universel : Supporté par tous les systèmes et vieux indexeurs.",
+      "Icônes système : Format requis pour les raccourcis de bureau Windows."
+    ],
+    q1: "Quelle est la différence entre PNG et ICO ?",
+    a1: "Le PNG est un format d'image classique optimisé pour le web et les illustrations. L'ICO est un conteneur conçu pour regrouper plusieurs résolutions d'une même icône dans un seul fichier, principalement pour les favicons.",
+    q2: "Quand dois-je utiliser l'ICO à la place du PNG ?",
+    a2: "Utilisez l'ICO uniquement pour le fichier 'favicon.ico' à la racine de votre serveur pour garantir un affichage sans erreur sur tous les navigateurs et outils SEO. Pour le reste, privilégiez le PNG.",
+    q3: "Peut-on convertir un fichier PNG en ICO ?",
+    a3: "Oui, notre convertisseur gratuit convertit vos fichiers PNG carrés en format ICO directement dans votre navigateur.",
+    q4: "Les navigateurs récents supportent-ils les favicons au format PNG ?",
+    a4: "Oui, la plupart des navigateurs modernes supportent les fichiers PNG pour les favicons. Mais un fichier favicon.ico classique reste conseillé en secours pour éviter les erreurs de type 404.",
+    q5: "Pourquoi un fichier ICO est-il parfois plus volumineux qu'un PNG ?",
+    a5: "Parce que l'ICO est un conteneur. S'il contient des images dans 4 formats différents (16x16, 32x32, 48x48, etc.), la taille globale correspondra à la somme de ces fichiers combinés.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de générer des icônes ?",
+    ctaDesc: "Essayez notre générateur de favicons hors ligne et créez vos fichiers ICO en toute sécurité et de façon totalement privée.",
+    ctaButton: "Essayer le générateur d'icônes",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. ICO: Welches Format ist besser für Favicons? (2026)",
+    seoDescription: "PNG vs. ICO. Wir vergleichen Portable Network Graphics mit dem klassischen ICO-Container. Erfahren Sie, wann Sie welches Format für Webdesign nutzen.",
+    title: "PNG vs. ICO: Welches Format ist besser?",
+    intro: "Müssen Sie ein Website-Favicon oder ein App-Icon erstellen? Wir vergleichen das moderne PNG-Format mit dem klassischen ICO-Container hinsichtlich Leistung und Kompatibilität.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie PNG für:",
+    usePngForDesc: "Web-App-Icons, hochauflösende Logos, vektorähnliche Grafiken und Standard-Webassets, um von besseren Kompressionsraten und kleinerem Dateigewicht zu profitieren.",
+    useIcoFor: "Nutzen Sie ICO für:",
+    useIcoForDesc: "Das Haupt-Favicon (favicon.ico) im Stammverzeichnis Ihrer Website und Betriebssystem-App-Icons, um volle Kompatibilität mit Legacy-Systemen zu gewährleisten.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und ICO?",
+    differenceDesc: "Der Hauptunterschied besteht darin, dass PNG eine einzelne Rastergrafik mit verlustfreier Deflate-Kompression ist, während ICO ein Containerformat ist, das mehrere Bildauflösungen in einer Datei bündeln kann.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "ICO (Icon Container Format)",
+    tdFileNature: "Dateinatur",
+    tdFileNaturePng: "Einzelne Rastergrafik",
+    tdFileNatureIco: "Container für mehrere Auflösungen",
+    tdPurpose: "Hauptzweck",
+    tdPurposePng: "Allgemeine Webgrafiken, UI, Text-Assets",
+    tdPurposeIco: "Website-Favicons, App-Icons (OS)",
+    tdResolutions: "Unterstützte Auflösungen",
+    tdResolutionsPng: "Einzelne Auflösung pro Datei",
+    tdResolutionsIco: "Mehrere Größen (16px bis 256px) in einer Datei",
+    tdSize: "Dateigrößen-Effizienz",
+    tdSizePng: "Sehr effizient (verlustfreie Deflate-Kompression)",
+    tdSizeIco: "Größer (enthält mehrere Bildkopien)",
+    tdTrans: "Transparenz",
+    tdTransPng: "Ja (8-Bit-Alpha-Kanal)",
+    tdTransIco: "Ja (voll unterstützt)",
+    tdFallback: "Universelle Favicon-Unterstützung",
+    tdFallbackPng: "Nein (ältere Browser benötigen zwingend .ico)",
+    tdFallbackIco: "Ja (universell von allen Web-Clients unterstützt)",
+    tdAnim: "Animation",
+    tdAnimPng: "Ja (APNG)",
+    tdAnimIco: "Nein",
+    converterTitle: "PNG in ICO Favicon konvertieren (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist PNG?",
+    divePngP1: "PNG steht für Portable Network Graphics. Es wurde in den späten 1990er-Jahren als patentfreie Alternative zu GIF entwickelt. Mit seiner verlustfreien Kompression bleiben Bilddetails ohne störende Fragmente erhalten.",
+    divePngP2: "Im modernen Webdesign ist PNG aufgrund des 8-Bit-Alphakanals, der feine Transparenzverläufe und weiche Kanten ermöglicht, unverzichtbar, speichert jedoch stets nur ein Bild pro Datei.",
+    divePngAdv: "Vorteile von PNG",
+    divePngAdvList: [
+      "Verlustfreie Qualität: Perfekte Pixeldarstellung ohne Qualitätsverlust.",
+      "Alphakanal: Unterstützung für weiche, teiltransparente Übergänge.",
+      "Dateigröße: Extrem effizient bei Einzelbildern."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist ICO?",
+    diveIcoP1: "ICO ist ein von Microsoft entwickeltes Bild-Containerformat, das ursprünglich für die Symbole der Windows-Benutzeroberfläche gedacht war und später als Standard für Web-Favicons adaptiert wurde. Im Gegensatz zu normalen Grafikdateien kann eine ICO-Datei mehrere Kopien eines Bildes in verschiedenen Größen (z. B. 16x16, 32x32, 48x48 und 256x256 Pixel) enthalten.",
+    diveIcoP2: "Dies ist besonders wichtig für Web-Favicons, da der Browser automatisch die am besten geeignete Größe für den jeweiligen Anzeigeort (wie Tableiste oder Lesezeichen) lädt.",
+    diveIcoAdv: "Vorteile von ICO",
+    diveIcoAdvList: [
+      "Multi-Auflösungs-Container: Mehrere Größen in einer Datei verpackt.",
+      "Universelle Kompatibilität: Wird von allen Browsern und Indexierungs-Bots erkannt.",
+      "Desktop-Icons: Notwendig unter Windows für Programm-Icons."
+    ],
+    q1: "Was ist der Unterschied zwischen PNG und ICO?",
+    a1: "PNG ist ein klassisches Bildformat für Webgrafiken. ICO ist ein Containerformat, das mehrere Auflösungen eines Bildes für Favicons und App-Icons in einer einzigen Datei speichert.",
+    q2: "Wann sollte ich ICO statt PNG verwenden?",
+    a2: "Verwenden Sie ICO für die Datei 'favicon.ico' im Stammverzeichnis Ihres Servers. Dadurch wird sichergestellt, dass Suchmaschinen und alle Browser Ihr Favicon fehlerfrei anzeigen.",
+    q3: "Kann man ein PNG in ein ICO umwandeln?",
+    a3: "Ja. Mit unserem kostenlosen Browser-Tool können Sie jedes quadratische PNG-Bild direkt offline in ein ICO-Favicon konvertieren.",
+    q4: "Unterstützen moderne Browser PNG-Favicons?",
+    a4: "Ja, alle modernen Browser unterstützen PNG-Favicons über das HTML-Tag rel='icon'. Ein 'favicon.ico'-Backup im Root-Ordner wird dennoch empfohlen, um 404-Fehler von Web-Crawlern zu vermeiden.",
+    q5: "Warum sind ICO-Dateien oft größer als PNG-Dateien?",
+    a5: "Da ICO eine Containerdatei ist. Enthält sie mehrere Kopien des Bildes in verschiedenen Auflösungen (z. B. 16x16 und 32x32), addieren sich die Dateigrößen dieser Einzelbilder.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Web-Icons erstellen?",
+    ctaDesc: "Nutzen Sie unseren kostenlosen Offline-Favicon-Generator, um Ihre PNG-Dateien sicher im Browser in ICO-Dateien umzuwandeln.",
+    ctaButton: "Favicon-Generator starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs ICO: Qual formato é melhor para favicons? (2026)",
+    seoDescription: "PNG vs ICO. Comparamos Portable Network Graphics com o clássico container de ícones ICO. Saiba quando usar cada um no web design e favicons.",
+    title: "PNG vs ICO: Qual formato é melhor?",
+    intro: "Precisa criar um favicon ou ícone de aplicativo? Comparamos o formato moderno PNG com o clássico contêiner ICO para ver qual oferece melhor desempenho e compatibilidade.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Ícones de aplicativos web, logotipos de alta resolução, gráficos vetoriais e elementos padrão de páginas para aproveitar melhores taxas de compressão e menor peso.",
+    useIcoFor: "Use ICO para:",
+    useIcoForDesc: "O arquivo favicon.ico principal no diretório raiz do site e ícones de aplicativos de sistemas operacionais para garantir suporte completo.",
+    differenceTitle: "Qual é a diferença entre PNG e ICO?",
+    differenceDesc: "A distinção principal é que o PNG é uma imagem rasterizada única que usa compactação sem perdas deflate, enquanto o ICO é um arquivo contêiner que permite empacotar várias resoluções em um único arquivo binário.",
+    thFeature: "Característica / Aspeto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "ICO (Icon Container Format)",
+    tdFileNature: "Natureza do arquivo",
+    tdFileNaturePng: "Imagem rasterizada única",
+    tdFileNatureIco: "Contêiner de múltiplas resoluções",
+    tdPurpose: "Propósito principal",
+    tdPurposePng: "Gráficos web gerais, UI, recursos de texto",
+    tdPurposeIco: "Favicons de sites web, ícones de aplicativos OS",
+    tdResolutions: "Resoluções suportadas",
+    tdResolutionsPng: "Uma única resolução por arquivo",
+    tdResolutionsIco: "Múltiplos tamanhos (16px a 256px) num só arquivo",
+    tdSize: "Eficiência de tamanho",
+    tdSizePng: "Muito eficiente (compactação sem perdas deflate)",
+    tdSizeIco: "Mais pesado (compacta várias resoluções)",
+    tdTrans: "Transparência",
+    tdTransPng: "Sim (canal alfa de 8 bits)",
+    tdTransIco: "Sim (totalmente compatível)",
+    tdFallback: "Compatibilidade universal de favicon",
+    tdFallbackPng: "Não (navegadores antigos exigem obrigatoriamente o formato .ico)",
+    tdFallbackIco: "Sim (compatível universalmente por todos os clientes)",
+    tdAnim: "Animação",
+    tdAnimPng: "Sim (APNG)",
+    tdAnimIco: "Não",
+    converterTitle: "Converter PNG para ICO Favicon (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é o PNG?",
+    divePngP1: "PNG significa Portable Network Graphics. Foi criado na década de 1990 como substituto livre para o formato GIF, usando compactação sem perdas deflate para preservar a qualidade de todos os pixels.",
+    divePngP2: "No web design, ele se destaca pelo suporte a transparência translúcida com canal alfa de 8 bits. No entanto, cada arquivo PNG está limitado a armazenar apenas uma resolução por imagem.",
+    divePngAdv: "Vantagens do PNG",
+    divePngAdvList: [
+      "Qualidade sem perdas: Imagens nítidas sem falhas de compressão.",
+      "Canal alfa: Perfeito para fundos e sombras com bordas suaves.",
+      "Tamanho otimizado: Muito eficiente para imagens individuais."
+    ],
+    diveIcoTitle: "Análise profunda: O que é o ICO?",
+    diveIcoP1: "ICO é um formato contêiner de ícones projetado pela Microsoft para o Windows e posteriormente adotado para favicons web. Diferente de um arquivo de imagem comum, o ICO é um contêiner binário que pode armazenar cópias da mesma imagem em tamanhos diferentes (ex: 16x16, 32x32, 48x48 e 256x256 pixels).",
+    diveIcoP2: "Essa característica é crucial para favicons, permitindo que navegadores e indexadores solicitem automaticamente a resolução exata necessária para cada contexto.",
+    diveIcoAdv: "Vantagens do ICO",
+    diveIcoAdvList: [
+      "Contêiner multi-resolução: Armazena várias dimensões nativamente.",
+      "Compatibilidade: O padrão absoluto para navegadores e indexadores.",
+      "Uso em sistemas: Requerido pelo Windows para ícones de executáveis."
+    ],
+    q1: "Qual é a diferença entre PNG e ICO?",
+    a1: "O PNG é um formato de imagem comum para a web. O ICO é um contêiner binário que reúne múltiplas resoluções de uma imagem para ser usado como favicon ou ícone de aplicativo.",
+    q2: "Quando devo usar o ICO em vez de PNG?",
+    a2: "Use o ICO para o arquivo 'favicon.ico' no diretório raiz do seu servidor. Isso assegura que todos os navegadores, mecanismos de busca e favoritos carreguem seu ícone sem erros.",
+    q3: "Posso converter um PNG para ICO?",
+    a3: "Sim. Utilizando nosso compressor online gratuito, você pode converter qualquer PNG quadrado para o formato ICO offline diretamente de seu navegador.",
+    q4: "Os navegadores modernos suportam favicons em formato PNG?",
+    a4: "Sim, os navegadores atuais aceitam arquivos PNG como favicons. Porém, manter um arquivo favicon.ico de suporte continua sendo o ideal para evitar erros 404 de rastreadores antigos.",
+    q5: "Por que os arquivos ICO são maiores do que os PNG?",
+    a5: "Como o ICO é um arquivo contêiner, se ele contiver o mesmo ícone em 4 resoluções diferentes, o tamanho do arquivo será a soma de todas essas versões integradas.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa gerar ícones personalizados?",
+    ctaDesc: "Experimente nosso gerador de favicons offline e converta seus arquivos PNG de forma privada diretamente em seu navegador.",
+    ctaButton: "Testar gerador de favicon",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs ICO: Format Mana yang Lebih Baik untuk Favicon? (2026)",
+    seoDescription: "PNG vs ICO. Kami membandingkan Portable Network Graphics dengan kontainer ikon lama ICO. Pelajari kapan harus menggunakan masing-masing format.",
+    title: "PNG vs ICO: Format Mana yang Lebih Baik?",
+    intro: "Perlu membuat favicon situs web atau ikon aplikasi? Kami membandingkan format modern PNG dengan kontainer ICO klasik untuk kinerja dan kompatibilitas.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "Ikon aplikasi web, logo resolusi tinggi, grafis mirip vektor, dan aset halaman standar untuk memanfaatkan rasio kompresi yang lebih baik dan ukuran file yang lebih ringan.",
+    useIcoFor: "Gunakan ICO untuk:",
+    useIcoForDesc: "File favicon.ico utama di direktori akar situs web Anda dan ikon aplikasi OS untuk menjamin dukungan sistem lama secara penuh.",
+    differenceTitle: "Apa Perbedaan Antara PNG dan ICO?",
+    differenceDesc: "Perbedaan utamanya adalah PNG adalah file gambar raster tunggal yang menggunakan kompresi lossless deflate, sedangkan ICO adalah kontainer yang dapat membungkus beberapa resolusi gambar dalam satu file biner.",
+    thFeature: "Fitur / Aspek",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "ICO (Icon Container Format)",
+    tdFileNature: "Natur File",
+    tdFileNaturePng: "Gambar raster tunggal",
+    tdFileNatureIco: "Kontainer untuk beberapa resolusi",
+    tdPurpose: "Tujuan Utama",
+    tdPurposePng: "Grafis web umum, UI, aset teks",
+    tdPurposeIco: "Favicon situs web, ikon aplikasi OS",
+    tdResolutions: "Resolusi yang Didukung",
+    tdResolutionsPng: "Satu resolusi per file",
+    tdResolutionsIco: "Beberapa ukuran (16px hingga 256px) dalam satu file",
+    tdSize: "Efisiensi Ukuran",
+    tdSizePng: "Sangat efisien (kompresi lossless deflate)",
+    tdSizeIco: "Lebih besar (menyimpan banyak gambar)",
+    tdTrans: "Transparansi",
+    tdTransPng: "Ya (saluran alpha 8-bit)",
+    tdTransIco: "Ya (didukung penuh)",
+    tdFallback: "Kecocokan Favicon Universal",
+    tdFallbackPng: "Tidak (browser lama mewajibkan format .ico)",
+    tdFallbackIco: "Ya (didukung secara universal oleh semua browser)",
+    tdAnim: "Animación",
+    tdAnimPng: "Ya (APNG)",
+    tdAnimIco: "Tidak",
+    converterTitle: "Konversi PNG ke ICO Favicon (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu PNG?",
+    divePngP1: "PNG adalah singkatan dari Portable Network Graphics. Format ini dirancang pada akhir tahun 1990-an sebagai alternatif bebas paten untuk GIF, menggunakan kompresi lossless deflate untuk menjaga kualitas gambar tetap sempurna.",
+    divePngP2: "PNG sangat populer untuk grafis web karena mendukung transparansi dengan saluran alpha 8-bit. Namun, satu file PNG hanya dapat menampung satu gambar dengan satu resolusi.",
+    divePngAdv: "Kelebihan PNG",
+    divePngAdvList: [
+      "Kualitas Lossless: Tampilan gambar sempurna tanpa artifak kompresi.",
+      "Saluran Alfa: Mendukung tepi transparan yang sangat halus pada latar belakang apa pun.",
+      "Ukuran Ringan: Sangat efisien untuk file gambar tunggal."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu ICO?",
+    diveIcoP1: "ICO adalah format kontainer ikon yang awalnya dikembangkan oleh Microsoft untuk Windows, lalu diadopsi untuk favicon web. Berbeda dari format gambar standar, file ICO dapat menampung beberapa salinan gambar yang sama dalam berbagai ukuran (seperti 16x16, 32x32, 48x48, dan 256x256 piksel).",
+    diveIcoP2: "Ini sangat penting untuk favicon web karena browser dapat secara otomatis memilih ukuran ikon yang paling sesuai dengan context antarmuka.",
+    diveIcoAdv: "Kelebihan ICO",
+    diveIcoAdvList: [
+      "Kontainer Multi-resolusi: Menyimpan berbagai ukuran gambar dalam satu file.",
+      "Dukungan Universal: Diperlukan agar kompatibel dengan peramban lama dan perayap web.",
+      "Ikon Sistem OS: Format ikon wajib untuk pintasan desktop Windows."
+    ],
+    q1: "Apa perbedaan antara PNG dan ICO?",
+    a1: "PNG adalah file gambar tunggal standar untuk grafis web. ICO adalah kontainer yang dapat menampung beberapa resolusi gambar dalam satu file untuk favicon atau ikon aplikasi desktop.",
+    q2: "Kapan saya harus menggunakan ICO dibanding PNG?",
+    a2: "Gunakan ICO untuk file 'favicon.ico' di direktori akar server web Anda untuk memastikan kecocokan dengan seluruh peramban dan mesin pencari. Gunakan PNG untuk keperluan grafis lainnya.",
+    q3: "Apakah PNG bisa diubah ke ICO?",
+    a3: "Ya. Anda dapat mengonversi gambar PNG persegi menjadi file favicon ICO dengan mudah menggunakan alat offline gratis kami di peramban.",
+    q4: "Apakah browser modern mendukung favicon PNG?",
+    a4: "Ya, browser modern mendukung favicon PNG menggunakan tag HTML rel='icon'. Namun, disarankan tetap menyimpan favicon.ico di direktori akar server untuk menghindari kesalahan 404.",
+    q5: "Mengapa ukuran file ICO terkadang lebih besar daripada PNG?",
+    a5: "Karena ICO adalah kontainer. Jika file ICO tersebut mengemas gambar dalam beberapa ukuran sekaligus (seperti 16x16 dan 32x32), ukuran totalnya adalah gabungan dari semua ukuran tersebut.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Ingin membuat ikon kustom Anda sendiri?",
+    ctaDesc: "Coba pembuat favicon offline kami dan buat file ICO dari PNG Anda dengan aman dan 100% privat langsung di browser Anda.",
+    ctaButton: "Coba Pembuat Favicon",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-ico")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "ico-converter");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs ICO</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">ICO</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useIcoFor}</strong> {text.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileNature}</td>
+                <td class="p-4">{text.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{text.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPurpose}</td>
+                <td class="p-4">{text.tdPurposePng}</td>
+                <td class="p-4 text-success">{text.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdResolutions}</td>
+                <td class="p-4">{text.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{text.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4">{text.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-success">{text.tdTransIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFallback}</td>
+                <td class="p-4 text-error">{text.tdFallbackPng}</td>
+                <td class="p-4 text-success">{text.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnim}</td>
+                <td class="p-4 text-success">{text.tdAnimPng}</td>
+                <td class="p-4 text-error">{text.tdAnimIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <IcoConverterTool toolId="png-to-ico" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: ICO -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveIcoTitle}</h2>
+        <p>{text.diveIcoP1}</p>
+        <p>{text.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

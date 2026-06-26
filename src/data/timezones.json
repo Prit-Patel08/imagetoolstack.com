@@ -1,0 +1,133 @@
+{
+  "zones": [
+    {
+      "code": "UTC",
+      "iana": "UTC",
+      "name": "Coordinated Universal Time",
+      "city": "UTC"
+    },
+    {
+      "code": "GMT",
+      "iana": "Europe/London",
+      "name": "Greenwich Mean Time",
+      "city": "London"
+    },
+    {
+      "code": "EST",
+      "iana": "America/New_York",
+      "name": "Eastern Standard Time",
+      "city": "New York"
+    },
+    {
+      "code": "PST",
+      "iana": "America/Los_Angeles",
+      "name": "Pacific Standard Time",
+      "city": "Los Angeles"
+    },
+    {
+      "code": "CST",
+      "iana": "America/Chicago",
+      "name": "Central Standard Time",
+      "city": "Chicago"
+    },
+    {
+      "code": "MST",
+      "iana": "America/Denver",
+      "name": "Mountain Standard Time",
+      "city": "Denver"
+    },
+    {
+      "code": "IST",
+      "iana": "Asia/Kolkata",
+      "name": "Indian Standard Time",
+      "city": "Mumbai"
+    },
+    {
+      "code": "CET",
+      "iana": "Europe/Paris",
+      "name": "Central European Time",
+      "city": "Paris"
+    },
+    {
+      "code": "AEST",
+      "iana": "Australia/Sydney",
+      "name": "Australian Eastern Standard Time",
+      "city": "Sydney"
+    },
+    {
+      "code": "JST",
+      "iana": "Asia/Tokyo",
+      "name": "Japan Standard Time",
+      "city": "Tokyo"
+    },
+    {
+      "code": "WIB",
+      "iana": "Asia/Jakarta",
+      "name": "Western Indonesian Time",
+      "city": "Jakarta"
+    },
+    {
+      "code": "BRT",
+      "iana": "America/Sao_Paulo",
+      "name": "Brasilia Time",
+      "city": "São Paulo"
+    }
+  ],
+  "pairs": [
+    { "from": "UTC", "to": "EST" },
+    { "from": "UTC", "to": "PST" },
+    { "from": "UTC", "to": "IST" },
+    { "from": "UTC", "to": "GMT" },
+    { "from": "UTC", "to": "CET" },
+    { "from": "UTC", "to": "CST" },
+    { "from": "UTC", "to": "MST" },
+    { "from": "UTC", "to": "AEST" },
+    { "from": "UTC", "to": "JST" },
+    { "from": "GMT", "to": "EST" },
+    { "from": "GMT", "to": "PST" },
+    { "from": "GMT", "to": "IST" },
+    { "from": "GMT", "to": "CET" },
+    { "from": "GMT", "to": "CST" },
+    { "from": "GMT", "to": "MST" },
+    { "from": "GMT", "to": "AEST" },
+    { "from": "GMT", "to": "JST" },
+    { "from": "EST", "to": "IST" },
+    { "from": "EST", "to": "GMT" },
+    { "from": "EST", "to": "CET" },
+    { "from": "EST", "to": "PST" },
+    { "from": "EST", "to": "CST" },
+    { "from": "EST", "to": "MST" },
+    { "from": "EST", "to": "AEST" },
+    { "from": "EST", "to": "JST" },
+    { "from": "EST", "to": "BRT" },
+    { "from": "PST", "to": "IST" },
+    { "from": "PST", "to": "GMT" },
+    { "from": "PST", "to": "CET" },
+    { "from": "PST", "to": "EST" },
+    { "from": "PST", "to": "CST" },
+    { "from": "PST", "to": "MST" },
+    { "from": "PST", "to": "AEST" },
+    { "from": "PST", "to": "JST" },
+    { "from": "CST", "to": "IST" },
+    { "from": "CST", "to": "GMT" },
+    { "from": "CST", "to": "CET" },
+    { "from": "CST", "to": "EST" },
+    { "from": "CST", "to": "PST" },
+    { "from": "CST", "to": "MST" },
+    { "from": "CST", "to": "AEST" },
+    { "from": "MST", "to": "IST" },
+    { "from": "MST", "to": "GMT" },
+    { "from": "MST", "to": "CET" },
+    { "from": "MST", "to": "EST" },
+    { "from": "MST", "to": "PST" },
+    { "from": "MST", "to": "CST" },
+    { "from": "CET", "to": "IST" },
+    { "from": "CET", "to": "GMT" },
+    { "from": "CET", "to": "EST" },
+    { "from": "CET", "to": "PST" },
+    { "from": "IST", "to": "GMT" },
+    { "from": "IST", "to": "JST" },
+    { "from": "IST", "to": "WIB" },
+    { "from": "IST", "to": "AEST" }
+  ]
+}

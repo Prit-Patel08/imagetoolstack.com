@@ -25,7 +25,7 @@ const builtFor = locale === 'es' ? 'Creado para el rendimiento y la privacidad.'
 ---
 <footer class="mt-auto border-t border-hairline bg-canvas py-16 lg:py-24">
   <div class="mx-auto max-w-[1400px] px-6 lg:px-8">
-    <div class="grid grid-cols-2 gap-12 md:grid-cols-5">
+    <div class="grid grid-cols-2 gap-12 sm:grid-cols-3 lg:grid-cols-6">
       <div class="flex flex-col gap-4">
         <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">{t.nav.convert}</span>
         <ul class="flex flex-col gap-2">
@@ -52,6 +52,16 @@ const builtFor = locale === 'es' ? 'Creado para el rendimiento y la privacidad.'
           <li><a href={getLocalizedPath("/tools/color-picker", locale)} class="text-sm text-body hover:text-ink transition-colors">Color Picker</a></li>
           <li><a href={getLocalizedPath("/tools/metadata-viewer", locale)} class="text-sm text-body hover:text-ink transition-colors">Metadata Viewer</a></li>
           <li><a href={getLocalizedPath("/tools/image-to-base64", locale)} class="text-sm text-body hover:text-ink transition-colors">Image to Base64</a></li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute">{locale === 'es' ? 'Hora y Fecha' : locale === 'fr' ? 'Heure & Date' : locale === 'de' ? 'Zeit & Datum' : locale === 'pt' ? 'Hora e Data' : locale === 'id' ? 'Waktu & Tanggal' : 'Time & Date'}</span>
+        <ul class="flex flex-col gap-2">
+          <li><a href={getLocalizedPath("/tools/unix-timestamp", locale)} class="text-sm text-body hover:text-ink transition-colors">{locale === 'es' ? 'Conversor Unix' : locale === 'fr' ? 'Convertisseur Unix' : locale === 'de' ? 'Unix-Timestamp' : locale === 'pt' ? 'Conversor Unix' : locale === 'id' ? 'Konverter Unix' : 'Unix Timestamp'}</a></li>
+          <li><a href={getLocalizedPath("/tools/timezone-converter", locale)} class="text-sm text-body hover:text-ink transition-colors">{locale === 'es' ? 'Conversor Zona Horaria' : locale === 'fr' ? 'Convertisseur Fuseau' : locale === 'de' ? 'Zeitzonen-Konverter' : locale === 'pt' ? 'Conversor de Fuso' : locale === 'id' ? 'Konverter Zona Waktu' : 'Time Zone Converter'}</a></li>
+          <li><a href={getLocalizedPath("/tools/date-calculator", locale)} class="text-sm text-body hover:text-ink transition-colors">{locale === 'es' ? 'Calculadora de Fecha' : locale === 'fr' ? 'Calculateur de Date' : locale === 'de' ? 'Datumsrechner' : locale === 'pt' ? 'Calculadora de Data' : locale === 'id' ? 'Kalkulator Tanggal' : 'Date Calculator'}</a></li>
+          <li><a href={getLocalizedPath("/tools/age-calculator", locale)} class="text-sm text-body hover:text-ink transition-colors">{locale === 'es' ? 'Calculadora de Edad' : locale === 'fr' ? 'Calculateur d\'Âge' : locale === 'de' ? 'Altersrechner' : locale === 'pt' ? 'Calculadora de Idade' : locale === 'id' ? 'Kalkulator Usia' : 'Age Calculator'}</a></li>
         </ul>
       </div>
 

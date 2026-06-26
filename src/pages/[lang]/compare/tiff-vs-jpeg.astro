@@ -1,0 +1,896 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "TIFF vs JPEG: ¿Qué formato deberían usar los fotógrafos? (Guía 2026)",
+    seoDescription: "¿Cuál es la diferencia entre TIFF y JPEG? Comparamos tamaños de archivo, artefactos de compresión y calidad de impresión para su fotografía.",
+    title: "TIFF vs JPEG: ¿Qué formato debería usar?",
+    intro: "Si trabaja con fotografía digital o diseño gráfico, eventualmente tendrá que elegir entre TIFF y JPEG. Uno está diseñado para archivar calidad bruta y sin pérdidas, mientras que el otro está diseñado para compartir rápidamente y rendimiento web. Analicemos las diferencias técnicas.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use TIFF para:",
+    useTiffForDesc: "impresión profesional, archivar fotografía original y guardar ediciones intermedias en Photoshop sin perder datos.",
+    useJpgFor: "Use JPEG para:",
+    useJpgForDesc: "subir fotos a redes sociales, entregar fotos finales a clientes y publicar imágenes en su sitio web.",
+    differenceTitle: "¿Cuál es la diferencia entre TIFF y JPEG?",
+    differenceDesc: "Aunque ambos formatos muestran imágenes fotográficas, utilizan tecnologías de compresión completamente diferentes. Aquí hay una comparación técnica lado a lado de TIFF vs JPEG.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "TIFF (.tiff / .tif)",
+    thJpeg: "JPEG estándar (.jpg)",
+    tdCompression: "Tipo de compresión",
+    tdCompressionTiff: "Sin pérdidas (LZW, ZIP o sin compresión)",
+    tdCompressionJpg: "Con pérdidas (transformada de coseno discreta)",
+    tdBrowser: "Soporte de navegador web",
+    tdBrowserTiff: "Ninguno (no se puede ver en páginas web)",
+    tdBrowserJpg: "Universal (soportado nativamente en todas partes)",
+    tdFileSize: "Tamaños de archivo",
+    tdFileSizeTiff: "Masivos (normalmente 20MB a 100MB+)",
+    tdFileSizeJpg: "Muy pequeños (típicamente 1MB a 5MB)",
+    tdLayer: "Soporte de capas y páginas",
+    tdLayerTiff: "Sí (puede almacenar múltiples páginas y capas de edición)",
+    tdLayerJpg: "No (solo un cuadro de imagen plano único)",
+    tdBitDepth: "Compatibilidad de profundidad de bits",
+    tdBitDepthTiff: "Hasta 32 bits (excelente HDR y detalles dinámicos)",
+    tdBitDepthJpg: "Límite de 8 bits (16.7 millones de colores)",
+    tdTransparency: "Soporte de transparencia",
+    tdTransparencyTiff: "Sí (soporta transparencia de canal Alfa)",
+    tdTransparencyJpg: "No (los fondos se aplanan a blanco)",
+    tdUseCase: "Caso de uso ideal",
+    tdUseCaseTiff: "Impresión profesional y archivado de fotos",
+    tdUseCaseJpg: "Publicación web, correo electrónico y redes sociales",
+    tdEfficiency: "Eficiencia de compresión",
+    tdEfficiencyTiff: "Baja (conserva grandes cargas para seguridad de datos)",
+    tdEfficiencyJpg: "Alta (optimiza archivos hasta un 90% más pequeños)",
+    converterTitle: "Convertir TIFF a JPG al instante (Gratis y Privado)",
+    testTitle: "Pruebas del mundo real: Tamaños de archivo TIFF vs JPEG",
+    testDesc: "Para ilustrar el equilibrio entre la preservación de la imagen y la compresión, guardamos una captura de sensor de cámara de alta resolución utilizando diferentes formatos. Los resultados muestran por qué JPEG es esencial para la publicación web y por qué TIFF se requiere para copias maestras.",
+    testTiffTitle: "TIFF sin compresión",
+    testTiffDesc: "Preserva el 100% de los datos brutos del sensor y perfiles de color. Esencial para edición e impresión profesional, pero demasiado pesado para la web.",
+    testTiffLzwTitle: "TIFF (LZW sin pérdidas)",
+    testTiffLzwDesc: "Utiliza compresión LZW sin pérdidas para reducir el tamaño sin perder un solo píxel de detalle. Ideal para archivado local.",
+    testJpgTitle: "JPEG (Calidad 90%)",
+    testJpgDesc: "Logra una reducción de tamaño del 93% en comparación con TIFF. Pérdida menor de detalles invisibles, pero visualmente idéntico al ojo humano.",
+    testTakeaway: "Conclusión: El archivado de archivos originales o ediciones de alta calidad siempre debe hacerse en TIFF. Sin embargo, debe convertir estos archivos a JPEG o WebP/AVIF antes de subirlos a servidores web, ya que los navegadores no renderizan TIFF y sus tamaños masivos arruinarán los tiempos de carga.",
+    diveTiffTitle: "Análisis profundo: ¿Qué es un TIFF?",
+    diveTiffP1: "TIFF significa Tagged Image File Format. Desarrollado originalmente por Aldus Corporation (ahora Adobe) en 1986, fue diseñado para establecer un formato unificado para escáneres de escritorio y aplicaciones de diseño gráfico.",
+    diveTiffP2: "TIFF es un diseño basado en contenedores altamente flexible. Puede almacenar imágenes utilizando algoritmos de compresión sin pérdidas como LZW o ZIP, o permanecer completamente sin compresión. Esto significa que cada vez que guarda un TIFF, el 100% de la información del canal de color original se escribe en el disco, preservando una fidelidad gráfica perfecta.",
+    diveTiffAdv: "Ventajas de TIFF",
+    diveTiffAdvList: [
+      "Cero pérdida de calidad: El renderizado sin pérdidas garantiza que no haya ruido de compresión ni bordes difusos.",
+      "Soporte de capas y páginas múltiples: Puede almacenar múltiples páginas o capas de Photoshop en un solo archivo.",
+      "Excelente calidad de impresión: Perfecta traducción de matrices de color para sistemas de impresión de alta gama."
+    ],
+    diveTiffDis: "Desventajas de TIFF",
+    diveTiffDisList: [
+      "Almacenamiento de archivos inflado: Los archivos son extremadamente pesados, consumiendo un espacio de disco significativo.",
+      "Sin renderizado web: Los navegadores web no pueden mostrar archivos TIFF. Deben convertirse para la web."
+    ],
+    diveJpgTitle: "Análisis profundo: ¿Qué es un JPEG estándar?",
+    diveJpgP1: "JPEG (Joint Photographic Experts Group) es el formato ráster más popular en la web hoy en día. Lanzado en 1992, fue diseñado para comprimir imágenes fotográficas en archivos ligeros que pudieran transmitirse fácilmente por internet.",
+    diveJpgP2: "A diferencia de TIFF, JPEG utiliza matemáticas de compresión con pérdidas. Identifica bloques de color y detalles a los que el ojo humano es menos sensible y los descarta, lo que resulta en enormes ahorros de tamaño de archivo.",
+    diveJpgAdv: "Ventajas de JPEG",
+    diveJpgAdvList: [
+      "Reproducción universal: Soportado por todas las computadoras, teléfonos, tabletas y televisores inteligentes.",
+      "Huella compacta: Increíblemente ligero, lo que permite que las páginas se carguen rápidamente.",
+      "Metadatos EXIF enriquecidos: Estándar para incrustar parámetros de cámara y metadatos."
+    ],
+    diveJpgDis: "Desventajas de JPEG",
+    diveJpgDisList: [
+      "Pérdida por generación: Guardar repetidamente un JPEG hace que se pierdan más detalles para siempre.",
+      "Sin transparencia ni capas: Las imágenes son siempre archivos planos de un solo cuadro."
+    ],
+    snippetSectionTitle: "Cuándo usar TIFF vs JPEG",
+    snippetSectionDesc: "Comprender las diferencias entre TIFF y JPEG le ayuda a elegir el formato correcto para su flujo de trabajo específico.",
+    q1: "¿Es TIFF de mejor calidad que JPEG?",
+    a1: "Sí. TIFF es de mayor calidad que JPEG porque utiliza compresión sin pérdidas (o ninguna compresión), lo que significa que no descarta ningún dato de píxeles. Los JPEGs usan compresión con pérdidas que elimina permanentemente información visual para ahorrar espacio.",
+    q2: "¿Debería usar TIFF o JPEG para imprimir?",
+    a2: "Debe usar TIFF para la impresión profesional. Preserva la precisión del color, detalles finos y altas profundidades de bits necesarias para impresiones artísticas o pancartas. Para impresiones estándar de consumo, JPEG es suficiente.",
+    q3: "¿Pueden los navegadores web mostrar archivos TIFF?",
+    a3: "No. Chrome, Safari, Firefox y Edge no admiten archivos TIFF de forma nativa. Para mostrar imágenes en la web, debe convertir sus archivos TIFF a formatos compatibles con la web como JPEG, WebP o PNG.",
+    q4: "¿Por qué el tamaño del archivo TIFF es mucho mayor que el de JPEG?",
+    a4: "Los tamaños de archivo TIFF son mucho mayores porque almacenan todos los detalles brutos originales, capas y perfiles de color sin descartar datos. Los JPEGs comprimen archivos hasta un 90% descartando píxeles usando DCT.",
+    q5: "¿Admite TIFF transparencia?",
+    a5: "Sí. TIFF admite transparencia de canal Alfa, lo que permite fondos transparentes y superposiciones. JPEG no admite transparencia; guardarlo como JPEG convertirá las áreas transparentes en color blanco sólido.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir imágenes TIFF para la web?",
+    ctaDesc: "Use nuestra herramienta gratuita, privada y en el navegador para convertir archivos TIFF a JPEG web seguros al instante.",
+    ctaButton: "Probar el Convertidor de TIFF a JPG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "TIFF vs JPEG : Quel format pour les photographes ? (Guide 2026)",
+    seoDescription: "Quelle est la différence entre TIFF et JPEG ? Nous comparons le poids des fichiers, les artefacts et la qualité d'impression pour votre photographie.",
+    title: "TIFF vs JPEG : Quel format devez-vous utiliser ?",
+    intro: "Si vous travaillez dans la photographie ou le graphisme, vous devrez un jour choisir entre le TIFF et le JPEG. L'un est fait pour archiver la qualité brute sans perte, l'autre pour le partage rapide et le web. Comparons les aspects techniques.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le TIFF pour :",
+    useTiffForDesc: "l'impression professionnelle, l'archivage de photos originales et l'enregistrement de vos retouches Photoshop sans perte.",
+    useJpgFor: "Utilisez le JPEG pour :",
+    useJpgForDesc: "publier sur les réseaux sociaux, livrer des photos à vos clients et afficher des images sur votre site web.",
+    differenceTitle: "Quelle est la différence entre TIFF et JPEG ?",
+    differenceDesc: "Bien que les deux formats affichent des photos, ils utilisent des méthodes de compression totalement différentes. Voici notre tableau comparatif.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "TIFF (.tiff / .tif)",
+    thJpeg: "JPEG standard (.jpg)",
+    tdCompression: "Type de compression",
+    tdCompressionTiff: "Sans perte (LZW, ZIP ou non compressé)",
+    tdCompressionJpg: "Avec perte (Discrete Cosine Transform)",
+    tdBrowser: "Support navigateur",
+    tdBrowserTiff: "Aucun (impossible à afficher sur le web)",
+    tdBrowserJpg: "Universel (supporté nativement partout)",
+    tdFileSize: "Taille des fichiers",
+    tdFileSizeTiff: "Massive (généralement 20 Mo à 100 Mo+)",
+    tdFileSizeJpg: "Très petite (généralement 1 Mo à 5 Mo)",
+    tdLayer: "Calques & Pages multiples",
+    tdLayerTiff: "Oui (peut stocker plusieurs pages et des calques)",
+    tdLayerJpg: "Non (image plate à calque unique)",
+    tdBitDepth: "Profondeur des couleurs",
+    tdBitDepthTiff: "Jusqu'à 32 bits (excellent HDR et dynamique)",
+    tdBitDepthJpg: "8 bits maximum (16,7 millions de couleurs)",
+    tdTransparency: "Gestion de la transparence",
+    tdTransparencyTiff: "Oui (prend en charge le canal Alpha)",
+    tdTransparencyJpg: "Non (fond transparent aplati en blanc)",
+    tdUseCase: "Usage recommandé",
+    tdUseCaseTiff: "Impression professionnelle & archivage photo",
+    tdUseCaseJpg: "Web, emailing & réseaux sociaux",
+    tdEfficiency: "Efficacité de compression",
+    tdEfficiencyTiff: "Faible (conserve toutes les données brutes)",
+    tdEfficiencyJpg: "Élevée (réduit la taille jusqu'à 90 %)",
+    converterTitle: "Convertir TIFF en JPG instantanément (Gratuit & Privé)",
+    testTitle: "Tests réels : Tailles de fichiers TIFF vs JPEG",
+    testDesc: "Pour illustrer le compromis entre poids et qualité, nous avons exporté une image haute définition dans différents formats. Le JPEG est parfait pour le web, mais le TIFF reste le maître absolu.",
+    testTiffTitle: "TIFF non compressé",
+    testTiffDesc: "Conserve 100 % des données brutes et profils de couleur. Idéal pour l'impression fine, mais trop lourd pour le web.",
+    testTiffLzwDesc: "Utilise la compression sans perte LZW pour réduire le poids sans perdre le moindre pixel. Idéal pour l'archivage local.",
+    testTiffLzwTitle: "TIFF (LZW sans perte)",
+    testJpgTitle: "JPEG (Qualité 90%)",
+    testJpgDesc: "Réduction de 93 % du poids par rapport au TIFF. Légère perte de données invisibles, mais identique à l'œil nu.",
+    testTakeaway: "Conclusion : Le TIFF est indispensable pour conserver vos fichiers sources ou vos impressions de haute qualité. Convertissez-les toujours en JPEG ou WebP/AVIF pour le web, car le TIFF ralentira lourdement le chargement.",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le TIFF ?",
+    diveTiffP1: "TIFF signifie Tagged Image File Format. Créé à l'origine par Aldus (aujourd'hui Adobe) en 1986, il visait à standardiser les fichiers issus des scanners et des logiciels de mise en page.",
+    diveTiffP2: "Le TIFF est un conteneur très souple. Il sauvegarde vos images sans perte (via LZW ou ZIP) ou sans compression. Chaque pixel conserve sa fidélité d'origine, même après de multiples enregistrements.",
+    diveTiffAdv: "Avantages du TIFF",
+    diveTiffAdvList: [
+      "Qualité sans perte absolue : Aucun artefact ni bruit de compression.",
+      "Multi-pages & Calques : Stocke plusieurs pages ou calques Photoshop dans un seul fichier.",
+      "Impression haut de gamme : Parfaite gestion des profils de couleurs pour l'imprimerie."
+    ],
+    diveTiffDis: "Inconvénients du TIFF",
+    diveTiffDisList: [
+      "Fichiers très lourds : Encombre rapidement l'espace de stockage.",
+      "Non affichable sur le web : Les navigateurs ne lisent pas le TIFF. Une conversion est nécessaire."
+    ],
+    diveJpgTitle: "Analyse approfondie : Qu'est-ce que le JPEG standard ?",
+    diveJpgP1: "Le JPEG (Joint Photographic Experts Group) est le format d'image le plus populaire du web. Créé en 1992, il compresse les photos pour faciliter leur transfert sur internet.",
+    diveJpgP2: "Contrairement au TIFF, le JPEG utilise une compression avec perte. Il supprime les variations de couleur peu perceptibles par l'œil humain pour alléger considérablement le fichier.",
+    diveJpgAdv: "Avantages du JPEG",
+    diveJpgAdvList: [
+      "Compatibilité totale : Lu par tous les ordinateurs, téléphones et téléviseurs.",
+      "Poids plume : Permet un chargement ultra-rapide des pages web.",
+      "Données EXIF : Intègre les paramètres de prise de vue de l'appareil."
+    ],
+    diveJpgDis: "Inconvénients du JPEG",
+    diveJpgDisList: [
+      "Perte de génération : Ré-enregistrer un JPEG dégrade la qualité à chaque étape.",
+      "Pas de transparence ni calques : L'image est obligatoirement aplatie sur un seul plan."
+    ],
+    snippetSectionTitle: "Quand utiliser le TIFF vs JPEG",
+    snippetSectionDesc: "Découvrez les réponses aux questions les plus fréquentes sur ces deux formats.",
+    q1: "Le TIFF est-il de meilleure qualité que le JPEG ?",
+    a1: "Oui. Le TIFF offre une meilleure qualité d'image car sa compression est sans perte (voire absente). Le JPEG supprime définitivement des données pour économiser du poids, créant parfois des blocs flous.",
+    q2: "Dois-je utiliser le TIFF ou le JPEG pour l'impression ?",
+    a2: "Utilisez le TIFF pour les impressions grand format, artistiques ou professionnelles. Il garantit la fidélité des couleurs. Pour des tirages 10x15 classiques, le JPEG haute qualité est largement suffisant.",
+    q3: "Les navigateurs peuvent-ils afficher le TIFF ?",
+    a3: "Non. Chrome, Safari, Firefox et Edge ne prennent pas en charge le TIFF. Pour le web, vous devez convertir vos fichiers TIFF en JPEG, WebP ou PNG.",
+    q4: "Pourquoi le fichier TIFF est-il beaucoup plus lourd que le JPEG ?",
+    a4: "Le TIFF conserve l'intégralité des données d'origine, calques et profils colorimétriques. Le JPEG compresse et supprime jusqu'à 90 % des informations via la transformée en cosinus discrète (DCT).",
+    q5: "Le TIFF gère-t-il la transparence ?",
+    a5: "Oui. Le TIFF prend en charge le canal Alpha pour les fonds transparents. Le JPEG ne le gère pas et remplace les transparences par du blanc.",
+    faqTitle: "Questions fréquemment posées",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir du TIFF pour le web ?",
+    ctaDesc: "Utilisez notre convertisseur en ligne gratuit et sécurisé pour transformer vos TIFF en JPEG légers.",
+    ctaButton: "Essayer le convertisseur TIFF en JPG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "TIFF vs. JPEG: Welches Format für Fotografen? (Leitfaden 2026)",
+    seoDescription: "Was ist der Unterschied zwischen TIFF und JPEG? Wir vergleichen Dateigrößen, Kompressionsartefakte und Druckqualität für Ihre Fotografie.",
+    title: "TIFF vs. JPEG: Welches Format sollten Sie verwenden?",
+    intro: "Wenn Sie mit digitaler Fotografie oder Grafikdesign arbeiten, müssen Sie sich zwischen TIFF und JPEG entscheiden. Eines ist für die verlustfreie Archivierung gedacht, das andere für das schnelle Teilen und Web-Performance. Hier ist der Vergleich.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Verwenden Sie TIFF für:",
+    useTiffForDesc: "professionellen Druck, Archivierung von Originalfotos und Speichern von Zwischenschritten in Photoshop ohne Datenverlust.",
+    useJpgFor: "Verwenden Sie JPEG für:",
+    useJpgForDesc: "das Hochladen von Bildern in soziale Medien, das Ausliefern an Kunden und die Veröffentlichung auf Webseiten.",
+    differenceTitle: "Was ist der Unterschied zwischen TIFF und JPEG?",
+    differenceDesc: "Obwohl beide Formate Fotos anzeigen, nutzen sie völlig unterschiedliche Kompressionstechnologien. Hier ist der direkte Vergleich von TIFF vs. JPEG.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "TIFF (.tiff / .tif)",
+    thJpeg: "Standard-JPEG (.jpg)",
+    tdCompression: "Kompressionstyp",
+    tdCompressionTiff: "Verlustfrei (LZW, ZIP oder unkomprimiert)",
+    tdCompressionJpg: "Verlustbehaftet (Diskrete Kosinustransformation)",
+    tdBrowser: "Browser-Unterstützung",
+    tdBrowserTiff: "Keine (kann nicht im Webbrowser geladen werden)",
+    tdBrowserJpg: "Universell (wird nativ überall unterstützt)",
+    tdFileSize: "Dateigrößen",
+    tdFileSizeTiff: "Riesig (meist 20 MB bis über 100 MB)",
+    tdFileSizeJpg: "Sehr klein (typischerweise 1 MB bis 5 MB)",
+    tdLayer: "Ebenen & Mehrseitigkeit",
+    tdLayerTiff: "Ja (kann mehrere Seiten und Bearbeitungsebenen speichern)",
+    tdLayerJpg: "Nein (nur ein einzelnes flaches Bild)",
+    tdBitDepth: "Farbtiefe",
+    tdBitDepthTiff: "Bis zu 32-Bit (hervorragend für HDR und Dynamik)",
+    tdBitDepthJpg: "8-Bit-Limit (16,7 Millionen Farben)",
+    tdTransparency: "Transparenzunterstützung",
+    tdTransparencyTiff: "Ja (unterstützt Alphakanal-Transparenz)",
+    tdTransparencyJpg: "Nein (Hintergründe werden weiß gefärbt)",
+    tdUseCase: "Idealer Anwendungsfall",
+    tdUseCaseTiff: "Professioneller Druck & Fotoarchivierung",
+    tdUseCaseJpg: "Web-Publishing, E-Mails & soziale Netzwerke",
+    tdEfficiency: "Kompressionseffizienz",
+    tdEfficiencyTiff: "Niedrig (behält große Dateimengen für Datensicherheit)",
+    tdEfficiencyJpg: "Hoch (optimiert Dateien um bis zu 90% kleiner)",
+    converterTitle: "TIFF sofort in JPG konvertieren (Kostenlos & Privat)",
+    testTitle: "Praxistest: Dateigrößen TIFF vs. JPEG",
+    testDesc: "Um den Unterschied zwischen Bildqualitätserhalt und Kompression zu verdeutlichen, haben wir eine hochauflösende Datei in verschiedenen Formaten gespeichert. JPEG ist wichtig fürs Web, während TIFF das Archiv regiert.",
+    testTiffTitle: "Unkomprimiertes TIFF",
+    testTiffDesc: "Erhält 100% der Kameradaten und Farbprofile. Unverzichtbar für die Bearbeitung, aber zu schwer fürs Web.",
+    testTiffLzwTitle: "TIFF (LZW verlustfrei)",
+    testTiffLzwDesc: "Nutzt verlustfreie LZW-Kompression zur Verkleinerung ohne Qualitätsverlust. Ideal für lokale Archive.",
+    testJpgTitle: "JPEG (Qualität 90%)",
+    testJpgDesc: "Erreicht eine Größenreduzierung von 93% im Vergleich zu TIFF. Minimaler Datenverlust, aber visuell identisch.",
+    testTakeaway: "Fazit: Die Archivierung von Originaldateien sollte immer in TIFF erfolgen. Konvertieren Sie diese jedoch vor dem Hochladen in JPEG oder WebP/AVIF, da Browser TIFF-Dateien nicht anzeigen und die Größe die Ladezeit ruiniert.",
+    diveTiffTitle: "Deep Dive: Was ist TIFF?",
+    diveTiffP1: "TIFF steht für Tagged Image File Format. Es wurde 1986 von der Aldus Corporation (heute Adobe) entwickelt, um ein einheitliches Format für Desktop-Scanner und Grafikanwendungen zu schaffen.",
+    diveTiffP2: "TIFF ist ein hochflexibles Containerformat. Es kann Bilder verlustfrei komprimieren (mittels LZW oder ZIP) oder unkomprimiert speichern. So wird bei jedem Speichern die gesamte Farbinformation verlustfrei erhalten.",
+    diveTiffAdv: "Vorteile von TIFF",
+    diveTiffAdvList: [
+      "Keinerlei Qualitätsverlust: Verlustfreies Speichern ohne Kompressionsrauschen.",
+      "Ebenen- & Seitensupport: Kann mehrere Seiten oder Photoshop-Ebenen in einer Datei sichern.",
+      "Exzellente Druckqualität: Perfekte Farbdarstellung für moderne Druckmaschinen."
+    ],
+    diveTiffDis: "Nachteile von TIFF",
+    diveTiffDisList: [
+      "Riesiger Speicherbedarf: Dateien belegen sehr viel Festplattenplatz.",
+      "Keine Web-Darstellung: Browser können TIFF nicht anzeigen. Es muss vorher konvertiert werden."
+    ],
+    diveJpgTitle: "Deep Dive: Was ist Standard-JPEG?",
+    diveJpgP1: "JPEG (Joint Photographic Experts Group) ist das populärste Bildformat im Web. Es wurde 1992 entwickelt, um Fotos in leichte Dateien für die einfache Übertragung zu komprimieren.",
+    diveJpgP2: "Im Gegensatz zu TIFF nutzt JPEG eine verlustbehaftete Kompression. Es entfernt Farbinformationen, die das menschliche Auge kaum wahrnimmt, und spart so extrem viel Speicherplatz.",
+    diveJpgAdv: "Vorteile von JPEG",
+    diveJpgAdvList: [
+      "Universelle Kompatibilität: Wird von fast allen Computern, Handys und TVs unterstützt.",
+      "Geringe Größe: Ermöglicht schnelles Laden von Internetseiten.",
+      "Kameradaten: Unterstützt die Einbettung von Aufnahmeparametern (EXIF)."
+    ],
+    diveJpgDis: "Nachteile von JPEG",
+    diveJpgDisList: [
+      "Qualitätsverlust bei jedem Speichern: Wiederholtes Sichern verschlechtert das Bild dauerhaft.",
+      "Keine Transparenz oder Ebenen: Bilder bestehen immer aus einer einzigen, flachen Ebene."
+    ],
+    snippetSectionTitle: "Wann verwendet man TIFF vs. JPEG",
+    snippetSectionDesc: "Hier finden Sie direkte Antworten auf häufige Fragen zur Verwendung von TIFF und JPEG.",
+    q1: "Ist TIFF qualitativ besser als JPEG?",
+    q1Answer: "Ja. TIFF hat eine bessere Qualität, da es unkomprimiert oder verlustfrei arbeitet. JPEG löscht Bilddaten dauerhaft, was bei hoher Kompression zu Pixelartefakten führt.",
+    q2: "Sollte ich TIFF oder JPEG zum Drucken nutzen?",
+    a2: "Nutzen Sie TIFF für den professionellen Druck und Kunstplakate, um Farbtreue zu garantieren. Für normale Fotodrucke (z.B. im Drogeriemarkt) reicht JPEG völlig aus.",
+    q3: "Können Webbrowser TIFF-Dateien anzeigen?",
+    a3: "Nein. Chrome, Safari, Firefox und Edge unterstützen TIFF nicht nativ. Sie müssen Bilder erst in JPEG, WebP oder PNG konvertieren.",
+    q4: "Warum ist die TIFF-Datei so viel größer als JPEG?",
+    a4: "TIFF speichert alle Pixeldaten, Ebenen und Profile unkomprimiert. JPEG komprimiert die Daten durch dauerhaftes Löschen unsichtbarer Pixel mittels DCT um bis zu 90%.",
+    q5: "Unterstützt TIFF Transparenz?",
+    a5: "Ja. TIFF unterstützt Alphakanal-Transparenz. Standard-JPEG speichert keine transparenten Bereiche; sie werden beim Speichern automatisch weiß gefüllt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie TIFF-Bilder fürs Web konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um TIFF-Dateien sicher in JPEGs zu konvertieren.",
+    ctaButton: "TIFF-zu-JPG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "TIFF vs JPEG: Qual formato os fotógrafos devem usar? (Guia 2026)",
+    seoDescription: "Qual é a diferença entre TIFF e JPEG? Comparamos tamanho de arquivo, artefatos de compressão e qualidade de impressão para sua fotografia.",
+    title: "TIFF vs JPEG: Qual formato você deve usar?",
+    intro: "Se você trabalha com fotografia digital ou design gráfico, eventualmente terá que escolher entre TIFF e JPEG. Um é feito para arquivamento com qualidade sem perdas, enquanto o outro é feito para compartilhamento rápido e desempenho web. Vamos analisar as diferenças técnicas.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use TIFF para:",
+    useTiffForDesc: "impressão profissional, arquivar fotografia original e salvar edições no Photoshop sem perder dados.",
+    useJpgFor: "Use JPEG para:",
+    useJpgForDesc: "enviar fotos para redes sociais, entregar trabalhos finais para clientes e publicar imagens no seu site.",
+    differenceTitle: "Qual é a diferença entre TIFF e JPEG?",
+    differenceDesc: "Embora ambos os formatos exibam fotografias, eles usam tecnologias de compressão totalmente diferentes. Veja a comparação técnica lado a lado de TIFF vs JPEG.",
+    thFeature: "Recurso / Aspecto",
+    thTiff: "TIFF (.tiff / .tif)",
+    thJpeg: "JPEG padrão (.jpg)",
+    tdCompression: "Tipo de compressão",
+    tdCompressionTiff: "Sem perdas (LZW, ZIP ou não compactado)",
+    tdCompressionJpg: "Com perdas (Transformada Discreta de Cosseno)",
+    tdBrowser: "Suporte de navegadores web",
+    tdBrowserTiff: "Nenhum (não pode ser visualizado em páginas web)",
+    tdBrowserJpg: "Universal (suportado nativamente em todos os lugares)",
+    tdFileSize: "Tamanho dos arquivos",
+    tdFileSizeTiff: "Masivos (geralmente de 20MB a 100MB+)",
+    tdFileSizeJpg: "Muito pequenos (normalmente de 1MB a 5MB)",
+    tdLayer: "Suporte a páginas e camadas",
+    tdLayerTiff: "Sim (pode salvar múltiplas páginas e camadas de edição)",
+    tdLayerJpg: "Não (apenas uma única imagem achatada)",
+    tdBitDepth: "Profundidade de cores",
+    tdBitDepthTiff: "Até 32 bits (excelente dynamic range e detalhes em HDR)",
+    tdBitDepthJpg: "Limite de 8 bits (16,7 milhões de cores)",
+    tdTransparency: "Suporte a transparência",
+    tdTransparencyTiff: "Sim (suporta transparência de canal Alfa)",
+    tdTransparencyJpg: "Não (fundos transparentes ficam brancos)",
+    tdUseCase: "Caso de uso ideal",
+    tdUseCaseTiff: "Impressão profissional & arquivamento de fotos",
+    tdUseCaseJpg: "Publicação web, e-mail & redes sociais",
+    tdEfficiency: "Eficiência de compressão",
+    tdEfficiencyTiff: "Baixa (mantém arquivos pesados para preservar dados)",
+    tdEfficiencyJpg: "Alta (reduz o tamanho dos arquivos em até 90%)",
+    converterTitle: "Converter TIFF para JPG instantaneamente (Grátis & Privado)",
+    testTitle: "Testes reais: Tamanhos de arquivos TIFF vs JPEG",
+    testDesc: "Para demonstrar a diferença entre a preservação de dados e a compactação, salvamos uma foto de alta resolução em formatos diferentes. O JPEG é indispensável para a web, enquanto o TIFF é o rei do arquivamento.",
+    testTiffTitle: "TIFF sem compressão",
+    testTiffDesc: "Preserva 100% dos dados brutos e perfis de cores. Essencial para edição profissional, mas pesado demais para a web.",
+    testTiffLzwTitle: "TIFF (LZW sem perdas)",
+    testTiffLzwDesc: "Usa compactação sem perdas LZW para reduzir o arquivo sem comprometer um único pixel. Ideal para backup local.",
+    testJpgTitle: "JPEG (Qualidade 90%)",
+    testJpgDesc: "Redução de 93% no tamanho em relação ao TIFF. Pequena perda de detalhes invisíveis, mas idêntico a olho nu.",
+    testTakeaway: "Conclusão: O arquivamento de fotos originais ou edições complexas deve ser feito em TIFF. Porém, você deve convertê-las para JPEG ou WebP/AVIF antes de colocá-las em sites, já que navegadores não leem TIFF e o tamanho arruinará o carregamento.",
+    diveTiffTitle: "Análise profunda: O que é TIFF?",
+    diveTiffP1: "TIFF significa Tagged Image File Format. Desenvolvido pela Aldus Corporation (atual Adobe) em 1986, foi criado para padronizar arquivos de scanners e softwares de editoração eletrônica.",
+    diveTiffP2: "O TIFF funciona como um contêiner flexível. Pode guardar imagens sem perdas (com LZW ou ZIP) ou sem compactação nenhuma. Isso garante que a imagem preserve 100% da fidelidade, mesmo sendo salva repetidas vezes.",
+    diveTiffAdv: "Vantagens do TIFF",
+    diveTiffAdvList: [
+      "Zero perda de qualidade: Arquivos perfeitos, sem artefatos ou ruídos.",
+      "Camadas & Páginas: Pode armazenar várias páginas ou camadas de edição em um só arquivo.",
+      "Fidelidade de cores: Ideal para impressão gráfica profissional de alta qualidade."
+    ],
+    diveTiffDis: "Desvantagens do TIFF",
+    diveTiffDisList: [
+      "Arquivos muito pesados: Ocupam muito espaço no disco rígido.",
+      "Incompatível com a web: Navegadores não abrem TIFF. Precisa de conversão."
+    ],
+    diveJpgTitle: "Análise profunda: O que é o JPEG padrão?",
+    diveJpgP1: "JPEG (Joint Photographic Experts Group) é o formato de imagem mais popular da internet. Criado em 1992, foi feito para compactar fotos e facilitar a transmissão pela rede.",
+    diveJpgP2: "Ao contrário do TIFF, o JPEG usa compactação com perdas. Ele remove dados de cores que o olho humano não distingue com facilidade, reduzindo drasticamente o tamanho do arquivo.",
+    diveJpgAdv: "Vantagens do JPEG",
+    diveJpgAdvList: [
+      "Compatibilidade universal: Funciona em qualquer computador, celular ou TV.",
+      "Super leve: Permite que as páginas de sites carreguem rapidamente.",
+      "Metadados EXIF: Armazena informações da câmera e do local da foto."
+    ],
+    diveJpgDis: "Desventajas de JPEG",
+    diveJpgDisList: [
+      "Perda de dados acumulativa: Salvar um JPEG várias vezes destrói a qualidade.",
+      "Sem transparência: Imagens são sempre achatadas sem canal de transparência."
+    ],
+    snippetSectionTitle: "Quando usar TIFF ou JPEG",
+    snippetSectionDesc: "Veja respostas diretas para as dúvidas mais comuns sobre TIFF e JPEG.",
+    q1: "O TIFF tem mais qualidade que o JPEG?",
+    a1: "Sim. O TIFF tem qualidade muito superior porque é sem perdas. O JPEG remove informações de cores permanentemente, o que pode gerar ruídos visuais.",
+    q2: "Devo usar TIFF ou JPEG para impressão?",
+    a2: "Use TIFF para impressões profissionais, como banners e fotografias artísticas. Para revelações domésticas clássicas, o JPEG de alta qualidade é suficiente.",
+    q3: "Os navegadores abrem arquivos TIFF?",
+    a3: "Não. Chrome, Safari, Firefox e Edge não abrem arquivos TIFF. Para a internet, converta sempre seus arquivos TIFF para JPEG, WebP ou PNG.",
+    q4: "Por que o TIFF é tão maior que o JPEG?",
+    a4: "O TIFF guarda todas as cores, camadas e detalhes originais sem descarte. O JPEG compacta a imagem em até 90% eliminando pixels invisíveis via DCT.",
+    q5: "O TIFF aceita transparência?",
+    a5: "Sim. O TIFF suporta transparência de canal Alfa. O JPEG não suporta e preenche fundos transparentes com cor sólida (geralmente branco).",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa converter arquivos TIFF para a web?",
+    ctaDesc: "Use nossa ferramenta gratuita no navegador para converter suas imagens de TIFF para JPG com total segurança.",
+    ctaButton: "Testar Conversor de TIFF para JPG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "TIFF vs JPEG: Format Mana yang Harus Dipilih Fotografer? (Panduan 2026)",
+    seoDescription: "Apa perbedaan antara TIFF dan JPEG? Kami membandingkan ukuran file, kualitas cetak, dan kompresi gambar untuk membantu fotografi Anda.",
+    title: "TIFF vs JPEG: Format Mana yang Harus Anda Gunakan?",
+    intro: "Jika Anda bekerja di bidang fotografi digital atau desain grafis, Anda harus memilih antara TIFF dan JPEG. Yang satu untuk arsip berkualitas tanpa kehilangan data, yang lain untuk berbagi dengan cepat di web. Mari kita bahas perbedaannya.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan TIFF untuk:",
+    useTiffForDesc: "cetak profesional, pengarsipan foto asli, dan menyimpan edisi Photoshop tanpa kehilangan data.",
+    useJpgFor: "Gunakan JPEG untuk:",
+    useJpgForDesc: "mengunggah foto ke media sosial, mengirim hasil foto ke klien, dan menerbitkannya di situs web.",
+    differenceTitle: "Apa Perbedaan Antara TIFF dan JPEG?",
+    differenceDesc: "Meskipun kedua format menampilkan foto, keduanya menggunakan kompresi yang berbeda. Berikut tabel perbandingan teknis TIFF vs JPEG.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "TIFF (.tiff / .tif)",
+    thJpeg: "JPEG Standar (.jpg)",
+    tdCompression: "Jenis Kompresi",
+    tdCompressionTiff: "Lossless (LZW, ZIP, atau tanpa kompresi)",
+    tdCompressionJpg: "Lossy (Discrete Cosine Transform)",
+    tdBrowser: "Dukungan Browser Web",
+    tdBrowserTiff: "Tidak ada (tidak dapat ditampilkan di halaman web)",
+    tdBrowserJpg: "Universal (didukung secara bawaan di semua browser)",
+    tdFileSize: "Ukuran File",
+    tdFileSizeTiff: "Sangat Besar (biasanya 20MB hingga 100MB+)",
+    tdFileSizeJpg: "Sangat Kecil (biasanya 1MB hingga 5MB)",
+    tdLayer: "Dukungan Layer & Halaman",
+    tdLayerTiff: "Ya (dapat menyimpan banyak halaman dan layer edit)",
+    tdLayerJpg: "Tidak (hanya satu frame gambar datar)",
+    tdBitDepth: "Kedalaman Bit Warna",
+    tdBitDepthTiff: "Hingga 32-bit (sangat baik untuk detail HDR & dinamis)",
+    tdBitDepthJpg: "Batas 8-bit (16,7 juta warna)",
+    tdTransparency: "Dukungan Transparansi",
+    tdTransparencyTiff: "Ya (mendukung transparansi saluran Alpha)",
+    tdTransparencyJpg: "Tidak (latar belakang transparan diubah menjadi putih)",
+    tdUseCase: "Kasus Penggunaan Ideal",
+    tdUseCaseTiff: "Cetak Profesional & Pengarsipan Foto",
+    tdUseCaseJpg: "Penerbitan Web, Email & Media Sosial",
+    tdEfficiency: "Efisiensi Kompresi",
+    tdEfficiencyTiff: "Rendah (menyimpan seluruh data agar tetap aman)",
+    tdEfficiencyJpg: "Tinggi (mengompresi file hingga 90% lebih kecil)",
+    converterTitle: "Konversi TIFF ke JPG Instan (Gratis & Privat)",
+    testTitle: "Tes Dunia Nyata: Ukuran File TIFF vs JPEG",
+    testDesc: "Untuk menunjukkan perbandingan antara kualitas gambar dan kompresi, kami menyimpan file foto resolusi tinggi ke dalam berbagai format. JPEG sangat penting untuk web, sedangkan TIFF terbaik untuk arsip.",
+    testTiffTitle: "TIFF Tanpa Kompresi",
+    testTiffDesc: "Mempertahankan 100% data mentah dan profil warna. Sangat penting untuk pengeditan profesional, tetapi terlalu berat untuk web.",
+    testTiffLzwTitle: "TIFF (LZW Lossless)",
+    testTiffLzwDesc: "Menggunakan kompresi lossless LZW untuk memperkecil file tanpa merusak detail piksel gambar. Bagus untuk cadangan lokal.",
+    testJpgTitle: "JPEG (Kualitas 90%)",
+    testJpgDesc: "Menghemat ukuran file hingga 93% dibandingkan TIFF. Sedikit data hilang secara tak kasat mata, tetapi tampak identik di mata manusia.",
+    testTakeaway: "Kesimpulan: Menyimpan file asli atau edisi berkualitas tinggi harus dilakukan dalam format TIFF. Namun, konversikan file ke JPEG atau WebP sebelum diunggah ke web, karena browser tidak mendukung TIFF dan ukuran file yang besar akan merusak kecepatan web.",
+    diveTiffTitle: "Analisis Mendalam: Apa itu TIFF?",
+    diveTiffP1: "TIFF singkatan dari Tagged Image File Format. Dikembangkan oleh Aldus Corporation (sekarang Adobe) pada tahun 1986 untuk menstandardisasi file dari pemindai desktop dan program desain grafis.",
+    diveTiffP2: "TIFF bekerja sebagai kontainer yang fleksibel. Format ini dapat menyimpan gambar tanpa kehilangan data (menggunakan LZW atau ZIP) atau tanpa kompresi sama sekali. Ini memastikan kualitas gambar tetap sempurna meski disimpan berulang kali.",
+    diveTiffAdv: "Kelebihan TIFF",
+    diveTiffAdvList: [
+      "Tanpa Kehilangan Kualitas: Hasil gambar sempurna tanpa artefak kompresi.",
+      "Dukungan Layer & Halaman: Menyimpan banyak halaman atau layer Photoshop dalam satu file.",
+      "Fidelity Warna Cetak: Sangat cocok untuk industri percetakan grafis profesional."
+    ],
+    diveTiffDis: "Kekurangan TIFF",
+    diveTiffDisList: [
+      "Ukuran file sangat besar: Mengonsumsi banyak ruang penyimpanan lokal.",
+      "Tidak mendukung web: Browser tidak dapat memuat TIFF. Harus dikonversikan terlebih dahulu."
+    ],
+    diveJpgTitle: "Analisis Mendalam: Apa itu JPEG Standar?",
+    diveJpgP1: "JPEG (Joint Photographic Experts Group) adalah format gambar paling populer di internet saat ini. Dirilis pada tahun 1992 untuk memperkecil foto agar mudah ditransfer di jaringan.",
+    diveJpgP2: "Tidak seperti TIFF, JPEG menggunakan kompresi lossy. Format ini menghapus data warna yang sulit dibedakan oleh mata manusia, sehingga ukuran file berkurang secara drastis.",
+    diveJpgAdv: "Kelebihan JPEG",
+    diveJpgAdvList: [
+      "Kompatibilitas Universal: Didukung di semua komputer, ponsel, dan smart TV.",
+      "Sangat Ringan: Membuat halaman web dimuat dengan sangat cepat.",
+      "Data EXIF: Menyimpan parameter kamera dan lokasi pengambilan foto."
+    ],
+    diveJpgDis: "Kekurangan JPEG",
+    diveJpgDisList: [
+      "Generational Loss: Menyimpan ulang file JPEG berulang kali akan menurunkan kualitasnya.",
+      "Tidak ada Transparansi: Gambar selalu datar tanpa saluran transparansi."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan TIFF vs JPEG",
+    snippetSectionDesc: "Berikut jawaban langsung untuk pertanyaan yang paling sering diajukan tentang TIFF dan JPEG.",
+    q1: "Apakah kualitas TIFF lebih tinggi dari JPEG?",
+    a1: "Ya. TIFF memiliki kualitas jauh lebih tinggi karena bekerja secara lossless. JPEG menghapus informasi warna secara permanen, yang dapat menimbulkan derau visual jika dikompresi berlebihan.",
+    q2: "Haruskah saya menggunakan TIFF atau JPEG untuk cetak?",
+    a2: "Gunakan TIFF untuk pencetakan profesional seperti spanduk dan foto seni untuk menjamin keakuratan warna. Untuk cetak foto biasa, JPEG berkualitas tinggi sudah cukup.",
+    q3: "Apakah browser web mendukung file TIFF?",
+    a3: "Tidak. Chrome, Safari, Firefox, dan Edge tidak mendukung TIFF secara bawaan. Untuk internet, selalu konversikan file TIFF Anda ke JPEG, WebP, atau PNG.",
+    q4: "Mengapa ukuran TIFF jauh lebih besar dari JPEG?",
+    a4: "TIFF menyimpan seluruh warna, layer, dan detail gambar asli. JPEG mengompresi gambar hingga 90% dengan membuang piksel tak terlihat menggunakan DCT.",
+    q5: "Apakah TIFF mendukung transparansi?",
+    a5: "Ya. TIFF mendukung transparansi saluran Alfa. JPEG tidak mendukung dan mengisi latar belakang transparan dengan warna putih.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Butuh mengonversi file TIFF untuk web?",
+    ctaDesc: "Gunakan alat gratis di browser kami untuk mengubah gambar TIFF Anda menjadi JPEG secara aman.",
+    ctaButton: "Coba Konverter TIFF ke JPG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "tiff-vs-jpeg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">TIFF vs JPEG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPEG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          {text.intro}
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJpgFor}</strong> {text.useJpgForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJpeg}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompression}</td>
+                <td class="p-4">{text.tdCompressionTiff}</td>
+                <td class="p-4">{text.tdCompressionJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-error">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdLayer}</td>
+                <td class="p-4 text-success">{text.tdLayerTiff}</td>
+                <td class="p-4 text-error">{text.tdLayerJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBitDepth}</td>
+                <td class="p-4 text-success">{text.tdBitDepthTiff}</td>
+                <td class="p-4">{text.tdBitDepthJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTransparency}</td>
+                <td class="p-4 text-success">{text.tdTransparencyTiff}</td>
+                <td class="p-4 text-error">{text.tdTransparencyJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdUseCase}</td>
+                <td class="p-4">{text.tdUseCaseTiff}</td>
+                <td class="p-4">{text.tdUseCaseJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdEfficiency}</td>
+                <td class="p-4 text-error">{text.tdEfficiencyTiff}</td>
+                <td class="p-4 text-success">{text.tdEfficiencyJpg}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="tiff-to-jpg" />
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.testTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          {text.testDesc}
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- TIFF Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg">{text.testTiffTitle}</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">48.2 MB</h3>
+            <p class="text-sm text-body flex-grow">{text.testTiffDesc}</p>
+          </div>
+          
+          <!-- TIFF LZW Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg">{text.testTiffLzwTitle}</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">29.1 MB</h3>
+            <p class="text-sm text-body flex-grow">{text.testTiffLzwDesc}</p>
+          </div>
+
+          <!-- JPEG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Best for Web Delivery</div>
+            <div class="h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-emerald-800 font-bold text-lg">{text.testJpgTitle}</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">3.4 MB</h3>
+            <p class="text-sm text-body flex-grow">{text.testJpgDesc}</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-body leading-relaxed p-6 bg-canvas-soft rounded-lg border-l-4 border-link">
+          {text.testTakeaway}
+        </p>
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>
+          {text.diveTiffP1}
+        </p>
+        <p>
+          {text.diveTiffP2}
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li>{adv}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{text.diveTiffDis}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffDisList.map((dis) => (
+            <li>{dis}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPEG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJpgTitle}</h2>
+        <p>
+          {text.diveJpgP1}
+        </p>
+        <p>
+          {text.diveJpgP2}
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJpgAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJpgAdvList.map((adv) => (
+            <li>{adv}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{text.diveJpgDis}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJpgDisList.map((dis) => (
+            <li>{dis}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases (Featured Snippet Targeting) -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">
+              {text.a1}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">
+              {text.a2}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">
+              {text.a3}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">
+              {text.a4}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">
+              {text.a5}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="TIFF" />
+
+    </div>
+  </main>
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

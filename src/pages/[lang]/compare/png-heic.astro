@@ -1,0 +1,639 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import HeicToJpgTool from "../../../components/tools/HeicToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs HEIC: Diferencia entre formatos de imagen web y de alta eficiencia",
+    seoDescription: "PNG vs HEIC. Comparamos Portable Network Graphics con High Efficiency Image Containers. Conozca cuándo usar cada uno para web, fotos de iPhone y edición.",
+    title: "PNG vs HEIC: ¿Qué formato de imagen es mejor?",
+    intro: "Comparamos un formato de gráficos web sin pérdidas con el contenedor de fotos de alta eficiencia de Apple. Descubra las diferencias entre PNG y HEIC.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Páginas web, diseños en línea, capturas de pantalla y logotipos que necesitan compatibilidad universal con navegadores y soporte para transparencia alfa.",
+    useIcoFor: "Use HEIC para:",
+    useIcoForDesc: "Fotos tomadas en iPhones o iPads para ahorrar espacio de almacenamiento manteniendo perfiles de color modernos, Live Photos y detalles HDR.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y HEIC?",
+    differenceDesc: "PNG está diseñado para gráficos amigables con el navegador y claridad sin pérdidas, mientras que HEIC está diseñado para sensores de cámara de teléfonos móviles para minimizar el tamaño del archivo.",
+    thFeature: "Característica / Aspecto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "HEIC (High Efficiency Image Container)",
+    tdFileNature: "Compresión",
+    tdFileNaturePng: "Sin pérdidas (DEFLATE)",
+    tdFileNatureIco: "Con o sin pérdidas (HEVC / H.265)",
+    tdFallback: "Tamaño de archivo",
+    tdFallbackPng: "Grande (Altos requisitos de ancho de banda)",
+    tdFallbackIco: "Muy pequeño (50% menor que los JPEG equivalentes)",
+    tdPurpose: "Soporte web",
+    tdPurposePng: "Universal (Todos los navegadores)",
+    tdPurposeIco: "Deficiente (No compatible de forma nativa en Chrome, Edge, Firefox)",
+    tdResolutions: "Soporte de transparencia",
+    tdResolutionsPng: "Excelente (Canal alfa)",
+    tdResolutionsIco: "Excelente (Soporta transparencia y mapas de profundidad)",
+    tdSize: "Profundidad de color",
+    tdSizePng: "8 o 16 bits por canal",
+    tdSizeIco: "Hasta 16 bits (Soporta renderizado de color HDR)",
+    tdTrans: "Animación",
+    tdTransPng: "No (APNG es una extensión separada)",
+    tdTransIco: "Sí (Puede almacenar secuencias de imágenes, Live Photos)",
+    converterTitle: "Convertir archivos HEIC sin conexión (Privado y Seguro)",
+    divePngTitle: "Análisis profundo: ¿Qué es PNG?",
+    divePngP1: "PNG (Portable Network Graphics) se desarrolló en 1996 para reemplazar el antiguo formato GIF. Al ser un formato sin pérdidas que utiliza el algoritmo DEFLATE, mantiene una representación de píxeles perfecta. Esto lo hace ideal para diagramas, capturas de pantalla, gráficos con mucho texto y logotipos.",
+    divePngP2: "Su punto fuerte es la transparencia del canal alfa, que permite superponer imágenes con sombras transparentes sobre cualquier fondo. Sin embargo, guardar fotos de alta resolución en PNG genera archivos muy grandes que ralentizan la carga web.",
+    divePngAdv: "Ventajas de PNG",
+    divePngAdvList: [
+      "Compatibilidad universal: Se procesa perfectamente en todas las plataformas web.",
+      "Detalles nítidos: Cero ruido de compresión en bordes de texto o logotipos.",
+      "Canal alfa: Mezcla de transparencia limpia para el diseño web moderno."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es HEIC?",
+    diveIcoP1: "HEIC es la extensión utilizada por Apple para el formato HEIF (High Efficiency Image File Format). Introducido en iOS 11, utiliza el estándar de compresión HEVC (H.265). Al aplicar tecnología de compresión de video a imágenes fijas, reduce el tamaño a la mitad que un JPEG manteniendo la calidad visual.",
+    diveIcoP2: "Los archivos HEIC son sumamente versátiles: además de píxeles, pueden contener mapas de transparencia, datos de profundidad (para modo retrato), metadatos HDR y secuencias de imágenes (Live Photos). El inconveniente es que los navegadores web no lo admiten de forma nativa debido a patentes.",
+    diveIcoAdv: "Ventajas de HEIC",
+    diveIcoAdvList: [
+      "Optimización de espacio: Ahorra una enorme cantidad de almacenamiento en el dispositivo.",
+      "Contenedor multiactivo: Almacena Live Photos, ráfagas y datos de profundidad en un solo archivo.",
+      "Colores avanzados: Soporta gamas de colores de 10 y 12 bits para capturas HDR."
+    ],
+    q1: "¿Cuál es la diferencia entre PNG y HEIC?",
+    a1: "PNG es un formato rasterizado sin pérdidas optimizado para la web y gráficos con transparencia. HEIC es un contenedor de alta eficiencia usado por Apple para almacenar fotos en teléfonos con una compresión muy alta.",
+    q2: "¿Cuándo debo usar PNG en lugar de HEIC?",
+    a2: "Use PNG para subir gráficos a un sitio web, compartir capturas de pantalla o cuando necesite transparencias. Use HEIC al tomar fotos en su iPhone para ahorrar espacio de almacenamiento.",
+    q3: "¿Los navegadores web muestran archivos HEIC?",
+    a3: "No de forma nativa. Para mostrar imágenes HEIC en un sitio web, debe convertirlas primero a un formato compatible como PNG, JPG o WebP.",
+    q4: "¿Cuál tiene mayor calidad, PNG o HEIC?",
+    a4: "PNG es sin pérdidas, por lo que conserva el 100% de la calidad de píxel original. HEIC utiliza una compresión moderna que reduce el tamaño del archivo enormemente con una pérdida visual imperceptible.",
+    q5: "¿Cómo convierto un archivo HEIC a PNG?",
+    a5: "Puede convertir HEIC a PNG utilizando nuestra herramienta de conversión sin conexión en el navegador o mediante las utilidades integradas en macOS y Windows.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir fotos HEIC en su PC?",
+    ctaDesc: "Use nuestro convertidor de HEIC local en el navegador para convertir sus fotos de iPhone a formatos web de forma segura y sin conexión.",
+    ctaButton: "Probar Convertidor de HEIC",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs HEIC : différence entre les formats image web et haute efficacité",
+    seoDescription: "PNG vs HEIC. Nous comparons le Portable Network Graphics avec les fichiers High Efficiency Image Containers. Apprenez quand utiliser chacun.",
+    title: "PNG vs HEIC : quel format d'image est le meilleur ?",
+    intro: "Nous comparons un format de graphiques web sans perte avec le conteneur photo haute efficacité d'Apple. Découvrez les différences entre PNG et HEIC.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "Les pages web, les mises en page en ligne, les captures d'écran et les logos nécessitant une compatibilité universelle et une transparence alpha.",
+    useIcoFor: "Utilisez le HEIC pour :",
+    useIcoForDesc: "Les photos prises sur iPhone ou iPad pour économiser de l'espace de stockage tout en conservant des couleurs modernes, les Live Photos et les détails HDR.",
+    differenceTitle: "Quelle est la différence entre PNG et HEIC ?",
+    differenceDesc: "Le PNG est conçu pour des graphiques web sans perte compatibles avec les navigateurs, tandis que le HEIC est développé pour les capteurs photo mobiles afin de minimiser le poids du fichier.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "HEIC (High Efficiency Image Container)",
+    tdFileNature: "Compression",
+    tdFileNaturePng: "Sans perte (DEFLATE)",
+    tdFileNatureIco: "Avec ou sans perte (HEVC / H.265)",
+    tdFallback: "Taille de fichier",
+    tdFallbackPng: "Volumineux (Bande passante importante)",
+    tdFallbackIco: "Très petit (50 % plus léger qu'un JPEG équivalent)",
+    tdPurpose: "Support web",
+    tdPurposePng: "Universel (Tous les navigateurs)",
+    tdPurposeIco: "Médiocre (Non supporté nativement par Chrome, Edge, Firefox)",
+    tdResolutions: "Gestion de la transparence",
+    tdResolutionsPng: "Excellente (Canal alpha)",
+    tdResolutionsIco: "Excellente (Supporte la transparence et les cartes de profondeur)",
+    tdSize: "Profondeur de couleur",
+    tdSizePng: "8 ou 16 bits par canal",
+    tdSizeIco: "Jusqu'à 16 bits (Supporte les couleurs HDR)",
+    tdTrans: "Animation",
+    tdTransPng: "Non (l'APNG est une extension distincte)",
+    tdTransIco: "Oui (Peut stocker des séquences d'images, Live Photos)",
+    converterTitle: "Convertir des fichiers HEIC hors ligne (Privé & Sécurisé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    divePngP1: "Le PNG (Portable Network Graphics) a été développé en 1996 pour remplacer le format GIF. En tant que format sans perte basé sur l'algorithme DEFLATE, il maintient un rendu parfait au pixel près, idéal pour les schémas, captures d'écran, logos et graphiques textuels.",
+    divePngP2: "Son principal atout est la transparence par canal alpha, permettant de superposer des éléments aux contours complexes sur n'importe quel arrière-plan. Cependant, enregistrer des photos haute résolution en PNG génère des fichiers lourds peu adaptés au web.",
+    divePngAdv: "Avantages du PNG",
+    divePngAdvList: [
+      "Compatibilité universelle : Rendu impeccable sur toutes les plateformes.",
+      "Détails nets : Aucun bruit de compression sur le texte ou les logos.",
+      "Canal alpha : Transparence parfaite pour le web design moderne."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le HEIC ?",
+    diveIcoP1: "Le HEIC est l'extension de fichier choisie par Apple pour implémenter le format standard HEIF (High Efficiency Image File Format). Introduit avec iOS 11, il utilise la compression vidéo HEVC (H.265). En appliquant ce codec moderne aux images fixes, il réduit la taille des fichiers de moitié par rapport au JPEG à qualité égale.",
+    diveIcoP2: "Les fichiers HEIC sont de véritables conteneurs : ils stockent les pixels, les masques de transparence, les données de profondeur (mode portrait), les métadonnées HDR et les séquences (Live Photos). Le seul bémol est l'absence de support natif par les navigateurs web en raison des brevets.",
+    diveIcoAdv: "Avantages du HEIC",
+    diveIcoAdvList: [
+      "Stockage optimisé : Économise énormément d'espace sur les smartphones.",
+      "Conteneur multi-actifs : Stocke les Live Photos, rafales et profondeur en un seul fichier.",
+      "Couleurs riches : Gère les palettes de 10 et 12 bits pour un rendu HDR optimal."
+    ],
+    q1: "Quelle est la différence entre PNG et HEIC ?",
+    a1: "Le PNG est un format d'image matricielle sans perte conçu pour la compatibilité web et les graphiques transparents. Le HEIC est un conteneur haute efficacité d'Apple conçu pour stocker les photos mobiles de façon très compacte.",
+    q2: "Quand utiliser le PNG plutôt que le HEIC ?",
+    a2: "Utilisez le PNG pour insérer des illustrations sur un site web, partager des captures d'écran ou créer des overlays. Utilisez le HEIC pour prendre des photos avec votre iPhone afin d'optimiser le stockage.",
+    q3: "Les navigateurs web affichent-ils le HEIC ?",
+    a3: "Non, les navigateurs web ne gèrent pas le HEIC nativement. Pour afficher du HEIC en ligne, vous devez d'abord le convertir en PNG, JPG ou WebP.",
+    q4: "Lequel est de meilleure qualité, le PNG ou le HEIC ?",
+    a4: "Le PNG est sans perte (lossless) et préserve chaque pixel. Le HEIC est généralement avec perte (lossy), mais sa compression moderne de pointe rend les pertes invisibles à l'œil nu tout en allégeant considérablement le fichier.",
+    q5: "Comment convertir un fichier HEIC en PNG ?",
+    a5: "Vous pouvez convertir vos HEIC en PNG à l'aide de notre outil de conversion hors ligne gratuit, ou via les utilitaires système de votre ordinateur (macOS/Windows).",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des photos HEIC sur votre PC ?",
+    ctaDesc: "Utilisez notre convertisseur HEIC hors ligne pour transformer vos photos d'iPhone en formats web de manière sécurisée.",
+    ctaButton: "Essayer le convertisseur HEIC",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. HEIC: Unterschied zwischen Web- und Hocheffizienz-Bildformaten",
+    seoDescription: "PNG vs. HEIC. Wir vergleichen Portable Network Graphics mit Apples High Efficiency Image Containers. Erfahren Sie, wann Sie welches Format nutzen.",
+    title: "PNG vs. HEIC: Welches Bildformat ist besser?",
+    intro: "Wir vergleichen ein verlustfreies Webgrafikformat mit Apples hocheffizientem Foto-Container. Erfahren Sie alles über die Unterschiede von PNG und HEIC.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie PNG für:",
+    usePngForDesc: "Webseiten, Online-Layouts, Screenshots und Logos, die universelle Kompatibilität und Alpha-Transparenz erfordern.",
+    useIcoFor: "Nutzen Sie HEIC für:",
+    useIcoForDesc: "Fotos, die auf iPhones oder iPads aufgenommen wurden, um Speicherplatz zu sparen, während HDR-Details und Live Photos erhalten bleiben.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und HEIC?",
+    differenceDesc: "PNG ist für webkompatible Grafiken und verlustfreie Klarheit gedacht. HEIC wurde für Smartphone-Sensoren entwickelt, um die Dateigröße zu minimieren.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "HEIC (High Efficiency Image Container)",
+    tdFileNature: "Komprimierung",
+    tdFileNaturePng: "Verlustfrei (DEFLATE)",
+    tdFileNatureIco: "Verlustbehaftet oder verlustfrei (HEVC / H.265)",
+    tdFallback: "Dateigröße",
+    tdFallbackPng: "Groß (Hoher Bandbreitenverbrauch)",
+    tdFallbackIco: "Sehr klein (Bis zu 50% kleiner als entsprechende JPEGs)",
+    tdPurpose: "Web-Unterstützung",
+    tdPurposePng: "Universell (Alle Webbrowser)",
+    tdPurposeIco: "Schlecht (Wird von Chrome, Edge, Firefox nicht nativ unterstützt)",
+    tdResolutions: "Transparenz-Unterstützung",
+    tdResolutionsPng: "Hervorragend (Alpha-Kanal)",
+    tdResolutionsIco: "Hervorragend (Unterstützt Transparenz und Tiefenkarten)",
+    tdSize: "Farbtiefe",
+    tdSizePng: "8-Bit oder 16-Bit pro Kanal",
+    tdSizeIco: "Bis zu 16-Bit (Unterstützt HDR-Farben)",
+    tdTrans: "Animation",
+    tdTransPng: "Nein (APNG ist eine separate Erweiterung)",
+    tdTransIco: "Ja (Kann Bildsequenzen und Live Photos speichern)",
+    converterTitle: "HEIC-Dateien offline konvertieren (Privat & Sicher)",
+    divePngTitle: "Deep Dive: Was ist PNG?",
+    divePngP1: "PNG (Portable Network Graphics) wurde 1996 als patentfreie Alternative zu GIF entwickelt. Da es ein verlustfreies Format mit dem DEFLATE-Algorithmus ist, liefert es eine pixelgenaue Darstellung des Bildes. Das macht es ideal für Diagramme, Screenshots und Logos.",
+    divePngP2: "Die Stärke von PNG ist die Alpha-Transparenz, mit der Grafiken mit komplexen Kanten oder halbtransparenten Schatten über beliebige Hintergründe gelegt werden können. Große Fotos als PNG zu speichern, führt jedoch zu sehr großen Dateien im Web.",
+    divePngAdv: "Vorteile von PNG",
+    divePngAdvList: [
+      "Universelle Kompatibilität: Wird auf allen Plattformen korrekt gerendert.",
+      "Gestochen scharf: Keinerlei Kompressionsrauschen bei Text und Logos.",
+      "Alpha-Kanal: Saubere Transparenzeffekte für modernes Webdesign."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist HEIC?",
+    diveIcoP1: "HEIC ist das von Apple genutzte Bildformat, das auf dem HEIF-Standard basiert. Es nutzt die HEVC-Videokompression (H.265). Dadurch halbiert HEIC die Dateigröße gegenüber JPEG bei gleicher optischer Bildqualität.",
+    diveIcoP2: "HEIC-Dateien sind enorm vielseitig: Sie können Transparenzmasken, Tiefeninformationen (für Porträts), HDR-Metadaten und ganze Bildsequenzen (Live Photos) in einer einzigen Datei speichern. Browser unterstützen das Format lizenzbedingt jedoch nicht direkt.",
+    diveIcoAdv: "Vorteile von HEIC",
+    diveIcoAdvList: [
+      "Speicherplatzersparnis: Halbiert den Speicherverbrauch auf Ihren Geräten.",
+      "Multifunktional: Speichert Live-Bilder und Tiefeninfos in einer Datei.",
+      "Bessere Farben: Unterstützt 10-Bit- und 12-Bit-Farbräume für HDR."
+    ],
+    q1: "Was ist der Unterschied zwischen PNG und HEIC?",
+    a1: "PNG ist ein verlustfreies Rasterformat für Webgrafiken und Transparenz. HEIC ist ein hocheffizientes Fotoformat von Apple, das Smartphone-Bilder sehr stark komprimiert.",
+    q2: "Wann sollte ich PNG statt HEIC verwenden?",
+    a2: "Verwenden Sie PNG für Webgrafiken, Screenshots oder transparente Logos. Nutzen Sie HEIC beim Fotografieren mit dem iPhone, um Speicherplatz zu sparen.",
+    q3: "Können Webbrowser HEIC-Dateien anzeigen?",
+    a3: "Nein, Browser unterstützen HEIC nicht nativ. Sie müssen diese Bilder zuvor in webkompatible Formate wie PNG, JPG oder WebP umwandeln.",
+    q4: "Was hat die bessere Qualität, PNG oder HEIC?",
+    a4: "PNG arbeitet verlustfrei und behält alle Pixeldaten. HEIC komprimiert Bilder verlustbehaftet, nutzt jedoch moderne Algorithmen, die Detailverluste für das Auge unsichtbar machen.",
+    q5: "Wie konvertiere ich eine HEIC-Datei in PNG?",
+    a5: "Nutzen Sie unseren kostenlosen Offline-Konverter im Browser oder die integrierten System-Tools unter macOS oder Windows.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie HEIC-Fotos auf dem PC konvertieren?",
+    ctaDesc: "Nutzen Sie unseren browserbasierten HEIC-Konverter offline, um Ihre iPhone-Fotos sicher in Webformate umzuwandeln.",
+    ctaButton: "HEIC-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs HEIC: Diferença entre os formatos de imagem Web e Alta Eficiência",
+    seoDescription: "PNG vs HEIC. Comparamos imagens Portable Network Graphics com arquivos High Efficiency Image. Saiba quando usar cada um.",
+    title: "PNG vs HEIC: Qual formato de imagem é melhor?",
+    intro: "Comparamos um formato de gráficos web sem perdas com o contêiner de fotos de alta eficiência da Apple. Descubra as diferenças de PNG e HEIC.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Páginas web, layouts online, capturas de tela e logotipos que precisam de compatibilidade universal e canal de transparência alfa.",
+    useIcoFor: "Use HEIC para:",
+    useIcoForDesc: "Fotos tiradas no iPhone ou iPad para economizar armazenamento mantendo perfis de cores modernos, Live Photos e detalhes HDR.",
+    differenceTitle: "Qual é a diferença entre PNG e HEIC?",
+    differenceDesc: "O PNG é projetado para gráficos compatíveis com navegadores e clareza sem perdas, enquanto o HEIC é construído para câmeras de celular para minimizar o peso do arquivo.",
+    thFeature: "Recurso / Aspeto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "HEIC (High Efficiency Image Container)",
+    tdFileNature: "Compactação",
+    tdFileNaturePng: "Sem perdas (DEFLATE)",
+    tdFileNatureIco: "Com ou sem perdas (HEVC / H.265)",
+    tdFallback: "Tamanho do arquivo",
+    tdFallbackPng: "Grande (Exige muita largura de banda)",
+    tdFallbackIco: "Muito pequeno (Cerca de 50% menor que JPEGs equivalentes)",
+    tdPurpose: "Suporte Web",
+    tdPurposePng: "Universal (Todos os navegadores)",
+    tdPurposeIco: "Fraco (Não compatível nativamente no Chrome, Edge, Firefox)",
+    tdResolutions: "Suporte a transparência",
+    tdResolutionsPng: "Excelente (Canal alfa)",
+    tdResolutionsIco: "Excelente (Suporta transparência e mapas de profundidade)",
+    tdSize: "Profundidade de cor",
+    tdSizePng: "8 ou 16 bits por canal",
+    tdSizeIco: "Até 16 bits (Suporta cores HDR)",
+    tdTrans: "Animação",
+    tdTransPng: "Não (APNG é uma extensão separada)",
+    tdTransIco: "Sim (Pode armazenar sequências de imagens, Live Photos)",
+    converterTitle: "Converter arquivos HEIC offline (Privado & Seguro)",
+    divePngTitle: "Análise profunda: O que é um PNG?",
+    divePngP1: "O PNG (Portable Network Graphics) foi criado em 1996 como uma alternativa livre de patentes ao GIF. Por ser sem perdas usando o algoritmo DEFLATE, mantém o pixel original intacto. Isso o torna ideal para diagramas, screenshots, logos e gráficos.",
+    divePngP2: "O ponto forte é la transparência alfa, permitindo aplicar sombras transparentes em qualquer fundo de página. Mas para fotografias de alta resolução, o PNG gera arquivos muito grandes para a web.",
+    divePngAdv: "Vantagens do PNG",
+    divePngAdvList: [
+      "Compatibilidade universal: Funciona em todas as plataformas web.",
+      "Detalhes nítidos: Sem ruído ou borrão de compressão em textos e logos.",
+      "Canal alfa: Mistura perfeita de transparência para designs modernos."
+    ],
+    diveIcoTitle: "Análise profunda: O que é um HEIC?",
+    diveIcoP1: "HEIC é a extensão usada pela Apple para o formato HEIF (High Efficiency Image File Format). Lançado com o iOS 11, usa o codec de compressão de vídeo HEVC (H.265). Isso reduz o tamanho do arquivo à metade do JPEG equivalente mantendo a qualidade visual.",
+    diveIcoP2: "Arquivos HEIC são contêineres versáteis: podem guardar máscaras de transparência, mapas de profundidade (para modo retrato), metadados HDR e Live Photos. O único problema é a falta de suporte nos navegadores web devido a licenças.",
+    diveIcoAdv: "Vantagens do HEIC",
+    diveIcoAdvList: [
+      "Economia de espaço: Reduz drasticamente o armazenamento ocupado por fotos.",
+      "Multi-ativos: Guarda Live Photos, sequências e profundidade em um único arquivo.",
+      "Cores modernas: Suporta gama de 10 e 12 bits para telas HDR."
+    ],
+    q1: "Qual é a diferença entre PNG e HEIC?",
+    a1: "O PNG é um formato sem perdas clássico focado na web e gráficos. O HEIC é um formato de alta eficiência da Apple voltado para fotos de câmeras de smartphones.",
+    q2: "Quando devo usar PNG em vez de HEIC?",
+    a2: "Use PNG para imagens de sites, logotipos ou overlays transparentes. Use HEIC ao tirar fotos em dispositivos iOS para economizar espaço de armazenamento.",
+    q3: "Os navegadores web mostram arquivos HEIC?",
+    a3: "Não de forma nativa. Para usar fotos HEIC no seu site, você deve convertê-las para formatos de web como PNG, JPG o WebP.",
+    q4: "Qual tem melhor qualidade, PNG ou HEIC?",
+    a4: "O PNG mantém fidelidade absoluta dos pixels. O HEIC é com perdas, mas sua compressão moderna faz com que a diferença seja imperceptível visualmente.",
+    q5: "Como converter arquivos HEIC para PNG?",
+    a5: "Use o nosso conversor de HEIC offline no seu navegador ou programas do sistema (macOS/Windows).",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa converter fotos HEIC no seu PC?",
+    ctaDesc: "Use nosso conversor de HEIC offline e privado diretamente no seu navegador para exportar fotos do iPhone.",
+    ctaButton: "Testar conversor de HEIC",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs HEIC: Perbedaan antara Format Gambar Web dan High-Efficiency",
+    seoDescription: "PNG vs HEIC. Kami membandingkan Portable Network Graphics dengan High Efficiency Image Containers. Pelajari kegunaannya untuk web dan foto iPhone.",
+    title: "PNG vs HEIC: Format Gambar Mana yang Lebih Baik?",
+    intro: "Membandingkan format grafis web lossless dengan kontainer foto efisiensi tinggi milik Apple. Temukan perbedaan antara PNG dan HEIC.",
+    quickAnswer: "Jawaban Singkat",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "Halaman web, tata letak online, tangkapan layar, dan logo yang membutuhkan kompatibilitas universal serta transparansi alfa.",
+    useIcoFor: "Gunakan HEIC untuk:",
+    useIcoForDesc: "Foto yang diambil di iPhone atau iPad untuk menghemat ruang penyimpanan dengan tetap menjaga profil warna modern, Live Photos, dan detail HDR.",
+    differenceTitle: "Apa Perbedaan antara PNG dan HEIC?",
+    differenceDesc: "PNG dirancang untuk grafis yang ramah peramban dan kejelasan lossless, sedangkan HEIC dibuat untuk sensor kamera ponsel guna memperkecil ukuran file.",
+    thFeature: "Fitur / Aspek",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "HEIC (High Efficiency Image Container)",
+    tdFileNature: "Kompresi",
+    tdFileNaturePng: "Lossless (DEFLATE)",
+    tdFileNatureIco: "Lossy atau Lossless (HEVC / H.265)",
+    tdFallback: "Ukuran File",
+    tdFallbackPng: "Besar (Kebutuhan bandwidth tinggi)",
+    tdFallbackIco: "Sangat Kecil (50% lebih kecil dari file JPEG setara)",
+    tdPurpose: "Dukungan Web",
+    tdPurposePng: "Universal (Semua peramban)",
+    tdPurposeIco: "Buruk (Tidak didukung secara native di Chrome, Edge, Firefox)",
+    tdResolutions: "Dukungan Transparansi",
+    tdResolutionsPng: "Sangat Baik (Saluran alfa)",
+    tdResolutionsIco: "Sangat Baik (Mendukung transparansi dan peta kedalaman)",
+    tdSize: "Kedalaman Warna",
+    tdSizePng: "8-bit atau 16-bit per saluran",
+    tdSizeIco: "Hingga 16-bit (Mendukung rendering warna HDR)",
+    tdTrans: "Animasi",
+    tdTransPng: "Tidak (APNG adalah ekstensi terpisah)",
+    tdTransIco: "Ya (Dapat menyimpan urutan gambar, Live Photos)",
+    converterTitle: "Konversi File HEIC Secara Offline (Privat & Aman)",
+    divePngTitle: "Analisis Mendalam: Apa itu PNG?",
+    divePngP1: "PNG (Portable Network Graphics) dikembangkan pada tahun 1996 untuk menggantikan format GIF. Sebagai format lossless yang menggunakan algoritma DEFLATE, PNG mempertahankan representasi piksel gambar dengan sempurna. Ini membuatnya ideal untuk diagram, tangkapan layar, logo, dan teks grafis.",
+    divePngP2: "Kekuatan utamanya ada pada transparansi saluran alfa, memungkinkan penempatan gambar di atas latar belakang warna apa pun tanpa masalah. Namun, menyimpan foto resolusi tinggi dalam format PNG menghasilkan ukuran file yang terlalu besar untuk web.",
+    divePngAdv: "Kelebihan PNG",
+    divePngAdvList: [
+      "Kompatibilitas Universal: Dimuat dan dirender dengan sempurna di semua platform web.",
+      "Detail Tajam: Bebas noise kompresi pada tepi teks atau logo.",
+      "Saluran Alfa: Transparansi halus untuk desain web modern."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu HEIC?",
+    diveIcoP1: "HEIC adalah ekstensi file yang digunakan Apple untuk format HEIF (High Efficiency Image File Format). Diperkenalkan di iOS 11, format ini menggunakan standar kompresi HEVC (H.265). Dengan menerapkan teknologi kompresi video ke foto diam, ukuran file dipangkas hingga setengah dari JPEG dengan kualitas visual setara.",
+    diveIcoP2: "File HEIC sangat serbaguna: selain piksel gambar, file ini bisa berisi peta transparansi, data kedalaman (portrait mode), metadata HDR, dan Live Photos. Kelemahannya adalah masalah lisensi paten, sehingga peramban web belum mendukungnya secara native.",
+    diveIcoAdv: "Kelebihan HEIC",
+    diveIcoAdvList: [
+      "Optimalisasi Ruang: Menghemat ruang penyimpanan perangkat dalam jumlah besar.",
+      "Kontainer Multiaset: Menyimpan Live Photos, foto beruntun, dan kedalaman dalam satu file.",
+      "Warna Tingkat Lanjut: Mendukung gamut warna 10-bit dan 12-bit untuk tangkapan HDR."
+    ],
+    q1: "Apa perbedaan antara PNG dan HEIC?",
+    a1: "PNG adalah format raster lossless yang dirancang untuk kompatibilitas web dan gambar berlatar transparan. HEIC adalah format efisiensi tinggi milik Apple untuk menyimpan foto di smartphone dengan ukuran ringkas.",
+    q2: "Kapan saya harus menggunakan PNG daripada HEIC?",
+    a2: "Gunakan PNG untuk mengunggah grafis ke situs web, membagikan tangkapan layar, atau ketika memerlukan transparansi. Gunakan HEIC saat memotret dengan iPhone untuk menghemat penyimpanan.",
+    q3: "Apakah peramban web bisa menampilkan file HEIC?",
+    a3: "Tidak secara native. Agar file HEIC bisa ditampilkan di situs web, Anda harus mengonversinya terlebih dahulu ke format ramah web seperti PNG, JPG, atau WebP.",
+    q4: "Mana yang memiliki kualitas lebih tinggi, PNG atau HEIC?",
+    a4: "PNG bersifat lossless sehingga menjaga 100% detail piksel asli. HEIC bersifat lossy namun kompresi modernnya membuat kehilangan kualitas tidak kasat mata secara visual.",
+    q5: "Bagaimana cara mengubah file HEIC ke PNG?",
+    a5: "Anda bisa mengonversi HEIC ke PNG dengan alat konverter offline gratis kami di peramban, atau program bawaan di macOS dan Windows.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi foto HEIC di PC Anda?",
+    ctaDesc: "Gunakan konverter HEIC lokal kami di peramban untuk mengonversi foto iPhone Anda ke format ramah web secara offline.",
+    ctaButton: "Coba Konverter HEIC",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const t = pageTranslations[locale];
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": t.seoTitle,
+      "description": t.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": t.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-heic")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={t.seoTitle} description={t.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{t.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{t.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs HEIC</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{t.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{t.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {t.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{t.usePngFor}</strong> {t.usePngForDesc}</p>
+          <p><strong class="text-ink">{t.useIcoFor}</strong> {t.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{t.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">{t.differenceDesc}</p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{t.thFeature}</th>
+                <th class="p-4">{t.thPng}</th>
+                <th class="p-4">{t.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFileNature}</td>
+                <td class="p-4">{t.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{t.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFallback}</td>
+                <td class="p-4 text-error">{t.tdFallbackPng}</td>
+                <td class="p-4 text-success">{t.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdPurpose}</td>
+                <td class="p-4 text-success">{t.tdPurposePng}</td>
+                <td class="p-4 text-error">{t.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdResolutions}</td>
+                <td class="p-4 text-success">{t.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{t.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdSize}</td>
+                <td class="p-4">{t.tdSizePng}</td>
+                <td class="p-4 text-success">{t.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdTrans}</td>
+                <td class="p-4">{t.tdTransPng}</td>
+                <td class="p-4 text-success">{t.tdTransIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{t.converterTitle}</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.divePngTitle}</h2>
+        <p>{t.divePngP1}</p>
+        <p>{t.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.diveIcoTitle}</h2>
+        <p>{t.diveIcoP1}</p>
+        <p>{t.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{t.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q1}</h3>
+            <p class="text-body leading-relaxed">{t.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q2}</h3>
+            <p class="text-body leading-relaxed">{t.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q3}</h3>
+            <p class="text-body leading-relaxed">{t.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q4}</h3>
+            <p class="text-body leading-relaxed">{t.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q5}</h3>
+            <p class="text-body leading-relaxed">{t.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{t.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{t.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {t.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

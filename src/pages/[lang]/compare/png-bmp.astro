@@ -1,0 +1,639 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs BMP: Diferencia entre formatos de imagen web y mapa de bits",
+    seoDescription: "PNG vs BMP. Comparamos imágenes de gráficos de red portátiles con archivos de mapa de bits. Conozca cuándo usar cada uno para web y diseño.",
+    title: "PNG vs BMP: ¿Qué formato de imagen es mejor?",
+    intro: "¿Debería usar un gráfico de red portátil (PNG) altamente optimizado o un mapa de bits de Windows (BMP) sin comprimir para sus imágenes digitales? Comparamos sus diferencias.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Diseño web, elementos de interfaz de usuario, logotipos y capturas de pantalla donde se requiere transparencia limpia, calidad sin pérdidas y tamaños de archivo pequeños.",
+    useIcoFor: "Use BMP para:",
+    useIcoForDesc: "Aplicaciones heredadas de Windows, fondos de pantalla de escritorio sin procesar o casos de desarrollo de software donde se requieren de forma estricta cuadrículas de píxeles sin comprimir.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y BMP?",
+    differenceDesc: "Aunque tanto PNG como BMP son formatos de imagen rasterizados diseñados para preservar detalles perfectos de píxeles, PNG utiliza compresión avanzada mientras que BMP almacena los píxeles sin comprimir.",
+    thFeature: "Característica / Aspecto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "BMP (Bitmap)",
+    tdFileNature: "Compresión",
+    tdFileNaturePng: "Sin pérdidas (algoritmo DEFLATE)",
+    tdFileNatureIco: "Ninguna (sin comprimir) o RLE sin pérdidas",
+    tdFallback: "Tamaño de archivo",
+    tdFallbackPng: "Pequeño / Mediano (Muy optimizado)",
+    tdFallbackIco: "Muy grande (Matriz de píxeles sin procesar)",
+    tdPurpose: "Soporte de transparencia",
+    tdPurposePng: "Excelente (Transparencia alfa completa)",
+    tdPurposeIco: "Muy deficiente (Sin canal alfa nativo en uso típico)",
+    tdResolutions: "Soporte web",
+    tdResolutionsPng: "Universal (Compatible con todos los navegadores)",
+    tdResolutionsIco: "Limitado (Evitado en web debido al tiempo de carga)",
+    tdSize: "Caso de uso ideal",
+    tdSizePng: "Gráficos web, logotipos, capturas de pantalla",
+    tdSizeIco: "Software heredado, sistemas Windows",
+    tdTrans: "Animación",
+    tdTransPng: "No (APNG es una extensión separada)",
+    tdTransIco: "No",
+    converterTitle: "Comprimir y optimizar imágenes (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es PNG?",
+    divePngP1: "PNG (Portable Network Graphics) se desarrolló a mediados de la década de 1990 como una alternativa libre de patentes a GIF. Rápidamente se convirtió en el formato de compresión sin pérdidas líder en la web. Los archivos PNG utilizan el algoritmo DEFLATE, que empaqueta datos sin perder un solo píxel.",
+    divePngP2: "PNG es muy valorado por su soporte para la transparencia de canal alfa. Esto permite a los diseñadores superponer logotipos e ilustraciones sobre fondos de página web sin problemas. Para fotografía, sin embargo, los archivos PNG son más grandes que los JPEG o WebP.",
+    divePngAdv: "Ventajas de PNG",
+    divePngAdvList: [
+      "Calidad sin pérdidas: Detalles perfectos sin artefactos de compresión.",
+      "Transparencia alfa: Soporta diferentes niveles de opacidad para capas perfectas.",
+      "Eficiencia web: Tamaños de archivo mucho más pequeños que los rasterizados sin comprimir."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es BMP?",
+    diveIcoP1: "BMP (Bitmap Image File) fue introducido por Microsoft en los inicios de Windows. Está diseñado para almacenar imágenes digitales en un formato simple e independiente del dispositivo. Almacena cada píxel como una secuencia directa de valores de color.",
+    diveIcoP2: "Dado que los archivos BMP estándar no aplican compresión, ocupan mucho espacio de almacenamiento y tardan en cargarse por red. Sin embargo, al no tener codificación compleja, es muy fácil de procesar a nivel de sistema, ideal para aplicaciones heredadas.",
+    diveIcoAdv: "Ventajas de BMP",
+    diveIcoAdvList: [
+      "Sin artefactos: Representación 100% pura y sin compresión de la imagen.",
+      "Especificación simple: Muy fácil de leer y escribir a nivel de programación.",
+      "Compatibilidad con Windows: Integrado profundamente en sistemas Win32 clásicos."
+    ],
+    q1: "¿Cuál es la diferencia entre PNG y BMP?",
+    a1: "PNG es un formato de imagen comprimido sin pérdidas moderno, ideal para la web. BMP es un formato antiguo desarrollado por Microsoft que no utiliza compresión, lo que resulta en archivos mucho más grandes.",
+    q2: "¿Cuándo debo usar PNG en lugar de BMP?",
+    a2: "Use PNG para diseño web, redes sociales, logotipos y capturas de pantalla. Use BMP solo si trabaja con aplicaciones de Windows muy antiguas o si necesita almacenar píxeles sin comprimir directamente.",
+    q3: "¿Es BMP de mejor calidad que PNG?",
+    a3: "Ambos son formatos sin pérdidas, por lo que conservan exactamente el mismo nivel de detalle. Sin embargo, como PNG optimiza los datos, ofrece la misma calidad con un tamaño de archivo mucho menor.",
+    q4: "¿Por qué los archivos BMP son tan grandes?",
+    a4: "Porque BMP guarda los datos de color de cada píxel de forma consecutiva sin compresión avanzada. PNG utiliza el algoritmo DEFLATE para reducir drásticamente el tamaño del archivo sin perder calidad.",
+    q5: "¿Se puede convertir BMP a PNG sin perder calidad?",
+    a5: "Sí, dado que ambos formatos son sin pérdidas, convertir un BMP a PNG conservará el 100% de la calidad visual original mientras reduce enormemente su peso.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita optimizar sus archivos PNG?",
+    ctaDesc: "Use nuestro compresor de imágenes local en el navegador para optimizar y reducir sus archivos PNG sin perder calidad.",
+    ctaButton: "Probar Compresor de PNG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs BMP : différence entre les formats image web et bitmap",
+    seoDescription: "PNG vs BMP. Nous comparons le Portable Network Graphics avec les fichiers Bitmap. Apprenez quand utiliser chacun d'eux pour le design web.",
+    title: "PNG vs BMP : quel format d'image est le meilleur ?",
+    intro: "Devez-vous utiliser un fichier PNG (Portable Network Graphic) hautement optimisé ou un fichier BMP (Bitmap Windows) non compressé pour vos images ? Nous détaillons les différences.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "Le design web, les icônes, les logos et les captures d'écran nécessitant de la transparence, une qualité sans perte et un fichier léger.",
+    useIcoFor: "Utilisez le BMP pour :",
+    useIcoForDesc: "Les anciennes applications Windows, les fonds d'écran de bureau bruts ou les environnements de programmation nécessitant des grilles de pixels non compressées.",
+    differenceTitle: "Quelle est la différence entre PNG et BMP ?",
+    differenceDesc: "Bien que le PNG et le BMP soient des formats d'image matricielle conçus pour préserver les détails au pixel près, le PNG utilise une compression avancée alors que le BMP stocke les pixels de manière brute.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "BMP (Bitmap Image File)",
+    tdFileNature: "Compression",
+    tdFileNaturePng: "Sans perte (algorithme DEFLATE)",
+    tdFileNatureIco: "Aucune (non compressé) ou RLE sans perte",
+    tdFallback: "Taille de fichier",
+    tdFallbackPng: "Léger / Moyen (Très optimisé)",
+    tdFallbackIco: "Très volumineux (Grille de pixels brute)",
+    tdPurpose: "Transparence",
+    tdPurposePng: "Excellente (Transparence alpha complète)",
+    tdPurposeIco: "Très limitée (Pas d'alpha natif en usage général)",
+    tdResolutions: "Support web",
+    tdResolutionsPng: "Universel (Pris en charge par tous les navigateurs)",
+    tdResolutionsIco: "Limité (Évité sur le web à cause du poids)",
+    tdSize: "Usage recommandé",
+    tdSizePng: "Graphiques web, logos, captures d'écran",
+    tdSizeIco: "Logiciels hérités, systèmes Windows",
+    tdTrans: "Animation",
+    tdTransPng: "Non (l'APNG est une extension distincte)",
+    tdTransIco: "Non",
+    converterTitle: "Compresser et optimiser les images (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    divePngP1: "Le PNG (Portable Network Graphics) a été développé au milieu des années 1990 comme une alternative sans brevet au format GIF. Il est devenu le format de compression sans perte le plus populaire sur la toile. Les fichiers PNG utilisent l'algorithme DEFLATE, qui compresse les données sans perdre le moindre pixel.",
+    divePngP2: "Le PNG est particulièrement apprécié pour sa gestion de la transparence par canal alpha. Cela permet de superposer facilement des logos ou illustrations sur n'importe quel arrière-plan. Pour les photos, le PNG reste plus lourd que le JPEG ou le WebP.",
+    divePngAdv: "Avantages du PNG",
+    divePngAdvList: [
+      "Qualité sans perte : Rendu au pixel près sans aucun artefact.",
+      "Transparence alpha : Gère de multiples niveaux d'opacité.",
+      "Légèreté web : Fichiers beaucoup plus petits que les formats non compressés."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le BMP ?",
+    diveIcoP1: "Le BMP (Bitmap Image File) a été introduit par Microsoft aux débuts de Windows. Il est conçu pour stocker des images numériques dans un format simple et indépendant du matériel. Chaque pixel est décrit directement par sa valeur de couleur.",
+    diveIcoP2: "Comme le BMP n'applique aucune compression, les fichiers sont volumineux et inadaptés au web. Cependant, cette absence d'encodage complexe le rend très facile à traiter pour les systèmes bas niveau et la programmation.",
+    diveIcoAdv: "Avantages du BMP",
+    diveIcoAdvList: [
+      "Zéro artefact de compression : Image brute parfaitement préservée.",
+      "Spécification simple : Très facile à lire et écrire en code.",
+      "Compatibilité Windows : Intégration totale dans l'écosystème Win32 historique."
+    ],
+    q1: "Quelle est la différence entre PNG et BMP ?",
+    a1: "Le PNG is un format moderne compressé sans perte, idéal pour le web. Le BMP est un format plus ancien développé par Microsoft qui ne compresse pas les images, ce qui génère des fichiers très lourds.",
+    q2: "Quand utiliser le PNG plutôt que le BMP ?",
+    a2: "Utilisez le PNG pour le design web, les réseaux sociaux, les logos et les captures d'écran. Utilisez le BMP uniquement pour des applications Windows héritées ou pour manipuler des pixels bruts.",
+    q3: "Le BMP est-il de meilleure qualité que le PNG ?",
+    a3: "Les deux formats sont sans perte et conservent la même qualité d'image. Cependant, le PNG compresse les données de manière intelligente, offrant la même qualité dans un fichier beaucoup plus petit.",
+    q4: "Pourquoi les fichiers BMP sont-ils si lourds ?",
+    a4: "Parce que le format BMP enregistre les octets de couleur de chaque pixel l'un après l'autre sans compression. Le PNG utilise l'algorithme DEFLATE pour réduire significativement le poids de l'image.",
+    q5: "Peut-on convertir un BMP en PNG sans perte de qualité ?",
+    a5: "Oui. Les deux formats étant sans perte, la conversion d'un BMP en PNG conserve 100 % de la qualité visuelle tout en réduisant considérablement le poids du fichier.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin d'optimiser vos PNG ?",
+    ctaDesc: "Utilisez notre compresseur d'images hors ligne pour optimiser et réduire vos PNG sans perte de qualité.",
+    ctaButton: "Essayer le compresseur PNG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. BMP: Unterschied zwischen Web- und Bitmap-Bildformaten",
+    seoDescription: "PNG vs. BMP. Wir vergleichen Portable Network Graphics mit Windows-Bitmap-Dateien. Erfahren Sie, wann Sie welches Format für Webdesign nutzen.",
+    title: "PNG vs. BMP: Welches Bildformat ist besser?",
+    intro: "Sollten Sie ein hochoptimiertes Portable Network Graphic (PNG) oder ein unkomprimiertes Windows Bitmap (BMP) für Ihre digitalen Bilder verwenden? Wir vergleichen die Formate.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie PNG für:",
+    usePngForDesc: "Webdesign, UI-Elemente, Logos und Screenshots, bei denen Transparenz, verlustfreie Qualität und kleine Dateigrößen wichtig sind.",
+    useIcoFor: "Nutzen Sie BMP für:",
+    useIcoForDesc: "Ältere Windows-Anwendungen, unkomprimierte Desktop-Hintergründe oder Softwareprojekte, die direkten Zugriff auf unkomprimierte Pixel erfordern.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und BMP?",
+    differenceDesc: "Obwohl PNG und BMP Rasterformate sind, die pixelgenaue Details bewahren, verwendet PNG eine fortschrittliche Komprimierung, während BMP Pixel roh speichert.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "BMP (Bitmap Image File)",
+    tdFileNature: "Komprimierung",
+    tdFileNaturePng: "Verlustfrei (DEFLATE-Algorithmus)",
+    tdFileNatureIco: "Keine (unkomprimiert) oder RLE-verlustfrei",
+    tdFallback: "Dateigröße",
+    tdFallbackPng: "Klein / Mittel (Sehr optimiert)",
+    tdFallbackIco: "Sehr groß (Unkomprimierte Pixelmatrix)",
+    tdPurpose: "Transparenz",
+    tdPurposePng: "Hervorragend (Volle Alpha-Transparenz)",
+    tdPurposeIco: "Sehr schlecht (Kein natives Alpha im Normalgebrauch)",
+    tdResolutions: "Web-Unterstützung",
+    tdResolutionsPng: "Universell (Von allen Browsern unterstützt)",
+    tdResolutionsIco: "Eingeschränkt (Wegen der Dateigröße im Web vermieden)",
+    tdSize: "Idealer Anwendungsbereich",
+    tdSizePng: "Webgrafiken, Logos, Screenshots",
+    tdSizeIco: "Ältere Software, Windows-Systeme",
+    tdTrans: "Animation",
+    tdTransPng: "Nein (APNG ist eine separate Erweiterung)",
+    tdTransIco: "Nein",
+    converterTitle: "Bilder komprimieren und optimieren (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist PNG?",
+    divePngP1: "PNG (Portable Network Graphics) wurde Mitte der 1990er-Jahre als patentfreie Alternative zu GIF entwickelt. Es hat sich schnell als das führende verlustfreie Komprimierungsformat im Web etabliert. PNG nutzt den DEFLATE-Algorithmus, um Daten ohne Pixelverlust zu packen.",
+    divePngP2: "PNG is besonders für seine Unterstützung von Alpha-Transparenz beliebt. Dadurch können Logos und Grafiken nahtlos über beliebige Webseiten-Hintergründe gelegt werden. Für Fotos sind PNGs jedoch meist größer als JPEGs oder WebPs.",
+    divePngAdv: "Vorteile von PNG",
+    divePngAdvList: [
+      "Verlustfreie Qualität: Pixelgenaue Details ohne Komprimierungsartefakte.",
+      "Alpha-Transparenz: Unterstützt variable Transparenzstufen.",
+      "Web-Effizienz: Wesentlich kleinere Dateien als unkomprimierte Rasterbilder."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist BMP?",
+    diveIcoP1: "BMP steht für Bitmap Image File. Es wurde von Microsoft in den Anfängen von Windows eingeführt, um Bilder in einem einfachen Format geräteunabhängig zu speichern. BMP speichert Pixel als fortlaufende Kette von Farbwerten.",
+    diveIcoP2: "Da Standard-BMPs nicht komprimiert werden, benötigen sie extrem viel Speicherplatz und laden im Netzwerk sehr langsam. Wegen des einfachen Aufbaus ohne komplexe Kodierung lässt es sich jedoch in systemnahen Programmen sehr leicht verarbeiten.",
+    diveIcoAdv: "Vorteile von BMP",
+    diveIcoAdvList: [
+      "Keine Kompressionsartefakte: Völlig unkomprimierte Pixeldaten.",
+      "Einfacher Aufbau: Sehr leicht programmatisch zu lesen und zu schreiben.",
+      "Windows-Kompatibilität: Tief in klassische Win32-Systeme integriert."
+    ],
+    q1: "Was ist der Unterschied zwischen PNG und BMP?",
+    a1: "PNG ist ein modernes, verlustfrei komprimiertes Bildformat für das Web. BMP ist ein älteres Format von Microsoft, das keine Komprimierung nutzt und daher viel größere Dateien erzeugt.",
+    q2: "Wann sollte ich PNG anstelle von BMP verwenden?",
+    a2: "Verwenden Sie PNG für Webdesign, soziale Medien, Logos und Screenshots. Nutzen Sie BMP nur für spezielle, ältere Software oder bei der Arbeit mit rohen Pixeldaten.",
+    q3: "Ist BMP qualitativ besser als PNG?",
+    a3: "Beide Formate arbeiten verlustfrei und bieten dieselbe Bildqualität. Da PNG die Daten jedoch komprimiert, bietet es dieselbe Qualität bei einem Bruchteil der Dateigröße.",
+    q4: "Warum sind BMP-Dateien so viel größer als PNG-Dateien?",
+    a4: "BMP speichert die Farbwerte für jeden einzelnen Pixel ungefiltert ab. PNG nutzt den verlustfreien DEFLATE-Algorithmus, um diese Daten platzsparend zu verpacken.",
+    q5: "Kann ich BMP verlustfrei in PNG umwandeln?",
+    a5: "Ja. Da beide Formate verlustfrei sind, bleibt die Bildqualität bei der Konvertierung von BMP zu PNG zu 100 % identisch, während die Datei extrem schrumpft.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie PNG-Dateien komprimieren?",
+    ctaDesc: "Nutzen Sie unseren Offline-Bildkompressor im Browser, um exportierte PNGs ohne Qualitätsverlust zu verkleinern.",
+    ctaButton: "PNG-Kompressor starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs BMP: Diferença entre os formatos de imagem Web e Bitmap",
+    seoDescription: "PNG vs BMP. Comparamos imagens Portable Network Graphics com arquivos Bitmap. Saiba quando usar cada um para web design e gráficos.",
+    title: "PNG vs BMP: Qual formato de imagem é melhor?",
+    intro: "Deve usar um gráfico de rede portátil (PNG) altamente otimizado ou um bitmap do Windows (BMP) não comprimido para suas imagens digitais? Analisamos as diferenças.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Design web, recursos de interface, logotipos e capturas de tela onde transparência limpa, qualidade sem perdas e arquivos compactos são fundamentais.",
+    useIcoFor: "Use BMP para:",
+    useIcoForDesc: "Aplicações herdadas do Windows, papéis de parede simples ou projetos de programação onde grades de pixels não compactadas são exigidas.",
+    differenceTitle: "Qual é a diferença entre PNG e BMP?",
+    differenceDesc: "Embora tanto o PNG quanto o BMP sejam formatos rasterizados projetados para preservar detalhes pixel por pixel, o PNG usa compactação avançada enquanto o BMP armazena os pixels brutos.",
+    thFeature: "Recurso / Aspeto",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "BMP (Bitmap)",
+    tdFileNature: "Compactação",
+    tdFileNaturePng: "Sem perdas (algoritmo DEFLATE)",
+    tdFileNatureIco: "Nenhuma (não compactado) ou RLE sem perdas",
+    tdFallback: "Tamanho do arquivo",
+    tdFallbackPng: "Pequeno / Médio (Muito otimizado)",
+    tdFallbackIco: "Muito grande (Grade de pixels bruta)",
+    tdPurpose: "Transparência",
+    tdPurposePng: "Excelente (Transparencia alfa completa)",
+    tdPurposeIco: "Muito fraca (Sem canal alfa nativo no uso comum)",
+    tdResolutions: "Suporte Web",
+    tdResolutionsPng: "Universal (Compatível com todos os navegadores)",
+    tdResolutionsIco: "Limitado (Evitado na web devido ao tempo de carregamento)",
+    tdSize: "Caso de uso ideal",
+    tdSizePng: "Gráficos Web, logotipos, capturas de tela",
+    tdSizeIco: "Sistemas Windows, softwares legados",
+    tdTrans: "Animação",
+    tdTransPng: "Não (APNG é uma extensão separada)",
+    tdTransIco: "Não",
+    converterTitle: "Compactar e otimizar imagens (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é um PNG?",
+    divePngP1: "O PNG (Portable Network Graphics) foi desenvolvido em meados dos anos 90 como um substituto livre de patentes para o GIF. Tornou-se o principal formato sem perdas na web. Os arquivos PNG usam o algoritmo DEFLATE, que empacota os dados sem perder nenhum pixel.",
+    divePngP2: "O PNG é amplamente apreciado pelo seu excelente suporte à transparência de canal alfa. Isso permite sobrepor logotipos e ilustrações em qualquer fundo. Para fotos, porém, as imagens PNG são maiores que em JPEG ou WebP.",
+    divePngAdv: "Vantagens do PNG",
+    divePngAdvList: [
+      "Qualidade sem perdas: Detalhes pixel por pixel sem artefatos de compressão.",
+      "Transparência alfa: Suporta múltiplos níveis de opacidade para camadas perfeitas.",
+      "Eficiência Web: Arquivos muito menores do que formatos rasterizados não compactados."
+    ],
+    diveIcoTitle: "Análise profunda: O que é um BMP?",
+    diveIcoP1: "O BMP (Bitmap Image File) foi apresentado pela Microsoft nos primeiros anos do Windows. Ele foi projetado para armazenar imagens digitais de forma simples e direta, salvando cada pixel como uma sequência de valores de cor.",
+    diveIcoP2: "Como o formato BMP não aplica compactação, os arquivos são enormes e demoram para carregar pela rede. No entanto, por ser extremamente simples e sem codificação complexa, é muito fácil de ler em sistemas de baixo nível.",
+    diveIcoAdv: "Vantagens do BMP",
+    diveIcoAdvList: [
+      "Zero artefatos de compressão: Representação 100% fiel da matriz de pixels.",
+      "Especificação simples: Extremamente fácil de programar, ler e gravar.",
+      "Compatibilidade Windows: Totalmente integrado aos sistemas Win32 clássicos."
+    ],
+    q1: "Qual é a diferença entre PNG e BMP?",
+    a1: "O PNG é um formato de imagem comprimido sem perdas moderno para a web. O BMP é um formato mais antigo criado pela Microsoft que não compacta os arquivos, gerando imagens muito pesadas.",
+    q2: "Quando devo usar PNG em vez de BMP?",
+    a2: "Use PNG para design web, redes sociais, logotipos e capturas de tela. Use BMP apenas para softwares Windows antigos ou manipulação de pixels brutos.",
+    q3: "O BMP tem melhor qualidade que o PNG?",
+    a3: "Ambos os formatos são sem perdas, garantindo a mesma qualidade visual. No entanto, como o PNG comprime os dados, ele oferece a mesma qualidade em um tamanho muito menor.",
+    q4: "Por que os arquivos BMP são tão maiores que os PNG?",
+    a4: "O BMP armazena a informação de cor de cada pixel de forma individual e sem compressão. O PNG usa o algoritmo DEFLATE para compactar esses dados sem perder nenhuma informação.",
+    q5: "Posso converter BMP para PNG sem perder qualidade?",
+    a5: "Sim. Como ambos são formatos sem perdas, a conversão de BMP para PNG manterá 100% da qualidade original enquanto diminui significativamente o peso do arquivo.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa otimizar seus arquivos PNG?",
+    ctaDesc: "Use nosso compressor de imagens local no navegador para otimizar e reducir suas imagens PNG sem perder qualidade.",
+    ctaButton: "Testar compressor de PNG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs BMP: Perbedaan antara Format Gambar Web dan Bitmap",
+    seoDescription: "PNG vs BMP. Kami membandingkan Portable Network Graphics dengan file Bitmap. Pelajari kapan harus menggunakan masing-masing format untuk web.",
+    title: "PNG vs BMP: Format Gambar Mana yang Lebih Baik?",
+    intro: "Apakah Anda harus menggunakan Portable Network Graphic (PNG) yang sangat dioptimalkan atau Windows Bitmap (BMP) tanpa kompresi untuk gambar digital Anda? Berikut penjelasannya.",
+    quickAnswer: "Jawaban Singkat",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "Desain web, elemen antarmuka, logo, dan tangkapan layar yang membutuhkan transparansi bersih, kualitas lossless, dan ukuran file kecil.",
+    useIcoFor: "Gunakan BMP untuk:",
+    useIcoForDesc: "Aplikasi Windows lawas, wallpaper desktop mentah, atau proyek pemrograman di mana grid piksel tanpa kompresi mutlak diperlukan.",
+    differenceTitle: "Apa Perbedaan antara PNG dan BMP?",
+    differenceDesc: "Meskipun PNG dan BMP adalah format gambar raster yang dirancang untuk menjaga detail piksel sempurna, PNG menggunakan kompresi canggih sedangkan BMP menyimpan piksel apa adanya.",
+    thFeature: "Fitur / Aspek",
+    thPng: "PNG (Portable Network Graphics)",
+    thIco: "BMP (Bitmap)",
+    tdFileNature: "Kompresi",
+    tdFileNaturePng: "Lossless (Algoritma DEFLATE)",
+    tdFileNatureIco: "Tidak ada (Tanpa kompresi) atau RLE Lossless",
+    tdFallback: "Ukuran File",
+    tdFallbackPng: "Kecil / Sedang (Sangat dioptimalkan)",
+    tdFallbackIco: "Sangat Besar (Matriks piksel mentah)",
+    tdPurpose: "Dukungan Transparansi",
+    tdPurposePng: "Sangat Baik (Transparansi alfa penuh)",
+    tdPurposeIco: "Sangat Buruk (Tidak ada transparansi alfa dalam penggunaan standar)",
+    tdResolutions: "Dukungan Web",
+    tdResolutionsPng: "Universal (Didukung oleh semua peramban)",
+    tdResolutionsIco: "Terbatas (Dihindari untuk web karena lambat dimuat)",
+    tdSize: "Kasus Penggunaan Ideal",
+    tdSizePng: "Grafis Web, Logo, Tangkapan Layar",
+    tdSizeIco: "Perangkat Lunak Lawas, Sistem Windows",
+    tdTrans: "Animación",
+    tdTransPng: "Tidak (APNG adalah ekstensi terpisah)",
+    tdTransIco: "Tidak",
+    converterTitle: "Kompres & Optimalkan Gambar (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu PNG?",
+    divePngP1: "PNG (Portable Network Graphics) dikembangkan pada pertengahan 1990-an sebagai alternatif bebas paten untuk GIF. Format ini dengan cepat menjadi standar kompresi lossless terkemuka di web. File PNG menggunakan algoritma DEFLATE yang mengemas data gambar tanpa kehilangan piksel detail apa pun.",
+    divePngP2: "PNG sangat disukai karena dukungannya terhadap transparansi saluran alfa. Hal ini memudahkan desainer web menumpuk logo atau ilustrasi di atas latar belakang halaman web. Namun untuk foto, file PNG cenderung lebih besar dibanding JPEG atau WebP.",
+    divePngAdv: "Kelebihan PNG",
+    divePngAdvList: [
+      "Kualitas Lossless: Detail piksel sempurna tanpa artefak kompresi.",
+      "Transparansi Alfa: Mendukung tingkat opacities berbeda untuk layering halus.",
+      "Efisiensi Web: Ukuran file jauh lebih kecil dibanding format raster tanpa kompresi."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu BMP?",
+    diveIcoP1: "BMP (Bitmap Image File) diperkenalkan oleh Microsoft pada masa-masa awal sistem operasi Windows. BMP dirancang untuk menyimpan gambar digital secara sederhana tanpa bergantung pada perangkat keras tertentu. BMP menyimpan piksel sebagai aliran data warna langsung.",
+    diveIcoP2: "Karena file BMP standar tidak menggunakan kompresi, file ini memerlukan ruang penyimpanan besar dan lambat dimuat di jaringan. Namun, karena format ini tidak memiliki enkode rumit, BMP sangat mudah dibaca oleh sistem tingkat rendah.",
+    diveIcoAdv: "Kelebihan BMP",
+    diveIcoAdvList: [
+      "Tanpa Artefak Kompresi: Representasi data piksel murni tanpa kompresi.",
+      "Spesifikasi Sederhana: Sangat mudah dibaca dan ditulis dalam pemrograman.",
+      "Kompatibilitas Windows: Terintegrasi mendalam dengan sistem Win32 klasik."
+    ],
+    q1: "Apa perbedaan antara PNG dan BMP?",
+    a1: "PNG adalah format gambar terkompresi lossless modern untuk web. BMP adalah format gambar lama dari Microsoft yang tidak menggunakan kompresi, menghasilkan ukuran file yang sangat besar.",
+    q2: "Kapan saya harus menggunakan PNG daripada BMP?",
+    a2: "Gunakan PNG untuk desain web, media sosial, logo, dan tangkapan layar. Gunakan BMP hanya untuk aplikasi Windows jadul atau pemrosesan piksel mentah.",
+    q3: "Apakah BMP memiliki kualitas lebih tinggi daripada PNG?",
+    a3: "Kedua format bersifat lossless, artinya menjaga detail visual yang sama. Namun, karena PNG mengompres data gambar sedangkan BMP menyimpannya secara mentah, PNG memberikan kualitas yang identik dengan ukuran file jauh lebih kecil.",
+    q4: "Mengapa file BMP jauh lebih besar daripada file PNG?",
+    a4: "Karena BMP menyimpan bit warna untuk setiap piksel secara berturut-turut tanpa kompresi. PNG menggunakan algoritma kompresi DEFLATE untuk memperkecil file tanpa membuang data gambar.",
+    q5: "Apakah saya bisa mengubah BMP ke PNG tanpa mengurangi kualitas?",
+    a5: "Ya, karena keduanya adalah format lossless, mengubah file BMP ke PNG akan menghasilkan kualitas visual yang 100% sama dengan ukuran file yang jauh lebih hemat.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengoptimalkan file PNG Anda?",
+    ctaDesc: "Gunakan kompresor gambar lokal kami di peramban untuk mengoptimalkan dan memperkecil file PNG Anda tanpa kehilangan kualitas.",
+    ctaButton: "Coba Kompresor PNG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const t = pageTranslations[locale];
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": t.seoTitle,
+      "description": t.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": t.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": t.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": t.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-bmp")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={t.seoTitle} description={t.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{t.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{t.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs BMP</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">BMP</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{t.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{t.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {t.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{t.usePngFor}</strong> {t.usePngForDesc}</p>
+          <p><strong class="text-ink">{t.useIcoFor}</strong> {t.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{t.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">{t.differenceDesc}</p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{t.thFeature}</th>
+                <th class="p-4">{t.thPng}</th>
+                <th class="p-4">{t.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFileNature}</td>
+                <td class="p-4 text-success">{t.tdFileNaturePng}</td>
+                <td class="p-4">{t.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdFallback}</td>
+                <td class="p-4 text-success">{t.tdFallbackPng}</td>
+                <td class="p-4 text-error">{t.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdPurpose}</td>
+                <td class="p-4 text-success">{t.tdPurposePng}</td>
+                <td class="p-4 text-error">{t.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdResolutions}</td>
+                <td class="p-4 text-success">{t.tdResolutionsPng}</td>
+                <td class="p-4">{t.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdSize}</td>
+                <td class="p-4">{t.tdSizePng}</td>
+                <td class="p-4">{t.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{t.tdTrans}</td>
+                <td class="p-4">{t.tdTransPng}</td>
+                <td class="p-4">{t.tdTransIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{t.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.divePngTitle}</h2>
+        <p>{t.divePngP1}</p>
+        <p>{t.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: BMP -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{t.diveIcoTitle}</h2>
+        <p>{t.diveIcoP1}</p>
+        <p>{t.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{t.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {t.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(":")[0]}:</strong>{adv.split(":")[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{t.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q1}</h3>
+            <p class="text-body leading-relaxed">{t.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q2}</h3>
+            <p class="text-body leading-relaxed">{t.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q3}</h3>
+            <p class="text-body leading-relaxed">{t.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q4}</h3>
+            <p class="text-body leading-relaxed">{t.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{t.q5}</h3>
+            <p class="text-body leading-relaxed">{t.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{t.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{t.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {t.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

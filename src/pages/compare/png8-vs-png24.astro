@@ -1,0 +1,285 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
+
+// SEO Metadata
+const seoTitle = "PNG-8 vs PNG-24: Which PNG Format Should You Use? (2026 Comparison)";
+const seoDescription = "PNG-8 or PNG-24? We compare the 8-bit index color PNG format with the 24-bit direct color standard. Learn about file sizes, color limits, and web performance.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between PNG-8 and PNG-24?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PNG-8 uses an indexed color palette capped at 256 colors, creating very small file sizes similar to GIFs. PNG-24 uses 24-bit direct color supporting over 16 million colors and lossless alpha transparency, producing larger file sizes but perfect visual replication."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does PNG-8 support transparent backgrounds?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but with limitations. PNG-8 supports binary transparency (pixels are either fully transparent or fully opaque), which can cause jagged edges or halos. PNG-24 supports full 8-bit alpha-channel transparency, enabling smooth, anti-aliased semi-transparent edges and drop shadows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which is better for web performance, PNG-8 or PNG-24?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "PNG-8 is vastly superior for web performance because its file sizes are typically 50% to 80% smaller than PNG-24. For simple graphics like icons, charts, and flat logos, PNG-8 is the optimal choice to reduce load times."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I convert a PNG-24 image to PNG-8?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can convert PNG-24 to PNG-8 by quantizing the color palette in your browser using our local, offline image compressor tool. This analyzes the image and collapses millions of colors down to the most critical 256 colors to reduce file size."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does PNG-8 support millions of colors?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, PNG-8 is strictly limited to a maximum of 256 colors. If you try to save a complex photograph or detailed gradient as a PNG-8, the colors will be quantized, resulting in color banding or dithering."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png8-vs-png24")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG-8 vs PNG-24</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG-8</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG-24</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">PNG-8 vs PNG-24: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Both are PNG files, but they compress colors and transparency in fundamentally different ways. We compare PNG-8 (index color) against PNG-24 (direct color) to help you choose the best file for your web assets.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use PNG-8 for:</strong> Simple graphics like UI icons, logos with solid colors, simple charts, and text assets where small file size is critical and 256 colors are plenty.</p>
+          <p><strong class="text-ink">Use PNG-24 for:</strong> Images that require semi-transparent pixels (like drop shadows), screenshots with complex color gradients, and detailed graphics where color banding must be avoided.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between PNG-8 and PNG-24?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          The main distinction lies in color indexing. PNG-8 uses a pre-calculated index palette of up to 256 colors, whereas PNG-24 uses direct color mapping, assigning individual RGB values to every pixel.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">PNG-8 (Indexed Color)</th>
+                <th class="p-4">PNG-24 (Direct Color)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Color Capacity</td>
+                <td class="p-4 text-error">Maximum 256 colors</td>
+                <td class="p-4 text-success">Over 16 million colors (24-bit)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Average File Size</td>
+                <td class="p-4 text-success">Extremely small (50% to 80% smaller)</td>
+                <td class="p-4 text-error">Larger (Prone to bloating on web pages)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Level</td>
+                <td class="p-4">Binary transparency (On/Off, leads to halos)</td>
+                <td class="p-4 text-success">8-bit Alpha channel (Supports semi-transparency)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Photographic Fidelity</td>
+                <td class="p-4 text-error">Poor (Prone to dithering and banding)</td>
+                <td class="p-4 text-success">Excellent (Perfect lossless reconstruction)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Algorithm</td>
+                <td class="p-4">Lossy palette generation + Deflate</td>
+                <td class="p-4">100% Lossless Deflate</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Ideal Usage</td>
+                <td class="p-4">Simple flat icons, UI assets</td>
+                <td class="p-4 text-success">Images with drop shadows, detailed screenshots</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Quantize and Compress PNG-24 to PNG-8 (Offline & Private)</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: PNG-8 -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is PNG-8?</h2>
+        <p>
+          PNG-8 is an 8-bit indexed version of the Portable Network Graphics format. It works on the exact same index concept as the older GIF format: the file contains a table (or index) of up to 256 unique colors. Each pixel in the raster grid points to a color slot in this index table rather than storing its full red, green, and blue coordinates.
+        </p>
+        <p>
+          Because each pixel only needs 8 bits (1 byte) of data to reference its color slot, PNG-8 files are tiny. However, if the source graphic contains more than 256 colors, software must run quantization algorithms to map pixels to the nearest available index color. This can result in visual dithering patterns or bands in smooth color transitions.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG-8 Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Teeny-tiny Sizes:</strong> Perfect for websites aiming for optimal core web vitals and fast loading.</li>
+          <li><strong>Lossless compression of indexes:</strong> Once colors are quantized, the file compresses without further loss.</li>
+          <li><strong>Universal rendering:</strong> Natively loads on any web browser inside standard image nodes.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PNG-24 -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is PNG-24?</h2>
+        <p>
+          PNG-24 is a 24-bit direct color implementation of the PNG standard. Instead of limiting colors to an index palette, PNG-24 allocates 8 bits each to the Red, Green, and Blue channels for every single pixel. This allows it to reproduce over 16.7 million colors.
+        </p>
+        <p>
+          Furthermore, PNG-24 is almost always implemented as PNG-32 in software, which includes a dedicated 8-bit Alpha channel. This alpha channel supports 256 levels of transparency, allowing pixels to be semi-transparent. This is crucial for web designers creating anti-aliased rounded edges, translucent UI components, and soft drop shadows that overlay varied background graphics.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PNG-24 Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>True Color Fidelity:</strong> Zero color quantization, ensuring perfect representation of photos and gradients.</li>
+          <li><strong>Alpha Channel:</strong> Allows gorgeous translucent overlays, anti-aliasing, and professional drop shadows.</li>
+          <li><strong>No Banding:</strong> Handles complex gradients and screenshots of digital layouts flawlessly.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between PNG-8 and PNG-24?</h3>
+            <p class="text-body leading-relaxed">PNG-8 uses an indexed color palette capped at 256 colors, creating very small file sizes similar to GIFs. PNG-24 uses 24-bit direct color supporting over 16 million colors and lossless alpha transparency, producing larger file sizes but perfect visual replication.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does PNG-8 support transparent backgrounds?</h3>
+            <p class="text-body leading-relaxed">Yes, but with limitations. PNG-8 supports binary transparency (pixels are either fully transparent or fully opaque), which can cause jagged edges or halos. PNG-24 supports full 8-bit alpha-channel transparency, enabling smooth, anti-aliased semi-transparent edges and drop shadows.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which is better for web performance, PNG-8 or PNG-24?</h3>
+            <p class="text-body leading-relaxed">PNG-8 is vastly superior for web performance because its file sizes are typically 50% to 80% smaller than PNG-24. For simple graphics like icons, charts, and flat logos, PNG-8 is the optimal choice to reduce load times.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">How do I convert a PNG-24 image to PNG-8?</h3>
+            <p class="text-body leading-relaxed">You can convert PNG-24 to PNG-8 by quantizing the color palette in your browser using our local, offline image compressor tool. This analyzes the image and collapses millions of colors down to the most critical 256 colors to reduce file size.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does PNG-8 support millions of colors?</h3>
+            <p class="text-body leading-relaxed">No, PNG-8 is strictly limited to a maximum of 256 colors. If you try to save a complex photograph or detailed gradient as a PNG-8, the colors will be quantized, resulting in color banding or dithering.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to compress your PNG images?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, client-side Image Compressor to quantize and shrink your PNG files into lightweight PNG-8 assets instantly.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

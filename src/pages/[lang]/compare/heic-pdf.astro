@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import ImageToPdfTool from "../../../components/tools/ImageToPdfTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "HEIC vs PDF: Diferencia entre formatos de foto y documento",
+    seoDescription: "HEIC vs PDF. Comparamos el formato de imagen de alta eficiencia de Apple con el formato de documento portátil (PDF). Conozca cuándo usar cada uno.",
+    title: "HEIC vs PDF: ¿Qué formato utilizar?",
+    intro: "¿Está comparando un archivo de foto de Apple con un contenedor de documentos portátil? Analizamos las diferencias entre HEIC y PDF.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use HEIC para:",
+    usePngForDesc: "Fotografía digital en iOS, live photos y almacenamiento de fotos con rango dinámico alto y máxima compresión.",
+    useIcoFor: "Use PDF para:",
+    useIcoForDesc: "Documentos de varias páginas, formularios oficiales, facturas escaneadas, libros y diseños imprimibles donde la integridad del formato es vital.",
+    differenceTitle: "¿Cuál es la diferencia entre HEIC y PDF?",
+    differenceDesc: "La distinción principal radica en que HEIC es un contenedor de compresión de imágenes optimizado para fotos, mientras que PDF es un contenedor de presentación de diseño diseñado para documentos.",
+    thFeature: "Característica / Aspecto",
+    thPng: "HEIC (Formato de imagen de alta eficiencia)",
+    thIco: "PDF (Formato de documento portátil)",
+    tdFileNature: "Naturaleza del archivo",
+    tdFileNaturePng: "Contenedor de imagen rasterizada",
+    tdFileNatureIco: "Contenedor de diseño de documento",
+    tdFallback: "Soporte multipágina",
+    tdFallbackPng: "Limitado (Solo ráfagas y Live Photos)",
+    tdFallbackIco: "Sí (Hojas paginadas infinitas)",
+    tdPurpose: "Selección de texto",
+    tdPurposePng: "No (Solo píxeles, requiere OCR)",
+    tdPurposeIco: "Sí (Texto seleccionable, buscable y editable)",
+    tdResolutions: "Visibilidad universal",
+    tdResolutionsPng: "Pobre (Requiere sistema operativo moderno o dispositivo Apple)",
+    tdResolutionsIco: "Universal (Compatible de forma nativa por todos los SO)",
+    tdSize: "Tamaño de archivo",
+    tdSizePng: "Extremadamente pequeño (HEVC comprimido)",
+    tdSizeIco: "Más grande (Almacena fuentes, vectores y recursos)",
+    tdTrans: "Transparencia",
+    tdTransPng: "Sí (Canal alfa)",
+    tdTransIco: "Sí (Totalmente compatible)",
+    tdAnim: "Listo para imprimir",
+    tdAnimPng: "No",
+    tdAnimIco: "Sí (Estándar de la industria para impresión)",
+    converterTitle: "Fusionar imágenes a PDF (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es HEIC?",
+    divePngP1: "HEIC (contenedor de imagen de alta eficiencia) es el formato de archivo estándar adoptado por Apple a partir de iOS 11. Se basa en el estándar HEIF y utiliza algoritmos de compresión HEVC (codificación de vídeo de alta eficiencia) avanzados para almacenar datos fotográficos ricos.",
+    divePngP2: "Los archivos HEIC admiten perfiles de color de hasta 16 bits (lo que permite una captura de color Display P3 en pantallas de teléfonos modernos) y pueden agrupar varias imágenes, ráfagas, máscaras alfa y live photos en un solo archivo. Ocupan la mitad del espacio de un JPEG.",
+    divePngAdv: "Ventajas de HEIC",
+    divePngAdvList: [
+      "La mitad del tamaño: La compresión eficiente ahorra gigabytes de almacenamiento en el dispositivo.",
+      "Profundidad de color extendida: Admite perfiles de color de 10 y 16 bits para fotos realistas.",
+      "Contenedores: Guarda ediciones, miniaturas, mapas de profundidad y fotos animadas en un paquete."
+    ],
+    diveIcoTitle: "Análisis profundo: ¿Qué es PDF?",
+    diveIcoP1: "PDF (Portable Document Format) es un estándar abierto mantenido por la ISO. Desarrollado por Adobe, su objetivo es garantizar la compatibilidad cruzada de los documentos, asegurando que se vean igual independientemente del software, el hardware o el sistema operativo.",
+    diveIcoP2: "Un PDF almacena una descripción completa del diseño, que incluye fuentes tipográficas, formas vectoriales, formularios e imágenes integradas. Soporta paginación, texto seleccionable y firmas digitales.",
+    diveIcoAdv: "Ventajas de PDF",
+    diveIcoAdvList: [
+      "Preservación de formato: Asegura que el diseño y las fuentes nunca se desordenen en otros dispositivos.",
+      "Texto seleccionable: Permite copiar y pegar texto e indexar el contenido en buscadores.",
+      "Capacidad multipágina: Ideal para libros, facturas, informes y manuales."
+    ],
+    q1: "¿Cuál es la diferencia entre HEIC y PDF?",
+    a1: "HEIC es un formato rasterizado moderno de Apple diseñado para almacenar fotos con alta compresión. PDF es un contenedor de documentos de Adobe diseñado para mantener el formato e integridad de texto e imágenes.",
+    q2: "¿Cuándo debo usar HEIC en lugar de PDF?",
+    a2: "Use HEIC para guardar y capturar fotos en su iPhone de manera eficiente. Use PDF para enviar documentos de texto, currículums, facturas o presentaciones que no deban alterarse al abrirse.",
+    q3: "¿Se puede convertir HEIC a PDF?",
+    a3: "Sí, es posible convertir fotos HEIC a documentos PDF. En dispositivos Apple se puede realizar de forma nativa desde la aplicación Archivos o a través de herramientas de conversión locales.",
+    q4: "¿Admiten los navegadores web HEIC y PDF?",
+    a4: "Los navegadores no admiten HEIC de forma nativa para visualizar imágenes en páginas web. Sin embargo, todos los navegadores modernos incluyen lectores nativos de PDF integrados.",
+    q5: "¿Por qué los archivos PDF son más grandes que los HEIC?",
+    a5: "Porque los archivos PDF son contenedores que almacenan fuentes tipográficas, vectores de página y metadatos de impresión. HEIC utiliza la compresión de vídeo HEVC súper eficiente.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Quiere generar documentos PDF?",
+    ctaDesc: "Pruebe nuestro conversor de imágenes a PDF local para combinar sus fotos en un archivo PDF limpio y seguro directamente en su navegador.",
+    ctaButton: "Probar Conversor de Imagen a PDF",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "HEIC vs PDF : différence entre formats photo et document",
+    seoDescription: "HEIC vs PDF. Nous comparons le format d'image haute efficacité d'Apple avec le format PDF. Apprenez quand utiliser chacun pour le partage et le stockage.",
+    title: "HEIC vs PDF : quel format utiliser ?",
+    intro: "Vous comparez un fichier photo Apple et un conteneur de document portable ? Nous analysons les différences entre le HEIC et le PDF.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le HEIC pour :",
+    usePngForDesc: "La photographie numérique sur iOS, les live photos et le stockage de photos avec une plage dynamique élevée et une compression maximale.",
+    useIcoFor: "Utilisez le PDF pour :",
+    useIcoForDesc: "Les documents de plusieurs pages, les formulaires officiels, les factures scannées, les livres et les maquettes imprimables.",
+    differenceTitle: "Quelle est la différence entre HEIC et PDF ?",
+    differenceDesc: "Le HEIC est un conteneur de compression d'images optimisé pour les photos, tandis que le PDF est un conteneur de présentation de mise en page conçu pour les documents.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "HEIC (Format d'image haute efficacité)",
+    thIco: "PDF (Portable Document Format)",
+    tdFileNature: "Nature du fichier",
+    tdFileNaturePng: "Conteneur d'image matricielle",
+    tdFileNatureIco: "Conteneur de mise en page",
+    tdFallback: "Support multipage",
+    tdFallbackPng: "Limité (Rafales et Live Photos uniquement)",
+    tdFallbackIco: "Oui (Pages numérotées infinies)",
+    tdPurpose: "Sélection de texte",
+    tdPurposePng: "Non (Pixels uniquement, nécessite un OCR)",
+    tdPurposeIco: "Oui (Texte sélectionnable, recherchable et modifiable)",
+    tdResolutions: "Visibilité universelle",
+    tdResolutionsPng: "Médiocre (Requiert un OS récent ou un appareil Apple)",
+    tdResolutionsIco: "Universelle (Pris en charge nativement par tous les OS)",
+    tdSize: "Taille de fichier",
+    tdSizePng: "Extrêmement léger (compressé avec HEVC)",
+    tdSizeIco: "Plus lourd (stocke les polices, vecteurs et ressources)",
+    tdTrans: "Transparence",
+    tdTransPng: "Oui (Canal alpha)",
+    tdTransIco: "Oui (Complètement supporté)",
+    tdAnim: "Prêt pour l'impression",
+    tdAnimPng: "Non",
+    tdAnimIco: "Oui (Standard de l'industrie pour l'impression)",
+    converterTitle: "Fusionner des images en PDF (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le HEIC ?",
+    divePngP1: "Le HEIC (High Efficiency Image Container) est le format standard adopté par Apple depuis iOS 11. Basé sur la norme HEIF, il utilise des algorithmes de compression vidéo HEVC (H.265) pour stocker les images.",
+    divePngP2: "Les fichiers HEIC prennent en charge des profils de couleurs allant jusqu'à 16 bits (Display P3) et peuvent regrouper plusieurs images, rafales et Live Photos dans un seul fichier deux fois plus léger qu'un JPEG.",
+    divePngAdv: "Avantages du HEIC",
+    divePngAdvList: [
+      "Taille réduite de moitié : Économise de l'espace de stockage sur vos appareils.",
+      "Profondeur de couleur étendue : Supporte 10 et 16 bits pour des rendus photoréalistes.",
+      "Fonction conteneur : Regroupe modifications, vignettes et Live Photos dans un seul fichier."
+    ],
+    diveIcoTitle: "Analyse approfondie : Qu'est-ce que le PDF ?",
+    diveIcoP1: "Le PDF (Portable Document Format) est une norme ouverte gérée par l'ISO. Développé par Adobe, son but est de garantir qu'un document s'affiche à l'identique quel que soit le terminal ou le système utilisé.",
+    diveIcoP2: "Un fichier PDF contient une description complète d'une mise en page avec les polices intégrées, les formes vectorielles et les images. Il gère la pagination, la recherche textuelle et les signatures électroniques.",
+    diveIcoAdv: "Avantages du PDF",
+    diveIcoAdvList: [
+      "Préservation du format : Mise en page et polices figées sur tous les appareils.",
+      "Texte sélectionnable : Permet de copier du texte et facilite l'indexation par les moteurs.",
+      "Gestion multipage : Parfait pour les rapports, livres, factures et notices."
+    ],
+    q1: "Quelle est la différence entre HEIC et PDF ?",
+    a1: "Le HEIC est un format d'image Apple haute efficacité pour les photos. Le PDF est un conteneur de documents Adobe conçu pour figer la mise en page des textes et images.",
+    q2: "Quand utiliser le HEIC plutôt que le PDF ?",
+    a2: "Utilisez le HEIC pour prendre et stocker vos photos numériques. Utilisez le PDF pour envoyer des documents professionnels, des contrats ou des rapports.",
+    q3: "Peut-on convertir un HEIC en PDF ?",
+    a3: "Oui, vous pouvez assembler des photos HEIC au sein d'un document PDF. Sur iOS, cela se fait nativement via l'application Fichiers ou via notre outil hors ligne.",
+    q4: "Les navigateurs web affichent-ils le HEIC et le PDF ?",
+    a4: "Les navigateurs ne gèrent pas le HEIC en natif sur les pages web. En revanche, ils intègrent tous un lecteur de fichiers PDF.",
+    q5: "Pourquoi un fichier PDF est-il plus lourd qu'un HEIC ?",
+    a5: "Parce que le PDF embarque les polices de caractères, des formes vectorielles et des métadonnées de mise en page. Le HEIC utilise la compression vidéo moderne HEVC.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de générer des PDF ?",
+    ctaDesc: "Essayez notre convertisseur d'images en PDF pour fusionner plusieurs photos dans un document PDF propre et sécurisé.",
+    ctaButton: "Essayer le convertisseur d'images en PDF",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "HEIC vs. PDF: Unterschied zwischen Foto- und Dokumentenformaten",
+    seoDescription: "HEIC vs. PDF. Wir vergleichen Apples hocheffizientes Bildformat mit dem PDF-Format. Erfahren Sie, wann Sie welches Format für Speicher und Versand nutzen.",
+    title: "HEIC vs. PDF: Welches Format nutzen?",
+    intro: "Vergleichen Sie eine Apple-Fotodatei mit einem universellen Dokumenten-Container? Wir analysieren die Unterschiede zwischen HEIC und PDF.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie HEIC für:",
+    usePngForDesc: "Digitale Fotografie auf iOS-Geräten, Live Photos und die Bildspeicherung mit hoher Farbdichte bei maximaler Kompression.",
+    useIcoFor: "Nutzen Sie PDF für:",
+    useIcoForDesc: "Mehrseitige Dokumente, offizielle Formulare, gescannte Rechnungen, E-Books und druckfertige Layouts.",
+    differenceTitle: "Was ist der Unterschied zwischen HEIC und PDF?",
+    differenceDesc: "Der Hauptunterschied liegt darin, dass HEIC ein hocheffizienter Bild-Container für Fotos ist, während PDF ein Präsentations-Container für Dokumente ist.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "PDF (Portable Document Format)",
+    tdFileNature: "Dateinatur",
+    tdFileNaturePng: "Rasterbild-Container",
+    tdFileNatureIco: "Dokumenten-Container",
+    tdFallback: "Mehrseiten-Unterstützung",
+    tdFallbackPng: "Begrenzt (Nur Serienbilder und Live Photos)",
+    tdFallbackIco: "Ja (Beliebig viele Seiten)",
+    tdPurpose: "Textauswahl",
+    tdPurposePng: "Nein (Nur Bildpunkte, benötigt OCR)",
+    tdPurposeIco: "Ja (Text auswählbar, suchbar und editierbar)",
+    tdResolutions: "Universelle Lesbarkeit",
+    tdResolutionsPng: "Schlecht (Erfordert aktuelles OS oder Apple-Gerät)",
+    tdResolutionsIco: "Universell (Von absolut jedem Betriebssystem unterstützt)",
+    tdSize: "Dateigröße",
+    tdSizePng: "Extrem klein (HEVC-komprimiert)",
+    tdSizeIco: "Größer (Speichert Schriftarten, Vektoren und Assets)",
+    tdTrans: "Transparenz",
+    tdTransPng: "Ja (Alpha-Kanal)",
+    tdTransIco: "Ja (Voll unterstützt)",
+    tdAnim: "Druckfertig",
+    tdAnimPng: "Nein",
+    tdAnimIco: "Ja (Industriestandard für Druckereien)",
+    converterTitle: "Bilder in PDF umwandeln (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist HEIC?",
+    divePngP1: "HEIC (High Efficiency Image Container) ist das von Apple seit iOS 11 genutzte Fotoformat. Es basiert auf dem HEIF-Standard und nutzt HEVC (H.265)-Videokompression zur Bildspeicherung.",
+    divePngP2: "HEIC unterstützt tiefe 16-Bit-Farbprofile (Display P3) und speichert Serienaufnahmen, Bearbeitungsverläufe sowie Live Photos in einer Datei bei nur halbem Speicherbedarf einer JPEG-Datei.",
+    divePngAdv: "Vorteile von HEIC",
+    divePngAdvList: [
+      "Halbe Dateigröße: Hocheffiziente Kompression spart viel Speicherplatz.",
+      "Display P3 Farbe: Größeres Farbspektrum für mobile Displays.",
+      "Container-Typ: Bündelt Bearbeitungsschritte und Serienbilder."
+    ],
+    diveIcoTitle: "Deep Dive: Was ist PDF?",
+    diveIcoP1: "PDF (Portable Document Format) ist ein ISO-Standard, der von Adobe entwickelt wurde. Das Ziel war es, Dokumente plattformunabhängig exakt gleich darzustellen – unabhängig von Betriebssystem, Bildschirm oder Drucker.",
+    diveIcoP2: "Ein PDF sichert das gesamte Layout, inklusive Schriftarten, Vektorgrafiken und Rasterbilder. Es erlaubt durchsuchbare Texte, Hyperlinks, ausfüllbare Formulare und digitale Signaturen.",
+    diveIcoAdv: "Vantagens do EPS",
+    diveIcoAdvList: [
+      "Layout-Erhalt: Garantiert, dass sich Texte und Bilder auf anderen Geräten nicht verschieben.",
+      "Text-Suche: Erlaubt das Kopieren von Texten und die Indexierung durch Google.",
+      "Mehrseitig: Perfekt für Berichte, Bücher, Handbücher und Formulare."
+    ],
+    q1: "Was ist der Unterschied zwischen HEIC und PDF?",
+    a1: "HEIC ist ein komprimiertes Bildformat von Apple für Fotos. PDF ist ein Dokumentenformat von Adobe zur exakten Darstellung von Text- und Bildlayouts.",
+    q2: "Wann sollte ich HEIC statt PDF nutzen?",
+    a2: "Nutzen Sie HEIC zum Speichern und Aufnehmen von Handyfotos. Nutzen Sie PDF für Dokumente, Verträge, Bewerbungen und mehrseitige Berichte.",
+    q3: "Kann man HEIC in PDF umwandeln?",
+    a3: "Ja. Unter iOS geht dies nativ über die Dateien-App. Auf anderen Systemen können Sie Bilddaten mit unserem lokalen Browser-Tool in ein PDF zusammenfügen.",
+    q4: "Unterstützen Browser HEIC und PDF?",
+    a4: "Browser können HEIC-Fotos nicht direkt im Web anzeigen. PDFs hingegen werden von jedem modernen Browser nativ dargestellt.",
+    q5: "Warum sind PDFs größer als HEIC-Bilder?",
+    a5: "Da PDFs Schriftarten, Seitenvorgaben und Vektordaten mitspeichern, während HEIC auf die hocheffiziente HEVC-Videokomprimierung setzt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Möchten Sie Bilder in PDF umwandeln?",
+    ctaDesc: "Nutzen Sie unser Offline-Bild-zu-PDF-Tool, um mehrere Fotos sicher und schnell direkt im Browser in einem PDF zu bündeln.",
+    ctaButton: "Bild-zu-PDF-Konverter starten",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "HEIC vs PDF: Diferença entre Formatos de Foto e Documento",
+    seoDescription: "HEIC vs PDF. Comparamos o formato de imagem de alta eficiência da Apple com o formato PDF. Entenda qual usar para compartilhamento e armazenamento.",
+    title: "HEIC vs PDF: Qual formato usar?",
+    intro: "Comparando um arquivo de fotos da Apple com um contêiner de documentos portátil? Explicamos tudo sobre HEIC e PDF.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use HEIC para:",
+    usePngForDesc: "Fotografia digital em aparelhos iOS, live photos e armazenamento de fotos com grande alcance dinâmico e compressão máxima.",
+    useIcoFor: "Use PDF para:",
+    useIcoForDesc: "Documentos com várias páginas, formulários oficiais, faturas, livros digitais e layouts preparados para impressão física.",
+    differenceTitle: "Qual é a diferença entre HEIC e PDF?",
+    differenceDesc: "O HEIC é um contêiner de imagem rasterizado focado em fotos, enquanto o PDF é um contêiner de layout e apresentação focado em documentos de texto e imagens combinados.",
+    thFeature: "Característica / Aspeto",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "PDF (Portable Document Format)",
+    tdFileNature: "Estrutura do arquivo",
+    tdFileNaturePng: "Contêiner de imagem rasterizada",
+    tdFileNatureIco: "Contêiner de documento formatado",
+    tdFallback: "Suporte a várias páginas",
+    tdFallbackPng: "Limitado (Apenas disparos e Live Photos)",
+    tdFallbackIco: "Sim (Páginas numeradas infinitas)",
+    tdPurpose: "Seleção de texto",
+    tdPurposePng: "Não (Apenas pixels, exige OCR)",
+    tdPurposeIco: "Sim (Texto copiável, pesquisável e editável)",
+    tdResolutions: "Visualização universal",
+    tdResolutionsPng: "Ruim (Exige celular Apple ou sistema recente)",
+    tdResolutionsIco: "Universal (Compatibilidade nativa em todos os sistemas)",
+    tdSize: "Tamanho do arquivo",
+    tdSizePng: "Muito pequeno (Compressão HEVC)",
+    tdSizeIco: "Maior (Armazena fontes, vetores e imagens internas)",
+    tdTrans: "Transparência",
+    tdTransPng: "Sim (Canal alfa)",
+    tdTransIco: "Sim (Totalmente compatível)",
+    tdAnim: "Pronto para imprimir",
+    tdAnimPng: "Não",
+    tdAnimIco: "Sim (O padrão de envio para gráficas)",
+    converterTitle: "Mesclar imagens em PDF (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é o HEIC?",
+    divePngP1: "HEIC (High Efficiency Image Container) é o formato padrão adotado pela Apple desde o iOS 11. Baseia-se na especificação HEIF e utiliza a tecnologia de compressão de vídeo HEVC (H.265) para salvar arquivos fotográficos.",
+    divePngP2: "Admite cores em profundidades ricas de até 16 bits (ideal para o perfil Display P3) e pode agrupar várias imagens e Live Photos em arquivos com metade do tamanho de um JPEG comum.",
+    divePngAdv: "Vantagens do HEIC",
+    divePngAdvList: [
+      "Metade do peso: Excelente economia de memória nos aparelhos.",
+      "Gama de cores Display P3: Captura de tons de cor mais ricos e profundos.",
+      "Suporte a Live Photos: Agrupa o clipe de vídeo e a foto num só arquivo."
+    ],
+    diveIcoTitle: "Análise profunda: O que é o PDF?",
+    diveIcoP1: "O PDF (Portable Document Format) é um padrão aberto mantido pela ISO. Criado pela Adobe, o formato garante compatibilidade absoluta de layouts, fazendo com que um arquivo seja visto e impresso da mesma forma em qualquer tela.",
+    diveIcoP2: "Guarda fontes tipográficas, caminhos vetoriais e imagens rasterizadas de forma fixa. Suporta texto pesquisável, formulários preenchíveis e assinaturas digitais protegidas.",
+    diveIcoAdv: "Vantagens do PDF",
+    diveIcoAdvList: [
+      "Preservação de layout: Evita que fontes ou imagens desconfigurem em outros aparelhos.",
+      "Texto pesquisável: Facilidade para copiar trechos e buscas rápidas de conteúdo.",
+      "Uso multipáginas: Ideal para manuais, relatórios comerciais e livros."
+    ],
+    q1: "Qual é a diferença entre HEIC e PDF?",
+    a1: "O HEIC é um formato rasterizado da Apple para comprimir fotos digitais de alta qualidade. O PDF é um contêiner de documentos da Adobe feito para figer e preservar textos e imagens de forma organizada.",
+    q2: "Quando usar HEIC em vez de PDF?",
+    a2: "Use HEIC para registrar e armazenar fotos no seu celular Apple. Use PDF para enviar documentos de texto, propostas comerciais ou formulários.",
+    q3: "É possível converter HEIC para PDF?",
+    a3: "Sim. No iPhone você pode fazer isso nativamente na aplicação Ficheiros. Em outros sistemas, pode mesclar as imagens com a nossa ferramenta offline.",
+    q4: "Navegadores rodam os arquivos HEIC e PDF?",
+    a4: "Navegadores não exibem fotos HEIC diretamente na web. Porém, todos os navegadores modernos contam com leitores de PDF embutidos.",
+    q5: "Por que arquivos PDF são maiores que os HEIC?",
+    a5: "Porque PDFs guardam fontes tipográficas, esquemas vetoriais de página e metadados pesados de layout. O HEIC usa compressão HEVC eficiente de vídeo.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar mais comparaciones",
+    ctaTitle: "Precisa gerar arquivos PDF?",
+    ctaDesc: "Use a nossa ferramenta offline para combinar as suas fotos em um documento PDF unificado de forma rápida e segura.",
+    ctaButton: "Testar Conversor de Imagem para PDF",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "HEIC vs PDF: Perbedaan Antara Format Foto dan Dokumen",
+    seoDescription: "HEIC vs PDF. Kami membandingkan format gambar efisiensi tinggi Apple dengan Format Dokumen Portabel (PDF). Pelajari kapan harus menggunakannya.",
+    title: "HEIC vs PDF: Format Mana yang Harus Digunakan?",
+    intro: "Membandingkan file foto Apple dengan wadah dokumen portabel? Kami mengulas perbedaan antara HEIC dan PDF.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan HEIC untuk:",
+    usePngForDesc: "Fotografi digital di perangkat iOS, live photo, dan penyimpanan foto dengan rentang dinamis tinggi serta kompresi maksimal.",
+    useIcoFor: "Gunakan PDF untuk:",
+    useIcoForDesc: "Dokumen multi-halaman, formulir resmi, faktur yang dipindai, buku elektronik, dan tata letak cetak yang integritas formatnya krusial.",
+    differenceTitle: "Apa Perbedaan Antara HEIC dan PDF?",
+    differenceDesc: "Perbedaan utamanya adalah HEIC adalah wadah kompresi gambar yang dioptimalkan untuk foto, sedangkan PDF adalah wadah presentasi tata letak yang dirancang untuk dokumen.",
+    thFeature: "Fitur / Aspek",
+    thPng: "HEIC (High Efficiency Image Format)",
+    thIco: "PDF (Portable Document Format)",
+    tdFileNature: "Natur File",
+    tdFileNaturePng: "Wadah gambar raster",
+    tdFileNatureIco: "Wadah tata letak dokumen",
+    tdFallback: "Dukungan Multi-halaman",
+    tdFallbackPng: "Terbatas (Hanya foto burst dan Live Photo)",
+    tdFallbackIco: "Ya (Halaman bernomor tak terbatas)",
+    tdPurpose: "Pemilihan Teks",
+    tdPurposePng: "Tidak (Hanya piksel, memerlukan OCR)",
+    tdPurposeIco: "Ya (Teks dapat dipilih, dicari, dan diedit)",
+    tdResolutions: "Kecocokan Universal",
+    tdResolutionsPng: "Kurang (Memerlukan OS modern atau perangkat Apple)",
+    tdResolutionsIco: "Universal (Didukung secara asli oleh semua OS)",
+    tdSize: "Ukuran File",
+    tdSizePng: "Sangat kecil (Terkompresi HEVC)",
+    tdSizeIco: "Lebih besar (Menyimpan font, vektor, dan aset)",
+    tdTrans: "Transparansi",
+    tdTransPng: "Ya (Saluran alfa)",
+    tdTransIco: "Ya (Didukung penuh)",
+    tdAnim: "Siap Cetak",
+    tdAnimPng: "Tidak",
+    tdAnimIco: "Ya (Standar industri untuk percetakan)",
+    converterTitle: "Gabungkan Gambar ke PDF (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu HEIC?",
+    divePngP1: "HEIC adalah standar format gambar yang diadopsi Apple sejak iOS 11. Berbasis standar HEIF, format ini menggunakan algoritma kompresi HEVC (H.265) untuk mengompresi kisi piksel.",
+    divePngP2: "File HEIC mendukung kedalaman warna hingga 16-bit (Display P3) dan dapat membungkus beberapa gambar seri, peta kedalaman, serta Live Photo dalam satu file yang ukurannya setengah dari JPEG.",
+    divePngAdv: "Kelebihan HEIC",
+    divePngAdvList: [
+      "Ukuran Setengah JPEG: Kompresi efisien menghemat memori ponsel.",
+      "Warna Display P3: Captur gradasi warna yang lebih kaya pada layar ponsel.",
+      "Fitur Wadah: Menyimpan rangkaian foto burst dan klip Live Photo dalam satu file."
+    ],
+    diveIcoTitle: "Analisis Mendalam: Apa itu PDF?",
+    diveIcoP1: "PDF (Portable Document Format) adalah standar format dokumen terbuka yang dikelola oleh ISO. Dikembangkan oleh Adobe, format ini menjamin integritas tampilan dokumen agar tetap konsisten di perangkat mana pun.",
+    diveIcoP2: "PDF menyimpan tata letak halaman lengkap, termasuk font, vektor, dan gambar raster. Format ini mendukung teks yang dapat dicari, formulir interaktif, dan tanda tangan digital.",
+    diveIcoAdv: "Kelebihan PDF",
+    diveIcoAdvList: [
+      "Preservasi Tata Letak: Menjamin layout dan font tidak bergeser di perangkat lain.",
+      "Teks Dapat Dipilih: Memudahkan menyalin teks dan diindeks oleh mesin pencari.",
+      "Dukungan Banyak Halaman: Sangat cocok untuk buku, manual, faktur, dan laporan."
+    ],
+    q1: "Apa perbedaan antara HEIC dan PDF?",
+    a1: "HEIC adalah format raster modern Apple untuk foto terkompresi efisien. PDF adalah format dokumen Adobe yang dirancang untuk menjaga tata letak teks dan gambar tetap konsisten.",
+    q2: "Kapan saya harus menggunakan HEIC dibanding PDF?",
+    a2: "Gunakan HEIC untuk menyimpan foto dari ponsel Apple Anda guna menghemat memori. Gunakan PDF untuk laporan, dokumen teks, formulir, atau CV yang tidak boleh berubah tata letaknya.",
+    q3: "Apakah HEIC bisa diubah ke PDF?",
+    a3: "Ya, Anda dapat menggabungkan foto HEIC ke dalam file PDF. Di perangkat iOS, ini dapat dilakukan langsung melalui aplikasi Files atau menggunakan alat offline kami.",
+    q4: "Apakah browser web mendukung format HEIC dan PDF?",
+    a4: "Browser web tidak mendukung visualisasi HEIC secara langsung di halaman web. Namun, semua browser modern memiliki pembaca PDF bawaan.",
+    q5: "Mengapa ukuran file PDF lebih besar daripada HEIC?",
+    a5: "Karena PDF menyimpan font, data tata letak halaman, dan vektor, sedangkan HEIC menggunakan teknologi kompresi video modern HEVC yang sangat ringkas.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu membuat dokumen PDF?",
+    ctaDesc: "Gunakan penggabung gambar-ke-PDF offline kami untuk menyatukan foto-foto Anda menjadi satu file PDF dengan aman langsung di browser.",
+    ctaButton: "Coba Konverter Gambar ke PDF",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-to-pdf");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useIcoFor}</strong> {text.useIcoForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thIco}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileNature}</td>
+                <td class="p-4">{text.tdFileNaturePng}</td>
+                <td class="p-4 text-success">{text.tdFileNatureIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFallback}</td>
+                <td class="p-4 text-error">{text.tdFallbackPng}</td>
+                <td class="p-4 text-success">{text.tdFallbackIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPurpose}</td>
+                <td class="p-4 text-error">{text.tdPurposePng}</td>
+                <td class="p-4 text-success">{text.tdPurposeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdResolutions}</td>
+                <td class="p-4 text-error">{text.tdResolutionsPng}</td>
+                <td class="p-4 text-success">{text.tdResolutionsIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4">{text.tdSizeIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-success">{text.tdTransIco}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnim}</td>
+                <td class="p-4 text-error">{text.tdAnimPng}</td>
+                <td class="p-4 text-success">{text.tdAnimIco}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <ImageToPdfTool toolId="image-to-pdf" />
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveIcoTitle}</h2>
+        <p>{text.diveIcoP1}</p>
+        <p>{text.diveIcoP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveIcoAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveIcoAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="HEIC" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

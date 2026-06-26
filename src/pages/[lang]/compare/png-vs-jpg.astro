@@ -1,0 +1,628 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs JPG: ¿Cuál deberías usar? (Guía 2026)",
+    seoDescription: "¿PNG o JPG? Probamos ambos con archivos reales: fotos, logotipos y capturas de pantalla. Vea las diferencias de tamaño de archivo y cuál prefiere Google para el rendimiento web.",
+    title: "PNG vs JPG: ¿Qué formato deberías usar?",
+    intro: "PNG y JPG son los dos formatos de imagen más comunes en Internet, pero están creados para propósitos completamente diferentes. Elegir el formato incorrecto puede resultar en texto borroso, fondos transparentes rotos o tamaños de archivo enormes que destruyen sus clasificaciones de SEO. Aquí está todo lo que necesita saber.",
+    quickAnswer: "Respuesta Rápida",
+    useJpgFor: "Use JPG para:",
+    useJpgForDesc: "fotografías, imágenes de portada, cualquier cosa con degradados",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "logotipos, capturas de pantalla, cualquier cosa con texto o transparencia",
+    useWebpFor: "Use WebP para:",
+    useWebpForDesc: "todo, si puede (supera a ambos para la entrega web)",
+    converterTitle: "Convertir PNG a JPG al instante (Gratis y Privado)",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y JPG?",
+    differenceDesc: "Aunque ambos formatos muestran imágenes en su navegador, utilizan técnicas de compresión completamente diferentes. Aquí hay una comparación técnica lado a lado.",
+    thFeature: "Característica",
+    thPng: "PNG (Portable Network Graphics)",
+    thJpg: "JPG (Joint Photographic Experts Group)",
+    tdCompression: "Tipo de compresión",
+    tdCompressionPng: "Sin pérdidas (algoritmo DEFLATE)",
+    tdCompressionJpg: "Con pérdidas (transformada de coseno discreta)",
+    tdTransparency: "Soporte de transparencia",
+    tdTransparencyPng: "Sí (soporta canal Alfa)",
+    tdTransparencyJpg: "No (los fondos se aplanan a blanco/sólido)",
+    tdQuality: "Calidad de imagen",
+    tdQualityPng: "Reproducción perfecta 1:1 de píxeles",
+    tdQualityJpg: "Variable (se degrada a alta compresión)",
+    tdMetadata: "Metadatos EXIF",
+    tdMetadataPng: "Sin soporte oficial",
+    tdMetadataJpg: "Soporte completo (cámara, GPS, fechas)",
+    tdAnimation: "Soporte de animación",
+    tdAnimationPng: "Sí (a través de APNG)",
+    tdAnimationJpg: "No",
+    tdIdealFor: "Caso de uso ideal",
+    tdIdealForPng: "Logotipos, capturas de pantalla, gráficos con texto",
+    tdIdealForJpg: "Fotografías, arte colorido, degradados complejos",
+    tdFileSize: "Tamaño de archivo típico",
+    tdFileSizePng: "Grande (carga pesada)",
+    tdFileSizeJpg: "Pequeño a mediano (muy comprimido)",
+    tdWebSpeed: "Velocidad de carga web",
+    tdWebSpeedPng: "Lento (tarda más en conexiones lentas)",
+    tdWebSpeedJpg: "Rápido (archivos ligeros optimizados)",
+    
+    snippetSectionTitle: "Cuándo usar PNG vs JPG",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es esencial para maximizar tanto la calidad de la imagen como el rendimiento del sitio web. Aquí hay respuestas directas a las preguntas más comunes.",
+    
+    q1: "¿Es PNG de mayor calidad que el JPG?",
+    a1: "Sí. PNG es técnicamente de mayor calidad que el JPG porque utiliza compresión sin pérdidas, lo que significa que no se descarta ninguna información de píxeles ni de color al guardar. El JPG utiliza compresión con pérdidas, que elimina permanentemente detalles para reducir el tamaño del archivo.",
+    
+    q2: "¿Qué formato debo usar para la velocidad de mi sitio web, PNG o JPG?",
+    a2: "Para la velocidad web y un mejor rendimiento de Core Web Vitals, use JPG (o WebP) para todas las fotografías. Solo use PNG para logotipos transparentes, iconos o capturas de pantalla con texto de alto contraste. Guardar una fotografía como PNG ralentizará drásticamente la carga de su página.",
+    
+    q3: "¿Qué es mejor para imprimir, PNG o JPG?",
+    a3: "El JPG es mucho mejor para imprimir que el PNG. El formato JPG soporta de forma nativa perfiles de color CMYK, que son estándar en imprentas profesionales. También conserva metadatos EXIF y resoluciones de impresión (como DPI). El PNG es estrictamente RGB para pantallas y no soporta CMYK.",
+    
+    q4: "¿Por qué el tamaño del archivo PNG es mucho más grande que el JPG?",
+    a4: "Los tamaños de archivo PNG son mayores porque deben almacenar una copia matemática perfecta de la imagen. El JPG simplifica bloques de píxeles y elimina datos visuales que el ojo humano apenas nota, lo que reduce el tamaño del archivo en un 80-90%.",
+    
+    q5: "¿Por qué el JPG no admite transparencia?",
+    a5: "El JPG no admite transparencia porque solo incluye canales de color Rojo, Verde y Azul (RGB). Carece del 'canal Alfa' (RGBA) que usa el PNG para registrar la opacidad. Las áreas transparentes guardadas como JPG se rellenan automáticamente con un color sólido (normalmente blanco).",
+    
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir un archivo PNG grande a JPG?",
+    ctaDesc: "Utilice nuestra herramienta gratuita, privada y en el navegador para comprimir y convertir sus imágenes al instante sin subirlas a un servidor.",
+    ctaButton: "Probar el Convertidor de PNG a JPG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs JPG : Quel format devez-vous utiliser ? (Guide 2026)",
+    seoDescription: "PNG ou JPG ? Nous avons testé les deux avec de vrais fichiers : photos, logos et captures. Découvrez les différences de taille et ce que Google préfère.",
+    title: "PNG vs JPG : Quel format devez-vous utiliser ?",
+    intro: "Le PNG et le JPG sont les deux formats d'image les plus courants sur le Web, mais ils sont conçus pour des usages totalement différents. Choisir le mauvais format peut donner du texte flou, des fonds transparents brisés ou des fichiers trop lourds. Voici tout ce que vous devez savoir.",
+    quickAnswer: "Réponse rapide",
+    useJpgFor: "Utilisez le JPG pour :",
+    useJpgForDesc: "photographies, images de couverture, dégradés",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "logos, captures d'écran, textes ou transparences",
+    useWebpFor: "Utilisez le WebP pour :",
+    useWebpForDesc: "tout, si possible (meilleur que les deux pour le Web)",
+    converterTitle: "Convertir PNG en JPG instantanément (Gratis & Privé)",
+    differenceTitle: "Quelle est la différence entre PNG et JPG ?",
+    differenceDesc: "Bien que les deux formats affichent des images dans votre navigateur, ils utilisent des techniques de compression différentes. Voici un comparatif technique.",
+    thFeature: "Caractéristique",
+    thPng: "PNG (Portable Network Graphics)",
+    thJpg: "JPG (Joint Photographic Experts Group)",
+    tdCompression: "Type de compression",
+    tdCompressionPng: "Sans perte (algorithme DEFLATE)",
+    tdCompressionJpg: "Avec perte (Transformée en cosinus discrète)",
+    tdTransparency: "Gestion de la transparence",
+    tdTransparencyPng: "Oui (prend en charge le canal Alpha)",
+    tdTransparencyJpg: "Non (les fonds transparents deviennent blancs/solides)",
+    tdQuality: "Qualité de l'image",
+    tdQualityPng: "Fidélité pixel-perfect 1:1",
+    tdQualityJpg: "Variable (se dégrade avec une forte compression)",
+    tdMetadata: "Métadonnées EXIF",
+    tdMetadataPng: "Non pris en charge officiellement",
+    tdMetadataJpg: "Support complet (appareil, GPS, dates)",
+    tdAnimation: "Animation",
+    tdAnimationPng: "Oui (via APNG)",
+    tdAnimationJpg: "Non",
+    tdIdealFor: "Usage recommandé",
+    tdIdealForPng: "Logos, captures d'écran, graphiques avec texte",
+    tdIdealForJpg: "Photos, images colorées, dégradés complexes",
+    tdFileSize: "Taille de fichier type",
+    tdFileSizePng: "Grande (fichiers lourds)",
+    tdFileSizeJpg: "Petite à moyenne (très compressé)",
+    tdWebSpeed: "Vitesse de chargement",
+    tdWebSpeedPng: "Lente (plus long sur connexions lentes)",
+    tdWebSpeedJpg: "Rapide (fichiers légers optimisés)",
+    
+    snippetSectionTitle: "Quand utiliser le PNG vs JPG",
+    snippetSectionDesc: "Choisir le format de fichier correct est essentiel pour maximiser tant la taille que les performances web. Voici des réponses directes aux questions fréquentes.",
+    
+    q1: "Le PNG est-il de meilleure qualité que le JPG ?",
+    a1: "Oui. Le PNG est techniquement de meilleure qualité car il utilise une compression sans perte, préservant 100 % des pixels d'origine. Le JPG utilise une compression avec perte, qui élimine des données pour réduire le poids de l'image.",
+    
+    q2: "Quel format utiliser pour la vitesse du site, PNG ou JPG ?",
+    a2: "Pour le référencement et la vitesse de chargement, utilisez le JPG (ou WebP) pour les photos. N'utilisez le PNG que pour les logos transparents ou les captures avec texte. Charger une photo en PNG ralentira fortement votre site.",
+    
+    q3: "Quel est le meilleur format pour l'impression, PNG ou JPG ?",
+    a3: "Le JPG est bien meilleur pour l'impression car il prend en charge les profils colorimétriques CMJN (CMYK) requis par les imprimeurs. Il conserve aussi les métadonnées et la résolution DPI. Le PNG est réservé aux écrans RGB.",
+    
+    q4: "Pourquoi les fichiers PNG sont-ils plus lourds que les JPG ?",
+    a4: "Les PNG sont plus lourds car ils stockent une copie mathématique parfaite de l'image. Le JPG simplifie les blocs de pixels et supprime les détails invisibles à l'œil nu, réduisant le poids de 80 à 90 %.",
+    
+    q5: "Pourquoi le JPG ne prend-il pas en charge la transparence ?",
+    a5: "Le JPG ne définit que trois canaux de couleur (Rouge, Vert, Bleu). Il n'a pas le quatrième canal (canal Alpha) utilisé par le PNG pour l'opacité. Les zones transparentes converties en JPG deviennent un fond uni (souvent blanc).",
+    
+    faqTitle: "Questions fréquemment posées",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir un fichier PNG lourd en JPG ?",
+    ctaDesc: "Utilisez notre outil gratuit et local pour compresser et convertir vos images instantanément sans envoi sur serveur.",
+    ctaButton: "Essayer le convertisseur PNG en JPG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. JPG: Welches Format sollten Sie verwenden? (Leitfaden 2026)",
+    seoDescription: "PNG oder JPG? Wir haben beide mit echten Dateien getestet: Fotos, Logos und Screenshots. Sehen Sie Dateigrößen-Unterschiede und was Google empfiehlt.",
+    title: "PNG vs. JPG: Welches Format sollten Sie verwenden?",
+    intro: "PNG und JPG sind die beiden gängigsten Bildformate im Internet, wurden jedoch für völlig unterschiedliche Zwecke entwickelt. Die falsche Wahl kann zu unscharfem Text, fehlerhaften transparenten Hintergründen oder riesigen Dateigrößen führen, die Ihre SEO-Rankings beeinträchtigen. Hier erfahren Sie alles, was Sie wissen müssen.",
+    quickAnswer: "Schnelle Antwort",
+    useJpgFor: "Verwenden Sie JPG für:",
+    useJpgForDesc: "Fotos, Hintergrundbilder, Verläufe",
+    usePngFor: "Verwenden Sie PNG für:",
+    usePngForDesc: "Logos, Screenshots, Texte oder transparente Hintergründe",
+    useWebpFor: "Verwenden Sie WebP für:",
+    useWebpForDesc: "alles, wenn möglich (besser als beide für das Web)",
+    converterTitle: "PNG sofort in JPG konvertieren (Kostenlos & Privat)",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und JPG?",
+    differenceDesc: "Obwohl beide Formate Bilder anzeigen, verwenden sie unterschiedliche Kompressionsmethoden. Hier ist der technische Vergleich.",
+    thFeature: "Merkmal",
+    thPng: "PNG (Portable Network Graphics)",
+    thJpg: "JPG (Joint Photographic Experts Group)",
+    tdCompression: "Kompressionstyp",
+    tdCompressionPng: "Verlustfrei (DEFLATE-Algorithmus)",
+    tdCompressionJpg: "Verlustbehaftet (DCT-Algorithmus)",
+    tdTransparency: "Transparenzunterstützung",
+    tdTransparencyPng: "Ja (unterstützt Alpha-Kanal)",
+    tdTransparencyJpg: "Nein (Hintergrund wird weiß/farbig gefüllt)",
+    tdQuality: "Bildqualität",
+    tdQualityPng: "Pixelgenaue 1:1 Wiedergabe",
+    tdQualityJpg: "Variabel (nimmt bei hoher Kompression ab)",
+    tdMetadata: "EXIF-Metadaten",
+    tdMetadataPng: "Keine offizielle Unterstützung",
+    tdMetadataJpg: "Volle Unterstützung (Kamera, GPS, Daten)",
+    tdAnimation: "Animationen",
+    tdAnimationPng: "Ja (über APNG)",
+    tdAnimationJpg: "Nein",
+    tdIdealFor: "Idealer Anwendungsfall",
+    tdIdealForPng: "Logos, Screenshots, Grafiken mit Text",
+    tdIdealForJpg: "Fotografien, farbenfrohe Kunst, komplexe Verläufe",
+    tdFileSize: "Typische Dateigröße",
+    tdFileSizePng: "Groß (schwere Ladezeiten)",
+    tdFileSizeJpg: "Klein bis mittel (stark komprimiert)",
+    tdWebSpeed: "Ladezeit im Web",
+    tdWebSpeedPng: "Langsam (längere Ladezeit bei langsamer Verbindung)",
+    tdWebSpeedJpg: "Schnell (optimierte, leichte Dateien)",
+    
+    snippetSectionTitle: "Wann man PNG vs. JPG verwendet",
+    snippetSectionDesc: "Die Wahl des richtigen Bildformats ist wichtig, um die Bildqualität und die Web-Performance zu optimieren. Hier sind direkte Antworten auf häufige Fragen.",
+    
+    q1: "Ist PNG qualitativ besser als JPG?",
+    a1: "Ja. PNG ist technisch hochwertiger als JPG, da es eine verlustfreie Komprimierung nutzt, bei der keine Bilddaten verloren gehen. JPG nutzt eine verlustbehaftete Kompression, bei der Details gelöscht werden, um die Datei zu verkleinern.",
+    
+    q2: "Welches Format ist besser für die Ladezeit, PNG oder JPG?",
+    a2: "Für Web-Geschwindigkeit und gute Core Web Vitals sollten Sie JPG (oder WebP) für Fotos nutzen. Nutzen Sie PNG nur für Logos und Screenshots mit Text. Fotos als PNG verlangsamen Ihre Website drastisch.",
+    
+    q3: "Was ist besser für den Druck, PNG oder JPG?",
+    a3: "JPG ist für den Druck wesentlich besser geeignet als PNG. Das JPG-Format unterstützt CMYK-Farbprofile, die von Druckereien benötigt werden. PNG unterstützt nur RGB-Farbräume für Displays.",
+    
+    q4: "Warum ist die PNG-Dateigröße so viel größer als JPG?",
+    a4: "PNG-Dateien sind größer, weil sie eine mathematisch exakte Kopie des Originals speichern. JPG fasst Pixelblöcke zusammen und löscht für das Auge unsichtbare Details, was die Größe um 80-90 % reduziert.",
+    
+    q5: "Warum unterstützt JPG keine Transparenz?",
+    a5: "JPG unterstützt keine Transparenz, da es nur über RGB-Kanäle (Rot, Grün, Blau) verfügt und kein Alpha-Kanal (RGBA) vorhanden ist. Transparente Bildbereiche werden beim Speichern als JPG meist weiß ausgefüllt.",
+    
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie eine große PNG in JPG konvertieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses In-Browser-Tool, um Bilder sofort lokal zu konvertieren, ohne sie auf Server hochzuladen.",
+    ctaButton: "PNG-zu-JPG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs JPG: Qual formato você deve usar? (Guia 2026)",
+    seoDescription: "PNG ou JPG? Testamos ambos com arquivos reais: fotos, logotipos e capturas de tela. Veja as diferenças de tamanho e o que o Google prefere.",
+    title: "PNG vs JPG: Qual formato você deve usar?",
+    intro: "PNG e JPG são os dois formatos de imagem mais comuns na internet, mas foram criados para propósitos completamente diferentes. Escolher o formato errado pode resultar em textos borrados, fundos transparentes corrompidos ou arquivos gigantescos que destroem seus rankings de SEO. Aqui está tudo o que você precisa saber.",
+    quickAnswer: "Resposta rápida",
+    useJpgFor: "Use JPG para:",
+    useJpgForDesc: "fotos, imagens de destaque, degradês",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "logotipos, capturas de tela, textos ou transparências",
+    useWebpFor: "Use WebP para:",
+    useWebpForDesc: "tudo, se possível (supera ambos para a web)",
+    converterTitle: "Converter PNG para JPG instantaneamente (Grátis & Privado)",
+    differenceTitle: "Qual é a diferença entre PNG e JPG?",
+    differenceDesc: "Embora ambos os formatos exibam imagens, eles utilizam técnicas de compactação diferentes. Veja o comparativo técnico lado a lado.",
+    thFeature: "Recurso",
+    thPng: "PNG (Portable Network Graphics)",
+    thJpg: "JPG (Joint Photographic Experts Group)",
+    tdCompression: "Tipo de compactação",
+    tdCompressionPng: "Sem perdas (algoritmo DEFLATE)",
+    tdCompressionJpg: "Com perdas (algoritmo DCT)",
+    tdTransparency: "Suporte a transparência",
+    tdTransparencyPng: "Sim (suporta canal Alfa)",
+    tdTransparencyJpg: "Não (fundos transparentes ficam brancos/solides)",
+    tdQuality: "Qualidade da imagem",
+    tdQualityPng: "Fidelidade pixel-perfect 1:1",
+    tdQualityJpg: "Variável (degrada em alta compactação)",
+    tdMetadata: "Metadados EXIF",
+    tdMetadataPng: "Sem suporte oficial",
+    tdMetadataJpg: "Suporte completo (câmera, GPS, datas)",
+    tdAnimation: "Animação",
+    tdAnimationPng: "Sim (via APNG)",
+    tdAnimationJpg: "Não",
+    tdIdealFor: "Caso de uso ideal",
+    tdIdealForPng: "Logotipos, capturas de tela, gráficos com texto",
+    tdIdealForJpg: "Fotos, arte colorida, degradês complexos",
+    tdFileSize: "Tamanho de arquivo típico",
+    tdFileSizePng: "Grande (pesado para carregar)",
+    tdFileSizeJpg: "Pequeno a médio (muito compactado)",
+    tdWebSpeed: "Velocidade na web",
+    tdWebSpeedPng: "Lento (demora mais em conexões lentas)",
+    tdWebSpeedJpg: "Rápido (arquivos leves otimizados)",
+    
+    snippetSectionTitle: "Quando usar PNG vs JPG",
+    snippetSectionDesc: "A escolha do formato correto é essencial para melhorar a velocidade e a qualidade do site. Veja respostas diretas para as dúvidas mais comuns.",
+    
+    q1: "O PNG tem qualidade superior ao JPG?",
+    a1: "Sim. O PNG é tecnicamente superior porque usa compactação sem perdas, mantendo 100% dos dados originais da imagem. O JPG descarta dados para reduzir o tamanho do arquivo, o que pode gerar ruídos na imagem.",
+    
+    q2: "Qual formato é melhor para velocidade do site, PNG ou JPG?",
+    a2: "Para SEO e carregamento rápido, use JPG (ou WebP) para fotos. Só use PNG para logos transparentes ou capturas de tela com texto. Fotos salvas como PNG deixam o site significativamente lento.",
+    
+    q3: "O que é melhor para impressão, PNG ou JPG?",
+    a3: "O JPG é muito melhor para impressão. Ele suporta perfis de cores CMYK usados pelas gráficas profissionais, além de armazenar metadatos e parâmetros de DPI. O PNG é restrito ao padrão RGB de telas.",
+    
+    q4: "Por que o arquivo PNG é maior do que o JPG?",
+    a4: "O PNG é maior porque salva uma cópia matemática perfeita da imagem. O JPG agrupa pixels de cores semelhantes e descarta dados visuais redundantes, diminuindo o tamanho em até 80-90%.",
+    
+    q5: "Por que o JPG não aceita transparência?",
+    a5: "O JPG não possui o 'canal Alfa' (RGBA) usado pelo PNG para opacidade; ele define apenas os canais de cores Vermelho, Verde e Azul (RGB). Áreas transparentes convertidas em JPG ficam com fundo sólido (geralmente branco).",
+    
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Mais comparações",
+    ctaTitle: "Precisa converter um arquivo PNG pesado para JPG?",
+    ctaDesc: "Use nossa ferramenta gratuita no navegador para compactar e converter suas imagens localmente sem subir arquivos para servidores.",
+    ctaButton: "Testar Conversor de PNG para JPG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs JPG: Format Mana yang Harus Anda Gunakan? (Panduan 2026)",
+    seoDescription: "PNG atau JPG? Kami menguji keduanya dengan file asli: foto, logo, dan tangkapan layar. Lihat perbedaan ukuran file dan mana yang disukai Google.",
+    title: "PNG vs JPG: Format Mana yang Harus Anda Gunakan?",
+    intro: "PNG dan JPG adalah dua format gambar yang paling umum di internet, tetapi dibuat untuk tujuan yang sangat berbeda. Memilih format yang salah dapat menyebabkan teks buram, latar belakang transparan rusak, atau ukuran file besar yang merusak peringkat SEO Anda. Berikut semua yang perlu Anda ketahui.",
+    quickAnswer: "Jawaban Singkat",
+    useJpgFor: "Gunakan JPG untuk:",
+    useJpgForDesc: "foto, gambar utama, gambar dengan gradasi warna",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "logo, tangkapan layar, gambar dengan teks atau transparansi",
+    useWebpFor: "Gunakan WebP untuk:",
+    useWebpForDesc: "semuanya, jika memungkinkan (mengalahkan keduanya untuk pengiriman web)",
+    converterTitle: "Konversi PNG ke JPG Instan (Gratis & Privat)",
+    differenceTitle: "Apa Perbedaan Antara PNG dan JPG?",
+    differenceDesc: "Meskipun kedua format menampilkan gambar di browser Anda, mereka menggunakan teknik kompresi yang berbeda. Berikut perbandingan teknisnya.",
+    thFeature: "Fitur",
+    thPng: "PNG (Portable Network Graphics)",
+    thJpg: "JPG (Joint Photographic Experts Group)",
+    tdCompression: "Jenis Kompresi",
+    tdCompressionPng: "Lossless (algoritma DEFLATE)",
+    tdCompressionJpg: "Lossy (Discrete Cosine Transform)",
+    tdTransparency: "Dukungan Transparansi",
+    tdTransparencyPng: "Ya (mendukung saluran Alpha)",
+    tdTransparencyJpg: "Tidak (latar belakang menjadi putih/padat)",
+    tdQuality: "Kualitas Gambar",
+    tdQualityPng: "Reproduksi piksel sempurna 1:1",
+    tdQualityJpg: "Variabel (menurun pada kompresi tinggi)",
+    tdMetadata: "Metadata EXIF",
+    tdMetadataPng: "Tidak didukung secara resmi",
+    tdMetadataJpg: "Dukungan penuh (kamera, GPS, tanggal)",
+    tdAnimation: "Dukungan Animasi",
+    tdAnimationPng: "Ya (melalui APNG)",
+    tdAnimationJpg: "Tidak",
+    tdIdealFor: "Kasus Penggunaan Ideal",
+    tdIdealForPng: "Logo, tangkapan layar, grafis dengan teks",
+    tdIdealForJpg: "Foto, seni penuh warna, gradasi kompleks",
+    tdFileSize: "Ukuran File Khas",
+    tdFileSizePng: "Besar (beban pemuatan berat)",
+    tdFileSizeJpg: "Kecil hingga Sedang (sangat dikompresi)",
+    tdWebSpeed: "Kecepatan Pemuatan Web",
+    tdWebSpeedPng: "Lambat (memakan waktu lebih lama pada koneksi lambat)",
+    tdWebSpeedJpg: "Cepat (file ringan yang dioptimalkan)",
+    
+    snippetSectionTitle: "Kapan Menggunakan PNG vs JPG",
+    snippetSectionDesc: "Memilih format yang benar sangat penting untuk performa web dan SEO. Berikut jawaban langsung untuk pertanyaan yang sering diajukan.",
+    
+    q1: "Apakah kualitas PNG lebih tinggi daripada JPG?",
+    a1: "Ya. PNG secara teknis memiliki kualitas lebih tinggi karena menggunakan kompresi lossless, artinya tidak ada informasi piksel atau warna yang dibuang. JPG menggunakan kompresi lossy, yang menghapus data secara permanen untuk memperkecil ukuran file.",
+    
+    q2: "Format mana yang harus digunakan untuk kecepatan website, PNG atau JPG?",
+    a2: "Untuk kecepatan web dan Core Web Vitals, gunakan JPG (atau WebP) untuk semua foto. Hanya gunakan PNG untuk logo transparan, ikon, atau tangkapan layar dengan teks. Menyimpan foto sebagai PNG akan sangat memperlambat pemuatan halaman.",
+    
+    q3: "Mana yang lebih baik untuk cetak, PNG or JPG?",
+    a3: "JPG jauh lebih baik untuk cetak daripada PNG. Format JPG mendukung profil warna CMYK secara asli yang digunakan oleh mesin cetak profesional, serta menyimpan metadata EXIF dan DPI. PNG hanya untuk layar RGB.",
+    
+    q4: "Mengapa ukuran file PNG jauh lebih besar daripada JPG?",
+    a4: "Ukuran file PNG lebih besar karena menyimpan salinan gambar yang sempurna secara matematis. JPG menyederhanakan blok piksel dan membuang detail visual yang tidak disadari mata manusia, memangkas ukuran hingga 80-90%.",
+    
+    q5: "Mengapa JPG tidak mendukung transparansi?",
+    a5: "JPG tidak mendukung transparansi karena standarnya hanya mendefinisikan saluran warna Merah, Hijau, Biru (RGB) dan tidak memiliki 'saluran Alpha' (RGBA) untuk opasitas. Bagian transparan pada gambar yang disimpan ke JPG otomatis diisi warna putih.",
+    
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi file PNG besar ke JPG?",
+    ctaDesc: "Gunakan alat gratis di browser kami untuk mengompresi dan mengonversi gambar Anda secara instan tanpa mengunggah ke server.",
+    ctaButton: "Coba Konverter PNG ke JPG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// FAQ Schema
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 related comparisons
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-vs-jpg" && (["PNG", "JPG", "JPEG"].includes(comp.format1) || ["PNG", "JPG", "JPEG"].includes(comp.format2)))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "png-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          {text.intro}
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useJpgFor}</strong> {text.useJpgForDesc}</p>
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.useWebpFor}</strong> {text.useWebpForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thJpg}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompression}</td>
+                <td class="p-4">{text.tdCompressionPng}</td>
+                <td class="p-4">{text.tdCompressionJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTransparency}</td>
+                <td class="p-4">{text.tdTransparencyPng}</td>
+                <td class="p-4">{text.tdTransparencyJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdQuality}</td>
+                <td class="p-4">{text.tdQualityPng}</td>
+                <td class="p-4">{text.tdQualityJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdMetadata}</td>
+                <td class="p-4">{text.tdMetadataPng}</td>
+                <td class="p-4">{text.tdMetadataJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnimation}</td>
+                <td class="p-4">{text.tdAnimationPng}</td>
+                <td class="p-4">{text.tdAnimationJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdIdealFor}</td>
+                <td class="p-4">{text.tdIdealForPng}</td>
+                <td class="p-4">{text.tdIdealForJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4">{text.tdFileSizePng}</td>
+                <td class="p-4">{text.tdFileSizeJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdWebSpeed}</td>
+                <td class="p-4">{text.tdWebSpeedPng}</td>
+                <td class="p-4">{text.tdWebSpeedJpg}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="png-to-jpg" />
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases (Featured Snippet Targeting) -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

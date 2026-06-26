@@ -1,0 +1,661 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs PSD: Diferencia entre formatos de imagen y Photoshop",
+    seoDescription: "PNG vs PSD. Comparamos Portable Network Graphics con Adobe Photoshop Documents. Conozca cuándo usar cada uno para diseño web y edición.",
+    title: "PNG vs PSD: ¿Qué formato utilizar?",
+    intro: "¿Tiene dudas sobre la diferencia entre un archivo raw de Photoshop y un gráfico web terminado? Analizamos las diferencias entre PNG y PSD.",
+    quickAnswer: "Respuesta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Recursos web, gráficos de redes sociales, archivos adjuntos de correo electrónico y diseños finales donde necesita una imagen ligera con transparencia de alta calidad.",
+    usePsdFor: "Use PSD para:",
+    usePsdForDesc: "Borradores de proyectos de trabajo, plantillas de capas y tareas de diseño gráfico donde necesita preservar texto, trazados, capas y máscaras editables.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y PSD?",
+    differenceDesc: "La distinción principal radica en que PSD es un formato de archivo de trabajo con estructuras de capas ricas, mientras que PNG es un formato de distribución plano finalizado.",
+    thFeature: "Característica / Aspecto",
+    thPng: "PNG (Portable Network Graphics)",
+    thPsd: "PSD (Photoshop Document)",
+    tdFileType: "Tipo de archivo",
+    tdFileTypePng: "Gráfico rasterizado comprimido",
+    tdFileTypePsd: "Archivo de proyecto de diseño con capas",
+    tdLayers: "Soporte de capas",
+    tdLayersPng: "No (Aplanado en una sola capa)",
+    tdLayersPsd: "Sí (Capas y carpetas infinitas)",
+    tdEdit: "Edición",
+    tdEditPng: "No (No se puede editar texto o vectores)",
+    tdEditPsd: "Sí (Texto, filtros y máscaras totalmente editables)",
+    tdWeb: "Soporte web",
+    tdWebPng: "Universal (Compatible con todos los navegadores)",
+    tdWebPsd: "No (Requiere conversión)",
+    tdSize: "Tamaño de archivo",
+    tdSizePng: "Pequeño y optimizado",
+    tdSizePsd: "Grande (A menudo cientos de megabytes)",
+    tdTrans: "Transparencia",
+    tdTransPng: "Sí (canal alfa de 8 bits)",
+    tdTransPsd: "Sí (Capas completas y fusiones)",
+    tdLossless: "Calidad sin pérdidas",
+    tdLosslessPng: "Sí",
+    tdLosslessPsd: "Sí",
+    converterTitle: "Comprimir exportaciones PNG (Offline y Privado)",
+    divePngTitle: "Análisis profundo: ¿Qué es un PNG?",
+    divePngP1: "PNG (Portable Network Graphics) es un formato de imagen rasterizada comprimida desarrollado como reemplazo moderno de GIF. Está diseñado específicamente para su uso en la web y en pantallas, admitiendo color de 24 bits comprimido sin pérdidas junto con transparencia alfa de alta calidad.",
+    divePngP2: "Dado que un PNG es un archivo plano, no almacena ningún historial de diseño editable ni capas individuales. Se utiliza mejor para la implementación final en sitios web o aplicaciones porque se carga rápidamente y mantiene los bordes limpios en texto y logotipos.",
+    divePngAdv: "Ventajas de PNG",
+    divePngAdvList: [
+      "Compatibilidad universal: Se muestra correctamente en todos los navegadores y clientes de correo.",
+      "Peso optimizado para web: Tamaño de archivo ligero en comparación con archivos fuente de diseño.",
+      "Transparencia limpia: Ideal para logotipos transparentes y superposiciones de interfaz de usuario."
+    ],
+    divePsdTitle: "Análisis profundo: ¿Qué es un PSD?",
+    divePsdP1: "PSD significa Photoshop Document. Es el formato de archivo de proyecto nativo y propietario utilizado por Adobe Photoshop. Un archivo PSD funciona como un espacio de trabajo de proyecto completo, que almacena capas, campos de texto, formas vectoriales, objetos inteligentes, máscaras, capas de ajuste e incluso el historial de diseño.",
+    divePsdP2: "A diferencia de PNG, un archivo PSD no está destinado a compartirse directamente en línea ni a incrustarse en páginas web, ya que los navegadores no pueden renderizarlos. Los diseñadores trabajan dentro de un PSD y exportan los resultados finales a formatos compatibles con la web como PNG, JPEG o WebP cuando terminan.",
+    divePsdAdv: "Ventajas de PSD",
+    divePsdAdvList: [
+      "Capas editables: Vuelva atrás y edite texto, formas o filtros en cualquier momento.",
+      "Flujo de trabajo no destructivo: Aplique máscaras de ajuste y efectos de capa sin alterar los píxeles originales.",
+      "Objetos inteligentes: Coloque elementos vectoriales de alta resolución que se escalan sin degradación."
+    ],
+    q1: "¿Cuál es la diferencia entre PNG y PSD?",
+    a1: "PNG es un formato de imagen rasterizado plano diseñado para distribución web y uso general. PSD es el formato de proyecto nativo de Photoshop, preservando múltiples capas, filtros y textos editables.",
+    q2: "¿Cuándo debo utilizar PSD en lugar de PNG?",
+    a2: "Utilice PSD mientras esté editando un proyecto gráfico para mantener el control sobre los elementos individuales. Utilice PNG cuando su diseño esté finalizado y necesite publicarlo en la web o compartirlo.",
+    q3: "¿Puede un PNG tener capas como un PSD?",
+    a3: "No, el formato PNG es un formato plano. Al guardar un diseño como PNG, todas las capas se fusionan de forma permanente, por lo que ya no podrán editarse por separado.",
+    q4: "¿Cómo se convierte un PSD a PNG?",
+    a4: "Puede exportar sus diseños PSD a PNG desde Adobe Photoshop usando el menú Archivo > Exportar. Luego, puede comprimir su PNG exportado con nuestro optimizador web local para acelerar la carga.",
+    q5: "¿Por qué los archivos PSD son tan grandes?",
+    a5: "Los archivos PSD son grandes debido a que almacenan toda la información de capas individuales, máscaras, fuentes tipográficas y el historial del proyecto. PNG solo almacena la imagen final ya procesada y comprimida.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita optimizar sus archivos PNG?",
+    ctaDesc: "Use nuestro compresor de imágenes local en el navegador para optimizar y reducir sus exportaciones de PNG sin perder calidad.",
+    ctaButton: "Probar Compresor de PNG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs PSD : différence entre les formats image et Photoshop",
+    seoDescription: "PNG vs PSD. Nous comparons le Portable Network Graphics avec les fichiers de projet Adobe Photoshop Documents. Choisissez le bon format pour le web.",
+    title: "PNG vs PSD : quel format utiliser ?",
+    intro: "Vous vous demandez quelle est la différence entre un fichier de projet Photoshop et un graphique web finalisé ? Nous décryptons le PNG et le PSD.",
+    quickAnswer: "Réponse rapide",
+    usePngFor: "Utilisez le PNG pour :",
+    usePngForDesc: "Les éléments web, les graphiques pour réseaux sociaux, les images par e-mail et les conceptions finalisées nécessitant de la transparence.",
+    usePsdFor: "Utilisez le PSD pour :",
+    usePsdForDesc: "Les projets en cours d'édition, les modèles de calques et tout travail graphique nécessitant de modifier du texte, des tracés ou des filtres.",
+    differenceTitle: "Quelle est la différence entre PNG et PSD ?",
+    differenceDesc: "Le PSD est un format de fichier de travail contenant des calques modifiables et l'historique du projet, alors que le PNG est un fichier d'image plat finalisé et compressé.",
+    thFeature: "Caractéristique / Aspect",
+    thPng: "PNG (Portable Network Graphics)",
+    thPsd: "PSD (Photoshop Document)",
+    tdFileType: "Type de fichier",
+    tdFileTypePng: "Image matricielle compressée",
+    tdFileTypePsd: "Fichier de projet graphique à calques",
+    tdLayers: "Gestion des calques",
+    tdLayersPng: "Non (Image aplatie)",
+    tdLayersPsd: "Oui (Calques et dossiers illimités)",
+    tdEdit: "Édition",
+    tdEditPng: "Non (Texte et tracés non modifiables)",
+    tdEditPsd: "Oui (Texte, masques et filtres modifiables)",
+    tdWeb: "Support web",
+    tdWebPng: "Universel (Pris en charge par tous les navigateurs)",
+    tdWebPsd: "Non (Nécessite une conversion préalable)",
+    tdSize: "Taille de fichier",
+    tdSizePng: "Léger et optimisé",
+    tdSizePsd: "Volumineux (Souvent plusieurs centaines de Mo)",
+    tdTrans: "Transparence",
+    tdTransPng: "Oui (Canal alpha 8 bits)",
+    tdTransPsd: "Oui (Calques et masques de fusion)",
+    tdLossless: "Qualité sans perte",
+    tdLosslessPng: "Oui",
+    tdLosslessPsd: "Oui",
+    converterTitle: "Compresser les exports PNG (Hors ligne et Privé)",
+    divePngTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    divePngP1: "Le PNG (Portable Network Graphics) est un format d'image matricielle compressé conçu pour remplacer le format GIF. Il gère des images en couleurs vraies (24 bits) avec une compression sans perte et une transparence de haute qualité grâce au canal alpha.",
+    divePngP2: "Puisque le PNG est un fichier plat, il ne préserve pas l'historique de conception ni les calques séparés. Il est parfait pour diffuser vos images finales sur le web car il s'affiche rapidement et garde les textes ou logos parfaitement nets.",
+    divePngAdv: "Avantages du PNG",
+    divePngAdvList: [
+      "Compatibilité totale : Affichage correct sur tous les navigateurs et outils.",
+      "Poids plume : Fichiers optimisés pour réduire les temps de chargement web.",
+      "Transparence nette : Rendu idéal pour les logos et illustrations."
+    ],
+    divePsdTitle: "Analyse approfondie : Qu'est-ce que le PSD ?",
+    divePsdP1: "Le PSD (Photoshop Document) est le format de projet natif développé par Adobe pour son logiciel Photoshop. Ce fichier encapsule l'ensemble de l'espace de travail : calques de pixels, calques de texte, formes vectorielles, masques de fusion et filtres dynamiques.",
+    divePsdP2: "Contrairement au PNG, un fichier PSD ne peut pas être intégré directement sur une page web. Les graphistes travaillent dans le PSD puis exportent leur création finale sous forme de fichiers PNG, JPG ou WebP une fois le travail terminé.",
+    divePsdAdv: "Avantages du PSD",
+    divePsdAdvList: [
+      "Calques modifiables : Permet d'éditer le texte ou les éléments à tout moment.",
+      "Édition non destructive : Modification des effets sans altérer les pixels de base.",
+      "Objets dynamiques : Intégration de visuels vectoriels redimensionnables sans perte."
+    ],
+    q1: "Quelle est la différence entre PNG et PSD ?",
+    a1: "Le PNG est une image aplatie et compressée prête pour le web. Le PSD est un fichier de travail Photoshop contenant tous vos calques, textes et effets modifiables.",
+    q2: "Quand utiliser le PSD plutôt que le PNG ?",
+    a2: "Utilisez le PSD pendant la phase de création de votre design. Une fois le design terminé et prêt à être publié, exportez-le en PNG.",
+    q3: "Un fichier PNG peut-il contenir des calques comme le PSD ?",
+    a3: "Non. Le PNG fusionne tous les calques lors de sa création. Il ne gère pas les calques séparés.",
+    q4: "Comment convertir un fichier PSD en PNG ?",
+    a4: "Ouvrez le PSD dans Adobe Photoshop et utilisez Fichier > Exporter. Pour optimiser le fichier généré, passez-le dans notre outil de compression d'images.",
+    q5: "Pourquoi les fichiers PSD sont-ils si lourds ?",
+    a5: "Parce qu'ils contiennent l'historique d'édition, les calques multiples, les masques et les métadonnées de projet Photoshop, tandis que le PNG ne conserve que le rendu visuel final plat.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin d'optimiser vos fichiers PNG ?",
+    ctaDesc: "Utilisez notre compresseur d'images hors ligne pour réduire instantanément le poids de vos PNG exportés sans perte de qualité.",
+    ctaButton: "Essayer le compresseur PNG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. PSD: Unterschied zwischen Bild- und Photoshop-Dateien",
+    seoDescription: "PNG vs. PSD. Wir vergleichen Portable Network Graphics mit Adobe Photoshop Documents. Erfahren Sie, wann Sie welches Format für Grafikdesign nutzen.",
+    title: "PNG vs. PSD: Welches Format nutzen?",
+    intro: "Fragen Sie sich, was der Unterschied zwischen einer Photoshop-Projektdatei und einer fertigen Webgrafik ist? Wir vergleichen PNG und PSD.",
+    quickAnswer: "Schnelle Antwort",
+    usePngFor: "Nutzen Sie PNG für:",
+    usePngForDesc: "Webgrafiken, Social-Media-Bilder, E-Mail-Anhänge und fertige Designs, die einen transparenten Hintergrund erfordern.",
+    usePsdFor: "Nutzen Sie PSD für:",
+    usePsdForDesc: "Projektentwürfe, bearbeitbare Vorlagen und Grafikarbeiten, bei denen Sie Ebenen, Texte und Pfade behalten müssen.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und ICO?",
+    differenceDesc: "Der Hauptunterschied liegt darin, dass PSD ein Arbeitsformat mit Ebenenstruktur ist, während PNG ein exportiertes, flaches Endformat darstellt.",
+    thFeature: "Merkmal / Aspekt",
+    thPng: "PNG (Portable Network Graphics)",
+    thPsd: "PSD (Photoshop Document)",
+    tdFileType: "Dateityp",
+    tdFileTypePng: "Komprimierte Rastergrafik",
+    tdFileTypePsd: "Ebenenbasierte Projektdatei",
+    tdLayers: "Ebenen-Unterstützung",
+    tdLayersPng: "Nein (Flache Ebene)",
+    tdLayersPsd: "Ja (Beliebig viele Ebenen & Ordner)",
+    tdEdit: "Bearbeitbarkeit",
+    tdEditPng: "Nein (Texte und Vektoren nicht editierbar)",
+    tdEditPsd: "Ja (Texte, Masken und Filter voll bearbeitbar)",
+    tdWeb: "Web-Unterstützung",
+    tdWebPng: "Universell (Von jedem Browser unterstützt)",
+    tdWebPsd: "Nein (Muss vorab konvertiert werden)",
+    tdSize: "Dateigröße",
+    tdSizePng: "Klein und optimiert",
+    tdSizePsd: "Groß (Oft hunderte Megabytes)",
+    tdTrans: "Transparenz",
+    tdTransPng: "Ja (8-Bit-Alpha-Kanal)",
+    tdTransPsd: "Ja (Ebenentransparenz und Masken)",
+    tdLossless: "Verlustfreie Qualität",
+    tdLosslessPng: "Ja",
+    tdLosslessPsd: "Ja",
+    converterTitle: "PNG-Dateien komprimieren (Offline & Privat)",
+    divePngTitle: "Deep Dive: Was ist PNG?",
+    divePngP1: "PNG (Portable Network Graphics) ist ein Rasterbildformat mit verlustfreier Komprimierung. Es wurde entwickelt, um GIF abzulösen. Es unterstützt Echtfarben (24-Bit) und weiche Transparenzkanten mittels Alphakanal.",
+    divePngP2: "Da PNG ein flaches Dateiformat ist, speichert es keine Ebenen oder Design-Verläufe. Es eignet sich hervorragend für den Web-Einsatz, da es schnell lädt und Texte sowie Logos scharf darstellt.",
+    divePngAdv: "Vorteile von PNG",
+    divePngAdvList: [
+      "Universelle Kompatibilität: Wird in jedem Browser und Mailprogramm fehlerfrei angezeigt.",
+      "Optimierte Dateigröße: Deutlich schlanker als Design-Arbeitsdateien.",
+      "Saubere Transparenz: Ideal für Logos und freigestellte Elemente."
+    ],
+    divePsdTitle: "Deep Dive: Was ist PSD?",
+    divePsdP1: "PSD steht für Photoshop Document und ist das native Dateiformat von Adobe Photoshop. Eine PSD-Datei speichert das gesamte Projekt mit allen Ebenen, Textfeldern, Vektorpfaden, Masken und Filtern.",
+    divePsdP2: "Im Gegensatz zu PNG können PSD-Dateien nicht direkt auf Webseiten eingebettet werden, da Browser sie nicht rendern können. Designer exportieren die PSD nach Fertigstellung in das PNG- oder JPG-Format.",
+    divePsdAdv: "Vorteile von PSD",
+    divePsdAdvList: [
+      "Editierbare Ebenen: Texte, Formen und Effekte können jederzeit angepasst werden.",
+      "Verlustfreies Arbeiten: Masken und Smart-Objects erlauben verlustfreies Bearbeiten.",
+      "Smart-Objekte: Vektoren können ohne Qualitätsverlust skaliert werden."
+    ],
+    q1: "Was ist der Unterschied zwischen PNG und PSD?",
+    a1: "PNG ist ein komprimiertes Bildformat für die Veröffentlichung. PSD ist die offene Arbeitsdatei von Photoshop, in der alle Ebenen und Bearbeitungsschritte gespeichert sind.",
+    q2: "Wann sollte ich PSD statt PNG verwenden?",
+    a2: "Nutzen Sie PSD während der Erstellung Ihrer Grafiken. Nutzen Sie PNG erst, wenn Sie das fertige Design exportieren, um es online zu stellen.",
+    q3: "Kann eine PNG-Datei Ebenen enthalten?",
+    a3: "Nein, beim Export in eine PNG-Datei werden alle Ebenen flachgelegt und fest miteinander verschmolzen.",
+    q4: "Wie konvertiert man PSD in PNG?",
+    a4: "Exportieren Sie das Bild in Photoshop über Datei > Exportieren als PNG. Verwenden Sie anschließend unser Tool, um die PNG-Größe zu komprimieren.",
+    q5: "Warum sind PSD-Dateien so groß?",
+    a5: "Da PSD-Dateien alle Rohdaten des Projekts inklusive aller separaten Ebenen, Masken und des Bearbeitungsverlaufs sichern.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie Ihre PNG-Bilder komprimieren?",
+    ctaDesc: "Nutzen Sie unseren Offline-Bildkompressor im Browser, um exportierte PNGs ohne Qualitätsverlust zu verkleinern.",
+    ctaButton: "PNG-Kompressor testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs PSD: Diferença entre Imagem e Formato Photoshop",
+    seoDescription: "PNG vs PSD. Comparamos Portable Network Graphics com os arquivos Adobe Photoshop Documents. Entenda quando utilizar cada formato.",
+    title: "PNG vs PSD: Qual formato usar?",
+    intro: "Dúvidas sobre a diferença entre o arquivo de trabalho do Photoshop e um gráfico pronto para a web? Explicamos tudo sobre PNG e PSD.",
+    quickAnswer: "Resposta rápida",
+    usePngFor: "Use PNG para:",
+    usePngForDesc: "Imagens web, redes sociais, anexos de e-mail e layouts finais que necessitam de fundo transparente de boa qualidade.",
+    usePsdFor: "Use PSD para:",
+    usePsdForDesc: "Projetos em andamento, templates com camadas e trabalhos gráficos que exijam edição de textos, máscaras e caminhos vectoriais.",
+    differenceTitle: "Qual é a diferença entre PNG e PSD?",
+    differenceDesc: "O PSD é o formato de trabalho nativo do Photoshop com camadas editáveis, enquanto o PNG é o formato final já exportado e compactado de forma plana.",
+    thFeature: "Característica / Aspeto",
+    thPng: "PNG (Portable Network Graphics)",
+    thPsd: "PSD (Photoshop Document)",
+    tdFileType: "Tipo de arquivo",
+    tdFileTypePng: "Imagem rasterizada comprimida",
+    tdFileTypePsd: "Arquivo de projeto em camadas",
+    tdLayers: "Suporte a camadas",
+    tdLayersPng: "Não (Imagem plana)",
+    tdLayersPsd: "Sim (Camadas e pastas ilimitadas)",
+    tdEdit: "Editabilidade",
+    tdEditPng: "Não (Textos e vetores não são editáveis)",
+    tdEditPsd: "Sim (Totalmente editável: textos, efeitos, máscaras)",
+    tdWeb: "Suporte web",
+    tdWebPng: "Universal (Compatível com todos os navegadores)",
+    tdWebPsd: "Não (Exige conversão prévia)",
+    tdSize: "Tamanho do arquivo",
+    tdSizePng: "Pequeno e otimizado",
+    tdSizePsd: "Muito grande (Geralmente centenas de megabytes)",
+    tdTrans: "Transparência",
+    tdTransPng: "Sim (Canal alfa de 8 bits)",
+    tdTransPsd: "Sim (Camadas transparentes e mescladas)",
+    tdLossless: "Qualidade sem perdas",
+    tdLosslessPng: "Sim",
+    tdLosslessPsd: "Sim",
+    converterTitle: "Comprimir arquivos PNG (Offline e Privado)",
+    divePngTitle: "Análise profunda: O que é o PNG?",
+    divePngP1: "O PNG (Portable Network Graphics) é um formato de imagem rasterizado com compressão sem perdas, desenvolvido como alternativa ao GIF. Ele suporta cores em True Color (24 bits) e transparência suave graças ao canal alfa.",
+    divePngP2: "Por ser um formato plano, ele não armazena o histórico do projeto ou camadas de edição separadas. É ideal para publicação final na internet por carregar rapidamente e manter a nitidez dos traços.",
+    divePngAdv: "Vantagens do PNG",
+    divePngAdvList: [
+      "Compatibilidade universal: Funciona em qualquer navegador e cliente de e-mail.",
+      "Tamanho ideal para web: Arquivos significativamente mais leves do que os arquivos do Photoshop.",
+      "Transparência limpa: Perfeito para logotipos e ícones sem serrilhados nas bordas."
+    ],
+    divePsdTitle: "Análise profunda: O que é o PSD?",
+    divePsdP1: "PSD significa Photoshop Document e é o formato de arquivo proprietário do Adobe Photoshop. Ele atua como uma área de trabalho inteira, guardando camadas de imagem, blocos de texto, caminhos vectoriais, máscaras de camada, ajustes e filtros dinâmicos.",
+    divePsdP2: "Os navegadores de internet não conseguem exibir arquivos PSD diretamente. O designer trabalha no PSD e exporta a arte no formato PNG ou JPG quando finaliza o projeto.",
+    divePsdAdv: "Vantagens do PSD",
+    divePsdAdvList: [
+      "Camadas editáveis: Facilidade para alterar qualquer elemento em edições futuras.",
+      "Fluxo de trabalho não destrutivo: Edição de cores e efeitos sem danificar os pixels originais.",
+      "Objetos inteligentes: Preserva imagens em alta resolução ao redimensioná-las."
+    ],
+    q1: "Qual é a diferença entre PNG e PSD?",
+    a1: "O PNG é um arquivo de imagem final plano e otimizado para a internet. O PSD é o arquivo de trabalho original do Photoshop com todas as camadas e textos editáveis.",
+    q2: "Quando usar o PSD em vez do PNG?",
+    a2: "Use o PSD durante a criação da arte para não perder as suas camadas. Use o PNG para enviar ao cliente ou publicar na internet após finalizar.",
+    q3: "O formato PNG aceita camadas?",
+    a3: "Não. Ao salvar em PNG, todas as camadas do Photoshop são permanentemente unificadas em uma única imagem plana.",
+    q4: "Como exportar PSD para PNG?",
+    a4: "No Photoshop, use Arquivo > Exportar > Exportação Rápida como PNG. Em seguida, utilize o nosso compressor offline para otimizar o peso do arquivo final.",
+    q5: "Por que arquivos PSD são tão pesados?",
+    a5: "Eles mantêm todos os dados das camadas separadas, históricos e recursos de edição. O PNG descarta esses dados extras e salva apenas a imagem consolidada.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "Precisa comprimir as suas imagens PNG?",
+    ctaDesc: "Use a nossa ferramenta offline para otimizar os arquivos PNG exportados e acelerar a velocidade do seu site.",
+    ctaButton: "Testar Compressor de PNG",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs PSD: Perbedaan Antara Format Gambar dan Photoshop",
+    seoDescription: "PNG vs PSD. Kami membandingkan Portable Network Graphics dengan Adobe Photoshop Documents. Pelajari kapan harus menggunakan masing-masing format.",
+    title: "PNG vs PSD: Format Mana yang Harus Digunakan?",
+    intro: "Bingung dengan perbedaan antara file proyek Photoshop mentah dan grafis web yang sudah jadi? Kami mengulas perbedaan PNG dan PSD.",
+    quickAnswer: "Jawaban Cepat",
+    usePngFor: "Gunakan PNG untuk:",
+    usePngForDesc: "Aset web, grafis media sosial, lampiran email, dan desain final yang membutuhkan latar belakang transparan berkualitas tinggi.",
+    usePsdFor: "Gunakan PSD untuk:",
+    usePsdForDesc: "Draf proyek aktif, templat berlapis, dan tugas desain grafis yang mengharuskan Anda mempertahankan teks, jalur, dan layer yang dapat diedit.",
+    differenceTitle: "Apa Perbedaan Antara PNG dan PSD?",
+    differenceDesc: "Perbedaan utamanya adalah PSD adalah format file kerja yang berisi struktur layer yang kaya, sedangkan PNG adalah format gambar datar (flat) hasil ekspor final.",
+    thFeature: "Fitur / Aspek",
+    thPng: "PNG (Portable Network Graphics)",
+    thPsd: "PSD (Photoshop Document)",
+    tdFileType: "Jenis File",
+    tdFileTypePng: "Grafis raster terkompresi",
+    tdFileTypePsd: "File proyek desain berlapis",
+    tdLayers: "Dukungan Layer",
+    tdLayersPng: "Tidak (Diratakan menjadi satu layer)",
+    tdLayersPsd: "Ya (Layer & folder tak terbatas)",
+    tdEdit: "Kemudahan Diedit",
+    tdEditPng: "Tidak (Teks dan vektor tidak dapat diedit langsung)",
+    tdEditPsd: "Ya (Teks, filter, dan masker dapat diedit sepenuhnya)",
+    tdWeb: "Dukungan Web",
+    tdWebPng: "Universal (Didukung oleh semua browser web)",
+    tdWebPsd: "Tidak (Memerlukan konversi)",
+    tdSize: "Ukuran File",
+    tdSizePng: "Kecil dan dioptimalkan",
+    tdSizePsd: "Besar (Sering kali ratusan megabyte)",
+    tdTrans: "Transparansi",
+    tdTransPng: "Ya (saluran alpha 8-bit)",
+    tdTransPsd: "Ya (Layer & blending penuh)",
+    tdLossless: "Kualitas Lossless",
+    tdLosslessPng: "Ya",
+    tdLosslessPsd: "Ya",
+    converterTitle: "Kompres Ekspor PNG (Offline & Privat)",
+    divePngTitle: "Analisis Mendalam: Apa itu PNG?",
+    divePngP1: "PNG (Portable Network Graphics) adalah format gambar raster terkompresi yang dikembangkan sebagai pengganti modern untuk GIF. Format ini dirancang khusus untuk web dan layar, mendukung kompresi lossless 24-bit dengan transparansi alfa berkualitas tinggi.",
+    divePngP2: "Karena PNG adalah file datar, ia tidak menyimpan riwayat desain atau layer terpisah. Format ini paling baik digunakan untuk situs web atau aplikasi karena memuat dengan cepat dan menjaga ketajaman tepi pada teks dan logo.",
+    divePngAdv: "Kelebihan PNG",
+    divePngAdvList: [
+      "Kompatibilitas Universal: Ditampilkan dengan benar di setiap browser dan aplikasi email.",
+      "Ukuran Ramah Web: Ukuran file jauh lebih kecil dibanding file mentah proyek desain.",
+      "Transparansi Bersih: Sangat ideal untuk logo transparan dan overlay antarmuka."
+    ],
+    divePsdTitle: "Analisis Mendalam: Apa itu PSD?",
+    divePsdP1: "PSD adalah singkatan dari Photoshop Document. Format ini adalah file proyek mentah milik Adobe Photoshop. File PSD berfungsi sebagai ruang kerja proyek lengkap, menyimpan layer, teks, bentuk vektor, objek pintar, masker, dan riwayat pengeditan.",
+    divePsdP2: "Berbeda dengan PNG, file PSD tidak dapat ditampilkan langsung di browser. Desainer bekerja di dalam PSD dan mengekspor hasilnya ke format yang ramah web seperti PNG, JPEG, atau WebP setelah selesai.",
+    divePsdAdv: "Kelebihan PSD",
+    divePsdAdvList: [
+      "Layer yang Dapat Diedit: Ubah teks, bentuk, atau filter kapan saja.",
+      "Alur Kerja Non-Destruktif: Terapkan efek tanpa mengubah piksel asli gambar.",
+      "Smart Objects: Gunakan aset vektor resolusi tinggi yang dapat diskalakan tanpa pecah."
+    ],
+    q1: "Apa perbedaan antara PNG dan PSD?",
+    q2: "Kapan saya harus menggunakan PSD dibanding PNG?",
+    q3: "Apakah PNG bisa memiliki banyak layer seperti PSD?",
+    q4: "Bagaimana cara mengubah file PSD ke PNG?",
+    q5: "Mengapa ukuran file PSD sangat besar?",
+    a1: "PNG adalah format gambar raster tunggal datar untuk web. PSD adalah file proyek mentah Adobe Photoshop yang menyimpan layer, teks, dan filter untuk pengeditan.",
+    a2: "Gunakan PSD saat Anda masih mengedit desain Anda. Gunakan PNG ketika Anda selesai dan ingin mempublikasikannya ke web.",
+    a3: "Tidak, PNG adalah format datar. Semua layer akan disatukan saat Anda mengekspornya menjadi file PNG.",
+    a4: "Anda dapat mengekspornya langsung dari menu Adobe Photoshop (File > Export). Setelah diekspor, kompres PNG tersebut dengan alat kompresi offline kami.",
+    a5: "Karena PSD menyimpan seluruh informasi riwayat pengeditan, layer terpisah, masker, dan objek pintar, sedangkan PNG hanya menyimpan piksel visual datar.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengompresi gambar PNG Anda?",
+    ctaDesc: "Gunakan kompresor gambar offline browser kami untuk mengoptimalkan file PNG hasil ekspor Anda secara instan.",
+    ctaButton: "Coba Kompresor PNG",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-psd")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "image-compressor");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs PSD</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PSD</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.usePngFor}</strong> {text.usePngForDesc}</p>
+          <p><strong class="text-ink">{text.usePsdFor}</strong> {text.usePsdForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thPng}</th>
+                <th class="p-4">{text.thPsd}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileType}</td>
+                <td class="p-4">{text.tdFileTypePng}</td>
+                <td class="p-4 text-error">{text.tdFileTypePsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdLayers}</td>
+                <td class="p-4 text-error">{text.tdLayersPng}</td>
+                <td class="p-4 text-success">{text.tdLayersPsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdEdit}</td>
+                <td class="p-4 text-error">{text.tdEditPng}</td>
+                <td class="p-4 text-success">{text.tdEditPsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdWeb}</td>
+                <td class="p-4 text-success">{text.tdWebPng}</td>
+                <td class="p-4 text-error">{text.tdWebPsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdSize}</td>
+                <td class="p-4 text-success">{text.tdSizePng}</td>
+                <td class="p-4 text-error">{text.tdSizePsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTrans}</td>
+                <td class="p-4 text-success">{text.tdTransPng}</td>
+                <td class="p-4 text-success">{text.tdTransPsd}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdLossless}</td>
+                <td class="p-4 text-success">{text.tdLosslessPng}</td>
+                <td class="p-4 text-success">{text.tdLosslessPsd}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="image-compressor" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePngTitle}</h2>
+        <p>{text.divePngP1}</p>
+        <p>{text.divePngP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePngAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePngAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PSD -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.divePsdTitle}</h2>
+        <p>{text.divePsdP1}</p>
+        <p>{text.divePsdP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.divePsdAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.divePsdAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

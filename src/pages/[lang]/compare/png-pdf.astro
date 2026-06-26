@@ -1,0 +1,686 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import ImageToPdfTool from "../../../components/tools/ImageToPdfTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "PNG vs PDF: ¿Qué formato debería elegir? (Comparativa de 2026)",
+    seoDescription: "¿PNG o PDF? Comparamos el formato de imagen web sin pérdidas de alta calidad con el contenedor de documentos global. Conozca las diferencias de transparencia, diseño y escala.",
+    title: "PNG vs PDF: ¿Qué formato es mejor?",
+    intro: "Aunque ambos formatos admiten transparencia e información visual sin pérdidas, pertenecen a categorías de archivos completamente diferentes. PNG es un formato de imagen ráster, mientras que PDF es un contenedor de documentos de diseño estructurado. Comparemos sus especificaciones técnicas.",
+    quickAnswer: "Respuesta rápida",
+    useTiffFor: "Use PNG para:",
+    useTiffForDesc: "Iconos web, logotipos transparentes, recursos de diseño y capturas de pantalla digitales donde la renderización rápida y la transparencia sean clave.",
+    useJxlFor: "Use PDF para:",
+    useJxlForDesc: "Folletos de varias páginas, currículums, libros electrónicos, formularios legales y copias impresas comerciales donde el texto seleccionable y la fidelidad del diseño sean obligatorios.",
+    differenceTitle: "¿Cuál es la diferencia entre PNG y PDF?",
+    differenceDesc: "Comprender las diferencias de estructura técnica le ayudará a elegir la configuración de exportación correcta para sus archivos.",
+    thFeature: "Característica / Aspecto",
+    thTiff: "PNG (Portable Network Graphics)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Tipo de archivo",
+    tdCompStandardTiff: "Imagen ráster sin pérdidas",
+    tdCompStandardJxl: "Contenedor de documentos portátil",
+    tdFileSize: "Soporte de transparencia",
+    tdFileSizeTiff: "Sí (Transparencia de canal alfa)",
+    tdFileSizeJxl: "Sí (Capas vectoriales e imágenes)",
+    tdColorDepth: "Soporte de múltiples páginas",
+    tdColorDepthTiff: "No (Una sola página de imagen)",
+    tdColorDepthJxl: "Sí (Admite folletos multipágina)",
+    tdBrowser: "Búsqueda de texto",
+    tdBrowserTiff: "No (El texto se aplana en píxeles)",
+    tdBrowserJxl: "Sí (Texto seleccionable y buscando)",
+    tdPrint: "Escala y Zoom",
+    tdPrintTiff: "Se pixela al agrandarse",
+    tdPrintJxl: "Textos y gráficos vectoriales escalables",
+    tdTranscoding: "Caso de uso ideal",
+    tdTranscodingTiff: "Logotipos web, capturas de pantalla, gráficos transparentes",
+    tdTranscodingJxl: "Currículums, eBooks, folletos, maquetas de impresión",
+    converterTitle: "Convertir PNG a PDF al instante (Offline y Privado)",
+    diveTiffTitle: "Análisis profundo: ¿Qué es PNG?",
+    diveTiffP1: "PNG significa Portable Network Graphics (Gráficos de Red Portátiles), introducido en 1996 para reemplazar al antiguo formato GIF. Es un formato ráster sin pérdidas que utiliza compresión DEFLATE. Esto asegura que cada píxel se conserve exactamente como se creó, lo que lo convierte en el estándar perfecto para gráficos, esquemas y capturas de pantalla.",
+    diveTiffP2: "A diferencia de JPEG, PNG admite paletas de colores RGB de 24 bits y un canal alfa de 8 bits para transparencia. Esto permite que los gráficos tengan fondos total o parcialmente transparentes, haciendo que los logotipos se integren perfectamente sobre fondos de colores en sitios web.",
+    diveTiffAdv: "Ventajas de PNG",
+    diveTiffAdvList: [
+      "Transparencia alfa: Admite transiciones suaves de fondo transparente.",
+      "Calidad visual sin pérdidas: Nunca difumina el texto ni los gráficos con artefactos de compresión.",
+      "Perfecto para gráficos web: Compatible de forma nativa con los navegadores."
+    ],
+    diveJxlTitle: "Análisis profundo: ¿Qué es PDF?",
+    diveJxlP1: "PDF significa Portable Document Format (Formato de Documento Portátil), creado por Adobe en 1993. Está diseñado para actuar como una envoltura de impresión digital, bloqueando el diseño del documento, las fuentes del texto, las imágenes y las capas vectoriales para que el documento se renderice de manera idéntica en cualquier dispositivo.",
+    diveJxlP2: "A diferencia de las imágenes, el PDF conserva el texto estructurado, lo que permite buscarlo, resaltarlo e indexarlo por sistemas informáticos. Esto convierte al PDF en el estándar de oro para currículums, libros digitales e informes de trabajo.",
+    diveJxlAdv: "Ventajas de PDF",
+    diveJxlAdvList: [
+      "Vectores escalables: Las capas de texto y los logotipos vectoriales permanecen perfectamente nítidos con cualquier zoom.",
+      "Capacidad multipágina: Compila folletos e informes en un solo archivo organizado.",
+      "Elementos interactivos: Admite enlaces, firmas, restricciones de seguridad y campos de formulario."
+    ],
+    snippetSectionTitle: "Cuándo usar PNG vs PDF",
+    snippetSectionDesc: "Elegir el formato correcto le ayuda a equilibrar el peso visual y la legibilidad.",
+    q1: "¿Cuál es la diferencia principal entre PNG y PDF?",
+    a1: "PNG es un formato de imagen ráster de una sola página diseñado para gráficos web transparentes. PDF es un contenedor de documentos de varias páginas diseñado para conservar diseños de texto y vectoriales de manera consistente.",
+    q2: "¿Cuándo debo usar PNG en lugar de PDF?",
+    a2: "Use PNG para iconos web, logotipos con fondos transparentes y recursos visuales que deban cargarse directamente en la etiqueta de imagen de una página web.",
+    q3: "¿Cuándo debo usar PDF en lugar de PNG?",
+    a3: "Use PDF para currículums, contratos, libros digitales e impresión profesional. PDF mantiene el texto seleccionable, searchable y con calidad de impresión vectorial.",
+    q4: "¿Admite el PDF transparencia como el PNG?",
+    a4: "Sí. PDF admite transparencia para gráficos vectoriales y capas de texto. Sin embargo, para imágenes web nativas, PNG sigue siendo la mejor opción.",
+    q5: "¿Es el PDF mejor para imprimir que el PNG?",
+    a5: "Sí, el PDF es muy superior para la impresión física. Conserva las fuentes vectoriales y la escala de diseño, mientras que el PNG es plano y se pixela al ampliarse.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir imágenes PNG a PDF?",
+    ctaDesc: "Use nuestra herramienta gratuita en el navegador para combinar y empaquetar sus imágenes PNG en un documento PDF de forma segura.",
+    ctaButton: "Probar convertidor PNG a PDF",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "PNG vs PDF : Quel format devriez-vous choisir ? (2026)",
+    seoDescription: "PNG ou PDF ? Nous comparons le format d'image web de haute qualité avec le conteneur de documents global. Découvrez les différences de transparence, de mise en page et de mise à l'échelle.",
+    title: "PNG vs PDF : Quel format est le meilleur ?",
+    intro: "Bien que les deux formats gèrent la transparence et préservent la qualité sans perte, ils appartiennent à deux familles de fichiers différentes. Le PNG est un format d'image matricielle, tandis que le PDF est un conteneur de documents. Comparons leurs spécifications.",
+    quickAnswer: "Réponse rapide",
+    useTiffFor: "Utilisez le PNG pour :",
+    useTiffForDesc: "Les icônes web, les logos transparents, les visuels de design et les captures d'écran où le rendu rapide et la transparence sont essentiels.",
+    useJxlFor: "Utilisez le PDF pour :",
+    useJxlForDesc: "Les brochures multi-pages, les CV, les livres numériques, les formulaires administratifs et les impressions professionnelles où le texte recherchable et le formatage fixe sont requis.",
+    differenceTitle: "Quelle est la différence entre PNG et PDF ?",
+    differenceDesc: "Comprendre les différences de structure technique vous guidera dans le choix des paramètres d'exportation appropriés pour vos fichiers.",
+    thFeature: "Caractéristique / Aspect",
+    thTiff: "PNG (Portable Network Graphics)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Type de fichier",
+    tdCompStandardTiff: "Image matricielle sans perte",
+    tdCompStandardJxl: "Conteneur de document portable",
+    tdFileSize: "Gestion de la transparence",
+    tdFileSizeTiff: "Oui (Transparence par canal alpha)",
+    tdFileSizeJxl: "Oui (Calques vectoriels et images)",
+    tdColorDepth: "Prise en charge multi-pages",
+    tdColorDepthTiff: "Non (Image sur une seule page)",
+    tdColorDepthJxl: "Oui (Prend en charge les documents multi-pages)",
+    tdBrowser: "Recherche de texte",
+    tdBrowserTiff: "Non (Le texte est converti en pixels)",
+    tdBrowserJxl: "Oui (Texte sélectionnable et indexable)",
+    tdPrint: "Mise à l'échelle et Zoom",
+    tdPrintTiff: "Se pixellise lors de l'agrandissement",
+    tdPrintJxl: "Polices et tracés vectoriels évolutifs",
+    tdTranscoding: "Cas d'utilisation idéal",
+    tdTranscodingTiff: "Logos web, captures d'écran, graphiques transparents",
+    tdTranscodingJxl: "CV, eBooks, brochures, impressions professionnelles",
+    converterTitle: "Convertir PNG en PDF instantanément (Hors ligne & Privé)",
+    diveTiffTitle: "Analyse approfondie : Qu'est-ce que le PNG ?",
+    diveTiffP1: "Le PNG (Portable Network Graphics) a été créé en 1996 pour remplacer le format GIF. Il s'agit d'un format matriciel sans perte basé sur la compression DEFLATE. Il garantit que chaque pixel est préservé à l'identique, ce qui le rend indispensable pour les captures d'écran et graphiques complexes.",
+    diveTiffP2: "Contrairement au JPEG, le PNG prend en charge le RVB 24 bits et un canal alpha 8 bits pour la transparence. Cela permet d'avoir des arrière-plans transparents ou semi-transparents, parfaits pour intégrer des logos sur des fonds de couleurs variés.",
+    diveTiffAdv: "Avantages du PNG",
+    diveTiffAdvList: [
+      "Transparence Alpha : Gère des arrière-plans transparents et des dégradés lisses.",
+      "Rendu sans perte : Conserve une netteté totale sans aucun artefact de compression.",
+      "Standard du Web : Pris en charge par tous les navigateurs sans extension."
+    ],
+    diveJxlTitle: "Analyse approfondie : Qu'est-ce que le PDF ?",
+    diveJxlP1: "Le PDF (Portable Document Format) a été développé par Adobe en 1993. Conçu comme une impression numérique fixe, il fige la mise en page, les polices, les images et les vecteurs pour garantir un affichage identique sur toutes les machines.",
+    diveJxlP2: "Contrairement aux fichiers d'images plats, le PDF conserve la structure du texte d'origine. Le texte reste indexable par les moteurs de recherche, copiable et modifiable.",
+    diveJxlAdv: "Avantages du PDF",
+    diveJxlAdvList: [
+      "Polices vectorielles : Les textes et tracés restent nets à n'importe quelle taille.",
+      "Multi-pages : Permet de combiner des dizaines de pages dans un seul document organisé.",
+      "Champs interactifs : Gère les liens hypertexte, signatures numériques et formulaires."
+    ],
+    snippetSectionTitle: "Quand utiliser le PNG ou le PDF",
+    snippetSectionDesc: "Choisir le bon format permet de préserver la lisibilité de vos créations.",
+    q1: "Quelle est la différence principale entre PNG et PDF ?",
+    a1: "Le PNG est un format d'image matricielle à page unique destiné au graphisme web transparent. Le PDF est un conteneur multi-pages conçu pour verrouiller des documents textuels et vectoriels.",
+    q2: "Quand dois-je utiliser le PNG plutôt que le PDF ?",
+    a2: "Utilisez le PNG pour les icônes de site, les logos transparents ou les graphiques devant s'afficher instantanément sur des pages web via une balise image.",
+    q3: "Quand dois-je utiliser le PDF plutôt que le PNG ?",
+    a3: "Privilégiez le PDF pour les contrats, les CV, les rapports et l'édition. Il conserve le texte recherchable et les tracés vectoriels nets.",
+    q4: "Le PDF prend-il en charge la transparence comme le PNG ?",
+    a4: "Oui, le PDF gère la transparence des calques vectoriels. Cependant, pour afficher une image transparente sur une page web, le PNG reste le format natif idéal.",
+    q5: "Le PDF est-il meilleur que le PNG pour l'impression ?",
+    a5: "Oui, le PDF est très supérieur pour l'impression papier. Il conserve l'échelle vectorielle et les polices vectorielles, alors que les pixels du PNG s'estomperont à l'agrandissement.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir des images PNG en PDF ?",
+    ctaDesc: "Utilisez notre outil local pour fusionner et assembler vos PNG dans un document PDF en toute sécurité.",
+    ctaButton: "Essayer le convertisseur PNG en PDF",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "PNG vs. PDF: Welches Format sollten Sie wählen? (2026)",
+    seoDescription: "PNG oder PDF? Wir vergleichen das verlustfreie Webbildformat mit dem globalen Dokumentencontainer. Erfahren Sie die Unterschiede bei Transparenz und Skalierung.",
+    title: "PNG vs. PDF: Welches Format ist besser?",
+    intro: "Obwohl beide Formate Transparenz und verlustfreie Bilddaten unterstützen, gehören sie zu völlig unterschiedlichen Dateikategorien. PNG ist ein Rasterbildformat, während PDF ein Dokumentencontainer ist. Vergleichen wir die Details.",
+    quickAnswer: "Schnelle Antwort",
+    useTiffFor: "Nutzen Sie PNG für:",
+    useTiffForDesc: "Web-Symbole, transparente Logos, Design-Assets und Screenshots, bei denen schnelles Laden und Transparenz wichtig sind.",
+    useJxlFor: "Nutzen Sie PDF für:",
+    useJxlForDesc: "Mehrseitige Broschüren, Lebensläufe, E-Books, Formulare und Drucklayouts, bei denen durchsuchbarer Text und Formatierung zwingend erforderlich sind.",
+    differenceTitle: "Was ist der Unterschied zwischen PNG und PDF?",
+    differenceDesc: "Das Verständnis der strukturellen Unterschiede hilft Ihnen dabei, das richtige Exportformat für Ihre Dateien zu wählen.",
+    thFeature: "Merkmal / Aspekt",
+    thTiff: "PNG (Portable Network Graphics)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Dateityp",
+    tdCompStandardTiff: "Verlustfreies Rasterbild",
+    tdCompStandardJxl: "Tragbarer Dokumentencontainer",
+    tdFileSize: "Transparenz-Unterstützung",
+    tdFileSizeTiff: "Ja (Alpha-Kanal-Transparenz)",
+    tdFileSizeJxl: "Ja (Vektor- & Bild-Ebenen)",
+    tdColorDepth: "Mehrseitige Unterstützung",
+    tdColorDepthTiff: "Nein (Nur Einzelbild)",
+    tdColorDepthJxl: "Ja (Unterstützt mehrseitige Dokumente)",
+    tdBrowser: "Textdurchsuchbarkeit",
+    tdBrowserTiff: "Nein (Text wird in Pixel flachgedrückt)",
+    tdBrowserJxl: "Ja (Auswählbarer & durchsuchbarer Text)",
+    tdPrint: "Zoom & Skalierung",
+    tdPrintTiff: "Verpixelt beim Vergrößern",
+    tdPrintJxl: "Skalierbare Vektorschriften & Layouts",
+    tdTranscoding: "Idealer Anwendungsfall",
+    tdTranscodingTiff: "Web-Logos, Screenshots, transparente Grafiken",
+    tdTranscodingJxl: "Lebensläufe, E-Books, Broschüren, Drucklayouts",
+    converterTitle: "PNG sofort in PDF konvertieren (Offline & Privat)",
+    diveTiffTitle: "Deep Dive: Was ist ein PNG?",
+    diveTiffP1: "PNG steht für Portable Network Graphics und wurde 1996 als Ersatz für GIF entwickelt. Es ist ein verlustfreies Rasterformat mit DEFLATE-Kompression. Dies garantiert, dass jeder Pixel exakt erhalten bleibt – ideal für Diagramme und Screenshots.",
+    diveTiffP2: "Im Gegensatz zu JPEG unterstützt PNG 24-Bit-RGB-Paletten und einen 8-Bit-Alphakanal für Transparenz. Dies ermöglicht transparente Hintergründe, sodass Web-Logos sauber auf farbigen Webseiten liegen können.",
+    diveTiffAdv: "Vorteile von PNG",
+    diveTiffAdvList: [
+      "Alpha-Transparenz: Unterstützt saubere transparente Übergänge.",
+      "Verlustfreie Qualität: Keine Artefakte oder Unschärfe bei Grafiken.",
+      "Natives Web-Format: Wird von jedem Browser nativ gerendert."
+    ],
+    diveJxlTitle: "Deep Dive: Was ist ein PDF?",
+    diveJxlP1: "PDF steht für Portable Document Format, das 1993 von Adobe entwickelt wurde. Es friert das Dokumenten-Layout, Schriften, Bilder und Vektorebenen ein, damit die Datei auf jedem Gerät absolut identisch angezeigt wird.",
+    diveJxlP2: "Im Gegensatz zu flachen Bildern bewahrt ein PDF die Textstruktur. Der Text bleibt durchsuchbar, auswählbar und kann von Systemen indexiert werden. Dies macht das PDF zum Standard für E-Books und Verträge.",
+    diveJxlAdv: "Vorteile von PDF",
+    diveJxlAdvList: [
+      "Skalierbare Vektoren: Schriften und Logos bleiben bei jedem Zoom gestochen scharf.",
+      "Mehrseitig: Komprimiert Broschüren und Berichte in eine einzige Datei.",
+      "Interaktive Elemente: Unterstützt Links, Signaturen und Formularfelder."
+    ],
+    snippetSectionTitle: "Wann nutzt man PNG oder PDF",
+    snippetSectionDesc: "Die Wahl des richtigen Formats sichert die Lesbarkeit und vereinfacht das Teilen.",
+    q1: "Was ist der Hauptunterschied zwischen PNG und PDF?",
+    a1: "PNG ist ein einseitiges Bildformat für transparente Web-Grafiken. PDF ist ein mehrseitiger Dokumentencontainer, der Texte und Vektorlayouts einheitlich sichert.",
+    q2: "Wann sollte ich PNG anstelle von PDF verwenden?",
+    a2: "Nutzen Sie PNG für Symbole und Web-Logos mit Transparenz, die direkt auf einer Webseite angezeigt werden sollen.",
+    q3: "Wann sollte ich PDF anstelle von PNG verwenden?",
+    a3: "Nutzen Sie PDF für Lebensläufe, Verträge, E-Books und Druckdateien, bei denen Text durchsuchbar und scharf bleiben soll.",
+    q4: "Unterstützt PDF Transparenz wie PNG?",
+    a4: "Ja, PDF unterstützt Transparenz auf Vektorebene. Für Bildanzeigen im Web bleibt PNG jedoch das native Standardformat.",
+    q5: "Ist PDF besser zum Drucken geeignet als PNG?",
+    a5: "Ja, PDF ist für den Druck weitaus besser, da es Schriften verlustfrei skaliert. PNGs verpixeln beim Vergrößern im Druck.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie PNG-Bilder in PDF konvertieren?",
+    ctaDesc: "Nutzen Sie unser sicheres Browser-Tool, um Bilder offline in einem PDF-Dokument zusammenzufügen.",
+    ctaButton: "PNG-in-PDF-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "PNG vs PDF: Qual formato você deve escolher? (Comparativo 2026)",
+    seoDescription: "¿PNG ou PDF? Comparamos o formato de imagem sem perdas de alta qualidade com o contêiner de documentos global. Entenda as diferenças de transparência e escala.",
+    title: "PNG vs PDF: Qual formato é melhor?",
+    intro: "Embora ambos os formatos suportem transparência e dados visuais sem perdas, eles pertencem a categorias de arquivos totalmente diferentes. O PNG é um formato de imagem rasterizada, enquanto o PDF é um contêiner de documentos. Vamos comparar as especificações técnicas.",
+    quickAnswer: "Resposta rápida",
+    useTiffFor: "Use PNG para:",
+    useTiffForDesc: "Ícones de sites, logotipos transparentes, assets de design e capturas de tela onde o carregamento ágil e a transparência são essenciais.",
+    useJxlFor: "Use PDF para:",
+    useJxlForDesc: "Folhetos com várias páginas, currículos, e-books, contratos e impressões profissionais onde a fidelidade rígida de fontes e layouts seja obrigatória.",
+    differenceTitle: "Qual é a diferença entre PNG e PDF?",
+    differenceDesc: "Entender as diferenças de arquitetura técnica ajuda você a escolher o formato ideal para as suas criações.",
+    thFeature: "Característica / Aspeto",
+    thTiff: "PNG (Portable Network Graphics)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Tipo de arquivo",
+    tdCompStandardTiff: "Imagem Raster Sem Perdas",
+    tdCompStandardJxl: "Contêiner de Documento Portátil",
+    tdFileSize: "Suporte a transparência",
+    tdFileSizeTiff: "Sim (Transparência com canal alfa)",
+    tdFileSizeJxl: "Sim (Camadas de vetores e fotos)",
+    tdColorDepth: "Suporte a várias páginas",
+    tdColorDepthTiff: "Não (Apenas página única)",
+    tdColorDepthJxl: "Sim (Ideal para arquivos com várias páginas)",
+    tdBrowser: "Texto pesquisável",
+    tdBrowserTiff: "Não (O texto é convertido em pixels)",
+    tdBrowserJxl: "Sim (Texto selecionável e indexável)",
+    tdPrint: "Escala e Zoom",
+    tdPrintTiff: "Fica pixelizado ao ser ampliado",
+    tdPrintJxl: "Fontes e layouts vetoriais escaláveis",
+    tdTranscoding: "Caso de Uso Ideal",
+    tdTranscodingTiff: "Logos de sites, screenshots, imagens transparentes",
+    tdTranscodingJxl: "Currículos, e-books, relatórios, impressões gráficas",
+    converterTitle: "Converter PNG para PDF instantaneamente (Offline & Privado)",
+    diveTiffTitle: "Análise profunda: O que é o PNG?",
+    diveTiffP1: "O PNG (Portable Network Graphics) foi lançado em 1996 para substituir o antigo GIF. É um formato raster sem perdas baseado na compactação DEFLATE. Garante a fidelidade total de cada pixel, ideal para gráficos de dados e screenshots.",
+    diveTiffP2: "Suporta RGB de 24 bits e canal alfa de 8 bits para transparências. Isso permite que logotipos fiquem posicionados perfeitamente em cima de qualquer cor de fundo de site sem bordas brancas.",
+    diveTiffAdv: "Vantagens do PNG",
+    diveTiffAdvList: [
+      "Transparência Alfa: Permite fazer recortes de imagens com fundos transparentes suaves.",
+      "Qualidade sem perdas: Garante visual limpo sem borrões ou artefatos.",
+      "Padrão da Web: Carrega de forma nativa e rápida em todos os navegadores."
+    ],
+    diveJxlTitle: "Análise profunda: O que é o PDF?",
+    diveJxlP1: "O PDF (Portable Document Format) foi criado pela Adobe em 1993. Funciona como uma impressão digital que trava o design, as fontes de texto e as fotos para que o arquivo apareça de forma idêntica em qualquer celular ou PC.",
+    diveJxlP2: "Diferente de imagens chapadas, o PDF guarda o texto de forma legível e indexável. O conteúdo pode ser buscado por leitores e selecionado para copiar.",
+    diveJxlAdv: "Vantagens do PDF",
+    diveJxlAdvList: [
+      "Resolução Vetorial: Fontes e vetores continuam nítidos em qualquer escala.",
+      "Arquivos Multi-páginas: Reúne folhas, relatórios e manuais de forma organizada.",
+      "Elementos Dinâmicos: Suporta links ativos, assinaturas e formulários preenchíveis."
+    ],
+    snippetSectionTitle: "Quando usar PNG ou PDF",
+    snippetSectionDesc: "A escolha do formato correto equilibra o peso e a nitidez do arquivo.",
+    q1: "Qual é a principal diferença entre PNG e PDF?",
+    a1: "O PNG é um formato de imagem rasterizada de página única para exibir gráficos transparentes na web. O PDF é um contêiner de documentos feito para congelar layouts e textos de forma pesquisável.",
+    q2: "Quando devo usar o PNG em vez do PDF?",
+    a2: "Use o PNG para ícones de sites e logotipos transparentes que devem carregar diretamente em tags HTML normais.",
+    q3: "Quando devo usar o PDF em vez do PNG?",
+    a3: "Use o PDF para currículos, relatórios, livros e apostilas de trabalho. Ele preserva os textos e os vetores nítidos.",
+    q4: "O PDF suporta transparência como o PNG?",
+    a4: "Sim, suporta transparência de camadas vetoriais. Porém, para exibir imagens transparentes em sites, o PNG é o formato nativo apropriado.",
+    q5: "O PDF é melhor para impressão do que o PNG?",
+    a5: "Sim, o PDF é superior. Ele preserva fontes e margens vetoriais escaláveis que saem limpas no papel, ao contrário dos pixels do PNG que podem borrar.",
+    faqTitle: "Perguntas frequentes",
+    moreComparisons: "Explorar mais comparações",
+    ctaTitle: "¿Precisa de converter fotos PNG para PDF?",
+    ctaDesc: "Use a nossa ferramenta gratuita integrada para agrupar imagens PNG em um arquivo PDF de forma offline e segura.",
+    ctaButton: "Testar conversor PNG para PDF",
+    homeText: "Início",
+    compareLinkText: "Comparar"
+  },
+  id: {
+    seoTitle: "PNG vs PDF: Format Mana yang Harus Anda Pilih? (2026)",
+    seoDescription: "PNG atau PDF? Kami membandingkan format gambar web lossless dengan wadah dokumen global. Pelajari perbedaan transparansi, tata letak, dan skala.",
+    title: "PNG vs PDF: Mana Format yang Lebih Baik?",
+    intro: "Meskipun kedua format mendukung transparansi dan data visual tanpa kerugian (lossless), keduanya termasuk dalam kategori file yang sama sekali berbeda. PNG adalah format gambar raster, sementara PDF adalah wadah dokumen tata letak. Mari bandingkan spesifikasi teknisnya.",
+    quickAnswer: "Jawaban Cepat",
+    useTiffFor: "Gunakan PNG untuk:",
+    useTiffForDesc: "Ikon web, logo transparan, aset desain, dan tangkapan layar digital yang memerlukan pemuatan cepat dan transparansi latar belakang.",
+    useJxlFor: "Gunakan PDF untuk:",
+    useJxlForDesc: "Brosur multi-halaman, resume kerja, e-book, formulir hukum, dan cetak komersial di mana teks harus dapat dicari dan layout harus konsisten.",
+    differenceTitle: "Apa Perbedaan Antara PNG dan PDF?",
+    differenceDesc: "Memahami perbedaan struktur teknis akan membantu Anda memilih format ekspor yang tepat untuk file Anda.",
+    thFeature: "Fitur / Aspek",
+    thTiff: "PNG (Portable Network Graphics)",
+    thJxl: "PDF (Portable Document Format)",
+    tdCompStandard: "Jenis File",
+    tdCompStandardTiff: "Gambar Raster Lossless",
+    tdCompStandardJxl: "Kontainer Dokumen Portabel",
+    tdFileSize: "Dukungan Transparansi",
+    tdFileSizeTiff: "Ya (Transparansi saluran alpha)",
+    tdFileSizeJxl: "Ya (Lapisan vektor & gambar)",
+    tdColorDepth: "Dukungan Multi-halaman",
+    tdColorDepthTiff: "Tidak (Hanya satu halaman gambar)",
+    tdColorDepthJxl: "Ya (Mendukung banyak halaman)",
+    tdBrowser: "Pencarian Teks",
+    tdBrowserTiff: "Tidak (Teks menyatu menjadi piksel gambar)",
+    tdBrowserJxl: "Ya (Teks dapat dipilih & dicari)",
+    tdPrint: "Skala & Zoom",
+    tdPrintTiff: "Piksel pecah saat diperbesar",
+    tdPrintJxl: "Font & tata letak vektor terukur (skalalbel)",
+    tdTranscoding: "Kasus Penggunaan Ideal",
+    tdTranscodingTiff: "Logo halaman web, screenshot, gambar transparan",
+    tdTranscodingJxl: "Resume, e-book, brosur cetak, dokumen resmi",
+    converterTitle: "Konversi PNG ke PDF Instan (Offline & Privat)",
+    diveTiffTitle: "Analisis Mendalam: Apa itu PNG?",
+    diveTiffP1: "PNG adalah singkatan dari Portable Network Graphics, diperkenalkan pada tahun 1996 untuk menggantikan format GIF yang menua. Ini adalah format gambar raster lossless yang menggunakan kompresi DEFLATE. Ini memastikan setiap piksel asli tetap utuh, menjadikannya standar utama untuk bagan, bagan garis, dan tangkapan layar.",
+    diveTiffP2: "Tidak seperti JPEG, PNG mendukung palet RGB 24-bit dan saluran alpha 8-bit untuk transparansi. Ini memungkinkan grafik memiliki latar belakang transparan penuh atau sebagian, sehingga logo dapat duduk rapi di atas berbagai warna latar belakang situs web.",
+    diveTiffAdv: "Kelebihan PNG",
+    diveTiffAdvList: [
+      "Transparansi Alpha: Mendukung gradasi latar belakang transparan yang halus.",
+      "Kualitas Lossless: Tulisan dan detail gambar tidak pernah buram akibat kompresi.",
+      "Format Web Native: Didukung penuh secara langsung oleh semua browser internet."
+    ],
+    diveJxlTitle: "Analisis Mendalam: Apa itu PDF?",
+    diveJxlP1: "PDF singkatan dari Portable Document Format, dibuat oleh Adobe pada tahun 1993. Format ini dirancang untuk bertindak sebagai kertas cetak digital, mengunci tata letak dokumen, font tulisan, gambar, dan lapisan vektor agar dokumen tampil sama persis di perangkat apa pun.",
+    diveJxlP2: "Berbeda dari gambar datar, PDF mempertahankan struktur teks dokumen asli. Teks tetap dapat dicari, disalin, dan diindeks oleh sistem komputer. Ini menjadikan PDF sebagai standar utama untuk resume, e-book, dan surat kontrak.",
+    diveJxlAdv: "Kelebihan PDF",
+    diveJxlAdvList: [
+      "Vektor Skalabel: Teks dan logo vektor tetap tajam pada tingkat perbesaran apa pun.",
+      "Dukungan Banyak Halaman: Menggabungkan buklet dan laporan panjang ke dalam satu berkas rapi.",
+      "Elemen Interaktif: Mendukung tautan aktif, tanda tangan digital, keamanan file, dan formulir."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan PNG atau PDF",
+    snippetSectionDesc: "Memilih format yang tepat membantu menjaga keseimbangan ketajaman visual dan kegunaan file.",
+    q1: "Apa perbedaan utama antara PNG dan PDF?",
+    a1: "PNG adalah format gambar raster satu halaman untuk grafik web transparan. PDF adalah wadah dokumen multi-halaman yang mengunci tulisan dan tata letak vektor secara konsisten.",
+    q2: "Kapan saya harus menggunakan PNG daripada PDF?",
+    a2: "Gunakan PNG untuk ikon web dan logo transparan yang perlu ditampilkan secara langsung di halaman situs web.",
+    q3: "Kapan saya harus menggunakan PDF daripada PNG?",
+    a3: "Pilih PDF untuk resume kerja, e-book, berkas cetak, dan dokumen resmi. PDF menjaga teks tetap dapat dicari dan tajam saat dicetak.",
+    q4: "Apakah PDF mendukung transparansi latar belakang seperti PNG?",
+    a4: "Ya, PDF mendukung transparansi untuk grafik vektor. Namun, untuk menampilkan gambar transparan di halaman web, PNG adalah format native yang tepat.",
+    q5: "Apakah PDF lebih baik untuk mencetak dibanding PNG?",
+    a5: "Ya, PDF jauh lebih unggul untuk dicetak. PDF mempertahankan font tulisan dan tata letak secara tajam, sementara PNG akan pecah jika diperbesar melebihi pikselnya.",
+    faqTitle: "Pertanyaan yang Sering Diajukan",
+    moreComparisons: "Jelajahi Perbandingan Lainnya",
+    ctaTitle: "Perlu mengonversi gambar PNG ke PDF?",
+    ctaDesc: "Gunakan alat dalam browser gratis kami untuk menggabungkan gambar PNG ke dalam satu dokumen PDF secara offline dan aman.",
+    ctaButton: "Coba Pengonversi PNG ke PDF",
+    homeText: "Beranda",
+    compareLinkText: "Bandingkan"
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "png-pdf")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "png-to-pdf");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">PNG vs PDF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PNG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PDF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">{text.intro}</p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useTiffFor}</strong> {text.useTiffForDesc}</p>
+          <p><strong class="text-ink">{text.useJxlFor}</strong> {text.useJxlForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thTiff}</th>
+                <th class="p-4">{text.thJxl}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard}</td>
+                <td class="p-4">{text.tdCompStandardTiff}</td>
+                <td class="p-4">{text.tdCompStandardJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize}</td>
+                <td class="p-4 text-success">{text.tdFileSizeTiff}</td>
+                <td class="p-4 text-success">{text.tdFileSizeJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth}</td>
+                <td class="p-4 text-error">{text.tdColorDepthTiff}</td>
+                <td class="p-4 text-success">{text.tdColorDepthJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser}</td>
+                <td class="p-4 text-error">{text.tdBrowserTiff}</td>
+                <td class="p-4 text-success">{text.tdBrowserJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrint}</td>
+                <td class="p-4 text-error">{text.tdPrintTiff}</td>
+                <td class="p-4 text-success">{text.tdPrintJxl}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTranscoding}</td>
+                <td class="p-4">{text.tdTranscodingTiff}</td>
+                <td class="p-4 text-success">{text.tdTranscodingJxl}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <ImageToPdfTool toolId="png-to-pdf" />
+      </section>
+
+      <!-- Deep Dive: PNG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveTiffTitle}</h2>
+        <p>{text.diveTiffP1}</p>
+        <p>{text.diveTiffP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveTiffAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveTiffAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PDF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJxlTitle}</h2>
+        <p>{text.diveJxlP1}</p>
+        <p>{text.diveJxlP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJxlAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJxlAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons || "Explore More Comparisons"}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="PNG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

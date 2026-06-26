@@ -1,0 +1,285 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import TiffToJpgTool from "../../components/tools/TiffToJpgTool.astro";
+
+// SEO Metadata
+const seoTitle = "SVG vs TIFF: Which Image Format is Better? (2026 Comparison)";
+const seoDescription = "SVG or TIFF? We compare the lightweight web-optimized vector format (SVG) with the high-resolution publishing standard (TIFF). Learn when to use each.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between SVG and TIFF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SVG (Scalable Vector Graphics) is a vector format that stores drawings, logos, and icons as mathematical coordinates and paths. It is extremely lightweight and built for the web. TIFF (Tagged Image File Format) is a raster format that stores images as a high-density grid of pixels. It is extremely detailed, producing large file sizes, and is built for offline photography and printing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why shouldn't I use TIFF files on my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Web browsers do not natively support TIFF files because their file sizes are typically too large for fast loading, and they require heavy decoders. If you upload a TIFF to a web page, most visitors won't be able to see it. You should convert TIFF files to JPEG, PNG, or WebP for web use."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert a TIFF file to an SVG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but with limitations. Since TIFF is a pixel-based raster format and SVG is a path-based vector format, converting a TIFF photograph to SVG requires vector tracing software. While flat logos stored as TIFFs trace easily, complex photography TIFFs cannot be converted into clean SVGs without generating massive, slow-rendering vector files."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format is better for print, SVG or TIFF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on the content. For high-resolution photographs, fine art prints, and scanned documents, TIFF is the industry standard because it supports uncompressed, lossless details and CMYK color spaces. For logos, graphics, signage, and illustrations, SVG (or EPS) is preferred because it can scale up to billboard size without pixelating."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do SVG and TIFF files both support transparent backgrounds?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, both formats support transparency. SVG supports vector paths and styling-level opacity natively. TIFF supports transparency channels (alpha channels), which are commonly used in professional graphic design software like Photoshop for layered editing."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "svg-tiff")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">SVG vs TIFF</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">SVG vs TIFF: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          We compare the modern, code-based SVG vector format with the heavyweight, pixel-packed TIFF format to help you understand their design, print, and web use cases.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use SVG for:</strong> Digital design, website logos, UI icons, responsive illustrations, and graphics that must look sharp on high-DPI displays without slowing down web page speeds.</p>
+          <p><strong class="text-ink">Use TIFF for:</strong> High-end digital photography, high-resolution document scanning, professional publishing layouts, and commercial printing where zero-loss archive detail is required.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between SVG and TIFF?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          SVG represents images using XML instructions that define lines, shapes, and paths. TIFF maps actual pixels in high-density grids to preserve perfect photographic details.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">SVG (Scalable Vector Graphics)</th>
+                <th class="p-4">TIFF (Tagged Image File Format)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Image Structure</td>
+                <td class="p-4 text-success">Vector (Mathematical paths)</td>
+                <td class="p-4">Raster (Pixel grid)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Typical File Size</td>
+                <td class="p-4 text-success">Tiny (Usually under 10 KB)</td>
+                <td class="p-4 text-error">Huge (Often 10 MB to 100 MB+)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Web Compatibility</td>
+                <td class="p-4 text-success">Universal (Natively supported in all browsers)</td>
+                <td class="p-4 text-error">None (Cannot display directly on standard websites)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Scalability</td>
+                <td class="p-4 text-success">Infinite (Perfect sharpness at any zoom)</td>
+                <td class="p-4 text-error">Limited (Pixelates when scaled beyond source dimensions)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Layers & Pages</td>
+                <td class="p-4 text-error">No (Single viewport layout)</td>
+                <td class="p-4 text-success">Yes (Can contain multi-page and layer layouts)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Ideal Use Case</td>
+                <td class="p-4">Web logos, flat illustrations, system icons</td>
+                <td class="p-4 text-success">Photo archiving, high-res printing, scanning</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert TIFF to JPG Instantly (Offline & Private)</h2>
+        <TiffToJpgTool toolId="tiff-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is SVG?</h2>
+        <p>
+          SVG stands for Scalable Vector Graphics. It is an open standard written in XML text format. Instead of recording color values for every pixel, SVG files outline drawing instructions. For example, an SVG describes a circle by defining its center coordinates, radius size, and fill color.
+        </p>
+        <p>
+          This text-based design means SVGs can be embedded directly inside HTML code (inline), saving website network overhead by avoiding secondary server fetches. It also means you can open an SVG file in a standard text editor and change color values using CSS, script it with JavaScript, or let search engines index the text contents inside the graphic.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">SVG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Crisp Scalability:</strong> Stays razor-sharp on every digital viewport, from smartwatches to giant TV screens.</li>
+          <li><strong>Ultra-light weight:</strong> Flat illustrations and icons load almost instantly.</li>
+          <li><strong>CSS Stylable:</strong> Change colors on hover, animate paths, or build interactive diagrams.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is TIFF?</h2>
+        <p>
+          TIFF stands for Tagged Image File Format. Created in 1986 by Aldus (later acquired by Adobe), TIFF was designed to serve as a universal standard for desktop scanner files. It is a highly flexible raster format that can store image layers, transparency channels, multi-page document scans, and rich metadata.
+        </p>
+        <p>
+          Because TIFFs prioritize quality, they typically use uncompressed or lossless compression (like LZW). This makes TIFF files massive, but ensures that every detail captured by a camera sensor or high-resolution scanner is preserved without compression noise. This makes it the absolute gold standard for archival work, but makes it completely useless for fast web pages.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">TIFF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Lossless Archiving:</strong> Zero image degradation, preserving original sensor details.</li>
+          <li><strong>CMYK Color Support:</strong> Matches professional printing ink profiles perfectly.</li>
+          <li><strong>Layer & Page Packing:</strong> Can hold multiple scanned sheets or editing layers in one wrapper.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between SVG and TIFF?</h3>
+            <p class="text-body leading-relaxed">SVG (Scalable Vector Graphics) is a vector format that stores drawings, logos, and icons as mathematical coordinates and paths. It is extremely lightweight and built for the web. TIFF (Tagged Image File Format) is a raster format that stores images as a high-density grid of pixels. It is extremely detailed, producing large file sizes, and is built for offline photography and printing.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why shouldn't I use TIFF files on my website?</h3>
+            <p class="text-body leading-relaxed">Web browsers do not natively support TIFF files because their file sizes are typically too large for fast loading, and they require heavy decoders. If you upload a TIFF to a web page, most visitors won't be able to see it. You should convert TIFF files to JPEG, PNG, or WebP for web use.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can I convert a TIFF file to an SVG?</h3>
+            <p class="text-body leading-relaxed">Yes, but with limitations. Since TIFF is a pixel-based raster format and SVG is a path-based vector format, converting a TIFF photograph to SVG requires vector tracing software. While flat logos stored as TIFFs trace easily, complex photography TIFFs cannot be converted into clean SVGs without generating massive, slow-rendering vector files.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Which format is better for print, SVG or TIFF?</h3>
+            <p class="text-body leading-relaxed">It depends on the content. For high-resolution photographs, fine art prints, and scanned documents, TIFF is the industry standard because it supports uncompressed, lossless details and CMYK color spaces. For logos, graphics, signage, and illustrations, SVG (or EPS) is preferred because it can scale up to billboard size without pixelating.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Do SVG and TIFF files both support transparent backgrounds?</h3>
+            <p class="text-body leading-relaxed">Yes, both formats support transparency. SVG supports vector paths and styling-level opacity natively. TIFF supports transparency channels (alpha channels), which are commonly used in professional graphic design software like Photoshop for layered editing.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert TIFF files?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, offline tool to instantly convert your TIFF photographs into universal JPG format safely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="SVG" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

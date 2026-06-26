@@ -1,0 +1,318 @@
+---
+// Date Calculator Tool Component
+---
+<div id="date-calc-root" class="w-full flex flex-col gap-8 max-w-4xl mx-auto">
+  <!-- Mode Tabs -->
+  <div class="flex overflow-x-auto border-b border-hairline pb-px gap-6 snap-x" style="scrollbar-width: none; -ms-overflow-style: none;">
+    <button id="tab-diff" class="mode-tab whitespace-nowrap pb-4 text-sm font-semibold text-link border-b-2 border-link snap-start px-2 transition-colors active" data-mode="diff">
+      Count Days Between Dates
+    </button>
+    <button id="tab-add" class="mode-tab whitespace-nowrap pb-4 text-sm font-medium text-mute hover:text-ink border-b-2 border-transparent snap-start px-2 transition-colors" data-mode="add">
+      Add or Subtract Days / Years
+    </button>
+  </div>
+
+  <!-- Mode 1: Difference Between Dates -->
+  <div id="section-diff" class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="flex flex-col gap-1.5">
+        <label for="diff-start" class="text-sm font-semibold text-ink">Start Date</label>
+        <input type="date" id="diff-start" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="diff-end" class="text-sm font-semibold text-ink">End Date</label>
+        <input type="date" id="diff-end" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+    </div>
+
+    <!-- Filters/Toggles -->
+    <div class="flex flex-wrap gap-6 border-t border-hairline pt-4">
+      <label class="flex items-center gap-2 text-sm font-medium text-ink cursor-pointer select-none">
+        <input type="checkbox" id="diff-include-end" class="rounded border-hairline text-link focus:ring-link h-4 w-4">
+        Include End Date in calculation (+1 day)
+      </label>
+      <label class="flex items-center gap-2 text-sm font-medium text-ink cursor-pointer select-none">
+        <input type="checkbox" id="diff-business-only" class="rounded border-hairline text-link focus:ring-link h-4 w-4">
+        Count business days only (exclude weekends)
+      </label>
+    </div>
+
+    <!-- Result -->
+    <div class="border-t border-hairline pt-6 flex flex-col gap-4">
+      <h4 class="text-sm font-semibold text-mute uppercase tracking-widest">Difference Output</h4>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-canvas-soft-2 p-4 rounded-xl border border-hairline text-center">
+          <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-1">Total Days</span>
+          <span id="diff-res-days" class="text-3xl font-bold text-link font-mono">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-4 rounded-xl border border-hairline text-center">
+          <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-1">Weeks & Days</span>
+          <span id="diff-res-weeks" class="text-sm font-semibold text-ink block mt-1 font-mono">--</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-4 rounded-xl border border-hairline text-center">
+          <span class="text-[11px] font-bold text-mute uppercase tracking-widest block mb-1">Years, Months, Days</span>
+          <span id="diff-res-parsed" class="text-sm font-semibold text-ink block mt-1 font-mono">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode 2: Add / Subtract Days -->
+  <div id="section-add" class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6 hidden">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="flex flex-col gap-1.5">
+        <label for="add-start" class="text-sm font-semibold text-ink">Start Date</label>
+        <input type="date" id="add-start" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="add-operation" class="text-sm font-semibold text-ink">Action</label>
+        <select id="add-operation" class="rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+          <option value="add">Add (+)</option>
+          <option value="subtract">Subtract (-)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Duration Parameters -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-hairline pt-4">
+      <div class="flex flex-col gap-1">
+        <label for="dur-years" class="text-xs font-semibold text-mute uppercase">Years</label>
+        <input type="number" id="dur-years" min="0" value="0" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="dur-months" class="text-xs font-semibold text-mute uppercase">Months</label>
+        <input type="number" id="dur-months" min="0" value="0" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="dur-weeks" class="text-xs font-semibold text-mute uppercase">Weeks</label>
+        <input type="number" id="dur-weeks" min="0" value="0" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="dur-days" class="text-xs font-semibold text-mute uppercase">Days</label>
+        <input type="number" id="dur-days" min="0" value="0" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="border-t border-hairline pt-6 flex flex-col gap-4">
+      <h4 class="text-sm font-semibold text-mute uppercase tracking-widest">Calculated Date Output</h4>
+      <div class="bg-canvas-soft-2 p-5 rounded-xl border border-hairline flex flex-col items-center justify-center min-h-[100px]">
+        <span id="add-res-date" class="text-2xl font-bold text-link text-center">--</span>
+        <span id="add-res-details" class="text-xs text-mute mt-2">--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Mode toggling
+    const tabDiff = document.getElementById('tab-diff')!;
+    const tabAdd = document.getElementById('tab-add')!;
+    const sectionDiff = document.getElementById('section-diff')!;
+    const sectionAdd = document.getElementById('section-add')!;
+
+    tabDiff.addEventListener('click', () => {
+      tabDiff.classList.add('text-link', 'border-link', 'font-semibold', 'active');
+      tabDiff.classList.remove('text-mute', 'border-transparent', 'font-medium');
+      tabAdd.classList.remove('text-link', 'border-link', 'font-semibold', 'active');
+      tabAdd.classList.add('text-mute', 'border-transparent', 'font-medium');
+      sectionDiff.classList.remove('hidden');
+      sectionAdd.classList.add('hidden');
+    });
+
+    tabAdd.addEventListener('click', () => {
+      tabAdd.classList.add('text-link', 'border-link', 'font-semibold', 'active');
+      tabAdd.classList.remove('text-mute', 'border-transparent', 'font-medium');
+      tabDiff.classList.remove('text-link', 'border-link', 'font-semibold', 'active');
+      tabDiff.classList.add('text-mute', 'border-transparent', 'font-medium');
+      sectionAdd.classList.remove('hidden');
+      sectionDiff.classList.add('hidden');
+    });
+
+    // Difference between dates elements
+    const diffStart = document.getElementById('diff-start') as HTMLInputElement;
+    const diffEnd = document.getElementById('diff-end') as HTMLInputElement;
+    const diffIncludeEnd = document.getElementById('diff-include-end') as HTMLInputElement;
+    const diffBusinessOnly = document.getElementById('diff-business-only') as HTMLInputElement;
+
+    const resDays = document.getElementById('diff-res-days')!;
+    const resWeeks = document.getElementById('diff-res-weeks')!;
+    const resParsed = document.getElementById('diff-res-parsed')!;
+
+    // Set default dates for diff
+    const today = new Date();
+    const localToday = today.toISOString().split('T')[0];
+    diffStart.value = localToday;
+    
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
+    diffEnd.value = nextWeek.toISOString().split('T')[0];
+
+    // Count business days helper
+    function getBusinessDays(startDate: Date, endDate: Date): number {
+      let count = 0;
+      const curDate = new Date(startDate.getTime());
+      while (curDate <= endDate) {
+        const dayOfWeek = curDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          count++;
+        }
+        curDate.setDate(curDate.getDate() + 1);
+      }
+      return count;
+    }
+
+    function calculateDiff() {
+      const startStr = diffStart.value;
+      const endStr = diffEnd.value;
+
+      if (!startStr || !endStr) {
+        resDays.textContent = '--';
+        resWeeks.textContent = '--';
+        resParsed.textContent = '--';
+        return;
+      }
+
+      const d1 = new Date(startStr);
+      const d2 = new Date(endStr);
+      
+      // Swap dates if user picks start date after end date
+      let isNegative = false;
+      let dateA = d1;
+      let dateB = d2;
+      if (d1 > d2) {
+        isNegative = true;
+        dateA = d2;
+        dateB = d1;
+      }
+
+      const totalTimeDiff = dateB.getTime() - dateA.getTime();
+      let totalDays = Math.round(totalTimeDiff / (1000 * 3600 * 24));
+
+      // Option: Include end date
+      if (diffIncludeEnd.checked) {
+        totalDays += 1;
+      }
+
+      // Option: Business days only
+      if (diffBusinessOnly.checked) {
+        // Adjust date boundaries to match include end date toggle
+        const calcEnd = new Date(dateB.getTime());
+        if (!diffIncludeEnd.checked) {
+          calcEnd.setDate(calcEnd.getDate() - 1);
+        }
+        const bDays = getBusinessDays(dateA, calcEnd);
+        resDays.textContent = `${isNegative ? '-' : ''}${bDays}`;
+        resWeeks.textContent = 'N/A (Business Days only)';
+        resParsed.textContent = 'N/A (Business Days only)';
+        return;
+      }
+
+      // Format total output
+      resDays.textContent = `${isNegative ? '-' : ''}${totalDays} day${totalDays !== 1 ? 's' : ''}`;
+
+      // Weeks representation
+      const weeks = Math.floor(totalDays / 7);
+      const remainingDays = totalDays % 7;
+      resWeeks.textContent = `${isNegative ? '-' : ''}${weeks} week${weeks !== 1 ? 's' : ''}, ${remainingDays} day${remainingDays !== 1 ? 's' : ''}`;
+
+      // Calendar parsed representation (years, months, days)
+      let y = dateB.getFullYear() - dateA.getFullYear();
+      let m = dateB.getMonth() - dateA.getMonth();
+      let d = dateB.getDate() - dateA.getDate();
+
+      // Handle day borrowing
+      if (d < 0) {
+        m--;
+        // Get number of days in previous month
+        const prevMonth = new Date(dateB.getFullYear(), dateB.getMonth(), 0);
+        d += prevMonth.getDate();
+      }
+
+      // Handle month borrowing
+      if (m < 0) {
+        y--;
+        m += 12;
+      }
+
+      if (diffIncludeEnd.checked) {
+        d += 1;
+        // Re-align months/days boundaries if days carry over
+        const daysInTargetMonth = new Date(dateB.getFullYear(), dateB.getMonth() + 1, 0).getDate();
+        if (d >= daysInTargetMonth) {
+          d -= daysInTargetMonth;
+          m++;
+          if (m >= 12) {
+            m -= 12;
+            y++;
+          }
+        }
+      }
+
+      resParsed.textContent = `${isNegative ? '-' : ''}${y} year${y !== 1 ? 's' : ''}, ${m} month${m !== 1 ? 's' : ''}, ${d} day${d !== 1 ? 's' : ''}`;
+    }
+
+    [diffStart, diffEnd, diffIncludeEnd, diffBusinessOnly].forEach(el => {
+      el.addEventListener('input', calculateDiff);
+    });
+    calculateDiff();
+
+
+    // Add/Subtract days elements
+    const addStart = document.getElementById('add-start') as HTMLInputElement;
+    const addOperation = document.getElementById('add-operation') as HTMLSelectElement;
+    const durYears = document.getElementById('dur-years') as HTMLInputElement;
+    const durMonths = document.getElementById('dur-months') as HTMLInputElement;
+    const durWeeks = document.getElementById('dur-weeks') as HTMLInputElement;
+    const durDays = document.getElementById('dur-days') as HTMLInputElement;
+
+    const addResDate = document.getElementById('add-res-date')!;
+    const addResDetails = document.getElementById('add-res-details')!;
+
+    addStart.value = localToday;
+
+    function calculateAddSubtract() {
+      const startStr = addStart.value;
+      if (!startStr) {
+        addResDate.textContent = '--';
+        addResDetails.textContent = '--';
+        return;
+      }
+
+      const baseDate = new Date(startStr);
+      const isAdd = addOperation.value === 'add';
+      const multiplier = isAdd ? 1 : -1;
+
+      const y = parseInt(durYears.value || '0', 10) * multiplier;
+      const m = parseInt(durMonths.value || '0', 10) * multiplier;
+      const w = parseInt(durWeeks.value || '0', 10) * multiplier;
+      const d = parseInt(durDays.value || '0', 10) * multiplier;
+
+      // Adjust date mathematically using native setMethods
+      const targetDate = new Date(baseDate.getTime());
+      targetDate.setFullYear(targetDate.getFullYear() + y);
+      targetDate.setMonth(targetDate.getMonth() + m);
+      targetDate.setDate(targetDate.getDate() + (w * 7) + d);
+
+      // Display formatted date
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      addResDate.textContent = targetDate.toLocaleDateString('en-US', options);
+
+      // Display stats/details
+      const timeDiff = Math.abs(targetDate.getTime() - baseDate.getTime());
+      const totalDays = Math.round(timeDiff / (1000 * 3600 * 24));
+      addResDetails.textContent = `Interval: ${totalDays} total days ${isAdd ? 'after' : 'before'} starting date.`;
+    }
+
+    [addStart, addOperation, durYears, durMonths, durWeeks, durDays].forEach(el => {
+      el.addEventListener('input', calculateAddSubtract);
+    });
+    calculateAddSubtract();
+  });
+</script>

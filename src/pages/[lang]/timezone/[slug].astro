@@ -1,0 +1,242 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import TimezoneConverterTool from "../../../components/tools/TimezoneConverterTool.astro";
+import timezonesData from "../../../data/timezones.json";
+
+export async function getStaticPaths() {
+  const locales = ['es', 'fr', 'de', 'pt', 'id'];
+  const paths = [];
+  for (const locale of locales) {
+    for (const pair of timezonesData.pairs) {
+      const slug = `${pair.from.toLowerCase()}-to-${pair.to.toLowerCase()}`;
+      paths.push({
+        params: { lang: locale, slug },
+        props: { pair, locale }
+      });
+    }
+  }
+  return paths;
+}
+
+const { pair, locale } = Astro.props;
+const from = timezonesData.zones.find(z => z.code === pair.from)!;
+const to = timezonesData.zones.find(z => z.code === pair.to)!;
+
+// Helper to calculate timezone differences at build time with localized directional text
+function getOffsetDifferenceString(ianaFrom: string, ianaTo: string, loc: string): string {
+  const date = new Date('2026-06-26T12:00:00Z'); // static date to keep builds deterministic
+  const getOffsetMinutes = (iana: string) => {
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: iana,
+        timeZoneName: 'longOffset'
+      }).formatToParts(date);
+      const val = parts.find(p => p.type === 'timeZoneName')?.value || '';
+      if (val === 'GMT' || val === 'UTC') return 0;
+      const match = val.match(/GMT([-+])(\d+):(\d+)/);
+      if (!match) return 0;
+      const sign = match[1] === '-' ? -1 : 1;
+      const hours = parseInt(match[2], 10);
+      const minutes = parseInt(match[3], 10);
+      return sign * (hours * 60 + minutes);
+    } catch (e) {
+      return 0;
+    }
+  };
+
+  const diffMinutes = getOffsetMinutes(ianaTo) - getOffsetMinutes(ianaFrom);
+  const diffHours = Math.abs(diffMinutes / 60);
+  const isAhead = diffMinutes >= 0;
+
+  if (diffHours === 0) {
+    if (loc === 'es') return "están en la misma zona horaria y no tienen diferencia horaria";
+    if (loc === 'fr') return "sont dans le même fuseau horaire et n'ont aucun décalage";
+    if (loc === 'de') return "sind in derselben Zeitzone und haben keinen Zeitunterschied";
+    if (loc === 'pt') return "estão no mesmo fuso horário e não têm diferença de horário";
+    return "berada di zona waktu yang sama dan tidak memiliki perbedaan waktu";
+  }
+
+  if (loc === 'es') {
+    const hrsText = diffHours === 1 ? "hora" : "horas";
+    return `está ${diffHours} ${hrsText} por ${isAhead ? "delante" : "detrás"} de`;
+  }
+  if (loc === 'fr') {
+    const hrsText = diffHours === 1 ? "heure" : "heures";
+    return `a ${diffHours} ${hrsText} ${isAhead ? "d'avance sur" : "de retard sur"}`;
+  }
+  if (loc === 'de') {
+    const hrsText = diffHours === 1 ? "Stunde" : "Stunden";
+    return `ist ${diffHours} ${hrsText} ${isAhead ? "vor" : "hinter"}`;
+  }
+  if (loc === 'pt') {
+    const hrsText = diffHours === 1 ? "hora" : "horas";
+    return `está ${diffHours} ${hrsText} à ${isAhead ? "frente de" : "atrás de"}`;
+  }
+  
+  // id (Indonesian)
+  return `adalah ${diffHours} jam lebih ${isAhead ? "cepat" : "lambat"} dari`;
+}
+
+const timeDiffText = getOffsetDifferenceString(from.iana, to.iana, locale);
+
+// Localized Page Content Dictionary
+let title = `Convertir ${from.code} a ${to.code} online`;
+let description = `Convierta la hora de ${from.code} a ${to.code} fácilmente. Compare la diferencia horaria entre ${from.city} y ${to.city}.`;
+let breadcrumbHome = "Inicio";
+let headingH1 = `${from.code} a ${to.code} - Conversor de hora`;
+let headingH1Sub = `Convierta la hora de ${from.name} (${from.city}) a ${to.name} (${to.city}) con nuestro slider visual.`;
+let faqSectionTitle = "Preguntas Frecuentes y Diferencias";
+
+let q1 = `¿Cuál es la diferencia horaria entre ${from.code} y ${to.code}?`;
+let a1 = `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). Esto se actualiza automáticamente con el horario de verano local.`;
+
+let q2 = `¿${from.city} o ${to.city} observan el horario de verano (DST)?`;
+let a2 = `Los cambios de horario de verano dependen de las regulaciones regionales. Las transiciones entre horario estándar y horario de verano se calculan automáticamente en la barra superior.`;
+
+let q3 = `¿Cómo convierto ${from.code} a ${to.code} manualmente?`;
+let a3 = `Para realizar la conversión manual, sume o reste las horas correspondientes. Dado que ${to.code} ${timeDiffText} ${from.code}, aplique la diferencia horaria requerida.`;
+
+if (locale === 'fr') {
+  title = `Convertisseur ${from.code} en ${to.code} en ligne`;
+  description = `Convertissez l'heure de ${from.code} en ${to.code} en ligne. Comparez les fuseaux horaires entre ${from.city} et ${to.city} avec notre curseur.`;
+  breadcrumbHome = "Accueil";
+  headingH1 = `Convertisseur de temps ${from.code} en ${to.code}`;
+  headingH1Sub = `Convertissez l'heure de ${from.name} (${from.city}) en ${to.name} (${to.city}) grâce à notre curseur visuel.`;
+  faqSectionTitle = "Questions Fréquentes";
+  q1 = `Quel est le décalage horaire entre ${from.code} et ${to.code}?`;
+  a1 = `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). Notre outil s'adapte automatiquement à l'heure d'été.`;
+  q2 = `Est-ce que ${from.city} ou ${to.city} appliquent l'heure d'été ?`;
+  a2 = `Les transitions de fuseaux horaires dépendent des règles régionales de chaque pays. Les changements saisonniers sont calculés en temps réel par notre réglette.`;
+  q3 = `Comment convertir ${from.code} en ${to.code} manuellement ?`;
+  a3 = `Calculez le décalage entre les deux zones. Puisque ${to.code} ${timeDiffText} ${from.code}, ajoutez ou soustrayez la différence d'heures.`;
+} else if (locale === 'de') {
+  title = `Zeitzonen-Konverter ${from.code} zu ${to.code} online`;
+  description = `Konvertieren Sie Uhrzeiten von ${from.code} zu ${to.code} online. Vergleichen Sie Zeitunterschiede zwischen ${from.city} und ${to.city}.`;
+  breadcrumbHome = "Startseite";
+  headingH1 = `${from.code} zu ${to.code} Zeitzonen-Konverter`;
+  headingH1Sub = `Konvertieren Sie die Uhrzeit von ${from.name} (${from.city}) zu ${to.name} (${to.city}) mit unserem Zeitleisten-Schieberegler.`;
+  faqSectionTitle = "Häufig gestellte Fragen";
+  q1 = `Wie groß ist der Zeitunterschied zwischen ${from.code} und ${to.code}?`;
+  a1 = `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). Dieser Zeitunterschied berücksichtigt automatisch die Sommerzeit.`;
+  q2 = `Gibt es in ${from.city} oder ${to.city} Sommerzeit?`;
+  a2 = `Die Sommerzeit-Umstellung erfolgt regional. Die Umstellungstermine werden von unserem Tool im Kalender automatisch einberechnet.`;
+  q3 = `Wie kann ich ${from.code} zu ${to.code} manuell umrechnen?`;
+  a3 = `Rechnen Sie die Differenz aus. Da ${to.code} ${timeDiffText} ${from.code}, addieren oder subtrahieren Sie einfach die Differenzstunden.`;
+} else if (locale === 'pt') {
+  title = `Conversor de fuso horário ${from.code} para ${to.code}`;
+  description = `Converta facilmente a hora de ${from.code} para ${to.code} online. Veja as diferenças entre os fusos de ${from.city} e ${to.city}.`;
+  breadcrumbHome = "Início";
+  headingH1 = `Conversor de Hora de ${from.code} para ${to.code}`;
+  headingH1Sub = `Converta a hora de ${from.name} (${from.city}) para ${to.name} (${to.city}) usando nosso slider de linha de tempo.`;
+  faqSectionTitle = "Perguntas Frequentes";
+  q1 = `Qual é a diferença de horário entre ${from.code} e ${to.code}?`;
+  a1 = `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). O fuso se ajusta automaticamente ao horário de verão.`;
+  q2 = `As cidades de ${from.city} ou ${to.city} observam o horário de verão ?`;
+  a2 = `A transição entre horário padrão e horário de verão é regida pelas leis locais de cada país. A barra superior calcula essas mudanças de forma automática.`;
+  q3 = `Como converter ${from.code} para ${to.code} manualmente ?`;
+  a3 = `Para fazer a conversão, calcule o intervalo de fuso. Como ${to.code} ${timeDiffText} ${from.code}, acrescente ou subtraia as horas necessárias.`;
+} else if (locale === 'id') {
+  title = `Konverter Zona Waktu ${from.code} ke ${to.code}`;
+  description = `Ubah waktu dari ${from.code} ke ${to.code} secara online. Bandingkan selisih waktu antara ${from.city} dan ${to.city}.`;
+  breadcrumbHome = "Beranda";
+  headingH1 = `Konverter Waktu ${from.code} ke ${to.code}`;
+  headingH1Sub = `Konversikan waktu dari ${from.name} (${from.city}) ke ${to.name} (${to.city}) dengan slider garis waktu kami.`;
+  faqSectionTitle = "Pertanyaan yang Sering Diajukan";
+  q1 = `Berapa perbedaan waktu antara ${from.code} dan ${to.code}?`;
+  a1 = `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). Perbedaan ini otomatis mengikuti penyesuaian Waktu Musim Panas (DST) setempat.`;
+  q2 = `Apakah ${from.city} atau ${to.city} menerapkan Waktu Musim Panas (DST)?`;
+  a2 = `Penyesuaian waktu musim panas tergantung pada peraturan daerah masing-masing. Slider kami secara otomatis menghitung perubahan ini berdasarkan tanggal.`;
+  q3 = `Bagaimana cara mengubah ${from.code} ke ${to.code} secara manual?`;
+  a3 = `Hitung selisih jamnya. Karena ${to.code} ${timeDiffText} ${from.code}, silakan tambah atau kurangi jam dari waktu asal Anda.`;
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": q1,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": a1
+      }
+    },
+    {
+      "@type": "Question",
+      "name": q2,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": a2
+      }
+    },
+    {
+      "@type": "Question",
+      "name": q3,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": a3
+      }
+    }
+  ]
+};
+---
+<Layout title={title} description={description}>
+  <Navbar />
+
+  <main class="w-full relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-full -translate-x-1/2 mesh-gradient opacity-10"></div>
+
+    <div class="mx-auto max-w-[1400px] px-6 py-12 lg:px-8 relative z-10">
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-xs font-medium text-mute mb-8">
+        <a href={`/${locale}`} class="hover:text-ink transition-colors">{breadcrumbHome}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink truncate">{from.code} a {to.code}</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="text-center mb-12 max-w-3xl mx-auto">
+        <h1 class="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl mb-4">
+          {headingH1}
+        </h1>
+        <p class="text-lg text-body">
+          {headingH1Sub}
+        </p>
+      </header>
+
+      <!-- Tool Widget -->
+      <div class="mb-16">
+        <TimezoneConverterTool defaultFrom={from.iana} defaultTo={to.iana} />
+      </div>
+
+      <!-- FAQ SEO Section -->
+      <section class="mx-auto max-w-[800px] bg-canvas border border-hairline rounded-2xl p-6 md:p-8 shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{faqSectionTitle}</h2>
+        
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-ink mb-2">{q1}</h3>
+            <p class="text-sm text-body leading-relaxed">{a1}</p>
+          </div>
+
+          <div class="border-t border-hairline pt-6">
+            <h3 class="text-lg font-bold text-ink mb-2">{q2}</h3>
+            <p class="text-sm text-body leading-relaxed">{a2}</p>
+          </div>
+
+          <div class="border-t border-hairline pt-6">
+            <h3 class="text-lg font-bold text-ink mb-2">{q3}</h3>
+            <p class="text-sm text-body leading-relaxed">{a3}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</Layout>

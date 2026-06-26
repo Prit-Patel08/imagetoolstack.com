@@ -61,6 +61,10 @@ export const en = {
     pdf: {
       name: "PDF Tools",
       description: "Merge, split, compress, and convert PDF documents locally in your browser."
+    },
+    "time-date": {
+      name: "Time & Date",
+      description: "Convert timestamps, calculate dates, check exact age, and compare time zones locally in your browser."
     }
   },
   toolTemplates: {

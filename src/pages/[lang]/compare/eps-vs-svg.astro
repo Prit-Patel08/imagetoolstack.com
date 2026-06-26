@@ -1,0 +1,768 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "EPS vs SVG: Formatos vectoriales explicados (Guia 2026)",
+    seoDescription: "¿Cuál es la diferencia entre EPS y SVG? Comparamos los dos formatos vectoriales, sus usos en diseño web frente a impresión, y cuál elegir para logotipos.",
+    title: "EPS vs SVG: Formatos vectoriales explicados",
+    intro: "A diferencia de los archivos JPEG y PNG que están hechos de píxeles, tanto EPS como SVG son formatos vectoriales. Esto significa que están hechos de ecuaciones matemáticas y se pueden escalar al tamaño de un rascacielos sin perder calidad. Pero, ¿cuál debería usar?",
+    quickAnswer: "Respuesta rápida",
+    useEpsFor: "Use EPS para:",
+    useEpsForDesc: "Enviar archivos a impresores profesionales, grabadores láser o fabricantes (ropa, vallas publicitarias, merchandising).",
+    useSvgFor: "Use SVG para:",
+    useSvgForDesc: "Todo lo relacionado con internet: logotipos de sitios web, iconos de interfaz de usuario y gráficos web interactivos.",
+    differenceTitle: "¿Cuál es la diferencia entre EPS y SVG?",
+    differenceDesc: "Dado que ambos formatos almacenan la información de la imagen como coordenadas matemáticas en lugar de píxeles estáticos, se escalan infinitamente. Sin embargo, sus entornos de ejecución no podrían ser más diferentes. Aquí tiene una comparación técnica lado a lado de EPS vs SVG.",
+    thFeature: "Característica / Aspecto",
+    thEps: "EPS (Encapsulated PostScript)",
+    thSvg: "SVG (Scalable Vector Graphics)",
+    tdPrimaryTarget: "Objetivo principal",
+    tdPrimaryTargetEps: "Medios impresos de alta gama y señalización",
+    tdPrimaryTargetSvg: "Páginas web modernas y aplicaciones móviles",
+    tdBrowserSupport: "Soporte de navegador",
+    tdBrowserSupportEps: "Ninguno (No soportado en navegadores web)",
+    tdBrowserSupportSvg: "Universal (Chrome, Safari, Firefox, Edge)",
+    tdCodeStyling: "Estilo basado en código",
+    tdCodeStylingEps: "No",
+    tdCodeStylingSvg: "Sí (se puede diseñar con CSS y manipular con JS)",
+    tdAnimation: "Animación",
+    tdAnimationEps: "No",
+    tdAnimationSvg: "Sí (animaciones CSS, SMIL, scripts GSAP)",
+    tdFileStructure: "Estructura del formato",
+    tdFileStructureEps: "Lenguaje PostScript (binario o texto)",
+    tdFileStructureSvg: "Marcado XML (texto plano, fácilmente comprimible)",
+    tdPrintOpt: "Optimización de impresión",
+    tdPrintOptEps: "Excelente (soporta colores CMYK nativamente)",
+    tdPrintOptSvg: "Buena (RGB nativo, necesita conversión para impresión)",
+    tdTransparency: "Soporte de transparencia",
+    tdTransparencyEps: "Sí (soporta transparencia de rutas vectoriales)",
+    tdTransparencySvg: "Sí (transparencia de nivel alfa nativa del navegador)",
+    converterTitle: "Convertir SVG a PNG al instante (Gratis y Privado)",
+    diveEpsTitle: "Análisis profundo: ¿Qué es un archivo EPS?",
+    diveEpsP1: "EPS significa Encapsulated PostScript (PostScript Encapsulado). Desarrollado por Adobe en 1987, fue diseñado para establecer un formato vectorial estándar para la autoedición y los procesos de impresión profesional.",
+    diveEpsP2: "Un archivo EPS es esencialmente un documento PostScript autónomo que describe una imagen o diseño. Contiene instrucciones matemáticas detalladas para dibujar líneas, curvas, texto y colores. Crucialmente, también contiene una miniatura de 'vista previa' de píxeles de baja resolución para que el software de diseño pueda renderizar el archivo en pantalla sin tener que decodificar completamente el código PostScript.",
+    diveEpsAdv: "Ventajas de EPS",
+    diveEpsAdvList: [
+      "Compatibilidad de impresión universal: el estándar absoluto de la industria para impresión offset profesional y señalización.",
+      "Perfiles de color CMYK perfectos: totalmente compatible con las matrices de separación de tinta de impresión física (CMYK).",
+      "Geometría vectorial sin pérdidas: se escala a tamaños de vallas publicitarias sin pixelación ni vacíos de renderizado."
+    ],
+    diveEpsDis: "Desventajas de EPS",
+    diveEpsDisList: [
+      "Sin presencia web: los navegadores modernos no admiten EPS. No se pueden renderizar en una página web.",
+      "Archivos más pesados: a menudo incluye vistas previas rasterizadas incrustadas y encabezados PostScript, lo que hace que los archivos sean más voluminosos que los SVG."
+    ],
+    diveSvgTitle: "Análisis profundo: ¿Qué es un archivo SVG?",
+    diveSvgP1: "SVG significa Scalable Vector Graphics (Gráficos Vectoriales Escalables). Es una especificación abierta basada en XML desarrollada por el W3C (World Wide Web Consortium) a partir de 1999 para admitir diseños vectoriales de forma nativa en internet.",
+    diveSvgP2: "Debido a que SVG está escrito en XML (lenguaje de marcado extensible), es texto plano legible. Un gráfico SVG se compone de nodos DOM como <rect>, <circle> y <path>. Los navegadores web pueden leer estos elementos y renderizarlos instantáneamente al igual que renderizan las etiquetas HTML.",
+    diveSvgAdv: "Ventajas de SVG",
+    diveSvgAdvList: [
+      "Análisis nativo del navegador: renderizado directamente por navegadores web modernos a altas velocidades.",
+      "Manipulabilidad con CSS y JS: puede aplicar transiciones de desplazamiento, controladores de clics y cambiar colores dinámicamente sobre la marcha.",
+      "Ultra ligero: los vectores basados en texto se pueden comprimir usando Gzip/Brotli estándar, reduciendo el tamaño del archivo a bytes.",
+      "Amigable con el SEO: las cadenas de texto dentro de los SVG son rastreables e indexables por los bots de los motores de búsqueda."
+    ],
+    diveSvgDis: "Desventajas de SVG",
+    diveSvgDisList: [
+      "Configuración de impresión limitada: la mayoría del software de impresión comercial espera espacios de color CMYK, lo que requiere una configuración adicional para los SVG centrados en RGB.",
+      "Filtros de seguridad del navegador: los navegadores aplican pautas de seguridad estrictas al renderizar SVG para evitar secuencias de comandos en sitios cruzados (XSS) a través de scripts XML incrustados."
+    ],
+    snippetSectionTitle: "Cuándo usar EPS vs SVG",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es crucial para equilibrar la claridad visual y la legibilidad. A continuación se presentan respuestas directas a las consultas más comunes sobre EPS y SVG.",
+    q1: "¿Cuál es la diferencia entre EPS y SVG?",
+    a1: "EPS (Encapsulated PostScript) es un formato vectorial antiguo diseñado para impresión profesional de alta calidad. SVG (Scalable Vector Graphics) es un formato vectorial moderno basado en XML diseñado específicamente para la web. SVG se puede animar y diseñar con CSS, mientras que EPS no.",
+    q2: "¿Puedo usar EPS en mi sitio web?",
+    a2: "No. Los navegadores web no admiten el formato EPS. Si intenta subir un archivo EPS a un sitio web, fallará la carga o no se mostrará. Debe convertirlo a SVG o PNG primero.",
+    q3: "¿Qué formato es mejor para logotipos?",
+    a3: "Depende del medio. Si va a enviar su logotipo a un fabricante para que lo imprima en una camiseta o valla publicitaria, por lo general le pedirán un archivo EPS. Si va a colocar el logotipo en el encabezado de su sitio web, debe usar un SVG.",
+    q4: "¿Admite EPS transparencia?",
+    a4: "Sí, EPS admite transparencia para rutas vectoriales. Sin embargo, dado que los navegadores no pueden mostrar archivos EPS, no puede usar la transparencia de EPS directamente en la web. Para gráficos web vectoriales transparentes, SVG es el estándar.",
+    q5: "¿Es SVG un formato vectorial?",
+    a5: "Sí, SVG (Scalable Vector Graphics) es un formato de imagen vectorial nativo basado en XML. Almacena las imágenes como formas matemáticas (líneas, curvas y puntos) en lugar de píxeles, lo que le permite escalarse a cualquier tamaño sin perder nitidez.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita convertir un archivo SVG para entrega en mapa de bits?",
+    ctaDesc: "Use nuestra herramienta gratuita, privada y en el navegador para convertir instantáneamente sus SVG vectoriales en imágenes PNG de alta calidad.",
+    ctaButton: "Probar la herramienta SVG a PNG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "EPS vs SVG : Les formats vectoriels expliqués (Guide 2026)",
+    seoDescription: "Quelle est la différence entre EPS et SVG ? Nous comparons les deux formats vectoriels, leurs usages pour le web vs l'impression, et lequel choisir pour les logos.",
+    title: "EPS vs SVG : Les formats vectoriels expliqués",
+    intro: "Contrairement aux fichiers JPEG et PNG constitués de pixels, les formats EPS et SVG sont vectoriels. Ils reposent sur des équations mathématiques et peuvent être agrandis à la taille d'un gratte-ciel sans perte de qualité. Lequel utiliser ?",
+    quickAnswer: "Réponse rapide",
+    useEpsFor: "Utilisez EPS pour :",
+    useEpsForDesc: "L'envoi de fichiers à des imprimeurs professionnels, des graveurs laser ou des fabricants (vêtements, panneaux d'affichage, goodies).",
+    useSvgFor: "Utilisez SVG pour :",
+    useSvgForDesc: "Tout ce qui concerne le web : logos de sites, icônes d'interface et graphismes web interactifs.",
+    differenceTitle: "Quelle est la différence entre EPS et SVG ?",
+    differenceDesc: "Comme les deux formats décrivent les images sous forme de coordonnées mathématiques, ils s'adaptent à toutes les tailles. Leurs environnements d'utilisation sont pourtant très distincts. Voici un comparatif technique.",
+    thFeature: "Caractéristique / Aspect",
+    thEps: "EPS (Encapsulated PostScript)",
+    thSvg: "SVG (Scalable Vector Graphics)",
+    tdPrimaryTarget: "Cible principale",
+    tdPrimaryTargetEps: "Impression haut de gamme et signalétique",
+    tdPrimaryTargetSvg: "Pages web modernes et applications mobiles",
+    tdBrowserSupport: "Support navigateur",
+    tdBrowserSupportEps: "Aucun (Non supporté dans les navigateurs)",
+    tdBrowserSupportSvg: "Universel (Chrome, Safari, Firefox, Edge)",
+    tdCodeStyling: "Style via code",
+    tdCodeStylingEps: "Non",
+    tdCodeStylingSvg: "Oui (peut être stylisé en CSS et manipulé en JS)",
+    tdAnimation: "Animation",
+    tdAnimationEps: "Non",
+    tdAnimationSvg: "Oui (animations CSS, SMIL, scripts GSAP)",
+    tdFileStructure: "Structure du format",
+    tdFileStructureEps: "Langage PostScript (binaire ou texte)",
+    tdFileStructureSvg: "Balises XML (texte brut, hautement compressible)",
+    tdPrintOpt: "Optimisation impression",
+    tdPrintOptEps: "Excellent (supporte le CMJN nativement)",
+    tdPrintOptSvg: "Bon (RVB natif, nécessite une conversion pour l'impression)",
+    tdTransparency: "Gestion de la transparence",
+    tdTransparencyEps: "Oui (via tracés vectoriels)",
+    tdTransparencySvg: "Oui (canal alpha natif du navigateur)",
+    converterTitle: "Convertir SVG en PNG instantanément (Gratuit & Privé)",
+    diveEpsTitle: "Analyse approfondie : Qu'est-ce qu'un fichier EPS ?",
+    diveEpsP1: "EPS signifie Encapsulated PostScript. Créé par Adobe en 1987, il a été conçu pour standardiser le format vectoriel pour la publication assistée par ordinateur et l'imprimerie professionnelle.",
+    diveEpsP2: "Un fichier EPS est un document PostScript autonome décrivant une image. Il intègre des formules de dessin et généralement une vignette de prévisualisation en basse résolution pour que les logiciels puissent l'afficher rapidement sans décoder tout le code PostScript.",
+    diveEpsAdv: "Avantages de l'EPS",
+    diveEpsAdvList: [
+      "Haute fidélité à l'impression : Le standard des imprimeurs professionnels pour l'offset et la signalétique.",
+      "Profils CMJN parfaits : Gère précisément la séparation des encres pour l'impression physique.",
+      "Vecteurs sans perte : S'agrandit pour des affiches géantes sans pixellisation."
+    ],
+    diveEpsDis: "Inconvénients de l'EPS",
+    diveEpsDisList: [
+      "Incompatible avec le web : Les navigateurs ne lisent pas l'EPS.",
+      "Fichiers lourds : Contient souvent des en-têtes complexes et des vignettes raster."
+    ],
+    diveSvgTitle: "Analyse approfondie : Qu'est-ce qu'un fichier SVG ?",
+    diveSvgP1: "SVG signifie Scalable Vector Graphics. C'est une spécification ouverte XML développée par le W3C depuis 1999 pour intégrer le vectoriel sur le web.",
+    diveSvgP2: "Écrit en XML, le SVG est du texte brut lisible. Il est composé de balises comme <rect>, <circle> et <path>, que les navigateurs lisent et dessinent instantanément.",
+    diveSvgAdv: "Avantages du SVG",
+    diveSvgAdvList: [
+      "Affichage web direct : Interprété nativement et rapidement par tous les navigateurs.",
+      "Dynamisme CSS & JS : Modifiable par des styles de survol ou des scripts interactifs.",
+      "Légèreté extrême : Compressable en Gzip/Brotli pour des temps de chargement minimes.",
+      "Optimisé SEO : Les textes dans le SVG sont indexables par Google."
+    ],
+    diveSvgDis: "Inconvénients du SVG",
+    diveSvgDisList: [
+      "Limites d'impression : Orienté RVB, il demande des ajustements pour passer en CMJN.",
+      "Sécurité du navigateur : Les scripts XML peuvent poser des risques XSS si le SVG est mal filtré."
+    ],
+    snippetSectionTitle: "Quand utiliser l'EPS ou le SVG",
+    snippetSectionDesc: "Choisir le bon format permet de concilier qualité et flexibilité. Voici des réponses aux questions courantes.",
+    q1: "Quelle est la différence entre EPS et SVG ?",
+    a1: "L'EPS est un format vectoriel ancien pour l'impression. Le SVG est un format XML moderne pour le web, stylisable en CSS et animable.",
+    q2: "Puis-je utiliser un fichier EPS sur mon site ?",
+    a2: "Non. Les navigateurs ne supportent pas l'EPS. Vous devez le convertir en SVG ou en PNG.",
+    q3: "Quel format est le meilleur pour les logos ?",
+    a3: "Pour l'impression physique (goodies, t-shirts, affiches), l'imprimeur demandera un EPS. Pour l'en-tête de votre site, préférez le SVG.",
+    q4: "L'EPS gère-t-il la transparence ?",
+    a4: "Oui, l'EPS gère la transparence vectorielle. Mais sans affichage web direct, vous devez utiliser le SVG pour vos fonds transparents en ligne.",
+    q5: "Le SVG est-il un format vectoriel ?",
+    a5: "Oui, le SVG est un format vectoriel natif basé sur le XML, permettant un zoom infini sans perte de netteté.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin de convertir un fichier SVG en image matricielle ?",
+    ctaDesc: "Utilisez notre outil en ligne gratuit pour exporter vos SVG en images PNG de haute qualité.",
+    ctaButton: "Essayer le convertisseur SVG en PNG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "EPS vs. SVG: Vektorformate im Vergleich (Leitfaden 2026)",
+    seoDescription: "Was ist der Unterschied zwischen EPS und SVG? Wir vergleichen beide Vektorformate, ihre Nutzung für Webdesign vs. Druck und welches Format sich für Logos eignet.",
+    title: "EPS vs. SVG: Vektorformate im Vergleich",
+    intro: "Im Gegensatz zu pixelbasierten JPEGs und PNGs sind EPS und SVG Vektorformate. Sie basieren auf mathematischen Formeln und lassen sich ohne Qualitätsverlust beliebig vergrößern. Welches Format sollten Sie wählen?",
+    quickAnswer: "Schnelle Antwort",
+    useEpsFor: "Nutzen Sie EPS für:",
+    useEpsForDesc: "Die Weitergabe an Druckereien, Lasergravierer oder Textilhersteller (Kleidung, Plakate, Merchandise).",
+    useSvgFor: "Nutzen Sie SVG für:",
+    useSvgForDesc: "Alles im Web. Logos auf Webseiten, UI-Symbole und interaktive Webgrafiken.",
+    differenceTitle: "Was ist der Unterschied zwischen EPS und SVG?",
+    differenceDesc: "Da beide Formate Bildinformationen als mathematische Koordinaten speichern, sind sie unendlich skalierbar. Ihre Einsatzbereiche unterscheiden sich jedoch stark. Hier ist der direkte Vergleich.",
+    thFeature: "Merkmal / Aspekt",
+    thEps: "EPS (Encapsulated PostScript)",
+    thSvg: "SVG (Scalable Vector Graphics)",
+    tdPrimaryTarget: "Hauptanwendungsbereich",
+    tdPrimaryTargetEps: "Druckerzeugnisse & Werbetechnik",
+    tdPrimaryTargetSvg: "Moderne Webseiten & mobile Apps",
+    tdBrowserSupport: "Browser-Unterstützung",
+    tdBrowserSupportEps: "Keine (wird von Browsern nicht unterstützt)",
+    tdBrowserSupportSvg: "Universell (Chrome, Safari, Firefox, Edge)",
+    tdCodeStyling: "Code-basiertes Styling",
+    tdCodeStylingEps: "Nein",
+    tdCodeStylingSvg: "Ja (kann per CSS gestylt und mit JS manipuliert werden)",
+    tdAnimation: "Animationen",
+    tdAnimationEps: "Nein",
+    tdAnimationSvg: "Ja (CSS-Animationen, SMIL, GSAP-Scripts)",
+    tdFileStructure: "Dateistruktur",
+    tdFileStructureEps: "PostScript-Sprache (binär oder Text)",
+    tdFileStructureSvg: "XML-Markup (Klartext, sehr gut komprimierbar)",
+    tdPrintOpt: "Druckoptimierung",
+    tdPrintOptEps: "Hervorragend (unterstützt CMYK-Farben nativ)",
+    tdPrintOptSvg: "Gut (RGB-nativ, erfordert Umwandlung für den Druck)",
+    tdTransparency: "Transparenzunterstützung",
+    tdTransparencyEps: "Ja (unterstützt Vektorpfad-Transparenz)",
+    tdTransparencySvg: "Ja (native Alpha-Kanal-Transparenz im Browser)",
+    converterTitle: "SVG sofort in PNG konvertieren (Kostenlos & Lokal)",
+    diveEpsTitle: "Deep Dive: Was ist eine EPS-Datei?",
+    diveEpsP1: "EPS steht für Encapsulated PostScript. Es wurde 1987 von Adobe entwickelt, um ein standardisiertes Vektorformat für Desktop-Publishing und professionellen Druck zu etablieren.",
+    diveEpsP2: "Eine EPS-Datei ist im Wesentlichen ein PostScript-Dokument, das ein Bild beschreibt. Sie enthält mathematische Anweisungen für Linien, Kurven und Farben sowie meist ein niedrig auflösendes Vorschaubild, damit Layout-Software das Bild ohne vollständiges Dekodieren anzeigen kann.",
+    diveEpsAdv: "Vorteile von EPS",
+    diveEpsAdvList: [
+      "Universelle Druckkompatibilität: Der absolute Standard für Offsetdruck und Werbetechnik.",
+      "Perfekte CMYK-Farben: Unterstützt physische Farbräume (CMYK) ohne Farbabweichungen beim Druck.",
+      "Verlustfreie Vektoren: Skaliert auf Plakatgröße ohne Pixelbildung."
+    ],
+    diveEpsDis: "Nachteile von EPS",
+    diveEpsDisList: [
+      "Keine Webtauglichkeit: Browser können EPS-Dateien nicht anzeigen.",
+      "Größere Dateien: Vorschaugrafiken und PostScript-Header machen Dateien oft schwerer als SVGs."
+    ],
+    diveSvgTitle: "Deep Dive: Was ist eine SVG-Datei?",
+    diveSvgP1: "SVG steht für Scalable Vector Graphics. Dieser offene XML-Standard wurde 1999 vom W3C entwickelt, um Vektorgrafiken direkt im Internet zu unterstützen.",
+    diveSvgP2: "Da SVG auf XML basiert, ist es lesbarer Text. Eine SVG-Grafik besteht aus Elementen wie <rect>, <circle> und <path>, die von Browsern direkt gerendert werden.",
+    diveSvgAdv: "Vorteile von SVG",
+    diveSvgAdvList: [
+      "Natives Rendering: Browser stellen SVGs direkt und extrem schnell dar.",
+      "Interaktivität: Elemente können per CSS gestylt und mit JavaScript animiert werden.",
+      "Extrem leichtgewichtig: Textbasierte Dateien lassen sich mit Gzip/Brotli stark verkleinern.",
+      "SEO-freundlich: Texte innerhalb einer SVG-Grafik können von Google indexiert werden."
+    ],
+    diveSvgDis: "Nachteile von SVG",
+    diveSvgDisList: [
+      "Eingeschränkter Druck: Standardmäßig auf RGB ausgelegt; CMYK erfordert Konvertierungen.",
+      "Sicherheitsrisiken: Da es XML-Code ist, müssen Browser Scripte filtern, um XSS-Angriffe zu verhindern."
+    ],
+    snippetSectionTitle: "Wann nutzt man EPS vs. SVG",
+    snippetSectionDesc: "Die Wahl des richtigen Formats stellt sicher, dass Grafiken scharf dargestellt werden.",
+    q1: "Was ist der Unterschied zwischen EPS und SVG?",
+    a1: "EPS ist ein älteres Vektorformat für den professionellen Druck. SVG ist ein modernes XML-Vektorformat fürs Web, das CSS-Styles und Animationen unterstützt.",
+    q2: "Kann ich EPS auf meiner Webseite nutzen?",
+    a2: "Nein. Browser unterstützen das EPS-Format nicht. Sie müssen es vor dem Upload in SVG oder PNG umwandeln.",
+    q3: "Welches Format ist besser für Logos?",
+    a3: "Für physische Druckerzeugnisse (T-Shirts, Banner, Plakate) wird meist EPS verlangt. Für die Kopfzeile Ihrer Webseite sollten Sie SVG wählen.",
+    q4: "Unterstützt EPS Transparenz?",
+    a4: "Ja, EPS unterstützt Vektor-Transparenz. Da es jedoch nicht im Browser angezeigt wird, müssen Sie für Web-Transparenzen auf SVG zurückgreifen.",
+    q5: "Ist SVG a Vektorformat?",
+    a5: "Ja, SVG ist ein offenes Vektorformat basierend auf XML. Bilder werden als mathematische Formen statt als Pixelgitter gespeichert und skalieren unbegrenzt.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie eine SVG-Datei als Bild exportieren?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um SVG-Vektoren sicher und lokal in hochauflösende PNG-Bilder umzuwandeln.",
+    ctaButton: "SVG-zu-PNG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "EPS vs SVG: Formatos Vetoriais Explicados (Guia 2026)",
+    seoDescription: "Qual é a diferença entre EPS e SVG? Comparamos os dois formatos vetoriais, as suas aplicações em web design vs. impressão, e qual escolher para logótipos.",
+    title: "EPS vs SVG: Formatos Vetoriais Explicados",
+    intro: "Ao contrário das imagens JPEG e PNG feitas de píxeis, tanto o EPS como o SVG son formatos vetoriais. Isto significa que são baseados em equações matemáticas e podem ser ampliados ao tamanho de um arranha-céus sem perder qualidade. Qual deve usar?",
+    quickAnswer: "Resposta rápida",
+    useEpsFor: "Use EPS para:",
+    useEpsForDesc: "Enviar arquivos para gráficas profissionais, gravadores a laser ou fabricantes (vestuário, outdoors, brindes).",
+    useSvgFor: "Use SVG para:",
+    useSvgForDesc: "Tudo o que for para a internet. Logótipos de sites, ícones de interface e gráficos interativos na web.",
+    differenceTitle: "Qual é a diferença entre EPS e SVG?",
+    differenceDesc: "Como ambos os formatos armazenam a informação sob a forma de coordenadas matemáticas, escalam infinitamente. No entanto, os seus ambientes de execução são muito diferentes. Veja o comparativo técnico.",
+    thFeature: "Característica / Aspeto",
+    thEps: "EPS (Encapsulated PostScript)",
+    thSvg: "SVG (Scalable Vector Graphics)",
+    tdPrimaryTarget: "Alvo Principal",
+    tdPrimaryTargetEps: "Impressão de alta calidad y sinalética",
+    tdPrimaryTargetSvg: "Páginas web modernas y aplicações móveis",
+    tdBrowserSupport: "Suporte do navegador",
+    tdBrowserSupportEps: "Nenhum (Não é suportado nos navegadores)",
+    tdBrowserSupportSvg: "Universal (Chrome, Safari, Firefox, Edge)",
+    tdCodeStyling: "Estilo via código",
+    tdCodeStylingEps: "Não",
+    tdCodeStylingSvg: "Sim (pode ser estilizado com CSS e controlado com JS)",
+    tdAnimation: "Animação",
+    tdAnimationEps: "Não",
+    tdAnimationSvg: "Sim (animations CSS, SMIL, scripts GSAP)",
+    tdFileStructure: "Estrutura do arquivo",
+    tdFileStructureEps: "Linguagem PostScript (binário ou texto)",
+    tdFileStructureSvg: "Marcação XML (texto simples, muito compactável)",
+    tdPrintOpt: "Otimização de impressão",
+    tdPrintOptEps: "Excelente (suporta CMYK nativamente)",
+    tdPrintOptSvg: "Boa (RGB nativo, exige conversão para impressão)",
+    tdTransparency: "Suporte de transparência",
+    tdTransparencyEps: "Sim (suporta transparência de caminhos vetoriais)",
+    tdTransparencySvg: "Sim (transparência de nível alfa nativa do navegador)",
+    converterTitle: "Converter SVG para PNG instantaneamente (Grátis & Privado)",
+    diveEpsTitle: "Análise profunda: O que é um arquivo EPS?",
+    diveEpsP1: "EPS significa Encapsulated PostScript. Desenvolvido pela Adobe em 1987, foi criado para estabelecer um padrão vetorial universal para paginação e processos de impressão profissionais.",
+    diveEpsP2: "Um arquivo EPS é um documento PostScript autónomo que descreve uma imagem. Contém fórmulas matemáticas para desenhar e uma miniatura bitmap de baixa resolução para visualização rápida sem descodificar todo o código.",
+    diveEpsAdv: "Vantagens do EPS",
+    diveEpsAdvList: [
+      "Compatibilidade universal com gráficas: O padrão absoluto da indústria para impressões offset e sinalética.",
+      "Cores CMYK perfeitas: Compatível com a separação física de tintas para impressão física.",
+      "Vetores sem perdas: Escala ao tamanho de outdoors gigantes sem pixelizar."
+    ],
+    diveEpsDis: "Desvantagens do EPS",
+    diveEpsDisList: [
+      "Sem suporte na web: Os navegadores não exibem arquivos EPS em páginas online.",
+      "Arquivos maiores: Inclui frequentemente en-têtes complexos e miniaturas rasterizadas."
+    ],
+    diveSvgTitle: "Análise profunda: O que é um arquivo SVG?",
+    diveSvgP1: "SVG significa Scalable Vector Graphics. É uma especificação baseada em XML criada pelo W3C em 1999 para suportar vetores diretamente na internet.",
+    diveSvgP2: "Por ser XML, o SVG é composto por texto legível com etiquetas como <rect> e <path>, interpretadas e desenhadas de forma imediata pelos navegadores.",
+    diveSvgAdv: "Vantagens do SVG",
+    diveSvgAdvList: [
+      "Renderização nativa no navegador: Exibido instantaneamente na internet a alta velocidade.",
+      "Dinâmico com CSS & JS: Permite efeitos hover, cliques interativos e animações dinâmicas.",
+      "Muito leve: Ficheiros de texto fáceis de comprimir com Gzip/Brotli para downloads rápidos.",
+      "Preparado para SEO: Textos dentro do SVG são pesquisáveis e indexados pelo Google."
+    ],
+    diveSvgDis: "Desvantagens do SVG",
+    diveSvgDisList: [
+      "Foco em RGB: Exige conversões manuais para converter as cores em CMYK de impressão.",
+      "Filtros de segurança: Requer validação do XML nos navegadores para evitar injeções de scripts XSS."
+    ],
+    snippetSectionTitle: "Quando usar EPS ou SVG",
+    snippetSectionDesc: "Escolher o formato de vetor correto garante imagens perfeitamente nítidas.",
+    q1: "Qual é a diferença entre EPS e SVG?",
+    a1: "O EPS é um formato vetorial antigo para impressão. O SVG é um formato moderno em XML para a internet que aceita estilos CSS e animações.",
+    q2: "Posso utilizar um EPS no meu site?",
+    a2: "Não. Os navegadores não suportam o formato EPS. Terá de convertê-lo primeiro para SVG ou PNG.",
+    q3: "Qual formato é melhor para logótipos?",
+    a3: "Para impressões físicas (t-shirts, outdoors, brindes), a gráfica pedirá um EPS. Para colocar no cabeçalho do seu site, use um SVG.",
+    q4: "O EPS suporta fundos transparentes?",
+    a4: "Sim, o EPS suporta transparência vetorial. Mas para transparências na internet, deve utilizar o formato SVG.",
+    q5: "O SVG é um formato de imagem vetorial?",
+    a5: "Sim, o SVG é um formato vetorial nativo em XML, o que significa que pode fazer zoom infinito sem perder a nitidez."
+  },
+  id: {
+    seoTitle: "EPS vs SVG: Perbedaan Format Vektor (Panduan 2026)",
+    seoDescription: "Apa perbedaan antara EPS dan SVG? Kami membandingkan dua format gambar vektor ini, kegunaannya untuk web vs cetak, dan format terbaik untuk logo.",
+    title: "EPS vs SVG: Perbedaan Format Vektor",
+    intro: "Tidak seperti file JPEG dan PNG yang terbuat dari piksel, EPS dan SVG adalah format vektor. Ini berarti gambar dibuat menggunakan rumus matematika dan dapat diperbesar ke ukuran apa pun tanpa kehilangan ketajaman. Format mana yang harus Anda gunakan?",
+    quickAnswer: "Jawaban Cepat",
+    useEpsFor: "Gunakan EPS untuk:",
+    useEpsForDesc: "Mengirim file ke percetakan profesional, pengukir laser, atau produsen merchandise (pakaian, papan reklame, dll).",
+    useSvgFor: "Gunakan SVG untuk:",
+    useSvgForDesc: "Segala kebutuhan internet. Logo situs web, ikon antarmuka pengguna, dan grafik web interaktif.",
+    differenceTitle: "Apa Perbedaan Antara EPS dan SVG?",
+    differenceDesc: "Karena kedua format menyimpan gambar sebagai koordinat matematika, keduanya dapat diskalakan tanpa batas. Namun, lingkungan penggunaannya sangatlah berbeda. Berikut tabel perbandingan teknis EPS vs SVG.",
+    thFeature: "Fitur / Aspek",
+    thEps: "EPS (Encapsulated PostScript)",
+    thSvg: "SVG (Scalable Vector Graphics)",
+    tdPrimaryTarget: "Target Utama",
+    tdPrimaryTargetEps: "Media Cetak Kelas Atas & Reklame",
+    tdPrimaryTargetSvg: "Halaman Web Modern & Aplikasi Seluler",
+    tdBrowserSupport: "Dukungan Browser",
+    tdBrowserSupportEps: "Tidak ada (Tidak didukung oleh browser web)",
+    tdBrowserSupportSvg: "Universal (Chrome, Safari, Firefox, Edge)",
+    tdCodeStyling: "Desain Berbasis Kode",
+    tdCodeStylingEps: "Tidak",
+    tdCodeStylingSvg: "Ya (Bisa dihias dengan CSS dan diatur dengan JS)",
+    tdAnimation: "Animasi",
+    tdAnimationEps: "Tidak",
+    tdAnimationSvg: "Ya (Animasi CSS, SMIL, skrip GSAP)",
+    tdFileStructure: "Struktur File",
+    tdFileStructureEps: "Bahasa PostScript (biner atau teks)",
+    tdFileStructureSvg: "Markup XML (teks biasa, sangat mudah dikompresi)",
+    tdPrintOpt: "Optimalisasi Cetak",
+    tdPrintOptEps: "Sangat Baik (Mendukung profil warna CMYK secara bawaan)",
+    tdPrintOptSvg: "Baik (Natif RGB, memerlukan konversi untuk cetak fisik)",
+    tdTransparency: "Dukungan Transparansi",
+    tdTransparencyEps: "Ya (mendukung transparansi jalur vektor)",
+    tdTransparencySvg: "Ya (transparansi saluran alfa bawaan browser)",
+    converterTitle: "Konversi SVG ke PNG Instan (Gratis & Privat)",
+    diveEpsTitle: "Analisis Mendalam: Apa itu File EPS?",
+    diveEpsP1: "EPS adalah singkatan dari Encapsulated PostScript. Dikembangkan oleh Adobe pada tahun 1987, format ini dirancang untuk menetapkan standar file vektor untuk penerbitan desktop dan proses pencetakan profesional.",
+    diveEpsP2: "File EPS pada dasarnya adalah dokumen PostScript mandiri yang menggambarkan sebuah gambar. File ini berisi instruksi matematika untuk menggambar garis, kurva, teks, dan warna. Format ini juga menyimpan miniatur pratinjau resolusi rendah sehingga perangkat lunak desain dapat menampilkannya di layar tanpa mendekode kode PostScript secara penuh.",
+    diveEpsAdv: "Kelebihan EPS",
+    diveEpsAdvList: [
+      "Kompatibilitas Cetak Universal: Standar industri mutlak untuk percetakan offset dan reklame profesional.",
+      "Profil Warna CMYK Sempurna: Mendukung pemisahan tinta cetak fisik (CMYK) secara penuh.",
+      "Geometri Vektor Lossless: Dapat diperbesar hingga ukuran baliho raksasa tanpa pecah sedikit pun."
+    ],
+    diveEpsDis: "Kekurangan EPS",
+    diveEpsDisList: [
+      "Tidak Bisa untuk Web: Browser web modern tidak mendukung EPS. File ini tidak akan tampil di situs web.",
+      "File Lebih Berat: Sering kali menyimpan pratinjau raster dan header PostScript yang membuat ukurannya lebih besar daripada SVG."
+    ],
+    diveSvgTitle: "Analisis Mendalam: Apa itu File SVG?",
+    diveSvgP1: "SVG adalah singkatan dari Scalable Vector Graphics. Ini adalah spesifikasi terbuka berbasis XML yang dikembangkan oleh W3C sejak tahun 1999 untuk mendukung gambar vektor di internet.",
+    diveSvgP2: "Karena SVG ditulis dalam XML, file ini dapat dibaca sebagai teks biasa. Grafik SVG terdiri dari elemen seperti <rect>, <circle>, dan <path> yang dibaca dan digambar secara instan oleh browser layaknya tag HTML.",
+    diveSvgAdv: [
+      "Dibaca Natif oleh Browser: Ditampilkan secara instan oleh browser web dengan kecepatan tinggi.",
+      "Dapat Diatur CSS & JS: Anda dapat menambahkan efek melayang, tombol klik, dan mengubah warna secara dinamis.",
+      "Sangat Ringan: Teks vektor mudah dikompresi dengan Gzip/Brotli ke ukuran beberapa byte saja.",
+      "Ramah SEO: Teks di dalam file SVG dapat dibaca dan diindeks oleh mesin pencari Google."
+    ],
+    diveSvgAdvList: [
+      "Dibaca Natif oleh Browser: Ditampilkan secara instan oleh browser web dengan kecepatan tinggi.",
+      "Dapat Diatur CSS & JS: Anda dapat menambahkan efek melayang, tombol klik, dan mengubah warna secara dinamis.",
+      "Sangat Ringan: Teks vektor mudah dikompresi dengan Gzip/Brotli ke ukuran beberapa byte saja.",
+      "Ramah SEO: Teks di dalam file SVG dapat dibaca dan diindeks oleh mesin pencari Google."
+    ],
+    diveSvgDis: "Kekurangan SVG",
+    diveSvgDisList: [
+      "Batas Cetak Fisik: Menggunakan profil warna RGB secara standar; percetakan fisik memerlukan konversi ke CMYK.",
+      "Filter Keamanan Browser: Browser menerapkan filter ketat saat memproses SVG untuk mencegah serangan malware XSS melalui kode XML."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan EPS atau SVG",
+    snippetSectionDesc: "Memilih format vektor yang tepat memastikan gambar Anda tetap tajam di media yang sesuai.",
+    q1: "Apa perbedaan antara EPS dan SVG?",
+    a1: "EPS adalah format vektor lama untuk kebutuhan cetak fisik. SVG adalah format vektor modern berbasis XML untuk web yang mendukung styling CSS dan animasi.",
+    q2: "Apakah saya bisa menggunakan EPS di situs web saya?",
+    a2: "Tidak. Browser web tidak mendukung format EPS. Anda harus mengonversinya terlebih dahulu ke SVG atau PNG.",
+    q3: "Format mana yang lebih baik untuk logo?",
+    a3: "Untuk cetak fisik (kaos, papan reklame, cangkir), percetakan akan meminta file EPS. Untuk bagian header situs web Anda, gunakan SVG.",
+    q4: "Apakah EPS mendukung latar belakang transparan?",
+    a4: "Ya, EPS mendukung transparansi vektor. Namun untuk penggunaan di internet, SVG adalah standar terbaik untuk grafis transparan.",
+    q5: "Apakah SVG merupakan format gambar vektor?",
+    a5: "Ya, SVG adalah format vektor bawaan berbasis XML yang menyimpan data sebagai bentuk matematika (garis dan kurva), memungkinkan zoom tanpa batas."
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "eps-vs-svg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">EPS vs SVG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">EPS</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">SVG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          {text.intro}
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useEpsFor}</strong> {text.useEpsForDesc}</p>
+          <p><strong class="text-ink">{text.useSvgFor}</strong> {text.useSvgForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thEps}</th>
+                <th class="p-4">{text.thSvg}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrimaryTarget || "Primary Target"}</td>
+                <td class="p-4">{text.tdPrimaryTargetEps}</td>
+                <td class="p-4">{text.tdPrimaryTargetSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowserSupport || "Browser Support"}</td>
+                <td class="p-4 text-error">{text.tdBrowserSupportEps}</td>
+                <td class="p-4 text-success">{text.tdBrowserSupportSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCodeStyling || "Code-Based Styling"}</td>
+                <td class="p-4 text-error">{text.tdCodeStylingEps}</td>
+                <td class="p-4 text-success">{text.tdCodeStylingSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdAnimation || "Animation"}</td>
+                <td class="p-4 text-error">{text.tdAnimationEps}</td>
+                <td class="p-4 text-success">{text.tdAnimationSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileStructure || "File Structure"}</td>
+                <td class="p-4">{text.tdFileStructureEps}</td>
+                <td class="p-4">{text.tdFileStructureSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdPrintOpt || "Print Optimization"}</td>
+                <td class="p-4 text-success">{text.tdPrintOptEps}</td>
+                <td class="p-4">{text.tdPrintOptSvg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTransparency || "Transparency Support"}</td>
+                <td class="p-4 text-success">{text.tdTransparencyEps}</td>
+                <td class="p-4 text-success">{text.tdTransparencySvg}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <FormatConverter toolId="svg-to-png" />
+      </section>
+
+      <!-- Deep Dive: EPS -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveEpsTitle}</h2>
+        <p>{text.diveEpsP1}</p>
+        <p>{text.diveEpsP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveEpsAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveEpsAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{locale === 'es' ? 'Desventajas de EPS' : locale === 'fr' ? 'Inconvénients de l\'EPS' : locale === 'de' ? 'Nachteile von EPS' : locale === 'pt' ? 'Desvantagens do EPS' : 'Kekurangan EPS'}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveEpsDisList.map((dis) => (
+            <li><strong>{dis.split(':')[0]}:</strong>{dis.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: SVG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveSvgTitle}</h2>
+        <p>{text.diveSvgP1}</p>
+        <p>{text.diveSvgP2}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveSvgAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveSvgAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{locale === 'es' ? 'Desventajas de SVG' : locale === 'fr' ? 'Inconvénients du SVG' : locale === 'de' ? 'Nachteile von SVG' : locale === 'pt' ? 'Desvantagens do SVG' : 'Kekurangan SVG'}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveSvgDisList.map((dis) => (
+            <li><strong>{dis.split(':')[0]}:</strong>{dis.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="EPS" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

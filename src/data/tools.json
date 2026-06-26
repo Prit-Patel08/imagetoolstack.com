@@ -9889,6 +9889,238 @@
         "base64-to-pdf",
         "hex-viewer"
       ]
+    },
+    {
+      "id": "unix-timestamp",
+      "name": "Unix Timestamp Converter",
+      "slug": "unix-timestamp",
+      "categoryId": "time-date",
+      "description": "Convert Unix epoch timestamps to readable dates and back instantly. Perfect for API debugging, logs, databases, and backend workflows.",
+      "seoTitle": "Unix Timestamp Converter Online - Epoch to Date and Date to Epoch",
+      "seoDescription": "Convert Unix epoch timestamps to readable dates and back instantly. Perfect for API debugging, logs, databases, and backend workflows.",
+      "icon": "clock",
+      "inputFormats": ["Epoch", "Date"],
+      "outputFormats": ["Date", "Epoch"],
+      "benefits": [
+        {
+          "title": "Local Processing",
+          "description": "All epoch conversions happen locally in your web browser. Your inputs are never transmitted to external servers."
+        },
+        {
+          "title": "Bidirectional Conversion",
+          "description": "Convert Unix seconds or milliseconds to human-readable datetime strings and convert calendar dates back to timestamps."
+        },
+        {
+          "title": "Developer Code Snippets",
+          "description": "Get instant copy-ready code snippets to convert epoch timestamps in JavaScript, Python, Go, Java, Ruby, and PHP."
+        }
+      ],
+      "useCases": [
+        "Debugging API payloads that contain Unix timestamps.",
+        "Parsing database records that store time as integers.",
+        "Generating timestamps for automated test scripts."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "View the live ticking Unix epoch timestamp representing the current instant.",
+        "Paste a timestamp in seconds or milliseconds to convert it to a local and UTC human-readable date.",
+        "Select a date and time using the calendar picker to convert it back to a Unix timestamp.",
+        "Copy the output or the generated programming language snippet with a single click."
+      ],
+      "faqs": [
+        {
+          "q": "What is a Unix epoch timestamp?",
+          "a": "A Unix timestamp (or epoch) is the number of seconds that have elapsed since January 1, 1970 (UTC), excluding leap seconds. It is widely used in software development, databases, and APIs."
+        },
+        {
+          "q": "Does this tool support millisecond timestamps?",
+          "a": "Yes! The tool automatically detects whether the input timestamp is in seconds (10 digits) or milliseconds (13 digits) and converts it accordingly."
+        },
+        {
+          "q": "Are my timestamps stored or logged?",
+          "a": "No. The converter is fully client-side. The processing occurs inside your browser window, ensuring total privacy."
+        }
+      ],
+      "relatedTools": [
+        "timezone-converter",
+        "date-calculator"
+      ]
+    },
+    {
+      "id": "timezone-converter",
+      "name": "Time Zone Converter",
+      "slug": "timezone-converter",
+      "categoryId": "time-date",
+      "description": "Compare multiple time zones side by side with a visual slider timeline. Find the perfect meeting hours across cities.",
+      "seoTitle": "All-in-One Time Zone Converter - Compare Cities on a Live Timeline",
+      "seoDescription": "Compare multiple time zones side by side with a visual timeline. Find overlap hours fast for global meetings and distributed teams.",
+      "icon": "clock",
+      "inputFormats": ["Timezone"],
+      "outputFormats": ["Timezone"],
+      "benefits": [
+        {
+          "title": "Visual Overlay Timeline",
+          "description": "A live, sliding 24-hour timeline makes it easy to visualize time differences and coordinate across teams."
+        },
+        {
+          "title": "Smart Work Hours Highlighting",
+          "description": "Standard business hours (8 AM - 6 PM) are highlighted to help you quickly identify comfortable meeting windows."
+        },
+        {
+          "title": "Full DST Awareness",
+          "description": "The converter dynamically adjusts for Daylight Saving Time (DST) changes depending on the date selected."
+        }
+      ],
+      "useCases": [
+        "Scheduling cross-border team meetings without causing time-zone confusion.",
+        "Planning international travel departures and arrivals across time zones.",
+        "Coordinating online event times for global attendees."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Click the search field to add the cities or time zones you want to compare.",
+        "Drag the slider handle to change the hour and watch the times in all selected zones update in real-time.",
+        "Select a specific future calendar date to account for any upcoming Daylight Saving Time adjustments.",
+        "Copy the meeting invitation link or export the event time with one click."
+      ],
+      "faqs": [
+        {
+          "q": "How does the tool calculate timezone offsets?",
+          "a": "The tool uses the browser's built-in Internationalization API (Intl), which queries the local system's updated database of global time zones and offsets."
+        },
+        {
+          "q": "Can I add more than two timezones to compare?",
+          "a": "Yes! You can add as many timezone rows as you need to find overlapping hours for multi-region teams."
+        },
+        {
+          "q": "Does this tool work offline?",
+          "a": "Yes, once the page is loaded, all slider calculations and timezone offset updates are performed locally on your device."
+        }
+      ],
+      "relatedTools": [
+        "unix-timestamp",
+        "date-calculator"
+      ]
+    },
+    {
+      "id": "date-calculator",
+      "name": "Date Calculator",
+      "slug": "date-calculator",
+      "categoryId": "time-date",
+      "description": "Add or subtract days, weeks, months, or years to/from any date. Count the exact days or business days between two dates.",
+      "seoTitle": "Date Calculator Online - Add or Subtract Days, Months, Years Fast",
+      "seoDescription": "Calculate future and past dates instantly. Add or subtract years, months, days, hours, and minutes for deadlines, planning, and scheduling.",
+      "icon": "clock",
+      "inputFormats": ["Date"],
+      "outputFormats": ["Date", "Days"],
+      "benefits": [
+        {
+          "title": "Dual Calculation Modes",
+          "description": "Choose between adding/subtracting duration to a date, or calculating the gap between two specific calendar dates."
+        },
+        {
+          "title": "Business Days Filter",
+          "description": "Optionally count only business days (Monday through Friday), excluding weekends for project management."
+        },
+        {
+          "title": "Accurate Leap Year Logic",
+          "description": "Uses full Javascript Date specifications to accurately handle leap years, daylight changes, and calendar months."
+        }
+      ],
+      "useCases": [
+        "Calculating invoice due dates (e.g. net-30, net-60).",
+        "Counting total calendar days or business days for project planning timelines.",
+        "Finding target dates for milestones, medical appointments, or countdowns."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Choose either 'Add/Subtract Days' or 'Difference Between Dates'.",
+        "Input the starting date and select the amount of days, weeks, or months to add or subtract.",
+        "For gap calculations, pick the start and end dates from the date picker inputs.",
+        "Check or uncheck the options for including the end date or counting business days only to see the updated result."
+      ],
+      "faqs": [
+        {
+          "q": "Does this date calculator account for leap years?",
+          "a": "Yes. The calculator fully accounts for leap years, meaning it knows February has 29 days in leap years, ensuring mathematically precise outputs."
+        },
+        {
+          "q": "Can I exclude national holidays from business days?",
+          "a": "Currently, the business days filter excludes standard weekends (Saturday and Sunday). Custom holiday list exclusions will be added in a future update."
+        },
+        {
+          "q": "Is the date information private?",
+          "a": "Yes, absolutely. The calculations occur entirely on your local machine and your dates are never transmitted to any server."
+        }
+      ],
+      "relatedTools": [
+        "age-calculator",
+        "timezone-converter"
+      ]
+    },
+    {
+      "id": "age-calculator",
+      "name": "Age Calculator",
+      "slug": "age-calculator",
+      "categoryId": "time-date",
+      "description": "Calculate your exact age in years, months, and days. View your total lived time in days, hours, or minutes, and count down to your next birthday.",
+      "seoTitle": "Age Calculator Online - Exact Age in Years, Months, Days",
+      "seoDescription": "Find exact age from a birth date with years, months, days, and totals. Fast age checks for forms, planning, and personal records.",
+      "icon": "clock",
+      "inputFormats": ["Date"],
+      "outputFormats": ["Age"],
+      "benefits": [
+        {
+          "title": "Exact Breakdown",
+          "description": "Get your age parsed down to the exact number of years, months, and days, rather than a rounded estimate."
+        },
+        {
+          "title": "Countdown to Next Birthday",
+          "description": "See the exact days, hours, minutes, and seconds remaining until your next birthday milestone."
+        },
+        {
+          "title": "Total Lived Stats",
+          "description": "View interesting stats showing your total lifetime duration represented in weeks, days, hours, and minutes."
+        }
+      ],
+      "useCases": [
+        "Verifying age eligibility for legal forms, contracts, and applications.",
+        "Calculating the exact age of children, pets, or historic monuments.",
+        "Finding out exactly how many total days you have been alive."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Select your date of birth from the calendar picker input.",
+        "Select the 'Age at Date' (defaults to today's date).",
+        "Click the Calculate button to instantly generate your exact age report.",
+        "Read the breakdown of years/months/days, total elapsed stats, and birthday countdown."
+      ],
+      "faqs": [
+        {
+          "q": "How does the tool calculate age?",
+          "a": "The tool computes the difference between the birth date and the target date, matching the calendar month boundaries to handle variations in month lengths (28, 30, or 31 days)."
+        },
+        {
+          "q": "Can I calculate the age of an object or event?",
+          "a": "Yes! You can input any historical start date to measure the exact elapsed time between that event and any end date."
+        },
+        {
+          "q": "Are birth dates collected or saved?",
+          "a": "Never. All data inputted into the age calculator remains inside your local web browser sandboxed instance."
+        }
+      ],
+      "relatedTools": [
+        "date-calculator",
+        "timezone-converter"
+      ]
     }
   ],
   "categories": [
@@ -9925,6 +10157,15 @@
       "description": "Merge, split, compress, and convert PDF documents locally in your browser.",
       "slug": "pdf",
       "icon": "file-text"
+    },
+    {
+      "id": "time-date",
+      "name": "Time & Date",
+      "slug": "time-date",
+      "icon": "clock",
+      "description": "Convert timestamps, calculate dates, check exact age, and compare time zones locally in your browser.",
+      "seoTitle": "Time & Date Converters - Timezone, Epoch & Calculators",
+      "seoDescription": "Free online timezone, epoch timestamp, age and date calculators. 100% browser-based, instant, and secure."
     }
   ]
 }

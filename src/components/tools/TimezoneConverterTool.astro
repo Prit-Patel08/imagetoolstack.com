@@ -1,0 +1,255 @@
+---
+// Timezone Converter Tool Component
+import timezonesData from "../../data/timezones.json";
+import { getLocalizedPath } from "../../utils/i18n";
+
+interface Props {
+  defaultFrom?: string;
+  defaultTo?: string;
+}
+const { defaultFrom, defaultTo } = Astro.props;
+const locale = Astro.currentLocale || 'en';
+---
+<div id="timezone-tool-root" class="w-full flex flex-col gap-8 max-w-4xl mx-auto" data-default-from={defaultFrom} data-default-to={defaultTo}>
+  <!-- Controls Panel -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex flex-col gap-1 w-full sm:w-auto">
+      <label for="date-select" class="text-sm font-semibold text-ink">Compare Date</label>
+      <input type="date" id="date-select" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none w-full sm:w-56">
+    </div>
+    
+    <div class="flex flex-col gap-1 w-full sm:w-auto relative">
+      <label for="zone-search" class="text-sm font-semibold text-ink">Add City or Time Zone</label>
+      <div class="flex gap-2">
+        <select id="zone-select" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none w-full sm:w-64">
+          <option value="" disabled selected>Select a timezone...</option>
+          <option value="UTC">UTC (Universal Coordinated)</option>
+          <option value="America/New_York">New York (EST/EDT)</option>
+          <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
+          <option value="America/Chicago">Chicago (CST/CDT)</option>
+          <option value="America/Denver">Denver (MST/MDT)</option>
+          <option value="Europe/London">London (GMT/BST)</option>
+          <option value="Europe/Paris">Paris (CET/CEST)</option>
+          <option value="Asia/Kolkata">Kolkata/Mumbai (IST)</option>
+          <option value="Asia/Tokyo">Tokyo (JST)</option>
+          <option value="Asia/Singapore">Singapore (SGT)</option>
+          <option value="Asia/Jakarta">Jakarta (WIB)</option>
+          <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+          <option value="America/Sao_Paulo">São Paulo (BRT)</option>
+        </select>
+        <button id="add-zone-btn" class="btn-primary py-2 px-4 text-sm font-medium">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Slider Container -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6 overflow-hidden">
+    <!-- Visual Slider Range -->
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center justify-between text-xs font-semibold text-mute">
+        <span>Slide to adjust time:</span>
+        <span id="slider-time-label" class="text-link font-bold text-sm bg-link/5 px-3 py-1 rounded-full">12:00 PM (Local)</span>
+      </div>
+      <input type="range" id="time-slider" min="0" max="23" value="12" class="w-full h-2 bg-canvas-soft-2 rounded-lg appearance-none cursor-pointer accent-link focus:outline-none">
+    </div>
+
+    <!-- Timezone Rows Grid -->
+    <div class="flex flex-col gap-4 divide-y divide-hairline" id="timezone-rows">
+      <!-- Dynamic rows are loaded here -->
+    </div>
+  </div>
+
+  <!-- Popular Timezone Conversions Directory -->
+  <div class="mt-4 border-t border-hairline pt-8">
+    <h4 class="text-sm font-semibold text-mute uppercase tracking-widest mb-4 text-center">
+      {locale === 'es' ? 'Conversiones Populares de Zonas Horarias' : locale === 'fr' ? 'Conversions Populaires de Fuseaux' : locale === 'de' ? 'Beliebte Zeitzonen-Umrechnungen' : locale === 'pt' ? 'Conversões Populares de Fusos Horários' : locale === 'id' ? 'Konversi Zona Waktu Populer' : 'Popular Time Zone Conversions'}
+    </h4>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      {timezonesData.pairs.map(p => {
+        const slug = `${p.from.toLowerCase()}-to-${p.to.toLowerCase()}`;
+        return (
+          <a href={getLocalizedPath(`/timezone/${slug}`, locale)} class="text-xs font-semibold text-mute hover:text-link transition-colors p-2.5 rounded bg-canvas-soft-2 hover:bg-canvas border border-hairline text-center truncate">
+            {p.from} {locale === 'es' || locale === 'pt' ? 'para' : locale === 'id' ? 'ke' : locale === 'de' ? 'zu' : 'to'} {p.to}
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.getElementById('timezone-tool-root')!;
+    const defaultFrom = root.getAttribute('data-default-from');
+    const defaultTo = root.getAttribute('data-default-to');
+
+    const timezoneRows = document.getElementById('timezone-rows')!;
+    const zoneSelect = document.getElementById('zone-select') as HTMLSelectElement;
+    const addZoneBtn = document.getElementById('add-zone-btn')!;
+    const dateSelect = document.getElementById('date-select') as HTMLInputElement;
+    const timeSlider = document.getElementById('time-slider') as HTMLInputElement;
+    const sliderTimeLabel = document.getElementById('slider-time-label')!;
+
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateSelect.value = today;
+
+    // Track active zones: Array of IANA strings
+    let activeZones = [
+      Intl.DateTimeFormat().resolvedOptions().timeZone, // User's local timezone
+      'UTC',
+      'America/New_York',
+      'Asia/Kolkata'
+    ];
+
+    if (defaultFrom && defaultTo) {
+      activeZones = [defaultFrom, defaultTo];
+    }
+
+    // Helper to get formatted timezone offset (e.g. GMT+5:30)
+    function getTimezoneOffset(timezone: string, date: Date): string {
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: timezone,
+          timeZoneName: 'shortOffset'
+        }).formatToParts(date);
+        const tzName = parts.find(p => p.type === 'timeZoneName')?.value || '';
+        return tzName;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    // Helper to get short code (e.g. EST/EDT)
+    function getTimezoneCode(timezone: string, date: Date): string {
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: timezone,
+          timeZoneName: 'short'
+        }).formatToParts(date);
+        const tzName = parts.find(p => p.type === 'timeZoneName')?.value || '';
+        return tzName;
+      } catch (e) {
+        return timezone.split('/').pop()?.replace('_', ' ') || timezone;
+      }
+    }
+
+    // Render timezone rows
+    function renderTimezones() {
+      timezoneRows.innerHTML = '';
+      const selectedDate = new Date(dateSelect.value);
+      const baseHour = parseInt(timeSlider.value, 10);
+
+      // We base calculations on the first row's time (User's anchor)
+      const baseZone = activeZones[0];
+      
+      // Calculate selected timestamp: baseHour in baseZone
+      const tempDate = new Date(selectedDate);
+      tempDate.setHours(baseHour, 0, 0, 0);
+
+      // Format current time label
+      const timeFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: baseZone,
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      });
+      sliderTimeLabel.textContent = `${timeFormatter.format(tempDate)} (${getTimezoneCode(baseZone, tempDate)})`;
+
+      activeZones.forEach((zone, index) => {
+        // Calculate timezone specific datetime
+        const dateInZone = new Date(tempDate.toLocaleString('en-US', { timeZone: zone }));
+        const offset = getTimezoneOffset(zone, tempDate);
+        const code = getTimezoneCode(zone, tempDate);
+        const cityName = zone.split('/').pop()?.replace('_', ' ') || zone;
+
+        const row = document.createElement('div');
+        row.className = 'pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4';
+
+        // Row details block
+        const details = document.createElement('div');
+        details.className = 'w-full md:w-56 flex flex-col';
+        details.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-ink truncate">${cityName}</span>
+            ${index > 0 ? `<button class="remove-btn text-mute hover:text-error transition-colors p-1" data-index="${index}" title="Remove"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>` : `<span class="text-[10px] font-bold text-link uppercase tracking-wider bg-link/10 px-2 py-0.5 rounded">You</span>`}
+          </div>
+          <span class="text-xs text-mute mt-0.5">${code} (${offset})</span>
+          <span class="text-sm font-semibold text-link mt-1 font-mono">${dateInZone.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}</span>
+        `;
+
+        // Timeline slider visual ruler (24 blocks representing 24 hours of that day in that timezone)
+        const timeline = document.createElement('div');
+        timeline.className = 'flex-1 flex items-center gap-px overflow-x-auto';
+        
+        // Find hour index offset between baseZone and current zone
+        const baseOffsetMs = new Date(tempDate.toLocaleString('en-US', { timeZone: baseZone })).getTime();
+        const curOffsetMs = new Date(tempDate.toLocaleString('en-US', { timeZone: zone })).getTime();
+        const diffHours = Math.round((curOffsetMs - baseOffsetMs) / 3600000);
+
+        for (let i = 0; i < 24; i++) {
+          const blockHour = (baseHour + diffHours + i - baseHour + 24) % 24;
+          const isBusinessHours = blockHour >= 8 && blockHour <= 18;
+          const isSleepHours = blockHour >= 22 || blockHour < 6;
+          const isSelectedHour = i === baseHour;
+
+          const block = document.createElement('div');
+          block.className = `flex-1 h-9 flex flex-col items-center justify-center rounded text-[10px] font-mono font-bold select-none min-w-[28px] border transition-all ${
+            isSelectedHour 
+              ? 'bg-link text-white border-link ring-2 ring-link/20 scale-105 z-10' 
+              : isBusinessHours 
+                ? 'bg-success/10 text-success border-success/20 hover:bg-success/20' 
+                : isSleepHours 
+                  ? 'bg-canvas-soft-2 text-mute border-hairline opacity-60' 
+                  : 'bg-canvas-soft text-body border-hairline hover:bg-canvas-soft-2'
+          }`;
+          
+          const amPm = blockHour >= 12 ? 'PM' : 'AM';
+          const displayHour = blockHour % 12 === 0 ? 12 : blockHour % 12;
+          block.innerHTML = `<span>${displayHour}</span><span class="text-[7px] uppercase leading-none mt-0.5 opacity-70">${amPm}</span>`;
+          block.title = `${displayHour} ${amPm} in ${cityName}`;
+          block.style.cursor = 'pointer';
+          
+          block.addEventListener('click', () => {
+            timeSlider.value = i.toString();
+            renderTimezones();
+          });
+
+          timeline.appendChild(block);
+        }
+
+        row.appendChild(details);
+        row.appendChild(timeline);
+        timezoneRows.appendChild(row);
+      });
+
+      // Add delete row listeners
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          const idx = parseInt(target.getAttribute('data-index') || '0', 10);
+          activeZones.splice(idx, 1);
+          renderTimezones();
+        });
+      });
+    }
+
+    // Add new timezone
+    addZoneBtn.addEventListener('click', () => {
+      const selected = zoneSelect.value;
+      if (selected && !activeZones.includes(selected)) {
+        activeZones.push(selected);
+        renderTimezones();
+        // Reset select option
+        zoneSelect.selectedIndex = 0;
+      }
+    });
+
+    // Slider inputs
+    timeSlider.addEventListener('input', renderTimezones);
+    dateSelect.addEventListener('input', renderTimezones);
+
+    // Initial render
+    renderTimezones();
+  });
+</script>

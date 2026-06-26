@@ -7,6 +7,7 @@ export async function getStaticPaths() {
   const paths = [];
   for (const locale of locales) {
     for (const comp of comparisonsData.comparisons) {
+      if (['png-vs-jpg', 'webp-vs-png', 'jpeg2000-vs-jpeg', 'tiff-vs-jpeg', 'pdf-vs-png', 'heic-vs-jpg', 'eps-vs-svg', 'tiff-jxl', 'jpg-pdf', 'tiff-vs-jpg', 'pdf-to-png-vs-pdf-to-jpg', 'jpg-vs-tiff', 'png-pdf', 'heif-vs-jpeg', 'png-vs-svg', 'png8-vs-png24', 'jpg-vs-heic', 'svg-eps', 'svg-tiff', 'jpg-jxl', 'avif-vs-jpg', 'heic-jxl', 'merge-pdf-vs-split-pdf', 'svg-vs-png', 'png-ico', 'png-psd', 'webp-vs-svg', 'heic-eps', 'heic-pdf', 'jpg-eps', 'png-bmp', 'png-heic', 'svg-vs-jpg', 'tiff-psd'].includes(comp.id)) continue; // Handled by dedicated static overrides
       paths.push({
         params: { lang: locale, id: comp.id },
         props: { comp, locale },

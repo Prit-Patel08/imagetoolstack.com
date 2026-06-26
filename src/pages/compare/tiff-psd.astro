@@ -1,0 +1,285 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import TiffToJpgTool from "../../components/tools/TiffToJpgTool.astro";
+
+// SEO Metadata
+const seoTitle = "TIFF vs PSD: Difference Between Archive and Photoshop Formats";
+const seoDescription = "TIFF vs PSD. We compare Tagged Image File Format with Adobe Photoshop Documents. Learn when to use each for print, editing, and archiving.";
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": seoTitle,
+      "description": seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between TIFF and PSD?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TIFF is a standardized, lossless raster image format widely used in scanning, high-end print publishing, and digital archiving. PSD is Adobe Photoshop's native design file format, preserving editable layers, masks, vectors, and design parameters for active editing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use TIFF instead of PSD?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use PSD during the active graphic design phase to keep layers and text editable. Use TIFF when sending the final high-quality graphic to a commercial printer or scanner, or when archiving images in a format compatible with non-Adobe software."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a TIFF file preserve Photoshop layers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Adobe Photoshop allows you to save TIFF files with layered data intact. However, this increases file size significantly, and many non-Adobe image viewers will only display the flattened preview layer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I convert a PSD to a TIFF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can save a PSD as a TIFF directly inside Photoshop by using 'Save As' and selecting TIFF from the format dropdown. If you do not have Photoshop, you can convert it using open-source tools like GIMP."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are TIFF and PSD files so much larger than JPEGs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TIFF and PSD store raw, uncompressed or losslessly compressed pixels and multiple layers of graphic data to maintain maximum quality. JPEGs discard visual details using lossy compression to reduce file weights for the web."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "tiff-psd")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "tiff-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">TIFF vs PSD</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">TIFF</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">PSD</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">TIFF vs PSD: Which Format is Better?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          Comparing a high-fidelity publishing and archiving standard with Adobe's native design file format. Understand when to use TIFF or PSD.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Answer
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">Use PSD for:</strong> Active digital editing projects in Adobe Photoshop where you need to preserve separate layers, masks, smart filters, and editable text fields.</p>
+          <p><strong class="text-ink">Use TIFF for:</strong> Storing final high-resolution flat graphics, archival master images, scanned documents, and images destined for commercial offset printing.</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between TIFF and PSD?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          TIFF is a cross-platform open-standard file format used across scanning and printing equipment. PSD is Adobe's proprietary container format optimized for Photoshop workflows.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">TIFF (Tagged Image File Format)</th>
+                <th class="p-4">PSD (Photoshop Document)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Format Origin</td>
+                <td class="p-4 text-success">Open Standard (Developed by Aldus/Microsoft)</td>
+                <td class="p-4">Proprietary (Developed by Adobe)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Primary Application</td>
+                <td class="p-4">Archiving, Scanning, Commercial Print</td>
+                <td class="p-4 text-success">Active Photo and Graphic Editing</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Layer Preservation</td>
+                <td class="p-4">Basic (Supported but limits compatibility)</td>
+                <td class="p-4 text-success">Advanced (Full support for adjustment layers, effects, smart objects)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compatibility</td>
+                <td class="p-4 text-success">Universal (Read by almost all publishing and imaging tools)</td>
+                <td class="p-4">Restricted (Best compatibility within Adobe apps)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Web Browser Support</td>
+                <td class="p-4 text-error">No (Requires conversion)</td>
+                <td class="p-4 text-error">No (Requires conversion)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Option</td>
+                <td class="p-4">LZW, ZIP, PackBits, or Uncompressed</td>
+                <td class="p-4">RLE, ZIP, or Uncompressed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert TIFF Images Offline (Private & Secure)</h2>
+        <TiffToJpgTool toolId="tiff-to-jpg" />
+      </section>
+
+      <!-- Deep Dive: TIFF -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a TIFF?</h2>
+        <p>
+          TIFF stands for Tagged Image File Format. Created in 1986 by Aldus Corporation (now Adobe) as a unified standard for desktop scanners, TIFF is a flexible container format designed to handle raster images and data fields (tags). It supports deep color spaces and lossless compression options like LZW and ZIP.
+        </p>
+        <p>
+          TIFF is highly valued in archiving, medical imaging, and commercial printing because it does not introduce compression artifacts. It is an open format, meaning that almost any professional imaging software, page layout program, or operating system can open and display a TIFF file.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">TIFF Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Universal Open Standard:</strong> Highly compatible with printing presses, medical scanners, and GIS tools.</li>
+          <li><strong>Non-Destructive Archiving:</strong> Ideal for master files since it does not degrade quality upon resaving.</li>
+          <li><strong>Multi-Page Support:</strong> Can store multiple images/pages within a single file.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: PSD -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">Deep Dive: What is a PSD?</h2>
+        <p>
+          PSD stands for Photoshop Document. It is the proprietary raw file format used natively by Adobe Photoshop. A PSD file serves as a designer's primary working file, preserving the complete structural data of a project. This includes layers, masks, editable vector paths, text layers, filters, and smart objects.
+        </p>
+        <p>
+          Because it maintains editable text and adjustment parameters, designers work inside PSD files and only export the final compositions to flat, web-compatible formats like PNG or WebP. While Adobe software reads PSD files flawlessly, opening them in non-Adobe programs often flattens the layers or compromises edit history.
+        </p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">PSD Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Complete Editability:</strong> Keeps layers, adjustment layers, text, and effects fully editable.</li>
+          <li><strong>Smart Objects:</strong> Allows embedding high-resolution vectors that can scale dynamically.</li>
+          <li><strong>Non-Destructive Operations:</strong> Masking and layer styles can be changed without altering base pixels.</li>
+        </ul>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between TIFF and PSD?</h3>
+            <p class="text-body leading-relaxed">TIFF is a standardized, lossless raster image format widely used in scanning, high-end print publishing, and digital archiving. PSD is Adobe Photoshop's native design file format, preserving editable layers, masks, vectors, and design parameters for active editing.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">When should I use TIFF instead of PSD?</h3>
+            <p class="text-body leading-relaxed">Use PSD during the active graphic design phase to keep layers and text editable. Use TIFF when sending the final high-quality graphic to a commercial printer or scanner, or when archiving images in a format compatible with non-Adobe software.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Can a TIFF file preserve Photoshop layers?</h3>
+            <p class="text-body leading-relaxed">Yes, Adobe Photoshop allows you to save TIFF files with layered data intact. However, this increases file size significantly, and many non-Adobe image viewers will only display the flattened preview layer.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">How do I convert a PSD to a TIFF?</h3>
+            <p class="text-body leading-relaxed">You can save a PSD as a TIFF directly inside Photoshop by using 'Save As' and selecting TIFF from the format dropdown. If you do not have Photoshop, you can convert it using open-source tools like GIMP.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Why are TIFF and PSD files so much larger than JPEGs?</h3>
+            <p class="text-body leading-relaxed">TIFF and PSD store raw, uncompressed or losslessly compressed pixels and multiple layers of graphic data to maintain maximum quality. JPEGs discard visual details using lossy compression to reduce file weights for the web.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Need to convert TIFF images to JPG?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Try our client-side TIFF to JPG Converter to export your high-fidelity files to web-friendly JPGs 100% offline.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="TIFF" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

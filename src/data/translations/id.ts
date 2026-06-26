@@ -61,6 +61,10 @@ export const id = {
     pdf: {
       name: "Alat PDF",
       description: "Gabungkan, pisahkan, kompres, dan konversikan dokumen PDF secara lokal di browser Anda."
+    },
+    "time-date": {
+      name: "Waktu & Tanggal",
+      description: "Konversikan stempel waktu, hitung tanggal, periksa usia tepat, dan bandingkan zona waktu secara lokal di browser Anda."
     }
   },
   toolTemplates: {

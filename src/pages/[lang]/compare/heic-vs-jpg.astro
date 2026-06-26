@@ -1,0 +1,855 @@
+---
+import CrossLinkBlock from "../../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/Navbar.astro";
+import Footer from "../../../components/Footer.astro";
+import comparisonsData from "../../../data/comparisons.json";
+import toolsData from "../../../data/tools.json";
+import HeicToJpgTool from "../../../components/tools/HeicToJpgTool.astro";
+import { getLocalizedPath } from "../../../utils/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "fr" } },
+    { params: { lang: "de" } },
+    { params: { lang: "pt" } },
+    { params: { lang: "id" } }
+  ];
+}
+
+const { lang } = Astro.params;
+const locale = lang as "es" | "fr" | "de" | "pt" | "id";
+
+// Translations Dictionary
+const pageTranslations = {
+  es: {
+    seoTitle: "HEIC vs JPG: ¿Qué formato es mejor para iPhones? (2026)",
+    seoDescription: "¿HEIC o JPG? Comparamos el formato moderno HEIC de Apple con el JPG clásico. Conozca las diferencias en tamaño, calidad y por qué convertirlos.",
+    title: "HEIC vs JPG: ¿Qué formato es mejor?",
+    intro: "Si tiene un iPhone, probablemente se haya topado con el formato HEIC. Es una maravilla moderna de la tecnología de compresión que ahorra una gran cantidad de espacio de almacenamiento. Pero, ¿vale la pena el dolor de cabeza de compatibilidad al compartir fotos con usuarios que no son de Apple? Aquí tiene todo lo que necesita saber sobre HEIC vs JPG.",
+    quickAnswer: "Respuesta rápida",
+    useHeicFor: "Use HEIC para:",
+    useHeicForDesc: "Guardar fotos en su iPhone y Mac para ahorrar un 50% de espacio en iCloud manteniendo la máxima calidad HDR.",
+    useJpgFor: "Use JPG para:",
+    useJpgForDesc: "Enviar fotos a computadoras Windows, teléfonos Android, subir a formularios web o entregar galerías finales a clientes.",
+    differenceTitle: "¿Cuál es la diferencia entre HEIC y JPG?",
+    differenceDesc: "Aunque ambos formatos muestran imágenes de alta calidad, utilizan algoritmos de compresión y tecnologías completamente diferentes. Aquí tiene una comparación técnica lado a lado de HEIC vs JPG.",
+    thFeature: "Característica / Aspecto",
+    thHeic: "HEIC (High Efficiency Image Container)",
+    thJpg: "JPG / JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Estándar de compresión",
+    tdCompStandardHeic: "Matemática de compresión de video HEVC (H.265)",
+    tdCompStandardJpg: "Transformada de Coseno Discreta (DCT) (1992)",
+    tdFileSize: "Tamaño de archivo promedio",
+    tdFileSizeHeic: "~50% más pequeño que JPG para la misma calidad",
+    tdFileSizeJpg: "Tamaño estándar (a menudo el doble que HEIC)",
+    tdColorDepth: "Soporte de profundidad de color",
+    tdColorDepthHeic: "Hasta 16 bits (soporta HDR/rango vibrante)",
+    tdColorDepthJpg: "Limitado a 8 bits (16.7 millones de colores)",
+    tdTransparency: "Soporte de transparencia",
+    tdTransparencyHeic: "Sí (soporta canal de transparencia alfa)",
+    tdTransparencyJpg: "No (debe fusionar las áreas transparentes con un color sólido)",
+    tdContainer: "Contenedor multi-imagen/ráfaga",
+    tdContainerHeic: "Sí (así se guardan las Live Photos de Apple y mapas de profundidad)",
+    tdContainerJpg: "No (almacena solo un marco de imagen plano único)",
+    tdBrowser: "Soporte del navegador web",
+    tdBrowserHeic: "Muy deficiente (requiere conversión antes de subir a la web)",
+    tdBrowserJpg: "Universal (soportado nativamente en todos los navegadores)",
+    tdCompatibility: "Compatibilidad",
+    tdCompatibilityHeic: "Limitada (problemas en Windows antiguos, Android, Smart TVs)",
+    tdCompatibilityJpg: "Universal (funciona en todos los dispositivos y plataformas)",
+    converterTitle: "Convertir HEIC a JPG al instante (Gratis y Privado)",
+    testTitle: "Pruebas del mundo real: Ahorro de espacio de almacenamiento",
+    testDesc: "La razón principal por la que Apple cambió a HEIC es el espacio en disco. Tomamos una fotografía estándar de 12 megapíxeles con un iPhone y comparamos los tamaños de archivo.",
+    testHeicTitle: "Formato HEIC",
+    testHeicSub: "Alta eficiencia",
+    testHeicSize: "1.8 MB",
+    testHeicDesc: "Tamaño de archivo increíblemente pequeño. Le permite almacenar el doble de fotos en su teléfono antes de quedarse sin espacio en iCloud.",
+    testJpgTitle: "Formato JPG",
+    testJpgSub: "Formato heredado",
+    testJpgSize: "3.9 MB",
+    testJpgDesc: "Ocupa más del doble de espacio para la misma calidad visual. Llena su rollo fotográfico increíblemente rápido.",
+    diveHeicTitle: "Análisis profundo: ¿Qué es HEIC?",
+    diveHeicP1: "HEIC significa High Efficiency Image Container (Contenedor de Imágenes de Alta Eficiencia). Es una variante del estándar HEIF (High Efficiency Image Format), creado por el Moving Picture Experts Group (MPEG). Apple lo adoptó como formato predeterminado en iOS 11.",
+    diveHeicP2: "A diferencia de JPG, que fue creado en 1992, HEIC se basa en la compresión de video HEVC moderna. Esencialmente, un archivo HEIC es solo un fotograma individual de un archivo de video altamente comprimido. Como la matemática de compresión de video ha avanzado drásticamente en los últimos 30 años, HEIC puede almacenar los mismos datos de píxeles que un JPG en aproximadamente la mitad de los bytes.",
+    diveHeicP3: "La palabra 'Container' (Contenedor) en HEIC es clave. Un archivo HEIC puede contener múltiples imágenes dentro de un solo archivo. Así es exactamente como funciona la función Live Photos de Apple: almacena la imagen estática de alta calidad y el breve fragmento de video, todo envuelto en un solo archivo HEIC.",
+    diveHeicAdv: "Ventajas de HEIC",
+    diveHeicAdvList: [
+      "La mitad del tamaño del archivo: reduce drásticamente los costos de almacenamiento.",
+      "Profundidad de color de 16 bits: admite muchos más colores y un mejor rango dinámico (HDR) que el límite de 8 bits de JPG.",
+      "Live Photos y mapas de profundidad: puede contener ráfagas de imágenes, audio y datos de profundidad del Modo Retrato.",
+      "Soporte de transparencia: a diferencia de JPG, HEIC puede almacenar fondos transparentes (similar a PNG)."
+    ],
+    diveHeicDis: "Desventajas de HEIC",
+    diveHeicDisList: [
+      "Pobre compatibilidad: muchas computadoras Windows antiguas, dispositivos Android y Smart TVs no pueden abrirlos.",
+      "Poco amigable para la web: muy pocos navegadores web pueden mostrar un archivo HEIC de forma nativa. Casi siempre debe convertirse antes de subirlo a un sitio web."
+    ],
+    diveJpgTitle: "Análisis profundo: ¿Qué es un JPG (or JPEG)?",
+    diveJpgP1: "JPEG son las siglas de Joint Photographic Experts Group, el comité que creó el estándar en 1992. Es, sin duda, el formato de imagen más utilizado en la historia de internet.",
+    diveJpgP2: "JPG se basa en una matemática de compresión con pérdida más antigua (Transformada de Coseno Discreta) para descartar datos visuales que el ojo humano no puede detectar fácilmente. Aunque la compresión no es tan eficiente como la de HEIC, es 'suficientemente buena' para casi todos los propósitos web y de impresión estándar.",
+    diveJpgP3: "La fuerza absoluta del formato JPG es que es compatible universalmente. Puede enviar un JPG a una impresora, subirlo a un portal web antiguo, enviarlo por correo a un teléfono Android o abrirlo en una Smart TV, y siempre funcionará.",
+    diveJpgAdv: "Ventajas de JPG",
+    diveJpgAdvList: [
+      "Compatibilidad universal: funciona en todas partes, todo el tiempo, sin excepción.",
+      "Decodificación rápida: los dispositivos más antiguos pueden abrir JPG mucho más rápido que decodificar archivos HEIC complejos."
+    ],
+    diveJpgDis: "Desventajas de JPG",
+    diveJpgDisList: [
+      "Tamaños de archivo inflados: ocupa mucho más espacio en disco que formatos modernos como HEIC o WebP.",
+      "Pérdida por generación: cada vez que abre, edita y vuelve a guardar un JPG, destruye permanentemente un poco más de datos."
+    ],
+    snippetSectionTitle: "Cuándo usar HEIC vs JPG",
+    snippetSectionDesc: "Elegir el formato de archivo correcto es crucial para equilibrar la claridad visual y la legibilidad. A continuación se presentan respuestas directas a las consultas más comunes sobre HEIC y JPG.",
+    q1: "¿Por qué mi iPhone guarda las fotos como HEIC?",
+    a1: "Apple cambió a HEIC como formato predeterminado en iOS 11 porque utiliza compresión de video HEVC avanzada. Esto permite que su iPhone almacene fotografías en aproximadamente la mitad del tamaño de archivo de un JPG sin perder calidad visual, ahorrando espacio en iCloud.",
+    q2: "¿Puede Windows o Android abrir archivos HEIC?",
+    a2: "Los dispositivos Android modernos y las computadoras Windows más nuevas (con la extensión HEVC instalada) pueden abrir archivos HEIC. Sin embargo, la compatibilidad sigue siendo deficiente en comparación con JPG. Muchos dispositivos antiguos, Smart TVs y sitios web simplemente no los abrirán.",
+    q3: "¿Qué formato tiene mejor calidad: HEIC o JPG?",
+    a3: "HEIC es técnicamente superior. Admite color de 16 bits (lo que permite un rango dinámico y HDR mucho mejores), mientras que JPG está limitado a 8 bits. HEIC también captura detalles finos con menos artefactos de compresión.",
+    q4: "¿Admite HEIC fondos transparentes?",
+    a4: "Sí, a diferencia de JPG, HEIC admite transparencia. Puede almacenar datos de transparencia del canal alfa, lo que le permite tener imágenes con fondos transparentes de manera similar a PNG.",
+    q5: "¿Cuáles son las desventajas de HEIC?",
+    a5: "Las principales desventajas de HEIC son la compatibilidad y el soporte del navegador. La mayoría de los navegadores web no pueden mostrar archivos HEIC de forma nativa, y las computadoras Windows antiguas, los dispositivos Android o las Smart TVs no pueden abrirlos sin software de conversión o códecs de terceros.",
+    faqTitle: "Preguntas frecuentes",
+    moreComparisons: "Explorar más comparaciones",
+    ctaTitle: "¿Necesita enviar una foto HEIC a un usuario de Android?",
+    ctaDesc: "Use nuestra herramienta gratuita, privada y en el navegador para convertir instantáneamente sus fotos HEIC de iPhone en JPG universales.",
+    ctaButton: "Probar la herramienta HEIC a JPG",
+    homeText: "Inicio",
+    compareLinkText: "Comparar"
+  },
+  fr: {
+    seoTitle: "HEIC vs JPG : Quel format est le meilleur pour iPhone ? (2026)",
+    seoDescription: "HEIC ou JPG ? Nous comparons le format moderne HEIC d'Apple au JPG classique. Découvrez les différences de taille, de qualité et pourquoi les convertir.",
+    title: "HEIC vs JPG : Quel format est le meilleur ?",
+    intro: "Si vous possédez un iPhone, vous avez probablement déjà rencontré le format HEIC. C'est une merveille technologique en matière de compression qui permet d'économiser énormément d'espace de stockage. Mais cela en vaut-il la peine face aux problèmes de compatibilité avec les utilisateurs d'autres systèmes ? Voici tout ce que vous devez savoir sur le match HEIC vs JPG.",
+    quickAnswer: "Réponse rapide",
+    useHeicFor: "Utilisez HEIC pour :",
+    useHeicForDesc: "Stocker vos photos sur iPhone et Mac pour économiser 50 % d'espace iCloud tout en conservant une qualité HDR maximale.",
+    useJpgFor: "Utilisez JPG pour :",
+    useJpgForDesc: "Envoyer des photos vers des PC Windows, des téléphones Android, les formulaires web ou pour livrer vos galeries clients.",
+    differenceTitle: "Quelle est la différence entre HEIC et JPG ?",
+    differenceDesc: "Bien que les deux formats affichent des images de haute qualité, ils utilisent des algorithmes de compression et des technologies complètement différents. Voici un comparatif technique détaillé entre le HEIC et le JPG.",
+    thFeature: "Caractéristique / Aspect",
+    thHeic: "HEIC (High Efficiency Image Container)",
+    thJpg: "JPG / JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Norme de compression",
+    tdCompStandardHeic: "Compression vidéo HEVC (H.265)",
+    tdCompStandardJpg: "Transformée en cosinus discrète (DCT) (1992)",
+    tdFileSize: "Taille moyenne des fichiers",
+    tdFileSizeHeic: "~50% plus léger que le JPG à qualité égale",
+    tdFileSizeJpg: "Taille standard (souvent le double du HEIC)",
+    tdColorDepth: "Profondeur des couleurs",
+    tdColorDepthHeic: "Jusqu'à 16 bits (supporte le HDR et les couleurs éclatantes)",
+    tdColorDepthJpg: "Limité à 8 bits (16.7 millions de couleurs)",
+    tdTransparency: "Gestion de la transparence",
+    tdTransparencyHeic: "Oui (supporte le canal de transparence alpha)",
+    tdTransparencyJpg: "Non (le fond transparent est converti en couleur unie)",
+    tdContainer: "Conteneur multi-images / rafales",
+    tdContainerHeic: "Oui (utilisé pour les Live Photos Apple et cartes de profondeur)",
+    tdContainerJpg: "Non (stocke uniquement une seule image plate)",
+    tdBrowser: "Compatibilité navigateurs web",
+    tdBrowserHeic: "Très faible (nécessite une conversion avant envoi sur le web)",
+    tdBrowserJpg: "Universel (supporté nativement par tous les navigateurs)",
+    tdCompatibility: "Compatibilité générale",
+    tdCompatibilityHeic: "Limitée (problèmes sur vieux Windows, Android, Smart TVs)",
+    tdCompatibilityJpg: "Universel (fonctionne partout, sur tous les appareils)",
+    converterTitle: "Convertir HEIC en JPG instantanément (Gratis & Privé)",
+    testTitle: "Tests réels : Économie d'espace de stockage",
+    testDesc: "La raison principale pour laquelle Apple a adopté le HEIC est l'espace de stockage. Nous avons comparé la taille de fichiers pour une même photo de 12 mégapixels prise avec un iPhone.",
+    testHeicTitle: "Format HEIC",
+    testHeicSub: "Haute efficacité",
+    testHeicSize: "1.8 Mo",
+    testHeicDesc: "Taille de fichier incroyablement réduite. Permet de stocker deux fois plus de photos sur votre appareil avant de saturer iCloud.",
+    testJpgTitle: "Format JPG",
+    testJpgSub: "Format classique",
+    testJpgSize: "3.9 Mo",
+    testJpgDesc: "Prend plus de deux fois plus d'espace pour une qualité visuelle identique. Remplit votre galerie très rapidement.",
+    diveHeicTitle: "Analyse approfondie : Qu'est-ce que le HEIC ?",
+    diveHeicP1: "HEIC signifie High Efficiency Image Container (Conteneur d'images à haute efficacité). Il s'agit d'une variante du standard HEIF (High Efficiency Image Format), développé par le Moving Picture Experts Group (MPEG). Apple l'a configuré par défaut depuis iOS 11.",
+    diveHeicP2: "Contrairement au JPG, créé en 1992, le HEIC s'appuie sur la compression vidéo moderne HEVC. Un fichier HEIC est fondamentalement une image fixe issue d'un flux vidéo compressé. Grâce aux progrès des algorithmes de compression vidéo de ces 30 dernières années, le HEIC stocke les mêmes données de pixels qu'un JPG dans environ la moitié de l'espace.",
+    diveHeicP3: "Le mot 'Container' (Conteneur) est essentiel. Un fichier HEIC peut encapsuler plusieurs images à la fois. C'est grâce à cela que fonctionne la fonctionnalité Live Photos d'Apple : elle regroupe l'image fixe haute résolution et la courte séquence vidéo dans un unique fichier.",
+    diveHeicAdv: "Avantages du HEIC",
+    diveHeicAdvList: [
+      "Taille divisée par deux : Réduit considérablement les besoins de stockage.",
+      "Profondeur de couleur 16 bits : Supporte beaucoup plus de nuances et une meilleure plage dynamique (HDR) par rapport aux 8 bits du JPG.",
+      "Live Photos & Profondeur : Conserve les rafales, le son et les données du mode Portrait.",
+      "Gestion de la transparence : Contrairement au JPG, le HEIC gère les fonds transparents comme le PNG."
+    ],
+    diveHeicDis: "Inconvénients du HEIC",
+    diveHeicDisList: [
+      "Compatibilité restreinte : De nombreux ordinateurs Windows anciens, appareils Android et Smart TVs ne peuvent pas les lire nativement.",
+      "Inadapté au web : Rares sont les navigateurs affichant le HEIC de façon native. Une conversion est indispensable avant tout envoi."
+    ],
+    diveJpgTitle: "Analyse approfondie : Qu'est-ce que le JPG (ou JPEG) ?",
+    diveJpgP1: "JPEG signifie Joint Photographic Experts Group, du nom du comité qui a créé cette norme en 1992. C'est de loin le format d'image le plus répandu dans l'histoire d'internet.",
+    diveJpgP2: "Le JPG exploite une compression avec perte (Transformée en cosinus discrète) pour éliminer les détails peu visibles pour l'œil humain. Bien que moins performant que le HEIC, il reste amplement suffisant pour l'impression standard et le web.",
+    diveJpgP3: "L'atout majeur du JPG est son universalité absolue. Vous pouvez l'envoyer à un imprimeur, l'importer sur un vieux portail administratif, l'envoyer à un smartphone Android ou l'ouvrir sur une Smart TV : il s'affichera toujours sans problème.",
+    diveJpgAdv: "Avantages du JPG",
+    diveJpgAdvList: [
+      "Compatibilité universelle : Fonctionne partout, tout le temps, sans exception.",
+      "Décodage rapide : Les anciens processeurs lisent les JPG bien plus vite que les conteneurs HEIC."
+    ],
+    diveJpgDis: "Inconvénients du JPG",
+    diveJpgDisList: [
+      "Fichiers volumineux : Occupe beaucoup plus de place que les formats modernes comme le HEIC ou le WebP.",
+      "Perte de génération : Chaque modification suivie d'un enregistrement dégrade définitivement la qualité de l'image."
+    ],
+    snippetSectionTitle: "Quand utiliser le HEIC ou le JPG",
+    snippetSectionDesc: "Choisir le bon format est crucial pour concilier qualité et facilité de partage. Voici des réponses claires aux questions fréquentes.",
+    q1: "Pourquoi mon iPhone enregistre-t-il les photos en HEIC ?",
+    a1: "Apple a choisi le HEIC par défaut depuis iOS 11 car il utilise la compression vidéo HEVC. Cela permet de stocker vos photos dans un fichier deux fois plus petit qu'un JPG sans perte de qualité, préservant ainsi l'espace iCloud.",
+    q2: "Windows ou Android peuvent-ils ouvrir les fichiers HEIC ?",
+    a2: "Les smartphones Android récents et les PC Windows modernes (avec l'extension HEVC installée) peuvent lire le HEIC. Cependant, la compatibilité reste faible comparée au JPG. Les anciens écrans ou sites web le rejettent fréquemment.",
+    q3: "Quel format offre la meilleure qualité : HEIC ou JPG ?",
+    a3: "Le HEIC est techniquement supérieur. Il supporte des couleurs codées sur 16 bits (idéal pour le HDR) contre seulement 8 bits pour le JPG. Il affiche également moins d'artéfacts de compression.",
+    q4: "Le HEIC gère-t-il les fonds transparents ?",
+    a4: "Oui, contrairement au JPG, le HEIC gère la transparence via un canal alpha, permettant des images détourées de manière similaire au PNG.",
+    q5: "Quels sont les inconvénients du HEIC ?",
+    a5: "Les points faibles majeurs du HEIC sont sa compatibilité et son support sur le web. Les navigateurs ne le lisent pas de base, et les vieux PC, Android ou Smart TVs ont besoin de logiciels tiers pour l'ouvrir.",
+    faqTitle: "Foire aux questions",
+    moreComparisons: "Plus de comparaisons",
+    ctaTitle: "Besoin d'envoyer une photo HEIC à un utilisateur d'Android ?",
+    ctaDesc: "Utilisez notre outil gratuit et local pour convertir instantanément vos clichés HEIC en fichiers JPG universels.",
+    ctaButton: "Essayer le convertisseur HEIC en JPG",
+    homeText: "Accueil",
+    compareLinkText: "Comparer"
+  },
+  de: {
+    seoTitle: "HEIC vs. JPG: Welches Format ist besser für iPhones? (2026)",
+    seoDescription: "HEIC oder JPG? Wir vergleichen Apples modernes HEIC-Format mit dem klassischen JPG. Erfahren Sie die Unterschiede in Größe, Qualität und Kompatibilität.",
+    title: "HEIC vs. JPG: Welches Format ist besser?",
+    intro: "Wenn Sie ein iPhone besitzen, sind Sie wahrscheinlich schon auf das HEIC-Format gestoßen. Es ist ein modernes Meisterwerk der Kompressionstechnologie, das enorm viel Speicherplatz spart. Aber ist es den Kompatibilitätsärger wert, wenn man Fotos mit Nicht-Apple-Nutzern teilen möchte? Hier ist alles, was Sie über HEIC vs. JPG wissen müssen.",
+    quickAnswer: "Schnelle Antwort",
+    useHeicFor: "Nutzen Sie HEIC für:",
+    useHeicForDesc: "Das Speichern von Fotos auf iPhone und Mac, um 50 % Ihres iCloud-Speichers bei maximaler HDR-Qualität zu sparen.",
+    useJpgFor: "Nutzen Sie JPG für:",
+    useJpgForDesc: "Das Senden von Fotos an Windows-PCs, Android-Geräte, Webformulare oder zur Auslieferung von Kundengalerien.",
+    differenceTitle: "Was ist der Unterschied zwischen HEIC und JPG?",
+    differenceDesc: "Obwohl beide Formate hochauflösende Bilder liefern, nutzen sie völlig unterschiedliche Kompressionsmethoden. Hier ist der direkte Vergleich zwischen HEIC und JPG.",
+    thFeature: "Merkmal / Aspekt",
+    thHeic: "HEIC (High Efficiency Image Container)",
+    thJpg: "JPG / JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Kompressionsstandard",
+    tdCompStandardHeic: "HEVC (H.265) Videokompressions-Algorithmus",
+    tdCompStandardJpg: "Diskrete Kosinustransformation (DCT) (1992)",
+    tdFileSize: "Durchschnittliche Dateigröße",
+    tdFileSizeHeic: "~50% kleiner als JPG bei gleicher Qualität",
+    tdFileSizeJpg: "Standardgröße (oft doppelt so groß wie HEIC)",
+    tdColorDepth: "Farbtiefe",
+    tdColorDepthHeic: "Bis zu 16-Bit (unterstützt HDR und lebendigere Farben)",
+    tdColorDepthJpg: "Begrenzt auf 8-Bit (16,7 Millionen Farben)",
+    tdTransparency: "Transparenzunterstützung",
+    tdTransparencyHeic: "Ja (unterstützt einen Alpha-Kanal für Transparenz)",
+    tdTransparencyJpg: "Nein (transparente Bereiche werden weiß/schwarz gefüllt)",
+    tdContainer: "Mehrfachbild-/Serienbild-Container",
+    tdContainerHeic: "Ja (ermöglicht Apple Live Photos und Tiefenkarten)",
+    tdContainerJpg: "Nein (speichert nur ein einzelnes flaches Bild)",
+    tdBrowser: "Webbrowser-Unterstützung",
+    tdBrowserHeic: "Sehr schlecht (muss vor dem Web-Upload konvertiert werden)",
+    tdBrowserJpg: "Universell (wird nativ von allen Browsern unterstützt)",
+    tdCompatibility: "Kompatibilität",
+    tdCompatibilityHeic: "Eingeschränkt (Probleme auf alten Windows-PCs, Android und Smart-TVs)",
+    tdCompatibilityJpg: "Universell (funktioniert auf absolut jedem Gerät)",
+    converterTitle: "HEIC sofort in JPG konvertieren (Kostenlos & Lokal)",
+    testTitle: "Praxistest: Speicherplatzeinsparung",
+    testDesc: "Der Hauptgrund, warum Apple auf HEIC umgestellt hat, ist der Speicherplatz. Wir haben ein typisches 12-Megapixel-Foto mit einem iPhone aufgenommen und die Dateigrößen verglichen.",
+    testHeicTitle: "HEIC-Format",
+    testHeicSub: "Hohe Effizienz",
+    testHeicSize: "1,8 MB",
+    testHeicDesc: "Unglaublich kleine Dateigröße. Ermöglicht es Ihnen, doppelt so viele Fotos auf Ihrem Telefon zu speichern, bevor der iCloud-Speicher voll ist.",
+    testJpgTitle: "JPG-Format",
+    testJpgSub: "Klassisches Format",
+    testJpgSize: "3,9 MB",
+    testJpgDesc: "Benötigt mehr als doppelt so viel Platz bei exakt gleicher Bildqualität. Füllt Ihren internen Speicher sehr schnell.",
+    diveHeicTitle: "Deep Dive: Was ist HEIC?",
+    diveHeicP1: "HEIC steht für High Efficiency Image Container. Es is eine Variante des HEIF-Standards (High Efficiency Image Format), der von der Moving Picture Experts Group (MPEG) entwickelt wurde. Apple hat es ab iOS 11 als Standardformat eingeführt.",
+    diveHeicP2: "Im Gegensatz zum 1992 entwickelten JPG setzt HEIC auf die moderne HEVC-Videokompression. Im Grunde ist ein HEIC-Bild nur ein Einzelbild aus einer hochgradig komprimierten Videodatei. Da sich die Videokompression in den letzten 30 Jahren massiv weiterentwickelt hat, kann HEIC die gleichen Bilddaten mit der Hälfte der Dateigröße speichern.",
+    diveHeicP3: "Das Wort 'Container' in HEIC ist entscheidend. Eine HEIC-Datei kann mehrere Bilder in sich tragen. Genau so funktionieren Apples Live Photos: Sie speichern das hochauflösende Standbild und die kurze Videosequenz zusammen in einer einzigen HEIC-Datei.",
+    diveHeicAdv: "Vorteile von HEIC",
+    diveHeicAdvList: [
+      "Halbe Dateigröße: Reduziert Speicherkosten drastisch.",
+      "16-Bit-Farbtiefe: Unterstützt viel mehr Farben und einen besseren Dynamikumfang (HDR) als die 8-Bit-Grenze von JPG.",
+      "Live Photos & Tiefendaten: Kann Bilderserien, Audio und Tiefenkarten des Porträtmodus speichern.",
+      "Transparenzunterstützung: Im Gegensatz zu JPG kann HEIC transparente Hintergründe speichern (ähnlich wie PNG)."
+    ],
+    diveHeicDis: "Nachteile von HEIC",
+    diveHeicDisList: [
+      "Schlechte Kompatibilität: Viele ältere Windows-PCs, Android-Geräte und Smart-TVs können sie nicht öffnen.",
+      "Nicht webtauglich: Nur wenige Browser zeigen HEIC direkt an. Es muss fast immer konvertiert werden, bevor es im Web geteilt werden kann."
+    ],
+    diveJpgTitle: "Deep Dive: Was ist ein JPG (oder JPEG)?",
+    diveJpgP1: "JPEG steht für Joint Photographic Experts Group – das Komitee, das diesen Standard 1992 verabschiedete. Es ist zweifellos das am weitesten verbreitete Bildformat im Internet.",
+    diveJpgP2: "JPG nutzt eine verlustbehaftete Kompression (Diskrete Kosinustransformation), um Bilddetails zu entfernen, die das menschliche Auge kaum wahrnimmt. Obwohl die Kompression nicht so effizient ist wie bei HEIC, reicht sie für den Standard-Webgebrauch und Druck völlig aus.",
+    diveJpgP3: "Der größte Vorteil von JPG ist seine universelle Kompatibilität. Sie können ein JPG an jeden Drucker senden, auf uralte Portale hochladen, an ein beliebiges Handy senden – es wird immer problemlos geöffnet.",
+    diveJpgAdv: "Vorteile von JPG",
+    diveJpgAdvList: [
+      "Universelle Kompatibilität: Funktioniert überall und jederzeit ohne Ausnahme.",
+      "Schnelle Dekodierung: Ältere Geräte können JPGs wesentlich schneller öffnen als komplexe HEIC-Dateien."
+    ],
+    diveJpgDis: "Nachteile von JPG",
+    diveJpgDisList: [
+      "Große Dateigrößen: Nimmt deutlich mehr Speicherplatz ein als moderne Formate wie HEIC oder WebP.",
+      "Generationsverlust: Bei jedem erneuten Bearbeiten und Speichern eines JPG-Bildes geht ein Teil der Bildqualität dauerhaft verloren."
+    ],
+    snippetSectionTitle: "Wann nutzt man HEIC vs. JPG",
+    snippetSectionDesc: "Hier finden Sie direkte Antworten auf die häufigsten Fragen zu HEIC und JPG.",
+    q1: "Warum speichert mein iPhone Fotos als HEIC?",
+    a1: "Apple hat HEIC als Standardformat in iOS 11 eingeführt, weil es die moderne HEVC-Kompression nutzt. Dadurch belegen Fotos nur halb so viel Speicherplatz wie ein JPG bei gleicher Qualität, was Ihren iCloud-Speicher entlastet.",
+    q2: "Können Windows oder Android HEIC-Dateien öffnen?",
+    a2: "Moderne Android-Geräte und neuere Windows-PCs (mit installiertem HEVC-Codec) können HEIC-Dateien anzeigen. Dennoch ist die Kompression oft problematisch. Ältere Geräte oder Webseiten weigern sich oft, HEIC zu laden.",
+    q3: "Welches Format hat eine bessere Qualität: HEIC oder JPG?",
+    a3: "HEIC ist technisch überlegen. Es unterstützt eine Farbtiefe von bis zu 16-Bit (ideal für HDR), während JPG auf 8-Bit begrenzt ist. HEIC erzeugt zudem weniger Kompressionsartefakte.",
+    q4: "Unterstützt HEIC transparente Hintergründe?",
+    a4: "Ja. Im Gegensatz zu JPG kann HEIC transparente Bereiche speichern (mittels Alpha-Transparenzkanal), ähnlich wie ein PNG.",
+    q5: "Welche Nachteile hat HEIC?",
+    a5: "Die größten Nachteile von HEIC liegen in der Kompatibilität und der Browserunterstützung. Die meisten Browser können HEIC nicht nativ anzeigen. Ältere PCs und Handys benötigen Konverter oder spezielle Codecs.",
+    faqTitle: "Häufig gestellte Fragen",
+    moreComparisons: "Weitere Vergleiche",
+    ctaTitle: "Müssen Sie ein HEIC-Foto an ein Android-Gerät senden?",
+    ctaDesc: "Nutzen Sie unser kostenloses Browser-Tool, um HEIC-Fotos Ihres iPhones direkt und sicher in universelle JPGs umzuwandeln.",
+    ctaButton: "HEIC-zu-JPG-Konverter testen",
+    homeText: "Startseite",
+    compareLinkText: "Vergleichen"
+  },
+  pt: {
+    seoTitle: "HEIC vs JPG: Qual formato é melhor para iPhones? (2026)",
+    seoDescription: "HEIC ou JPG? Comparamos o moderno formato HEIC da Apple com o clássico JPG. Descubra as diferenças em tamanho de arquivo, qualidade e compatibilidade.",
+    title: "HEIC vs JPG: Qual formato é melhor?",
+    intro: "Se possui um iPhone, provavelmente já se deparou com o formato HEIC. É uma maravilha tecnológica de compressão que economiza muito espaço de armazenamento. Mas valerá a pena a dor de cabeça da compatibilidade ao partilhar fotos com utilizadores que não usam Apple? Aqui está tudo o que precisa de saber sobre HEIC vs JPG.",
+    quickAnswer: "Resposta rápida",
+    useHeicFor: "Use HEIC para:",
+    useHeicForDesc: "Guardar fotos no seu iPhone e Mac para poupar 50% do seu espaço no iCloud enquanto mantém a máxima qualidade HDR.",
+    useJpgFor: "Use JPG para:",
+    useJpgForDesc: "Enviar fotos para computadores Windows, telemóveis Android, fazer upload em formulários web ou entregar galerias finais a clientes.",
+    differenceTitle: "Qual é a diferença entre HEIC e JPG?",
+    differenceDesc: "Aunque ambos formatos exibem imagens de alta qualidade, utilizam algoritmos de compressão e tecnologias totalmente diferentes. Veja a comparação técnica lado a lado de HEIC vs JPG.",
+    thFeature: "Característica / Aspeto",
+    thHeic: "HEIC (High Efficiency Image Container)",
+    thJpg: "JPG / JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Padrão de compressão",
+    tdCompStandardHeic: "Compressão de vídeo HEVC (H.265)",
+    tdCompStandardJpg: "Transformada de Coseno Discreta (DCT) (1992)",
+    tdFileSize: "Tamanho médio de arquivo",
+    tdFileSizeHeic: "~50% menor que JPG para a mesma qualidade",
+    tdFileSizeJpg: "Tamanho padrão (frequentemente o dobro do HEIC)",
+    tdColorDepth: "Profundidade de cor",
+    tdColorDepthHeic: "Até 16 bits (suporta HDR/gama vibrante)",
+    tdColorDepthJpg: "Limitado a 8 bits (16.7 milhões de cores)",
+    tdTransparency: "Suporte de transparência",
+    tdTransparencyHeic: "Sim (suporta canal de transparência alfa)",
+    tdTransparencyJpg: "Não (funde as áreas transparentes com uma cor sólida)",
+    tdContainer: "Contentor multi-imagem/rajada",
+    tdContainerHeic: "Sim (como as Live Photos da Apple e mapas de profundidade são salvos)",
+    tdContainerJpg: "Não (armazena apenas uma imagem plana única)",
+    tdBrowser: "Suporte em navegadores web",
+    tdBrowserHeic: "Muito fraco (requer conversão antes de enviar para a web)",
+    tdBrowserJpg: "Universal (suportado nativamente em todos os navegadores)",
+    tdCompatibility: "Compatibilidade",
+    tdCompatibilityHeic: "Limitada (problemas em Windows antigos, Android, Smart TVs)",
+    tdCompatibilityJpg: "Universal (funciona em todos os dispositivos e plataformas)",
+    converterTitle: "Converter HEIC para JPG instantaneamente (Grátis & Privado)",
+    testTitle: "Testes reais: Economia de espaço de armazenamento",
+    testDesc: "O principal motivo pelo qual a Apple mudou para HEIC é o espaço em disco. Tiramos uma fotografia padrão de 12 megapixels usando um iPhone e comparamos os tamanhos dos arquivos.",
+    testHeicTitle: "Formato HEIC",
+    testHeicSub: "Alta eficiência",
+    testHeicSize: "1.8 MB",
+    testHeicDesc: "Tamanho de arquivo incrivelmente pequeno. Permite guardar o dobro de fotos no seu telefone antes de esgotar o espaço no iCloud.",
+    testJpgTitle: "Formato JPG",
+    testJpgSub: "Formato antigo",
+    testJpgSize: "3.9 MB",
+    testJpgDesc: "Ocupa mais do que o dobro do espaço para la mesma qualidade visual. Enche o seu rolo da câmara incrivelmente rápido.",
+    diveHeicTitle: "Análise profunda: O que é o HEIC?",
+    diveHeicP1: "HEIC significa High Efficiency Image Container (Contentor de Imagem de Alta Eficiência). É uma variante do padrão HEIF (High Efficiency Image Format), que foi criado pelo Moving Picture Experts Group (MPEG). A Apple adotou-o como formato padrão no iOS 11.",
+    diveHeicP2: "Ao contrário do JPG, criado em 1992, o HEIC depende da moderna compressão de vídeo HEVC. Essencialmente, um arquivo HEIC é apenas um frame de um arquivo de vídeo altamente compactado. Como a compressão de vídeo avançou drasticamente nos últimos 30 anos, o HEIC pode armazenar os mesmos dados de pixels que um JPG em cerca de metade dos bytes.",
+    diveHeicP3: "A palavra 'Container' (Contentor) no HEIC é a chave. Um arquivo HEIC pode conter várias imagens num único arquivo. É exatamente assim que a funcionalidade Live Photos da Apple funciona: armazena a imagem estática de alta qualidade e o curto vídeo, tudo embrulhado num único arquivo HEIC.",
+    diveHeicAdv: "Vantagens do HEIC",
+    diveHeicAdvList: [
+      "Metade do tamanho do arquivo: reduz drasticamente os custos de armazenamento.",
+      "Profundidade de cor de 16 bits: suporta muito mais cores e melhor alcance dinâmico (HDR) do que o limite de 8 bits do JPG.",
+      "Live Photos e mapas de profundidade: pode conter rajadas de fotos, áudio e dados de profundidade do Modo Retrato.",
+      "Suporte de transparência: ao contrário do JPG, o HEIC pode armazenar fundos transparentes (semelhante ao PNG)."
+    ],
+    diveHeicDis: "Desventajas de HEIC",
+    diveHeicDisList: [
+      "Compatibilidade fraca: muitos PCs Windows antigos, dispositivos Android e Smart TVs não conseguem abri-los.",
+      "Inadequado para a web: pouquíssimos navegadores conseguem exibir HEIC nativamente. Precisa quase sempre de ser convertido antes de enviar para um site."
+    ],
+    diveJpgTitle: "Análise profunda: O que é o JPG (ou JPEG)?",
+    diveJpgP1: "JPEG significa Joint Photographic Experts Group, o comité que criou o padrão em 1992. É inegavelmente o formato de imagem mais utilizado na história da internet.",
+    diveJpgP2: "O JPG depende de uma matemática de compressão com perdas mais antiga (Transformada de Coseno Discreta) para descartar dados visuais que o olho humano não deteta facilmente. Embora a compressão não seja tão eficiente quanto a do HEIC, é 'suficientemente boa' para a maioria das finalidades padrão de web e impressão.",
+    diveJpgP3: "A força absoluta do formato JPG é que é suportado universalmente. Pode enviar um JPG para uma impressora, fazer upload para um portal do governo antigo, enviá-lo para um telemóvel Android ou abri-lo numa Smart TV, e ele funcionará sempre.",
+    diveJpgAdv: "Vantagens do JPG",
+    diveJpgAdvList: [
+      "Compatibilidade universal: funciona em qualquer lugar, a qualquer hora, sem exceção.",
+      "Descodificação rápida: dispositivos mais antigos conseguem abrir JPGs muito mais rápido do que descodificar arquivos complexos de HEIC."
+    ],
+    diveJpgDis: "Desvantagens do JPG",
+    diveJpgDisList: [
+      "Tamanhos de arquivo inchados: ocupa significativamente mais espaço em disco do que formatos modernos como HEIC ou WebP.",
+      "Perda por geração: cada vez que abre, edita e volta a guardar um JPG, destrói permanentemente um pouco mais de dados."
+    ],
+    snippetSectionTitle: "Quando usar HEIC ou JPG",
+    snippetSectionDesc: "Escolher o formato de arquivo correto é crucial para equilibrar a clareza visual e a facilidade de partilha. Abaixo estão respostas diretas às perguntas mais comuns.",
+    q1: "Porque é que o meu iPhone guarda fotos como HEIC?",
+    a1: "A Apple mudou para HEIC como o formato de câmara padrão no iOS 11 porque utiliza compressão de vídeo HEVC avançada. Isso permite que o seu iPhone guarde fotografias com cerca de metade do tamanho de arquivo de um JPG sem perder nenhuma qualidade visual.",
+    q2: "O Windows ou Android podem abrir arquivos HEIC?",
+    a2: "Dispositivos Android modernos e computadores Windows mais recentes (com a extensão HEVC instalada) conseguem abrir arquivos HEIC. No entanto, a compatibilidade ainda é muito fraca em comparação com o JPG. Dispositivos mais antigos e muitos websites recusam-se a abrir o HEIC.",
+    q3: "Qual formato tem melhor qualidade: HEIC ou JPG?",
+    a3: "O HEIC é tecnicamente superior. Suporta profundidade de cor de 16 bits (permitindo melhor alcance dinâmico e HDR) enquanto o JPG é limitado a 8 bits. O HEIC também captura detalhes finos com menos blocos de compressão.",
+    q4: "O HEIC suporta fundos transparentes?",
+    a4: "Sim, ao contrário do JPG, o HEIC suporta transparência. Pode armazenar dados de transparência do canal alfa, permitindo ter imagens com fundos transparentes semelhantes ao formato PNG.",
+    q5: "Quais são as desvantagens do HEIC?",
+    a5: "As principais desvantagens do HEIC são a compatibilidade e o suporte de navegadores. A maioria dos navegadores web não consegue exibir HEIC nativamente, e PCs antigos, Androids ou Smart TVs exigem software de conversão ou codecs."
+  },
+  id: {
+    seoTitle: "HEIC vs JPG: Mana Format yang Lebih Baik untuk iPhone? (2026)",
+    seoDescription: "HEIC atau JPG? Kami membandingkan format modern HEIC dari Apple dengan JPG klasik. Pelajari perbedaan dalam ukuran file, kualitas, dan kompatibilitas.",
+    title: "HEIC vs JPG: Mana Format yang Lebih Baik?",
+    intro: "Jika Anda memiliki iPhone, Anda mungkin pernah menemukan format HEIC. Ini adalah keajaiban teknologi kompresi modern yang menghemat banyak ruang penyimpanan. Namun, apakah format ini layak digunakan di tengah masalah kompatibilitas saat berbagi foto dengan pengguna non-Apple? Berikut semua hal yang perlu Anda ketahui tentang HEIC vs JPG.",
+    quickAnswer: "Jawaban Cepat",
+    useHeicFor: "Gunakan HEIC untuk:",
+    useHeicForDesc: "Menyimpan foto di iPhone dan Mac Anda untuk menghemat 50% ruang iCloud sambil mempertahankan kualitas HDR maksimal.",
+    useJpgFor: "Gunakan JPG untuk:",
+    useJpgForDesc: "Mengirim foto ke komputer Windows, ponsel Android, mengunggah ke formulir web, atau mengirimkan galeri klien akhir.",
+    differenceTitle: "Apa Perbedaan Antara HEIC dan JPG?",
+    differenceDesc: "Meskipun kedua format menampilkan gambar berkualitas tinggi, keduanya menggunakan algoritma kompresi dan teknologi yang sangat berbeda. Berikut perbandingan teknis berdampingan antara HEIC vs JPG.",
+    thFeature: "Fitur / Aspek",
+    thHeic: "HEIC (High Efficiency Image Container)",
+    thJpg: "JPG / JPEG (Joint Photographic Experts Group)",
+    tdCompStandard: "Standar Kompresi",
+    tdCompStandardHeic: "Kompresi video HEVC (H.265)",
+    tdCompStandardJpg: "Discrete Cosine Transform (DCT) (1992)",
+    tdFileSize: "Ukuran File Rata-rata",
+    tdFileSizeHeic: "~50% lebih kecil dari JPG untuk kualitas yang setara",
+    tdFileSizeJpg: "Ukuran standar (sering kali dua kali lipat ukuran HEIC)",
+    tdColorDepth: "Dukungan Kedalaman Warna",
+    tdColorDepthHeic: "Hingga 16-bit (Mendukung HDR/warna dinamis)",
+    tdColorDepthJpg: "Terbatas pada 8-bit (16.7 juta warna)",
+    tdTransparency: "Dukungan Transparansi",
+    tdTransparencyHeic: "Ya (mendukung saluran transparansi alfa)",
+    tdTransparencyJpg: "Tidak (harus menyatukan area transparan dengan warna solid)",
+    tdContainer: "Kontainer Multi-Gambar/Burst",
+    tdContainerHeic: "Ya (cara Apple menyimpan Live Photos & peta kedalaman)",
+    tdContainerJpg: "Tidak (hanya menyimpan satu bingkai gambar datar)",
+    tdBrowser: "Dukungan Browser Web",
+    tdBrowserHeic: "Sangat buruk (memerlukan konversi sebelum diunggah ke web)",
+    tdBrowserJpg: "Universal (didukung secara bawaan di semua browser)",
+    tdCompatibility: "Kompatibilitas",
+    tdCompatibilityHeic: "Terbatas (masalah pada Windows lama, Android, Smart TV)",
+    tdCompatibilityJpg: "Universal (berfungsi di semua perangkat dan platform perangkat lunak)",
+    converterTitle: "Konversi HEIC ke JPG Instan (Gratis & Privat)",
+    testTitle: "Pengujian Dunia Nyata: Penghematan Ruang Penyimpanan",
+    testDesc: "Alasan utama Apple beralih ke HEIC adalah ruang disk. Kami mengambil foto standar 12-megapiksel menggunakan iPhone dan membandingkan ukuran filenya.",
+    testHeicTitle: "Format HEIC",
+    testHeicSub: "Efisiensi Tinggi",
+    testHeicSize: "1.8 MB",
+    testHeicDesc: "Ukuran file yang sangat kecil. Memungkinkan Anda menyimpan foto dua kali lebih banyak di ponsel sebelum kehabisan ruang iCloud.",
+    testJpgTitle: "Format JPG",
+    testJpgSub: "Format Lama",
+    testJpgSize: "3.9 MB",
+    testJpgDesc: "Memakan ruang lebih dari dua kali lipat untuk kualitas visual yang sama persis. Memenuhi galeri foto Anda dengan sangat cepat.",
+    diveHeicTitle: "Analisis Mendalam: Apa itu HEIC?",
+    diveHeicP1: "HEIC adalah singkatan dari High Efficiency Image Container (Wadah Gambar Efisiensi Tinggi). Ini adalah varian dari standar HEIF (High Efficiency Image Format), yang dibuat oleh Moving Picture Experts Group (MPEG). Apple mengadopsinya sebagai format default sejak iOS 11.",
+    diveHeicP2: "Berbeda dengan JPG yang dibuat pada tahun 1992, HEIC mengandalkan kompresi video HEVC modern. Pada dasarnya, file HEIC hanyalah satu bingkai dari file video yang sangat terkompresi. Karena matematika kompresi video telah berkembang pesat selama 30 tahun terakhir, HEIC dapat menyimpan data piksel yang sama persis dengan JPG dalam ukuran byte sekitar setengahnya.",
+    diveHeicP3: "Kata 'Container' dalam HEIC adalah kuncinya. File HEIC dapat menampung beberapa gambar di dalam satu file tunggal. Ini adalah cara kerja fitur Live Photos milik Apple—menyimpan gambar diam berkualitas tinggi beserta video pendek dalam satu file HEIC.",
+    diveHeicAdv: "Kelebihan HEIC",
+    diveHeicAdvList: [
+      "Setengah Ukuran File: Sangat mengurangi biaya penyimpanan.",
+      "Kedalaman Warna 16-Bit: Mendukung jauh lebih banyak warna dan rentang dinamis (HDR) yang lebih baik daripada batas 8-bit JPG.",
+      "Live Photos & Peta Kedalaman: Dapat berisi burst gambar, audio, dan data kedalaman Mode Potret.",
+      "Dukungan Transparansi: Berbeda dengan JPG, HEIC dapat menyimpan latar belakang transparan (mirip dengan PNG)."
+    ],
+    diveHeicDis: "Kekurangan HEIC",
+    diveHeicDisList: [
+      "Kompatibilitas Buruk: Banyak PC Windows lama, perangkat Android, dan Smart TV tidak dapat membukanya.",
+      "Tidak Ramah Web: Sangat sedikit browser web yang dapat menampilkan file HEIC secara bawaan. File ini hampir selalu harus dikonversi sebelum diunggah ke situs web."
+    ],
+    diveJpgTitle: "Analisis Mendalam: Apa itu JPG (atau JPEG)?",
+    diveJpgP1: "JPEG adalah singkatan dari Joint Photographic Experts Group, komite yang menciptakan standar ini pada tahun 1992. Format ini tidak diragukan lagi merupakan format gambar yang paling banyak digunakan dalam sejarah internet.",
+    diveJpgP2: "JPG mengandalkan matematika kompresi lossy lama (Discrete Cosine Transform) untuk membuang data visual yang tidak dapat dideteksi dengan mudah oleh mata manusia. Meskipun kompresinya tidak seefisien HEIC, format ini 'cukup baik' untuk sebagian besar tujuan web dan cetak standar.",
+    diveJpgP3: "Kelebihan utama dari format JPG adalah dukungannya yang bersifat universal. Anda dapat mengirim JPG ke printer, mengunggahnya ke portal pemerintah lama, mengirimkannya ke ponsel Android, atau membukanya di smart TV, dan format ini akan selalu berfungsi.",
+    diveJpgAdv: "Kelebihan JPG",
+    diveJpgAdvList: [
+      "Kompatibilitas Universal: Berfungsi di mana saja, kapan saja, tanpa pengecualian.",
+      "Decoding Cepat: Perangkat lama dapat membuka JPG jauh lebih cepat daripada mendekode file HEIC yang rumit."
+    ],
+    diveJpgDis: "Kekurangan JPG",
+    diveJpgDisList: [
+      "Ukuran File Besar: Memakan ruang disk yang jauh lebih besar dibandingkan format modern seperti HEIC atau WebP.",
+      "Generation Loss: Setiap kali Anda membuka, mengedit, dan menyimpan kembali file JPG, sebagian data gambar akan hilang secara permanen."
+    ],
+    snippetSectionTitle: "Kapan Menggunakan HEIC atau JPG",
+    snippetSectionDesc: "Memilih format file yang tepat sangat penting untuk menyeimbangkan kejelasan visual dan kemudahan berbagi. Di bawah ini adalah jawaban langsung untuk pertanyaan yang paling sering diajukan.",
+    q1: "Mengapa iPhone saya menyimpan foto sebagai HEIC?",
+    a1: "Apple beralih to HEIC sebagai format kamera default di iOS 11 karena menggunakan kompresi video HEVC tingkat lanjut. Hal ini memungkinkan iPhone Anda menyimpan foto dalam ukuran file sekitar setengah dari JPG tanpa kehilangan kualitas visual sedikit pun.",
+    q2: "Apakah Windows atau Android bisa membuka file HEIC?",
+    a2: "Perangkat Android modern dan komputer Windows baru (dengan ekstensi HEVC terpasang) dapat membuka file HEIC. Namun, kompatibilitasnya masih sangat buruk dibandingkan JPG. Banyak perangkat lama, smart TV, dan situs web menolaknya.",
+    q3: "Format mana yang memiliki kualitas lebih baik: HEIC atau JPG?",
+    a3: "HEIC secara teknis lebih unggul. Format ini mendukung kedalaman warna 16-bit (memungkinkan rentang dinamis dan HDR yang jauh lebih baik) sementara JPG terbatas pada 8-bit. HEIC juga menangkap detail dengan lebih sedikit artefak kompresi.",
+    q4: "Apakah HEIC mendukung latar belakang transparan?",
+    a4: "Ya, berbeda dengan JPG, HEIC mendukung transparansi. Format ini dapat menyimpan data transparansi saluran alfa, memungkinkan Anda memiliki gambar dengan latar belakang transparan mirip dengan PNG.",
+    q5: "Apa saja kekurangan HEIC?",
+    a5: "Kekurangan utama HEIC adalah masalah kompatibilitas dan dukungan browser. Sebagian besar browser web tidak dapat menampilkan file HEIC secara bawaan, dan PC Windows lama, perangkat Android, atau Smart TV memerlukan perangkat lunak konversi."
+  }
+};
+
+const text = pageTranslations[locale] || pageTranslations.es;
+
+// Schema for FAQPage and Article
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": text.seoTitle,
+      "description": text.seoDescription,
+      "author": {
+        "@type": "Organization",
+        "name": "Image Tool Stack"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": text.q1,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a1
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q2,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a2
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q3,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a3
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q4,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a4
+          }
+        },
+        {
+          "@type": "Question",
+          "name": text.q5,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": text.a5
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "heic-vs-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "heic-to-jpg");
+---
+
+<Layout title={text.seoTitle} description={text.seoDescription}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href={getLocalizedPath("/", locale)} class="hover:text-ink transition-colors">{text.homeText || "Home"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href={getLocalizedPath("/compare", locale)} class="hover:text-ink transition-colors">{text.compareLinkText || "Compare"}</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">HEIC vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">HEIC</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">{text.title}</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          {text.intro}
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          {text.quickAnswer}
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p><strong class="text-ink">{text.useHeicFor}</strong> {text.useHeicForDesc}</p>
+          <p><strong class="text-ink">{text.useJpgFor}</strong> {text.useJpgForDesc}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">{text.differenceTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.differenceDesc}
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">{text.thFeature}</th>
+                <th class="p-4">{text.thHeic}</th>
+                <th class="p-4">{text.thJpg}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompStandard || "Compression Standard"}</td>
+                <td class="p-4">{text.tdCompStandardHeic}</td>
+                <td class="p-4">{text.tdCompStandardJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdFileSize || "Average File Size"}</td>
+                <td class="p-4 text-success">{text.tdFileSizeHeic}</td>
+                <td class="p-4">{text.tdFileSizeJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdColorDepth || "Color Depth Support"}</td>
+                <td class="p-4 text-success">{text.tdColorDepthHeic}</td>
+                <td class="p-4 text-error">{text.tdColorDepthJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdTransparency || "Transparency Support"}</td>
+                <td class="p-4 text-success">{text.tdTransparencyHeic}</td>
+                <td class="p-4 text-error">{text.tdTransparencyJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdContainer || "Multi-Image Container"}</td>
+                <td class="p-4 text-success">{text.tdContainerHeic}</td>
+                <td class="p-4 text-error">{text.tdContainerJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdBrowser || "Web Browser Support"}</td>
+                <td class="p-4 text-error">{text.tdBrowserHeic}</td>
+                <td class="p-4 text-success">{text.tdBrowserJpg}</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">{text.tdCompatibility || "Compatibility"}</td>
+                <td class="p-4 text-error">{text.tdCompatibilityHeic}</td>
+                <td class="p-4 text-success">{text.tdCompatibilityJpg}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">{text.converterTitle}</h2>
+        <HeicToJpgTool toolId="heic-to-jpg" />
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.testTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          {text.testDesc}
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- HEIC Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">{locale === 'es' ? 'Ganador de almacenamiento' : locale === 'fr' ? 'Gagnant Stockage' : locale === 'de' ? 'Speicher-Gewinner' : locale === 'pt' ? 'Vencedor para Armazenamento' : 'Pemenang Penyimpanan'}</div>
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg mb-1">{text.testHeicTitle}</span>
+              <span class="text-indigo-900/60 text-xs">{text.testHeicSub}</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">{text.testHeicSize}</h3>
+            <p class="text-sm text-body flex-grow">{text.testHeicDesc}</p>
+          </div>
+          
+          <!-- JPG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex flex-col items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg mb-1">{text.testJpgTitle}</span>
+              <span class="text-red-900/60 text-xs">{text.testJpgSub}</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">{text.testJpgSize}</h3>
+            <p class="text-sm text-body flex-grow">{text.testJpgDesc}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Deep Dive: HEIC -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveHeicTitle}</h2>
+        <p>{text.diveHeicP1}</p>
+        <p>{text.diveHeicP2}</p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">{locale === 'es' ? 'Más que solo compresión' : locale === 'fr' ? 'Plus que de la compression' : locale === 'de' ? 'Mehr als nur Kompression' : locale === 'pt' ? 'Mais do que apenas compressão' : 'Lebih dari sekadar kompresi'}</h3>
+        <p>{text.diveHeicP3}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveHeicAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveHeicAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{locale === 'es' ? 'Desventajas de HEIC' : locale === 'fr' ? 'Inconvénients du HEIC' : locale === 'de' ? 'Nachteile von HEIC' : locale === 'pt' ? 'Desvantagens do HEIC' : 'Kekurangan HEIC'}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveHeicDisList.map((dis) => (
+            <li><strong>{dis.split(':')[0]}:</strong>{dis.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink">{text.diveJpgTitle}</h2>
+        <p>{text.diveJpgP1}</p>
+        <p>{text.diveJpgP2}</p>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8">{locale === 'es' ? 'El rey indiscutible de la compatibilidad' : locale === 'fr' ? 'Le roi incontesté de la compatibilité' : locale === 'de' ? 'Der unangefochtene König der Kompatibilität' : locale === 'pt' ? 'O rei indiscutível da compatibilidade' : 'Raja kompatibilitas yang tak terbantahkan'}</h3>
+        <p>{text.diveJpgP3}</p>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-success">{text.diveJpgAdv}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJpgAdvList.map((adv) => (
+            <li><strong>{adv.split(':')[0]}:</strong>{adv.split(':')[1]}</li>
+          ))}
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 text-error">{locale === 'es' ? 'Desventajas de JPG' : locale === 'fr' ? 'Inconvénients du JPG' : locale === 'de' ? 'Nachteile von JPG' : locale === 'pt' ? 'Desvantagens do JPG' : 'Kekurangan JPG'}</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          {text.diveJpgDisList.map((dis) => (
+            <li><strong>{dis.split(':')[0]}:</strong>{dis.split(':')[1]}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Detailed Comparisons & Use Cases -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.snippetSectionTitle}</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          {text.snippetSectionDesc}
+        </p>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q1}</h3>
+            <p class="leading-relaxed">{text.a1}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q2}</h3>
+            <p class="leading-relaxed">{text.a2}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q3}</h3>
+            <p class="leading-relaxed">{text.a3}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q4}</h3>
+            <p class="leading-relaxed">{text.a4}</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold text-ink mb-2">{text.q5}</h3>
+            <p class="leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">{text.faqTitle}</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q1}</h3>
+            <p class="text-body leading-relaxed">{text.a1}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q2}</h3>
+            <p class="text-body leading-relaxed">{text.a2}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q3}</h3>
+            <p class="text-body leading-relaxed">{text.a3}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q4}</h3>
+            <p class="text-body leading-relaxed">{text.a4}</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">{text.q5}</h3>
+            <p class="text-body leading-relaxed">{text.a5}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">{text.moreComparisons}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={getLocalizedPath(`/compare/${relatedComp.id}`, locale)} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">{text.ctaTitle}</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">{text.ctaDesc}</p>
+          <a href={getLocalizedPath(`/tools/${relatedTool.slug}`, locale)} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            {text.ctaButton}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="HEIC" />
+
+    </div>
+  </main>
+
+  <Footer />
+  
+  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+</Layout>

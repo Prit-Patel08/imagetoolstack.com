@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import comparisonsData from "../../data/comparisons.json";
 import toolsData from "../../data/tools.json";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
 
 // SEO Metadata
 const seoTitle = "EPS vs SVG: Vector Formats Explained (2026 Guide)";
@@ -48,6 +49,22 @@ const schema = {
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "It depends on the medium. If you are sending your logo to a manufacturer to be printed on a billboard or t-shirt, they will usually ask for an EPS file. If you are putting the logo in the header of your website, you should use an SVG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does EPS support transparency?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, EPS supports transparency for vector paths. However, web browsers cannot display EPS files, so you cannot use EPS transparency directly on a website. For web transparent vector graphics, SVG is the standard."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SVG a vector format?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, SVG (Scalable Vector Graphics) is a native XML-based vector image format. It stores images as mathematical shapes (lines, curves, and points) rather than pixels, allowing it to scale to any size without losing sharpness."
           }
         }
       ]
@@ -106,56 +123,67 @@ const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
         </div>
       </section>
 
-      <!-- Real World Feature Comparisons -->
+      <!-- Technical Comparison Matrix -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-8">EPS vs SVG: Vector Features Compared</h2>
-        <p class="text-lg text-body leading-relaxed mb-8">
-          Since both formats store image information as math coordinates rather than static pixels, they scale infinitely. However, their execution environments couldn't be more different. Here is how they stack up across key capabilities:
+        <h2 class="text-3xl font-bold text-ink mb-6">What is the Difference Between EPS and SVG?</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          Since both formats store image information as math coordinates rather than static pixels, they scale infinitely. However, their execution environments couldn't be more different. Here is a side-by-side technical comparison of EPS vs SVG.
         </p>
 
-        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8 bg-canvas">
-          <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm mb-8">
+          <table class="w-full border-collapse text-left text-sm text-body">
             <thead>
-              <tr class="bg-canvas-soft border-b border-hairline font-bold text-ink">
-                <th class="p-4">Feature</th>
-                <th class="p-4 w-1/3">EPS (Encapsulated PostScript)</th>
-                <th class="p-4 w-1/3">SVG (Scalable Vector Graphics)</th>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Aspect</th>
+                <th class="p-4">EPS (Encapsulated PostScript)</th>
+                <th class="p-4">SVG (Scalable Vector Graphics)</th>
               </tr>
             </thead>
-            <tbody class="text-sm text-body divide-y divide-hairline">
+            <tbody class="divide-y divide-hairline bg-canvas">
               <tr>
-                <td class="p-4 font-bold text-ink">Primary Target</td>
+                <td class="p-4 font-semibold text-ink">Primary Target</td>
                 <td class="p-4">High-end Print Media & Signage</td>
                 <td class="p-4">Modern Web Pages & Mobile Apps</td>
               </tr>
               <tr>
-                <td class="p-4 font-bold text-ink">Browser Support</td>
+                <td class="p-4 font-semibold text-ink">Browser Support</td>
                 <td class="p-4 text-error">None (Unsupported in web browsers)</td>
                 <td class="p-4 text-success">Universal (Chrome, Safari, Firefox, Edge)</td>
               </tr>
               <tr>
-                <td class="p-4 font-bold text-ink">Code-Based Styling</td>
+                <td class="p-4 font-semibold text-ink">Code-Based Styling</td>
                 <td class="p-4 text-error">No</td>
                 <td class="p-4 text-success">Yes (Can be styled with CSS and manipulated via JS)</td>
               </tr>
               <tr>
-                <td class="p-4 font-bold text-ink">Animation</td>
+                <td class="p-4 font-semibold text-ink">Animation</td>
                 <td class="p-4 text-error">No</td>
-                <td class="p-4 text-success">Yes (CSS animations, SMIL, green-sock scripts)</td>
+                <td class="p-4 text-success">Yes (CSS animations, SMIL, GSAP scripts)</td>
               </tr>
               <tr>
-                <td class="p-4 font-bold text-ink">File Format Structure</td>
+                <td class="p-4 font-semibold text-ink">File Format Structure</td>
                 <td class="p-4">PostScript language (binary or text)</td>
                 <td class="p-4">XML markup (plain text, easily compressed)</td>
               </tr>
               <tr>
-                <td class="p-4 font-bold text-ink">Print Optimization</td>
+                <td class="p-4 font-semibold text-ink">Print Optimization</td>
                 <td class="p-4 text-success">Excellent (Supports CMYK colors natively)</td>
                 <td class="p-4">Good (RGB native, needs conversion for print)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4 text-success">Yes (supports vector path transparency)</td>
+                <td class="p-4 text-success">Yes (native browser alpha-level transparency)</td>
               </tr>
             </tbody>
           </table>
         </div>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert SVG to PNG Instantly (Offline & Private)</h2>
+        <FormatConverter toolId="svg-to-png" />
       </section>
 
       <!-- Deep Dive: EPS -->
@@ -207,7 +235,7 @@ const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
         </ul>
       </section>
 
-      <!-- HTML FAQs -->
+      <!-- FAQs -->
       <section class="mb-16">
         <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
         <div class="space-y-6">
@@ -222,6 +250,14 @@ const relatedTool = toolsData.tools.find(t => t.slug === "svg-to-png");
           <div class="bg-canvas-soft rounded-xl p-6">
             <h3 class="text-xl font-bold text-ink mb-3">Which format is better for logos?</h3>
             <p class="text-body leading-relaxed">It depends on the medium. If you are sending your logo to a manufacturer to be printed on a billboard or t-shirt, they will usually ask for an EPS file. If you are putting the logo in the header of your website, you should use an SVG.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Does EPS support transparency?</h3>
+            <p class="text-body leading-relaxed">Yes, EPS supports transparency for vector paths. However, web browsers cannot display EPS files, so you cannot use EPS transparency directly on a website. For web transparent vector graphics, SVG is the standard.</p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6">
+            <h3 class="text-xl font-bold text-ink mb-3">Is SVG a vector format?</h3>
+            <p class="text-body leading-relaxed">Yes, SVG (Scalable Vector Graphics) is a native XML-based vector image format. It stores images as mathematical shapes (lines, curves, and points) rather than pixels, allowing it to scale to any size without losing sharpness.</p>
           </div>
         </div>
       </section>

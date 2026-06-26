@@ -1,0 +1,153 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import TimezoneConverterTool from "../../components/tools/TimezoneConverterTool.astro";
+import timezonesData from "../../data/timezones.json";
+
+export async function getStaticPaths() {
+  return timezonesData.pairs.map((pair) => {
+    const slug = `${pair.from.toLowerCase()}-to-${pair.to.toLowerCase()}`;
+    return {
+      params: { slug },
+      props: { pair }
+    };
+  });
+}
+
+const { pair } = Astro.props;
+const from = timezonesData.zones.find(z => z.code === pair.from)!;
+const to = timezonesData.zones.find(z => z.code === pair.to)!;
+
+// Helper to calculate timezone differences at build time
+function getOffsetDifferenceString(ianaFrom: string, ianaTo: string): string {
+  const date = new Date('2026-06-26T12:00:00Z'); // static date to keep builds deterministic
+  const getOffsetMinutes = (iana: string) => {
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: iana,
+        timeZoneName: 'longOffset'
+      }).formatToParts(date);
+      const val = parts.find(p => p.type === 'timeZoneName')?.value || '';
+      if (val === 'GMT' || val === 'UTC') return 0;
+      const match = val.match(/GMT([-+])(\d+):(\d+)/);
+      if (!match) return 0;
+      const sign = match[1] === '-' ? -1 : 1;
+      const hours = parseInt(match[2], 10);
+      const minutes = parseInt(match[3], 10);
+      return sign * (hours * 60 + minutes);
+    } catch (e) {
+      return 0;
+    }
+  };
+
+  const diffMinutes = getOffsetMinutes(ianaTo) - getOffsetMinutes(ianaFrom);
+  const diffHours = Math.abs(diffMinutes / 60);
+  const direction = diffMinutes >= 0 ? "ahead of" : "behind";
+  
+  if (diffHours === 0) {
+    return "are in the same timezone and have no time difference";
+  }
+  
+  const hourText = diffHours === 1 ? "hour" : "hours";
+  return `is ${diffHours} ${hourText} ${direction}`;
+}
+
+const timeDiffText = getOffsetDifferenceString(from.iana, to.iana);
+const title = `Convert ${from.code} to ${to.code} - ${from.name} to ${to.name} Time Converter`;
+const description = `Easily convert ${from.code} to ${to.code} time online. Compare standard work hours overlap, view differences between ${from.city} and ${to.city}, and use our visual timeline slider.`;
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `What is the time difference between ${from.code} and ${to.code}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${to.code} (${to.name}) ${timeDiffText} ${from.code} (${from.name}). For example, if it is 12:00 PM in ${from.city} (${from.code}), it will be the converted equivalent in ${to.city} (${to.code}) depending on active Daylight Saving adjustments.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Does ${from.city} or ${to.city} observe Daylight Saving Time (DST)?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Daylight Saving Time transitions depend on regional laws. ${from.city} (${from.code}) and ${to.city} (${to.code}) transition between Standard Time and Daylight Time based on local schedules in North America, Europe, or Australia, which the visual timeline slider automatically incorporates.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `How do I convert ${from.code} to ${to.code} manually?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `To convert manually, calculate the offset gap. Since ${to.code} ${timeDiffText} ${from.code}, simply add or subtract the corresponding number of hours to your starting time.`
+      }
+    }
+  ]
+};
+---
+<Layout title={title} description={description}>
+  <Navbar />
+
+  <main class="w-full relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-48 left-1/2 h-[700px] w-full -translate-x-1/2 mesh-gradient opacity-10"></div>
+
+    <div class="mx-auto max-w-[1400px] px-6 py-12 lg:px-8 relative z-10">
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-xs font-medium text-mute mb-8">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink truncate">{from.code} to {to.code} Converter</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="text-center mb-12 max-w-3xl mx-auto">
+        <h1 class="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl mb-4">
+          {from.code} to {to.code} Time Converter
+        </h1>
+        <p class="text-lg text-body">
+          Convert time from {from.name} ({from.city}) to {to.name} ({to.city}) with our interactive timeline slider.
+        </p>
+      </header>
+
+      <!-- Tool Widget -->
+      <div class="mb-16">
+        <TimezoneConverterTool defaultFrom={from.iana} defaultTo={to.iana} />
+      </div>
+
+      <!-- FAQ SEO Section -->
+      <section class="mx-auto max-w-[800px] bg-canvas border border-hairline rounded-2xl p-6 md:p-8 shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Frequently Asked Questions & Differences</h2>
+        
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-ink mb-2">What is the time difference between {from.code} and {to.code}?</h3>
+            <p class="text-sm text-body leading-relaxed">
+              {to.code} ({to.name}) {timeDiffText} {from.code} ({from.name}). This offset automatically updates to reflect local Daylight Saving adjustments during summer or winter transitions.
+            </p>
+          </div>
+
+          <div class="border-t border-hairline pt-6">
+            <h3 class="text-lg font-bold text-ink mb-2">Does {from.city} or {to.city} observe Daylight Saving Time (DST)?</h3>
+            <p class="text-sm text-body leading-relaxed">
+              Depending on their geographical locations, time zones like {from.code} (e.g. {from.city}) and {to.code} (e.g. {to.city}) may shift offsets twice a year to maximize daylight usage. Use the calendar date picker above to inspect exact offsets for future dates.
+            </p>
+          </div>
+
+          <div class="border-t border-hairline pt-6">
+            <h3 class="text-lg font-bold text-ink mb-2">How do I convert {from.code} to {to.code} manually?</h3>
+            <p class="text-sm text-body leading-relaxed">
+              You can calculate the conversion by adding or subtracting the offset difference. Since {to.code} {timeDiffText} {from.code}, adjust your time index accordingly. For exact calculations involving half-hour zones (like Indian Standard Time), our visual timeline slider is recommended to avoid mistakes.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+</Layout>
