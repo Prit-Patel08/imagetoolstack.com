@@ -128,5 +128,13 @@ export const fr = {
         }
       ]
     }
+  },
+  toolNames: {
+    "percentage-calculator": "Calculateur de Pourcentage",
+    "word-counter": "Compteur de Mots et Caractères"
+  },
+  toolDescriptions: {
+    "percentage-calculator": "Calculez des pourcentages, des différences de pourcentage, des augmentations de pourcentage et des valeurs de pourcentage instantanément dans votre navigateur. Sans envoi sur serveur, 100% privé.",
+    "word-counter": "Comptez les mots, les caractères, les phrases, les paragraphes et analysez les temps de lecture/parole. Éditeur entièrement privé basé sur le navigateur."
   }
 };

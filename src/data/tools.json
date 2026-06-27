@@ -10121,6 +10121,104 @@
         "date-calculator",
         "timezone-converter"
       ]
+    },
+    {
+      "id": "percentage-calculator",
+      "name": "Percentage Calculator",
+      "slug": "percentage-calculator",
+      "categoryId": "time-date",
+      "description": "Calculate percentages, percentage differences, percentage increases, and percentage values instantly inside your browser. No server uploads, 100% private.",
+      "seoTitle": "Percentage Calculator — Free Online Math Utility [100% Offline]",
+      "seoDescription": "Free online percentage calculator. Compute percentage changes, values, proportions, and base amounts instantly. 100% browser-based, secure, and private.",
+      "icon": "percent",
+      "inputFormats": [
+        "NUMBERS"
+      ],
+      "outputFormats": [
+        "NUMBERS"
+      ],
+      "benefits": [
+        "Instant Calculations: Live outputs update dynamically as you type without page reloads.",
+        "Multiple Formulas: Easily calculate percentage changes, proportions, and value additions.",
+        "Privacy Guaranteed: Math operations run completely in your browser, maintaining full data confidentiality."
+      ],
+      "useCases": [
+        "Calculating discount savings, sales tax, or tip amounts.",
+        "Finding percentage growth or decline for financial reports.",
+        "Computing school grade ratios and proportions."
+      ],
+      "relatedArticles": [
+        "free-image-tools"
+      ],
+      "howToSteps": [
+        "Choose the percentage calculation card matching your desired formula.",
+        "Enter the base numbers or percentage rates into the numeric input fields.",
+        "Observe the output values update instantly in real-time as you type.",
+        "Click the Clear button on the top right to start a new calculation."
+      ],
+      "faqs": [
+        {
+          "q": "How does the percentage difference calculation work?",
+          "a": "It computes the absolute difference between the start and end values, divides by the absolute start value, and multiplies by 100 to show the percentage increase or decrease."
+        },
+        {
+          "q": "Are my numeric inputs saved or tracked?",
+          "a": "No. The calculator processes everything client-side in your browser. No data is sent to our servers, keeping your calculations private."
+        }
+      ],
+      "relatedTools": [
+        "date-calculator",
+        "age-calculator"
+      ]
+    },
+    {
+      "id": "word-counter",
+      "name": "Word & Character Counter",
+      "slug": "word-counter",
+      "categoryId": "utility",
+      "description": "Count words, characters, sentences, paragraphs, and analyze reading/speaking times. Fully private, browser-based editor.",
+      "seoTitle": "Free Online Word Counter — Count Words & Characters Live",
+      "seoDescription": "Analyze text length with our free, instant, and private word counter. Counts words, characters, sentences, paragraphs, and reading times offline. Zero text logs.",
+      "icon": "file-text",
+      "inputFormats": [
+        "TEXT"
+      ],
+      "outputFormats": [
+        "TEXT"
+      ],
+      "benefits": [
+        "Real-Time Statistics: Character, word, sentence, and paragraph counts update on the fly.",
+        "Speech & Reading Estimates: Displays estimated reading and speaking times based on standard metrics.",
+        "Text Density Analysis: Instantly identify the top 5 most frequently used words and character ratios."
+      ],
+      "useCases": [
+        "Drafting articles, essays, or blog posts within specific length limits.",
+        "Optimizing social media captions (e.g., character caps for Twitter or Instagram).",
+        "Checking speaking length for presentations and scripts."
+      ],
+      "relatedArticles": [
+        "free-image-tools"
+      ],
+      "howToSteps": [
+        "Type or paste your text directly into the main text editor box.",
+        "Look at the statistics board to see character, word, sentence, and paragraph updates.",
+        "Review the estimated reading time, speaking time, and keyword densities below.",
+        "Use the Copy or Clear buttons to quickly manage your text inputs."
+      ],
+      "faqs": [
+        {
+          "q": "Does the word counter support other languages?",
+          "a": "Yes. The regex engine splits words using unicode word characters, supporting English, Spanish, French, German, Portuguese, Indonesian, and more."
+        },
+        {
+          "q": "Is my text secure when using this counter?",
+          "a": "Absolutely. All text processing occurs locally within your browser sandbox. None of your content is ever uploaded, cached, or saved."
+        }
+      ],
+      "relatedTools": [
+        "image-redactor",
+        "pdf-metadata-viewer"
+      ]
     }
   ],
   "categories": [

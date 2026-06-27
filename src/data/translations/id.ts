@@ -128,5 +128,13 @@ export const id = {
         }
       ]
     }
+  },
+  toolNames: {
+    "percentage-calculator": "Kalkulator Persentase",
+    "word-counter": "Penghitung Kata & Karakter"
+  },
+  toolDescriptions: {
+    "percentage-calculator": "Hitung persentase, selisih persentase, kenaikan persentase, dan nilai persentase secara instan di browser Anda. Tanpa unggah server, 100% privat.",
+    "word-counter": "Hitung kata, karakter, kalimat, paragraf, dan analisis waktu membaca/berbicara. Editor berbasis browser yang sepenuhnya privat."
   }
 };

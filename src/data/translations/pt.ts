@@ -128,5 +128,13 @@ export const pt = {
         }
       ]
     }
+  },
+  toolNames: {
+    "percentage-calculator": "Calculadora de Porcentagem",
+    "word-counter": "Contador de Palavras e Caracteres"
+  },
+  toolDescriptions: {
+    "percentage-calculator": "Calcule porcentagens, diferenças de porcentagem, aumentos de porcentagem e valores de porcentagem instantaneamente no seu navegador. Sem uploads no servidor, 100% privado.",
+    "word-counter": "Conte palavras, caracteres, frases, parágrafos e analise tempos de leitura/fala. Editor totalmente privado baseado no navegador."
   }
 };

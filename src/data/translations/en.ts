@@ -128,5 +128,13 @@ export const en = {
         }
       ]
     }
+  },
+  toolNames: {
+    "percentage-calculator": "Percentage Calculator",
+    "word-counter": "Word & Character Counter"
+  },
+  toolDescriptions: {
+    "percentage-calculator": "Calculate percentages, percentage differences, percentage increases, and percentage values instantly inside your browser. No server uploads, 100% private.",
+    "word-counter": "Count words, characters, sentences, paragraphs, and analyze reading/speaking times. Fully private, browser-based editor."
   }
 };

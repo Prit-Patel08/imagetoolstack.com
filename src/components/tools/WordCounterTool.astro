@@ -1,0 +1,201 @@
+---
+// Word Counter & Character Counter Tool Component
+---
+<div id="word-counter-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  <!-- Textarea & Action Controls -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <label for="text-input" class="text-sm font-semibold text-ink">Type or Paste Your Text Below</label>
+      <div class="flex gap-3">
+        <button id="btn-copy" class="text-xs font-semibold text-link hover:underline">Copy Text</button>
+        <button id="btn-clear" class="text-xs font-semibold text-rose-600 hover:underline">Clear All</button>
+      </div>
+    </div>
+    <textarea id="text-input" rows="12" placeholder="Start typing here or paste your document content..." class="w-full rounded-xl border border-hairline bg-canvas-soft px-4 py-3 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none resize-y leading-relaxed font-sans"></textarea>
+  </div>
+
+  <!-- Primary Counters Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Words</span>
+      <span id="count-words" class="text-2xl font-extrabold text-link font-mono">0</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Characters</span>
+      <span id="count-chars" class="text-2xl font-extrabold text-link font-mono">0</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Sentences</span>
+      <span id="count-sentences" class="text-2xl font-extrabold text-link font-mono">0</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Paragraphs</span>
+      <span id="count-paragraphs" class="text-2xl font-extrabold text-link font-mono">0</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Readability & Speaking Times -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <h3 class="text-sm font-bold text-ink uppercase tracking-wider">Estimated Times</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-canvas-soft-2 p-3.5 rounded-xl border border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest block">Reading Time</span>
+          <span id="time-reading" class="text-base font-bold text-ink mt-1 block font-mono">--</span>
+          <span class="text-[10px] text-mute block mt-0.5">(200 WPM speed)</span>
+        </div>
+        <div class="bg-canvas-soft-2 p-3.5 rounded-xl border border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest block">Speaking Time</span>
+          <span id="time-speaking" class="text-base font-bold text-ink mt-1 block font-mono">--</span>
+          <span class="text-[10px] text-mute block mt-0.5">(130 WPM speed)</span>
+        </div>
+      </div>
+      <div class="bg-canvas-soft p-3 rounded-lg border border-hairline text-xs text-body">
+        <strong class="text-ink">Detailed Character Split:</strong> 
+        <span id="chars-no-spaces" class="font-mono">0</span> characters excluding spaces, 
+        <span id="space-count" class="font-mono">0</span> space characters.
+      </div>
+    </div>
+
+    <!-- Keyword Density Analysis -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <h3 class="text-sm font-bold text-ink uppercase tracking-wider">Top 5 Keyword Density</h3>
+      <div id="density-list" class="flex flex-col gap-2.5 text-sm text-body">
+        <div class="text-mute italic text-xs py-4 text-center">Type some text above to see keyword density analysis.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const textInput = document.getElementById('text-input') as HTMLTextAreaElement;
+    const btnCopy = document.getElementById('btn-copy')!;
+    const btnClear = document.getElementById('btn-clear')!;
+
+    const countWords = document.getElementById('count-words')!;
+    const countChars = document.getElementById('count-chars')!;
+    const countSentences = document.getElementById('count-sentences')!;
+    const countParagraphs = document.getElementById('count-paragraphs')!;
+
+    const timeReading = document.getElementById('time-reading')!;
+    const timeSpeaking = document.getElementById('time-speaking')!;
+
+    const charsNoSpaces = document.getElementById('chars-no-spaces')!;
+    const spaceCount = document.getElementById('space-count')!;
+    const densityList = document.getElementById('density-list')!;
+
+    function analyzeText() {
+      const text = textInput.value;
+
+      // 1. Core Counts
+      const charCountValue = text.length;
+      
+      // Words (supporting Unicode languages)
+      const wordsArray = text.match(/\p{L}+/ug) || [];
+      const wordCountValue = wordsArray.length;
+
+      // Sentences (. ! ?)
+      const sentencesArray = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const sentenceCountValue = sentencesArray.length;
+
+      // Paragraphs
+      const paragraphsArray = text.split(/\n+/).filter(p => p.trim().length > 0);
+      const paragraphCountValue = paragraphsArray.length;
+
+      // Update basic UI labels
+      countWords.textContent = wordCountValue.toLocaleString();
+      countChars.textContent = charCountValue.toLocaleString();
+      countSentences.textContent = sentenceCountValue.toLocaleString();
+      countParagraphs.textContent = paragraphCountValue.toLocaleString();
+
+      // 2. Formatting Characters details
+      const spaces = (text.match(/\s/g) || []).length;
+      spaceCount.textContent = spaces.toLocaleString();
+      charsNoSpaces.textContent = (charCountValue - spaces).toLocaleString();
+
+      // 3. Time Estimations
+      if (wordCountValue === 0) {
+        timeReading.textContent = '--';
+        timeSpeaking.textContent = '--';
+      } else {
+        // Reading Time: 200 WPM
+        const readTimeSecs = Math.round((wordCountValue * 60) / 200);
+        if (readTimeSecs < 60) {
+          timeReading.textContent = `${readTimeSecs} sec${readTimeSecs !== 1 ? 's' : ''}`;
+        } else {
+          const mins = Math.floor(readTimeSecs / 60);
+          const secs = readTimeSecs % 60;
+          timeReading.textContent = secs > 0 ? `${mins} min ${secs} sec` : `${mins} min`;
+        }
+
+        // Speaking Time: 130 WPM
+        const speakTimeSecs = Math.round((wordCountValue * 60) / 130);
+        if (speakTimeSecs < 60) {
+          timeSpeaking.textContent = `${speakTimeSecs} sec${speakTimeSecs !== 1 ? 's' : ''}`;
+        } else {
+          const mins = Math.floor(speakTimeSecs / 60);
+          const secs = speakTimeSecs % 60;
+          timeSpeaking.textContent = secs > 0 ? `${mins} min ${secs} sec` : `${mins} min`;
+        }
+      }
+
+      // 4. Keyword Frequency Count (Top 5 words)
+      if (wordCountValue === 0) {
+        densityList.innerHTML = '<div class="text-mute italic text-xs py-4 text-center">Type some text above to see keyword density analysis.</div>';
+      } else {
+        const freqMap: Record<string, number> = {};
+        wordsArray.forEach(w => {
+          const cleanWord = w.toLowerCase();
+          // Filter out short filler words (stop words) if they are less than 2 letters
+          if (cleanWord.length > 2) {
+            freqMap[cleanWord] = (freqMap[cleanWord] || 0) + 1;
+          }
+        });
+
+        const sortedKeywords = Object.entries(freqMap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+
+        if (sortedKeywords.length === 0) {
+          densityList.innerHTML = '<div class="text-mute italic text-xs py-4 text-center">No words longer than 2 characters found.</div>';
+        } else {
+          let listHtml = '';
+          sortedKeywords.forEach(([word, count]) => {
+            const density = ((count / wordCountValue) * 100).toFixed(1);
+            listHtml += `
+              <div class="flex items-center justify-between border-b border-hairline pb-2 last:border-0 last:pb-0">
+                <span class="font-semibold text-ink font-mono">${word}</span>
+                <span class="text-mute text-xs">${count} time${count !== 1 ? 's' : ''} (${density}%)</span>
+              </div>
+            `;
+          });
+          densityList.innerHTML = listHtml;
+        }
+      }
+    }
+
+    // Bind event
+    textInput.addEventListener('input', analyzeText);
+    analyzeText();
+
+    // Copy text
+    btnCopy.addEventListener('click', () => {
+      if (!textInput.value) return;
+      navigator.clipboard.writeText(textInput.value).then(() => {
+        const originalText = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => {
+          btnCopy.textContent = originalText;
+        }, 1500);
+      });
+    });
+
+    // Clear text
+    btnClear.addEventListener('click', () => {
+      textInput.value = '';
+      analyzeText();
+      textInput.focus();
+    });
+  });
+</script>

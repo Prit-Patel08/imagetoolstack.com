@@ -92,6 +92,8 @@ import UnixTimestampTool from "../../components/tools/UnixTimestampTool.astro";
 import TimezoneConverterTool from "../../components/tools/TimezoneConverterTool.astro";
 import DateCalculatorTool from "../../components/tools/DateCalculatorTool.astro";
 import AgeCalculatorTool from "../../components/tools/AgeCalculatorTool.astro";
+import PercentageCalculatorTool from "../../components/tools/PercentageCalculatorTool.astro";
+import WordCounterTool from "../../components/tools/WordCounterTool.astro";
 import toolsData from "../../data/tools.json";
 import { translateTool, translateCategory } from "../../utils/i18n";
 export async function getStaticPaths() {
@@ -131,6 +133,10 @@ if (tool.slug === 'avif-to-png') {
   ToolComponent = DateCalculatorTool;
 } else if (tool.slug === 'age-calculator') {
   ToolComponent = AgeCalculatorTool;
+} else if (tool.slug === 'percentage-calculator') {
+  ToolComponent = PercentageCalculatorTool;
+} else if (tool.slug === 'word-counter') {
+  ToolComponent = WordCounterTool;
 } else if (tool.slug === 'image-resizer') {
   ToolComponent = ImageResizer;
 } else if (tool.slug === 'color-picker') {

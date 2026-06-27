@@ -128,5 +128,13 @@ export const de = {
         }
       ]
     }
+  },
+  toolNames: {
+    "percentage-calculator": "Prozentrechner",
+    "word-counter": "Wort- und Zeichenzähler"
+  },
+  toolDescriptions: {
+    "percentage-calculator": "Berechnen Sie Prozentsätze, Prozentdifferenzen, Prozenterhöhungen und Prozentwerte sofort in Ihrem Browser. Keine Server-Uploads, 100% privat.",
+    "word-counter": "Zählen Sie Wörter, Zeichen, Sätze und Absätze und analysieren Sie Lese- und Sprechzeiten. Vollständig privater, browserbasierter Editor."
   }
 };

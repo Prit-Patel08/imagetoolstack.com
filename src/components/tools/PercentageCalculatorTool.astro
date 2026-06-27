@@ -1,0 +1,263 @@
+---
+// Percentage Calculator Tool Component
+---
+<div id="pct-calc-root" class="w-full flex flex-col gap-8 max-w-4xl mx-auto">
+  <!-- Card 1: What is X% of Y? -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-ink">1. Calculate Percentage Value</h3>
+      <button class="clear-btn text-xs font-semibold text-link hover:underline" data-target="calc-1">Clear</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-end gap-4">
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c1-pct" class="text-xs font-semibold text-mute uppercase">What is</label>
+        <div class="relative">
+          <input type="number" id="c1-pct" placeholder="e.g. 15" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none pr-8">
+          <span class="absolute right-3 top-2.5 text-sm font-semibold text-mute">%</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c1-val" class="text-xs font-semibold text-mute uppercase">of</label>
+        <input type="number" id="c1-val" placeholder="e.g. 200" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="bg-canvas-soft-2 p-3.5 rounded-lg border border-hairline flex flex-col justify-center min-h-[50px] sm:col-span-2 md:col-span-1">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-0.5">Result</span>
+        <span id="c1-res" class="text-xl font-bold text-link font-mono">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: X is what percent of Y? -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-ink">2. Calculate Proportion Percentage</h3>
+      <button class="clear-btn text-xs font-semibold text-link hover:underline" data-target="calc-2">Clear</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-end gap-4">
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c2-val1" class="text-xs font-semibold text-mute uppercase">Value</label>
+        <input type="number" id="c2-val1" placeholder="e.g. 25" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c2-val2" class="text-xs font-semibold text-mute uppercase">is what percent of value</label>
+        <input type="number" id="c2-val2" placeholder="e.g. 200" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="bg-canvas-soft-2 p-3.5 rounded-lg border border-hairline flex flex-col justify-center min-h-[50px] sm:col-span-2 md:col-span-1">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-0.5">Result</span>
+        <span id="c2-res" class="text-xl font-bold text-link font-mono">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Percentage Increase/Decrease (X to Y) -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-ink">3. Calculate Percentage Difference (Increase/Decrease)</h3>
+      <button class="clear-btn text-xs font-semibold text-link hover:underline" data-target="calc-3">Clear</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-end gap-4">
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c3-val1" class="text-xs font-semibold text-mute uppercase">From value</label>
+        <input type="number" id="c3-val1" placeholder="e.g. 150" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c3-val2" class="text-xs font-semibold text-mute uppercase">To value</label>
+        <input type="number" id="c3-val2" placeholder="e.g. 240" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="bg-canvas-soft-2 p-3.5 rounded-lg border border-hairline flex flex-col justify-center min-h-[50px] sm:col-span-2 md:col-span-1">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-0.5">Change</span>
+        <span id="c3-res" class="text-xl font-bold text-link font-mono">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Add / Subtract Percentage -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-ink">4. Add or Subtract Percentage</h3>
+      <button class="clear-btn text-xs font-semibold text-link hover:underline" data-target="calc-4">Clear</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 items-end gap-4">
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c4-val" class="text-xs font-semibold text-mute uppercase">Starting Value</label>
+        <input type="number" id="c4-val" placeholder="e.g. 100" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c4-op" class="text-xs font-semibold text-mute uppercase">Action</label>
+        <select id="c4-op" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+          <option value="add">Add (+)</option>
+          <option value="sub">Subtract (-)</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c4-pct" class="text-xs font-semibold text-mute uppercase">Percentage</label>
+        <div class="relative">
+          <input type="number" id="c4-pct" placeholder="e.g. 20" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none pr-8">
+          <span class="absolute right-3 top-2.5 text-sm font-semibold text-mute">%</span>
+        </div>
+      </div>
+      <div class="bg-canvas-soft-2 p-3.5 rounded-lg border border-hairline flex flex-col justify-center min-h-[50px] sm:col-span-2 md:col-span-1">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-0.5">Final Value</span>
+        <span id="c4-res" class="text-xl font-bold text-link font-mono">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: X is Y% of what? -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-ink">5. Find Base Value (Reverse Percentage)</h3>
+      <button class="clear-btn text-xs font-semibold text-link hover:underline" data-target="calc-5">Clear</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-end gap-4">
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c5-val" class="text-xs font-semibold text-mute uppercase">If value</label>
+        <input type="number" id="c5-val" placeholder="e.g. 30" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none">
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label for="c5-pct" class="text-xs font-semibold text-mute uppercase">is exactly</label>
+        <div class="relative">
+          <input type="number" id="c5-pct" placeholder="e.g. 15" class="w-full rounded-lg border border-hairline bg-canvas-soft px-4 py-2.5 text-sm focus:border-link focus:ring-1 focus:ring-link outline-none pr-8">
+          <span class="absolute right-3 top-2.5 text-sm font-semibold text-mute">%</span>
+        </div>
+      </div>
+      <div class="bg-canvas-soft-2 p-3.5 rounded-lg border border-hairline flex flex-col justify-center min-h-[50px] sm:col-span-2 md:col-span-1">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-0.5">Base Value</span>
+        <span id="c5-res" class="text-xl font-bold text-link font-mono">--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Helper to format numeric results nicely (limit decimal places if fractional)
+    function formatResult(num: number): string {
+      if (isNaN(num) || !isFinite(num)) return '--';
+      return Number(num.toFixed(4)).toLocaleString(undefined, { maximumFractionDigits: 4 });
+    }
+
+    // 1. Calculate Percentage Value
+    const c1Pct = document.getElementById('c1-pct') as HTMLInputElement;
+    const c1Val = document.getElementById('c1-val') as HTMLInputElement;
+    const c1Res = document.getElementById('c1-res')!;
+
+    function calc1() {
+      const pct = parseFloat(c1Pct.value);
+      const val = parseFloat(c1Val.value);
+      if (isNaN(pct) || isNaN(val)) {
+        c1Res.textContent = '--';
+        return;
+      }
+      c1Res.textContent = formatResult((pct / 100) * val);
+    }
+
+    // 2. Calculate Proportion Percentage
+    const c2Val1 = document.getElementById('c2-val1') as HTMLInputElement;
+    const c2Val2 = document.getElementById('c2-val2') as HTMLInputElement;
+    const c2Res = document.getElementById('c2-res')!;
+
+    function calc2() {
+      const val1 = parseFloat(c2Val1.value);
+      const val2 = parseFloat(c2Val2.value);
+      if (isNaN(val1) || isNaN(val2) || val2 === 0) {
+        c2Res.textContent = '--';
+        return;
+      }
+      c2Res.textContent = formatResult((val1 / val2) * 100) + '%';
+    }
+
+    // 3. Calculate Percentage Difference (Increase/Decrease)
+    const c3Val1 = document.getElementById('c3-val1') as HTMLInputElement;
+    const c3Val2 = document.getElementById('c3-val2') as HTMLInputElement;
+    const c3Res = document.getElementById('c3-res')!;
+
+    function calc3() {
+      const val1 = parseFloat(c3Val1.value);
+      const val2 = parseFloat(c3Val2.value);
+      if (isNaN(val1) || isNaN(val2) || val1 === 0) {
+        c3Res.textContent = '--';
+        return;
+      }
+      const diff = val2 - val1;
+      const pctChange = (diff / Math.abs(val1)) * 100;
+      const prefix = pctChange > 0 ? '+' : '';
+      c3Res.textContent = `${prefix}${formatResult(pctChange)}%`;
+      
+      if (pctChange > 0) {
+        c3Res.className = "text-xl font-bold text-emerald-600 font-mono";
+      } else if (pctChange < 0) {
+        c3Res.className = "text-xl font-bold text-rose-600 font-mono";
+      } else {
+        c3Res.className = "text-xl font-bold text-link font-mono";
+      }
+    }
+
+    // 4. Add or Subtract Percentage
+    const c4Val = document.getElementById('c4-val') as HTMLInputElement;
+    const c4Op = document.getElementById('c4-op') as HTMLSelectElement;
+    const c4Pct = document.getElementById('c4-pct') as HTMLInputElement;
+    const c4Res = document.getElementById('c4-res')!;
+
+    function calc4() {
+      const val = parseFloat(c4Val.value);
+      const pct = parseFloat(c4Pct.value);
+      if (isNaN(val) || isNaN(pct)) {
+        c4Res.textContent = '--';
+        return;
+      }
+      const modifier = c4Op.value === 'add' ? 1 : -1;
+      c4Res.textContent = formatResult(val + (modifier * (val * pct / 100)));
+    }
+
+    // 5. Reverse Percentage (Base Value)
+    const c5Val = document.getElementById('c5-val') as HTMLInputElement;
+    const c5Pct = document.getElementById('c5-pct') as HTMLInputElement;
+    const c5Res = document.getElementById('c5-res')!;
+
+    function calc5() {
+      const val = parseFloat(c5Val.value);
+      const pct = parseFloat(c5Pct.value);
+      if (isNaN(val) || isNaN(pct) || pct === 0) {
+        c5Res.textContent = '--';
+        return;
+      }
+      c5Res.textContent = formatResult(val / (pct / 100));
+    }
+
+    // Wire up events
+    c1Pct.addEventListener('input', calc1);
+    c1Val.addEventListener('input', calc1);
+
+    c2Val1.addEventListener('input', calc2);
+    c2Val2.addEventListener('input', calc2);
+
+    c3Val1.addEventListener('input', calc3);
+    c3Val2.addEventListener('input', calc3);
+
+    c4Val.addEventListener('input', calc4);
+    c4Op.addEventListener('change', calc4);
+    c4Pct.addEventListener('input', calc4);
+
+    c5Val.addEventListener('input', calc5);
+    c5Pct.addEventListener('input', calc5);
+
+    // Wire up clear buttons
+    document.querySelectorAll('.clear-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement).getAttribute('data-target');
+        if (target === 'calc-1') {
+          c1Pct.value = ''; c1Val.value = ''; calc1();
+        } else if (target === 'calc-2') {
+          c2Val1.value = ''; c2Val2.value = ''; calc2();
+        } else if (target === 'calc-3') {
+          c3Val1.value = ''; c3Val2.value = ''; calc3();
+        } else if (target === 'calc-4') {
+          c4Val.value = ''; c4Pct.value = ''; calc4();
+        } else if (target === 'calc-5') {
+          c5Val.value = ''; c5Pct.value = ''; calc5();
+        }
+      });
+    });
+  });
+</script>

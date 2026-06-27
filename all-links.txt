@@ -1,16 +1,22 @@
 # === CATEGORY 1: CONSUMER CALCULATORS & TIME/DATE TOOLS (Priority 1 - High Traffic) ===
 https://imagetoolstack.com/de/tools/age-calculator
 https://imagetoolstack.com/de/tools/date-calculator
+https://imagetoolstack.com/de/tools/percentage-calculator
 https://imagetoolstack.com/es/tools/age-calculator
 https://imagetoolstack.com/es/tools/date-calculator
+https://imagetoolstack.com/es/tools/percentage-calculator
 https://imagetoolstack.com/fr/tools/age-calculator
 https://imagetoolstack.com/fr/tools/date-calculator
+https://imagetoolstack.com/fr/tools/percentage-calculator
 https://imagetoolstack.com/id/tools/age-calculator
 https://imagetoolstack.com/id/tools/date-calculator
+https://imagetoolstack.com/id/tools/percentage-calculator
 https://imagetoolstack.com/pt/tools/age-calculator
 https://imagetoolstack.com/pt/tools/date-calculator
+https://imagetoolstack.com/pt/tools/percentage-calculator
 https://imagetoolstack.com/tools/age-calculator
 https://imagetoolstack.com/tools/date-calculator
+https://imagetoolstack.com/tools/percentage-calculator
 
 # === CATEGORY 2: IMAGE & PDF OPTIMIZATION TOOLS (Priority 2 - High Traffic) ===
 https://imagetoolstack.com/best-bulk-image-resizer-free
@@ -1438,6 +1444,7 @@ https://imagetoolstack.com/de/tools/sprite-generator
 https://imagetoolstack.com/de/tools/timezone-converter
 https://imagetoolstack.com/de/tools/unix-timestamp
 https://imagetoolstack.com/de/tools/vintage-filter
+https://imagetoolstack.com/de/tools/word-counter
 https://imagetoolstack.com/es/best-add-watermark-tool-online
 https://imagetoolstack.com/es/best-ai-photo-metadata-viewer
 https://imagetoolstack.com/es/best-free-color-picker-from-image
@@ -1494,6 +1501,7 @@ https://imagetoolstack.com/es/tools/sprite-generator
 https://imagetoolstack.com/es/tools/timezone-converter
 https://imagetoolstack.com/es/tools/unix-timestamp
 https://imagetoolstack.com/es/tools/vintage-filter
+https://imagetoolstack.com/es/tools/word-counter
 https://imagetoolstack.com/fr/best-add-watermark-tool-online
 https://imagetoolstack.com/fr/best-ai-photo-metadata-viewer
 https://imagetoolstack.com/fr/best-free-color-picker-from-image
@@ -1550,6 +1558,7 @@ https://imagetoolstack.com/fr/tools/sprite-generator
 https://imagetoolstack.com/fr/tools/timezone-converter
 https://imagetoolstack.com/fr/tools/unix-timestamp
 https://imagetoolstack.com/fr/tools/vintage-filter
+https://imagetoolstack.com/fr/tools/word-counter
 https://imagetoolstack.com/how-to-add-a-watermark-to-images
 https://imagetoolstack.com/how-to-fix-blurry-photos-for-print
 https://imagetoolstack.com/how-to-remove-image-metadata
@@ -1609,6 +1618,7 @@ https://imagetoolstack.com/id/tools/sprite-generator
 https://imagetoolstack.com/id/tools/timezone-converter
 https://imagetoolstack.com/id/tools/unix-timestamp
 https://imagetoolstack.com/id/tools/vintage-filter
+https://imagetoolstack.com/id/tools/word-counter
 https://imagetoolstack.com/pt/best-add-watermark-tool-online
 https://imagetoolstack.com/pt/best-ai-photo-metadata-viewer
 https://imagetoolstack.com/pt/best-free-color-picker-from-image
@@ -1665,6 +1675,7 @@ https://imagetoolstack.com/pt/tools/sprite-generator
 https://imagetoolstack.com/pt/tools/timezone-converter
 https://imagetoolstack.com/pt/tools/unix-timestamp
 https://imagetoolstack.com/pt/tools/vintage-filter
+https://imagetoolstack.com/pt/tools/word-counter
 https://imagetoolstack.com/tools/add-watermark
 https://imagetoolstack.com/tools/base64-to-image
 https://imagetoolstack.com/tools/base64-to-pdf
@@ -1705,6 +1716,7 @@ https://imagetoolstack.com/tools/sprite-generator
 https://imagetoolstack.com/tools/timezone-converter
 https://imagetoolstack.com/tools/unix-timestamp
 https://imagetoolstack.com/tools/vintage-filter
+https://imagetoolstack.com/tools/word-counter
 
 # === CATEGORY 6: FORMAT COMPARISONS & SEO GUIDES (Priority 6 - Low Traffic) ===
 https://imagetoolstack.com/alternatives/11zon
