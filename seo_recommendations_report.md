@@ -340,7 +340,7 @@ Below is the structured implementation schedule for the next 90 days:
 3.  **Fix timezone page breadcrumb translation leak**: Localize the joining conjunctions. *(Implemented)*
 4.  **Embed Converter widgets on alternatives pages**: Drive retention on alternatives routes. *(Implemented)*
 5.  **Enforce Canonical URL rewrites**: Implement hosting redirects to strip `.html`.
-6.  **Create Category Hub SEO intros**: Add 150-word targeted intros to category index templates.
+6.  **Create Category Hub SEO intros**: Add 150-word targeted intros to category index templates. *(Implemented)*
 7.  **Add FAQ sections to calculators**: Add H2/H3 targeted FAQs inside `tools.json`.
 8.  **Link Category tools on tool sidebars**: Update navigation sidebar to loop related tools.
 9.  **Build JSON Formatter Tool**: Deploy client-side JSON formatting converter page.
