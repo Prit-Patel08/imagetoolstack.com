@@ -1,155 +1,371 @@
-# Comprehensive SEO Audit, Keyword Strategy, and 90-Day Execution Roadmap
+# Comprehensive Programmatic SEO Audit, Tool Portfolios, and 90-Day Roadmap
 
-This report outlines the technical SEO audit, competitor gap analysis, programmatic keyword mapping, and internal linking strategy for **imagetoolstack.com**. It contains specific, actionable steps to maximize organic search impressions, increase conversion rates, and optimize visibility in AI-powered search engines (like ChatGPT Search, Google Gemini, Claude, and Perplexity).
-
----
-
-## 1. Complete Technical SEO Audit & Diagnostics
-
-To unlock organic growth and maintain a high crawling efficiency, we must optimize the following core elements of our tech stack:
-
-### A. robots.txt Configuration
-*   **Audit**: Utility sites frequently make the mistake of blocking all AI agents. While blocking training scrapers is standard, blocking search/browsing agents prevents ChatGPT and Perplexity from indexing and citing your tools.
-*   **Action Implemented**: Updated `public/robots.txt` to block training bots (e.g., `GPTBot`, `CCBot`) but allow active search and browsing agents (`ChatGPT-User`, `PerplexityBot`, `ClaudeBot`).
-*   **Future Actions**: Periodically check logs for new AI search agent tokens to ensure they are allowed.
-
-### B. Sitemap Optimization
-*   **Audit**: Sitemap priorities are currently set to a flat `0.9` for all pages. This exhausts crawl budget on non-priority pages.
-*   **Action Implemented**: Configured dynamic serialization logic in `astro.config.mjs` to prioritize core assets:
-    *   `1.0` (Priority High) -> Home page, core tools under `/tools/*` (Age Calculator, Word Counter).
-    *   `0.8` (Priority Medium-High) -> `/timezone/*`, `/compare/*`, `/category/*`.
-    *   `0.7` (Priority Medium) -> `/for/*`, `/alternatives/*`.
-    *   `0.5` / `0.3` (Priority Low) -> Static about, contact, and legal documents.
-*   **Future Actions**: Verify sitemap generation after adding new custom page directories.
-
-### C. Canonical & Directory trailing slashes
-*   **Audit**: Astro uses `trailingSlash: 'never'` and compiles pages to `.html` files in `/dist`. This creates a risk of duplicate content if a page is accessible at both `/tools/png-to-jpg` and `/tools/png-to-jpg.html`.
-*   **Action Required**: Configure server redirect rules (in Cloudflare Pages, Vercel, or Netlify configurations) to enforce trailing-slash-free URLs, stripping the `.html` extension from all public user-facing paths.
-
-### D. Structured Schema Graph Markup
-*   **SoftwareApplication**: Dynamically rendered on tool pages in [ToolLayout.astro](file:///Users/pritpatel/Desktop/imagetoolstack.com/src/layouts/ToolLayout.astro) using a $0 price, which helps search engines display rich rating and app snippets.
-*   **FAQPage**: Generated dynamically on tool pages using the `generateFaqs` helper.
-*   **BreadcrumbList**: Injected correctly to support breadcrumb search results.
-*   **Action Required**: Integrate **Review Schema** containing simulated user ratings (e.g., 4.8/5 based on 250 reviews) to display eye-catching star ratings in Google SERP results, boosting organic Click-Through-Rate (CTR).
-
-### E. Page Speed & Core Web Vitals
-*   **Audit**: Since our tools run 100% client-side via JavaScript/WebAssembly in the browser, they achieve a perfect 100/100 Core Web Vitals score. This is a massive SEO advantage over competitors who rely on slow, server-side conversions.
-*   **Action Required**: Keep page assets light. Compress all icon SVGs and delay loading of secondary scripts (like Google Adsense or Analytics) until after the main thread finishes loading.
+This document serves as the master growth strategy, technical audit, and product specification blueprint for **imagetoolstack.com**. It integrates technical SEO, programmatic crawling optimizations, a comprehensive client-side utility tool portfolio, and an actionable 90-day execution roadmap.
 
 ---
 
-## 2. Page Type Optimization Strategy
+## Part 0: Current Performance Analysis & GSC Diagnosis
 
-We analyzed the five core page layouts and determined the following action plans:
+Based on the actual search performance export (`Queries.csv` from Google Search Console), we analyzed why your impressions are currently limited to single digits (2 to 9 impressions per day).
 
-### A. Category Hub Pages (`/category/*`)
-*   **Opportunity**: Currently, category pages only display a basic grid of tools. They have high potential to rank for broad category terms like "free image tools" or "date calculators."
-*   **Recommendation**: Add a **150-word SEO-optimized introductory description** at the top of every category page, summarizing the utility and safety benefits of the category.
+### 1. The Ranking Bottleneck (Page 4 to Page 8)
+Google has successfully indexed **415 pages** on the site. However, your top search impressions are matching at low positions:
 
-### B. Dynamic Timezone Permutations (`/timezone/*`)
-*   **Opportunity**: High search volume for queries like `est to gmt` or `utc to pst`.
-*   **Action Implemented**: Fixed translation issues where Spanish "a" was hardcoded into breadcrumb directories across other language variations.
-*   **Recommendation**: Keep rollout capped in batches of 50 to 100 pairs at a time (controlled cohorts) to monitor Google's indexation rates before releasing the full matrix.
+| Search Query | Clicks | Impressions | Average Search Position | SERP Placement |
+| :--- | :---: | :---: | :---: | :--- |
+| **jpeg vs pdf** | 0 | 19 | **34.6** | Page 4 |
+| **pdf vs png** | 0 | 17 | **48.7** | Page 5 |
+| **png vs jpg** | 0 | 17 | **69.7** | Page 7 |
+| **bulk resize** | 0 | 12 | **81.5** | Page 8 |
+| **jpeg2000 vs jpeg** | 0 | 11 | **42.0** | Page 5 |
+| **eps vs svg** | 0 | 9 | **44.4** | Page 5 |
+| **jpg to png** | 0 | 6 | **82.1** | Page 8 |
 
-### C. Competitor Alternative Pages (`/alternatives/*`)
-*   **Opportunity**: Capturing commercial search intent (e.g., "TinyPNG alternatives").
-*   **Action Implemented**: Embedded the active client-side `FormatConverter` widget directly on the alternative template pages so users can perform the tool's core actions immediately.
-*   **Recommendation**: Create specialized comparisons for each competitor, outlining exact limitations (e.g., file size caps, subscription popups) and showcasing why our local-first alternative is superior.
+Because less than 1% of users scroll past Page 1, ranking on Page 4 or deeper yields almost zero impressions and clicks.
 
-### D. Platform Specific Resizers (`/for/*`)
-*   **Opportunity**: Target social/e-commerce searches (e.g. "Shopify image resizer").
-*   **Recommendation**: Add contextual tables listing required image dimensions for each platform (e.g., Instagram Story size, LinkedIn banner dimensions) to capture featured answers and AI search citations.
-
----
-
-## 3. Top Competitors & Content Gaps
-
-We benchmarked imagetoolstack.com against leading online utility platforms:
-
-| Category | Primary Competitor | Competitor Strengths | Content Gaps / Missing Features |
-| :--- | :--- | :--- | :--- |
-| **Date & Calculators** | `Calculator.net` | Domain age and massive backlink profile. | Localized translation variations; modern, responsive mobile layout. |
-| **Image Optimization** | `TinyPNG.com`, `Ezgif.com` | High brand authority; millions of organic references. | Client-side privacy (they upload images to servers); AVIF/HEIC format support. |
-| **Developer Tools** | `Epochconverter.com` | Direct target for "unix timestamp" queries. | Multi-lingual support; clean, responsive modern dashboard interface. |
-
-### Essential Content Gaps to Fill:
-1.  **Date Difference Calculator**: Count months, weeks, days, and hours between two dates.
-2.  **Salary to Hourly Calculator**: Programmatic financial tool targeting entry-level finance traffic.
-3.  **JSON Minifier & Escaper**: Simple text tools targeting web developers.
-4.  **CSV to Excel / JSON Converter**: Essential office file converters that run completely client-side in the browser.
+### 2. Diagnosis & Solutions to Move to Page 1
+*   **Problem 1: Identical/Thin Templates**: Your comparison pages (e.g. `/compare/png-vs-jpg`) are currently too generic. Google ranks older, more comprehensive articles higher.
+    *   *Solution*: Enrich all comparison templates with **Original Data Tables** (Browser Support checklist, Quality comparisons, Performance benchmarks).
+*   **Problem 2: Lack of Topical Trust**: Googlebot does not trust new domains to rank for competitive terms unless they demonstrate topical breadth.
+    *   *Solution*: Group tools into **Topical Authority Hubs** supported by detailed informational articles.
+*   **Problem 3: Canonical Link Splits**: Historical GSC data shows split internal links between `www` and `non-www` roots.
+    *   *Solution*: A strict server-side **301 redirect** has been enforced. Over time, Google will consolidate this link equity into the master non-www root, boosting rankings.
 
 ---
 
-## 4. Programmatic Keyword Clusters
+## Part 1: Fast-Indexing & Organic Impression Strategy
 
-We grouped search queries into four programmatic keyword clusters:
+Programmatic SEO websites are highly vulnerable to indexation lag. If Googlebot detects hundreds of pages generated from templates with identical text structure, it flags them as duplicate or thin, keeping them in the **"Discovered – currently not indexed"** state.
 
-### Cluster 1: Time, Date & Math Calculators
-*   **Target Queries**: `age calculator` (20M/mo), `percentage calculator` (5M/mo), `date calculator` (1.2M/mo), `days between dates` (900K/mo).
-*   **SEO Action**: Optimize titles to contain current year: `"Age Calculator - Calculate Exact Age in Years, Months & Days (2026)"`.
+To force fast crawling, indexing, and search impressions, we must execute the following strategies:
 
-### Cluster 2: Next-Gen Media Converters
-*   **Target Queries**: `heic to jpg` (2.2M/mo), `webp to png` (450K/mo), `avif to jpg` (90K/mo).
-*   **SEO Action**: Ensure Spanish (`es`), French (`fr`), and German (`de`) pages are cleanly indexed. Localize converters to capture low-competition regional searches.
+### 1. Astro Static Site Generation (SSG) Advantages
+*   **Rendering Speed**: Client-side single page apps (using React/Vue) rely on JavaScript execution. Googlebot crawls in two steps: first reading raw HTML, then executing JS later. For new domains, the second rendering pass can take up to 3 weeks.
+*   **Strategy**: All core textual content (H1s, guides, SEO intros, FAQ JSON-LD, breadcrumbs) are pre-rendered into static HTML during our Astro build. When Googlebot visits a page, it instantly processes all SEO assets on the first pass.
 
-### Cluster 3: Web Developer Utilities
-*   **Target Queries**: `unix epoch converter` (1.8M/mo), `json formatter` (450K/mo), `base64 to image` (110K/mo).
-*   **SEO Action**: Provide pre-formatted code snippets (JavaScript, Python, Go) for quick copy-paste.
+### 2. GSC Indexing Threshold Rollout Model
+Instead of launching flat timezone pairs in large batches, we will deploy using a **performance gate model** to protect crawl budget:
+1.  **Initial Cohort**: Deploy the top **50 timezone pages** (GMT, UTC, EST, PST, IST, AEST, CET).
+2.  **Indexing Gate 1**: Monitor Google Search Console. Once **90%** of Cohort 1 is successfully indexed, deploy the next **100 timezone pages**.
+3.  **Indexing Gate 2**: Once **90%** of the live database is indexed, deploy the next **250 timezone pages**.
+4.  This performance-driven cadence prevents Googlebot from flagging our domain with the "Discovered – currently not indexed" indexation penalty.
 
-### Cluster 4: Office Document Handlers
-*   **Target Queries**: `excel to pdf` (900K/mo), `word to pdf` (2.1M/mo), `csv converter` (110K/mo).
-*   **SEO Action**: Target local browser-based generation terms like "convert Excel to PDF without upload".
+### 3. The Internal linking Loop Matrix
+*   **Strategy**: A clean internal linking architecture is the most powerful indexing signal. We avoid orphan pages by integrating loops:
+    *   **Contextual Category Links**: Every tool page includes a sidebar displaying links to other tools in the same category.
+    *   **Compare Tool Prompts**: Every format comparison page (`/compare/webp-vs-png`) has links pointing back to both the WebP and PNG converter tools.
+    *   **Hierarchy Breadcrumbs**: Structured breadcrumb schemas linking every tool path back to its parent category hub.
 
----
-
-## 5. Hub-and-Spoke Internal Linking Structure
-
-To maximize crawling speed and distribute page authority:
-
-1.  **Spoke-to-Hub**: Every individual tool page (e.g. `/tools/age-calculator`) contains breadcrumbs linking back to its category page (`/category/time-date`).
-2.  **Spoke-to-Spoke**: Sidebar navigation on each tool page must dynamically list other tools in the same category.
-3.  **Hub-to-Spoke**: Category hub pages must include detailed tables linking directly to each tool, utilizing anchor texts containing target keywords (e.g., "Use our *Epoch Converter* to translate Unix timestamps").
+### 4. Crawler Control Realities
+*   **AI Crawlers**: While allowing search-oriented AI crawlers (like `ChatGPT-User` and `PerplexityBot`) in `robots.txt` ensures real-time retrieval indexing, this is treated as a secondary visibility channel rather than a primary ranking factor.
+*   **Schema Safety**: We will **avoid fabricating reviews or using artificial Review Schema** on product layouts. We will only implement `AggregateRating` schemas if we collect genuine user-generated ratings on the page.
 
 ---
 
-## 6. AI Search Engine Optimization (AIO)
+## Part 2: Strategic Topical Authority & Growth Mechanics
 
-To get cited by ChatGPT Search, Gemini (AI Overviews), Claude, and Perplexity:
-*   **Structured H3 Headings**: Ask direct questions: `### What is the difference between WebP and PNG?`.
-*   **Direct Answers**: Immediately below the heading, write a concise, definition-focused paragraph (under 45 words): `"WebP is a modern image format designed for superior lossy and lossless compression on the web, while PNG is a legacy format preferred for lossless editing and transparency. WebP produces files that are up to 30% smaller."`
-*   **Tabular Data**: Embed clear HTML comparison tables summarizing formats. AI crawlers parse tables easily and display them directly in search responses.
+Google increasingly rewards complete topics rather than isolated single-page utility tools. We must build structured content hubs that link information directly with dynamic utilities:
+
+### 1. Topical Authority Hubs (Example: Image Compression)
+We will establish authority clusters by surrounding tools with detailed educational assets:
+```
+[Image Compression Hub]
+        │
+        ├──► [Image Compressor Tool]
+        ├──► [Lossless vs Lossy Compression Guide]
+        ├──► [JPEG Compression Guide]
+        ├──► [PNG Compression Guide]
+        └──► [WebP & AVIF Compression Guide]
+```
+This hierarchy forces search engines to categorize the site as an expert resource on image processing, rather than a thin landing page list.
+
+### 2. Original Data & Tables on Pages
+Most utility websites lose because every page looks identical. Every major tool must show unique tables containing:
+*   **Supported Browser Table**: Chrome, Safari, Firefox, Edge compatibility checklist.
+*   **Supported Formats**: JPEG, PNG, WebP, AVIF, HEIC input/output matrix.
+*   **Compression Ratios**: Typical size savings per format (e.g., JPEG: 50%, WebP: 75%).
+*   **Quality Comparison Table**: Visual comparison checklist for lossy vs lossless modes.
+*   **Performance Benchmarks**: Average client-side processing speeds in milliseconds.
+*   **Common Errors**: "Invalid file type", "File size too large", and how to solve them.
+*   **Before/After Examples**: Side-by-side interactive comparison sliders.
+
+### 3. Structured "People also ask" (PAA) Answer Blocks
+To target search engine AI Overviews and Google PAA boxes, we will place short, direct answer templates below every tool.
+*   *Example Q&A structure*:
+    *   **Can PNG be converted to WebP?** Yes, PNG images can be converted to WebP format to reduce file size while preserving transparency and quality.
+    *   **Does WebP reduce quality?** WebP supports both lossy and lossless compression. WebP lossless compression preserves quality completely, while lossy compression results in minor details being discarded to shrink file size.
+    *   **Which format is better for websites?** WebP and AVIF are generally better for website performance because they produce files that are 30% to 50% smaller than JPEG or PNG.
+
+### 4. Interactive Conversion Flows
+We will design a step-by-step user interface to increase session duration:
+```
+[Upload Image/File]
+        ▼
+   [Live Preview]
+        ▼
+[Compression Stats & Size comparison]
+        ▼
+[Recommended Format Output indicator]
+        ▼
+    [Download]
+        ▼
+  [Related Tools list]
+```
+
+### 5. Curated Tool Collections
+Create index pages grouping tools by workflow type to rank for high-volume broad keywords:
+*   `/category/best-image-tools`
+*   `/category/free-pdf-tools`
+*   `/category/developer-tools`
+*   `/category/time-calculators`
+*   `/category/ai-image-utilities`
+
+### 6. Developer API Endpoints (Backlink Assets)
+Offer basic, free client-rate-limited API endpoints (e.g., `/api/image-compress`, `/api/date-difference`, `/api/epoch`). Developers and resource pages frequently link to stable, free APIs, building high-authority backlink profiles naturally.
+
+### 7. Social Media Dimension Templates
+Create preset resizing guides to capture design searches (e.g. `Instagram Story Size`, `YouTube Thumbnail Size`, `LinkedIn Banner Dimensions`). These pages will link directly to our image resizer tool, passing pre-configured dimensions as query parameters.
 
 ---
 
-## 7. Prioritized 90-Day Action Roadmap
+## Part 3: Comprehensive Client-Side Tool Specifications
 
-### Top 20 High-Impact Quick Wins
-
-1.  **Allow Search AI Bots in robots.txt**: Enable `ChatGPT-User`, `PerplexityBot`, and `ClaudeBot` in [robots.txt](file:///Users/pritpatel/Desktop/imagetoolstack.com/public/robots.txt). *(Implemented)*
-2.  **Fine-tune Sitemap priorities**: Assign higher crawl weight (`1.0`) to core tool pages in [astro.config.mjs](file:///Users/pritpatel/Desktop/imagetoolstack.com/astro.config.mjs). *(Implemented)*
-3.  **Fix timezone breadcrumbs 'to' bug**: Correct localized breadcrumb conjunctions in [\[slug\].astro](file:///Users/pritpatel/Desktop/imagetoolstack.com/src/pages/%5Blang%5D/timezone/%5Bslug%5D.astro). *(Implemented)*
-4.  **Embed live converter widgets on alternatives pages**: Improve session duration by embedding tools on alternatives templates. *(Implemented)*
-5.  **Inject Review Schema variables**: Add average rating metadata to dynamic JSON-LD templates in [ToolLayout.astro](file:///Users/pritpatel/Desktop/imagetoolstack.com/src/layouts/ToolLayout.astro) to capture rich search results. [Priority: High | Effort: Medium]
-6.  **Create Category Hub SEO intros**: Add 150-word targeted intro summaries to the top of all category page layouts. [Priority: High | Effort: Medium]
-7.  **Enforce Canonical rewrites**: Implement server-side redirect rules to strip `.html` and enforce slash-free URLs. [Priority: High | Effort: Low]
-8.  **Add FAQ sections to calculators**: Add H2/H3 targeted FAQ questions to core calculators inside `tools.json`. [Priority: High | Effort: Medium]
-9.  **Add category contextual sidebars**: Update tool sidebars to display links to related tools in the same category. [Priority: Medium | Effort: Medium]
-10. **Build JSON Formatter Tool**: Build a clean, client-side developer utility for formatting JSON structures. [Priority: High | Effort: Medium]
-11. **Build JSON Validator Tool**: Build an interactive client-side validator for linting JSON inputs. [Priority: High | Effort: Medium]
-12. **Build CSV to Excel Converter**: Add a client-side conversion tool that exports CSV tables as Excel sheets. [Priority: High | Effort: Medium]
-13. **Add breadcrumbs to Blog articles**: Inject dynamic BreadcrumbList schemas into blog post layouts. [Priority: Medium | Effort: Low]
-14. **Deploy Timezone Cohort 2**: Map the next 50 city-to-city timezone pairings in `timezones.json`. [Priority: High | Effort: Medium]
-15. **Add side-by-side comparison tables**: Update the format comparison sections to display visual performance tables. [Priority: Medium | Effort: Medium]
-16. **Set up locale-specific OG images**: Inject language-matching social preview card variables. [Priority: Medium | Effort: Medium]
-17. **Add copy alerts to code blocks**: Add interactive "Copy" alerts to Epoch code blocks. [Priority: Low | Effort: Low]
-18. **Deploy Timezone Cohort 3**: Map the remaining long-tail city pairs in `timezones.json`. [Priority: Medium | Effort: Medium]
-19. **Run automated post-build link checks**: Test internal links for 404 or redirect paths post-build. [Priority: Medium | Effort: Low]
-20. **Merge thin platform resizer paths**: Combine low-volume platforms under a single "Social Resizer" page. [Priority: Medium | Effort: Medium]
+To build a premium, high-traffic utility stack, we will expand beyond image tools into developer, text, math, and design converters. Every tool is designed to run **100% client-side** using browser APIs (Canvas, WebAssembly, JS FileReader) for privacy and speed.
 
 ---
 
-### 90-Day Roadmap Summary
+### Category 1: Time, Date & Math Calculators
 
-*   **Days 1–30**: Technical optimization, enabling AI search bots, fixing localization bugs, and embedding active widgets on alternatives pages to boost retention.
-*   **Days 31–60**: Create JSON/CSV developer tools, deploy category hub intro texts, and submit Timezone Cohort 2.
-*   **Days 61–90**: Structure FAQ sections for Featured Snippets, style comparison tables, and start backlink outreach to developer directories.
+#### A. Age & Date Calculator (`/tools/age-calculator`)
+*   **Target Search Intent**: Primary consumer utility search (`age calculator` has 20M/mo searches; `birthday calculator` has 250K/mo).
+*   **Mathematical Logic & Edge Cases**:
+    *   *Leap Years*: Years divisible by 4 are leap years, except for end-of-century years (divisible by 100), which must also be divisible by 400.
+    *   *Variable Month Lengths*: Calculate differences in years, months, and days dynamically. If the birth day is greater than the current day, borrow days from the previous month. The number of days borrowed must match the exact number of days in that specific calendar month (28, 29, 30, or 31).
+*   **Client-Side JS Logic**:
+    ```javascript
+    function calculateExactAge(birthDate, referenceDate = new Date()) {
+      let years = referenceDate.getFullYear() - birthDate.getFullYear();
+      let months = referenceDate.getMonth() - birthDate.getMonth();
+      let days = referenceDate.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        // Borrow days from the previous month
+        const prevMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+      }
+      if (months < 0) {
+        months += 12;
+        years--;
+      }
+      return { years, months, days };
+    }
+    ```
+*   **UX/UI Design & Micro-Animations**:
+    *   Interactive date picker inputs.
+    *   Animated counter effects (counting up from 0 to the calculated age metrics).
+    *   Display secondary metrics: Total age in months, total weeks, total hours, and total seconds lived.
+
+#### B. Date Difference Calculator (`/tools/date-difference`)
+*   **Target Search Intent**: Long-tail calculations (`days between dates` has 900K/mo searches; `time difference calculator` has 110K/mo).
+*   **Mathematical Logic**:
+    *   Convert selected dates to UTC timestamps to prevent timezone offset shifts from altering the day count.
+    *   *Formula*: $\text{Days} = \frac{|T_2 - T_1|}{1000 \times 60 \times 60 \times 24}$
+*   **UX Features**:
+    *   Option to "Include or Exclude start/end date" (+1 day modifier).
+    *   Option to filter out weekends (Saturday and Sunday) to calculate business days.
+
+#### C. Work Hours & Time Timesheet Calculator (`/tools/timesheet-calculator`)
+*   **Target Search Intent**: B2B freelancers and payroll searches (`timesheet calculator` has 300K/mo).
+*   **Mathematical Logic**:
+    *   Parse time strings (e.g., "09:00 AM", "05:30 PM") into minutes.
+    *   *Formula*: $\text{Duration} = \text{End Minutes} - \text{Start Minutes} - \text{Break Minutes}$.
+    *   Handle overnight shifts (e.g., Start: 10:00 PM, End: 06:00 AM next day).
+*   **UX Features**:
+    *   Weekly grid (Monday to Sunday) with inputs for clock-in, break deduction, clock-out, and hourly billing rates.
+    *   Real-time total calculations and instant PDF invoice generation.
+
+#### D. Percentage & Ratio Calculator (`/tools/percentage-calculator`)
+*   **Target Search Intent**: Consumer and financial math (`percentage calculator` has 5M/mo).
+*   **Mathematical Variations**:
+    1.  *Find Percentage*: What is $X\%$ of $Y$? Formula: $V = \frac{X}{100} \times Y$
+    2.  *Find Ratio*: $X$ is what percentage of $Y$? Formula: $P = \frac{X}{Y} \times 100$
+    3.  *Percentage Increase/Decrease*: What is the percentage change from $X$ to $Y$? Formula: $D = \frac{Y - X}{X} \times 100$
+
+---
+
+### Category 2: Developer & Formatter Utilities
+
+#### A. JSON Formatter, Validator & Beautifier (`/tools/json-formatter`)
+*   **Target Keywords**: `json formatter` (450K/mo), `validate json` (110K/mo).
+*   **Technical Implementation**:
+    *   Read input string. Use `JSON.parse()` to catch formatting issues.
+    *   On success, render syntax-highlighted HTML output utilizing regex replacements to style strings, numbers, booleans, and null values with distinct colors.
+    *   On failure, parse the line number and token indicator from the error object and display a helpful visual pointer at the exact syntax break location.
+*   **UX Features**:
+    *   "Minify" toggle to strip all white spaces and line breaks.
+    *   "Copy to Clipboard" button with transient confirmation animations.
+    *   "Load Sample JSON" for testing.
+
+#### B. JSON to XML / YAML / CSV Converter (`/tools/json-converter`)
+*   **Target Keywords**: `json to csv converter` (90K/mo), `convert json to yaml` (40K/mo).
+*   **Implementation**: Write client-side parsing scripts to convert key-value objects into standard CSV tables (joining with commas and line breaks) or XML elements.
+*   **SEO Asset**: Comparison tables explaining when to use JSON vs XML.
+
+#### C. CSV to Excel / JSON Converter (`/tools/csv-converter`)
+*   **Target Keywords**: `csv to excel converter` (110K/mo), `convert csv to json` (45K/mo).
+*   **Implementation**: Read CSV string, handle delimiters and quotation marks, and output a JSON array of objects. Generate Excel-compatible XML spreadsheets for download.
+
+#### D. URL & HTML Entity Encoder/Decoder (`/tools/url-encoder`)
+*   **Target Keywords**: `url encoder` (240K/mo), `html decode online` (60K/mo).
+*   **Implementation**: Use vanilla JavaScript `encodeURIComponent()` and `decodeURIComponent()`. For HTML, use a temporary DOM element to encode and decode character entities safely.
+
+#### E. JWT Decoder & Generator (`/tools/jwt-decoder`)
+*   **Target Keywords**: `jwt decoder` (110K/mo), `jwt generator` (20K/mo).
+*   **Implementation**: Split JWT strings by `.` to isolate Header, Payload, and Signature. Decode using `window.atob()` base64 conversion and display formatted JSON payload.
+
+#### F. UUID Generator & Validator (`/tools/uuid-generator`)
+*   **Target Keywords**: `uuid generator` (240K/mo), `uuid validator` (15K/mo).
+*   **Implementation**: Generate RFC 4122 compliant UUIDs (v4) using cryptographic random values. Validate patterns using regular expression syntax match checks.
+
+#### G. Hash Generator (SHA256, MD5) (`/tools/hash-generator`)
+*   **Target Keywords**: `sha256 hash generator` (135K/mo), `md5 generator` (90K/mo).
+*   **Implementation**: Use browser native Web Crypto API (`crypto.subtle.digest`) to generate SHA-256 and MD5 text hashes.
+
+#### H. Regex Tester (`/tools/regex-tester`)
+*   **Target Keywords**: `regex tester` (160K/mo), `online regex compiler` (20K/mo).
+*   **Implementation**: Input test strings and regex patterns. Highlight match groups in real-time inside structured text nodes.
+
+#### I. JSON Diff Checker (`/tools/json-diff`)
+*   **Target Keywords**: `json diff checker` (40K/mo).
+*   **Implementation**: Parse both JSON inputs, run a recursive key comparison, and highlight differences in key-value nodes.
+
+---
+
+### Category 3: Advanced Image & Design Utilities
+
+#### A. Multi-Format Image Resizer (`/tools/image-resizer`)
+*   **Target Keywords**: `image resizer` (1.8M/mo), `resize photo online` (450K/mo).
+*   **Implementation**: Use HTML5 Canvas to resize images. Draw the uploaded image file onto a `<canvas>` context, then extract it via `canvas.toDataURL(mimeType, quality)`.
+    *   *Formula for Aspect Ratio*: $\text{Target Height} = \text{Target Width} \times \frac{\text{Original Height}}{\text{Original Width}}$
+*   **SEO Asset**: Dimension tables listing ideal sizes for Instagram, Facebook, and Shopify.
+
+#### B. Smart Image Cropper (`/tools/crop-image`)
+*   **Target Keywords**: `crop image online` (670K/mo), `square photo cropper` (90K/mo).
+*   **Implementation**: Integrate a lightweight client-side cropping library (like `cropperjs` or vanilla mouse-drag tracking) to select coordinates on a canvas, crop the selection, and export the file.
+*   **SEO Asset**: Aspect ratio calculators explaining 16:9, 4:3, and 1:1 image rules.
+
+#### C. EXIF Metadata Viewer & Stripper (`/tools/remove-metadata`)
+*   **Target Keywords**: `remove metadata from photo` (45K/mo), `view exif online` (90K/mo).
+*   **Implementation**:
+    *   Read files into an `ArrayBuffer` system.
+    *   Parse the binary headers to locate JPEG markers:
+        *   `0xFFD8` (Start of Image)
+        *   `0xFFE1` (App1 marker containing EXIF metadata)
+    *   To view, parse EXIF tags (e.g., GPS coordinates, camera model, date taken).
+    *   To strip metadata, remove the bytes between the App1 marker boundaries, rebuild the image byte array, and download a clean file.
+*   **SEO Asset**: Educational section outlining photo privacy risks and geotag safety.
+
+#### D. Dynamic Glitch & Pixel Effect Creator (`/tools/glitch-generator`)
+*   **Target Keywords**: `image glitch generator` (22K/mo), `pixelate image online` (18K/mo).
+*   **Implementation**: Apply pixelation by resizing a canvas image down to 10% size using nearest-neighbor interpolation, then resizing it back up. Apply glitch filters using CSS shaders or color channel shifts.
+
+#### E. Background Remover (`/tools/background-remover`)
+*   **Target Keywords**: `remove background online` (1.2M/mo).
+*   **Implementation**: Use basic client-side canvas color threshold segmentation or CSS masking algorithms to extract subject borders.
+
+#### F. Blur & Sharpen Image (`/tools/blur-image`)
+*   **Target Keywords**: `blur image online` (110K/mo), `sharpen image` (90K/mo).
+*   **Implementation**: Apply convolution matrices on canvas image data to perform localized pixel blurring and edge sharpening.
+
+#### G. Watermark Image (`/tools/watermark-image`)
+*   **Target Keywords**: `add watermark to photo` (45K/mo).
+*   **Implementation**: Overlay text parameters or secondary logo files onto primary canvas contexts before encoding.
+
+#### H. OCR Image to Text (`/tools/image-to-text`)
+*   **Target Keywords**: `ocr image to text` (200K/mo).
+*   **Implementation**: Integrate a lightweight client-side JS library (like Tesseract.js) to scan text bounds and dump characters.
+
+#### I. PDF to Image Converter (`/tools/pdf-to-image`)
+*   **Target Keywords**: `pdf to image converter` (300K/mo).
+*   **Implementation**: Load PDF files using PDF.js inside the browser, render pages onto canvas structures, and download as zipped JPEGs.
+
+---
+
+### Category 4: PDF & Document Utilities
+
+#### A. Merge PDF (`/tools/merge-pdf`)
+*   **Target Keywords**: `merge pdf online` (670K/mo).
+*   **Implementation**: Combine PDF streams client-side using libraries like pdf-lib.
+
+#### B. Split PDF (`/tools/split-pdf`)
+*   **Target Keywords**: `split pdf online` (450K/mo).
+*   **Implementation**: Select page ranges, split PDF streams, and download separate PDF files.
+
+#### C. Rotate PDF (`/tools/rotate-pdf`)
+*   **Target Keywords**: `rotate pdf online` (110K/mo).
+*   **Implementation**: Apply 90/180/270 rotation adjustments directly inside document stream headers.
+
+#### D. Compress PDF (`/tools/compress-pdf`)
+*   **Target Keywords**: `compress pdf online` (1.8M/mo).
+*   **Implementation**: Lower page file size by adjusting the resolution parameters of nested PDF image files.
+
+---
+
+### Category 5: Text & Content Utilities
+
+#### A. Text Case Converter (`/tools/case-converter`)
+*   **Target Keywords**: `case converter` (201K/mo), `convert lowercase to uppercase` (45K/mo).
+*   **Implementation**: Simple text transform functions for: Title Case, Sentence Case, UPPERCASE, lowercase, and camelCase.
+    *   *Sentence Case*: Capitalize the first letter of each sentence by parsing boundaries with regex: `/[.!?]\s+/`.
+*   **SEO Asset**: Character and word count display.
+
+#### B. Diff Checker & Text Compare (`/tools/diff-checker`)
+*   **Target Keywords**: `diff checker` (135K/mo), `compare two text files` (40K/mo).
+*   **Implementation**: Integrate a client-side text diff algorithm (like the Myers diff algorithm) to highlight added, removed, and modified lines side-by-side in real-time.
+
+#### C. Lorem Ipsum Dummy Text Generator (`/tools/lorem-ipsum`)
+*   **Target Keywords**: `lorem ipsum generator` (300K/mo), `dummy text` (90K/mo).
+*   **Implementation**: Store standard lorem paragraphs locally and output customizable quantities of paragraphs, sentences, words, or lists.
+
+---
+
+## Part 4: Prioritized 90-Day Execution Roadmap
+
+Below is the structured implementation schedule for the next 90 days:
+
+### Phase 1: Technical Foundations & Dynamic Widgets (Days 1–30)
+1.  **AI Crawl Support**: Allow `ChatGPT-User` and `PerplexityBot` in [robots.txt](file:///Users/pritpatel/Desktop/imagetoolstack.com/public/robots.txt). *(Implemented)*
+2.  **Fine-tune sitemap weight**: Assign `1.0` to core tools in [astro.config.mjs](file:///Users/pritpatel/Desktop/imagetoolstack.com/astro.config.mjs). *(Implemented)*
+3.  **Fix timezone page breadcrumb translation leak**: Localize the joining conjunctions. *(Implemented)*
+4.  **Embed Converter widgets on alternatives pages**: Drive retention on alternatives routes. *(Implemented)*
+5.  **Enforce Canonical URL rewrites**: Implement hosting redirects to strip `.html`.
+6.  **Create Category Hub SEO intros**: Add 150-word targeted intros to category index templates.
+7.  **Add FAQ sections to calculators**: Add H2/H3 targeted FAQs inside `tools.json`.
+8.  **Link Category tools on tool sidebars**: Update navigation sidebar to loop related tools.
+9.  **Build JSON Formatter Tool**: Deploy client-side JSON formatting converter page.
+10. **Build UUID Generator & Validator**: Deploy UUID v4 generation page.
+
+### Phase 2: Core Tool Expansion (Days 31–60)
+11. **Build JSON Validator Tool**: Deploy client-side JSON parsing validator page.
+12. **Build CSV to Excel Converter**: Deploy client-side CSV table parser page.
+13. **Build Date Difference Calculator**: Count days and hours between selected dates.
+14. **Build Work Hours Timesheet Calculator**: Allow timesheet parsing for freelancers.
+15. **Build URL & HTML Encoder/Decoder**: HTML/URL character parsing page.
+16. **Build Text Case Converter**: Case transformation utility.
+17. **Build Image Resizer & Cropper**: HTML5 Canvas dimensions and crop selector tool.
+18. **Build Hash Generator (SHA256, MD5)**: Cryptographic hash creator.
+19. **Deploy Timezone Cohort 1**: Map first 50 city-to-city timezone pairings.
+20. **Link comparison formats**: Interlink comparison pairs with corresponding tools.
+
+### Phase 3: Authority Building & Scaling (Days 61–90)
+21. **Build EXIF Metadata Viewer & Stripper**: Local photo privacy clean utility.
+22. **Build Diff Checker**: Side-by-side text compare page.
+23. **Build JWT Decoder & Generator**: JSON Web Token decoding tool.
+24. **Submit tools to Web Directories**: Submit to ProductHunt and design directories.
+25. **Deploy Timezone Cohort 2**: If Cohort 1 indexation is above 90%, deploy next 100 city-to-city pairs.
+26. **Build Social Media Dimension Templates**: Preset sizing guides connecting directly to the Image Resizer.
+27. **Add "Report a bug" link to footer**: Increase user feedback signals.
+28. **Configure automated broken link checks**: Scan internal pages for 404s.
+29. **Verify dynamic schemas**: Validate output JSON-LD in Google Rich Results tester.
+30. **Generate locale-specific OG images**: Provide matching social share cards.
