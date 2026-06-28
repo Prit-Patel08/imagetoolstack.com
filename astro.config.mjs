@@ -28,9 +28,33 @@ export default defineConfig({
     sitemap({
       filter: (page) => !page.includes('/embed/'),
       serialize(item) {
-        item.changefreq = 'monthly';
         item.lastmod = new Date();
-        item.priority = 0.9;
+        const url = item.url;
+        if (url.includes('/tools/')) {
+          item.priority = 1.0;
+          item.changefreq = 'weekly';
+        } else if (url.includes('/category/')) {
+          item.priority = 0.8;
+          item.changefreq = 'weekly';
+        } else if (url.includes('/compare/')) {
+          item.priority = 0.8;
+          item.changefreq = 'weekly';
+        } else if (url.includes('/timezone/')) {
+          item.priority = 0.8;
+          item.changefreq = 'weekly';
+        } else if (url.includes('/for/') || url.includes('/alternatives/')) {
+          item.priority = 0.7;
+          item.changefreq = 'monthly';
+        } else if (url.endsWith('/about') || url.endsWith('/contact') || url.endsWith('/articles')) {
+          item.priority = 0.5;
+          item.changefreq = 'monthly';
+        } else if (url.endsWith('/privacy') || url.endsWith('/terms')) {
+          item.priority = 0.3;
+          item.changefreq = 'monthly';
+        } else {
+          item.priority = 1.0;
+          item.changefreq = 'weekly';
+        }
         return item;
       }
     })

@@ -6,12 +6,12 @@ Disallow: /cdn-cgi/
 Disallow: /undefined
 Allow: /
 
-# Block AI scrapers and crawlers
+# Block AI training scrapers but allow search & citation agents
 User-agent: GPTBot
 Disallow: /
 
 User-agent: ChatGPT-User
-Disallow: /
+Allow: /
 
 User-agent: CCBot
 Disallow: /
@@ -20,13 +20,13 @@ User-agent: Anthropic-ai
 Disallow: /
 
 User-agent: ClaudeBot
-Disallow: /
+Allow: /
 
 User-agent: Google-Extended
 Disallow: /
 
 User-agent: PerplexityBot
-Disallow: /
+Allow: /
 
 User-agent: OMgili
 Disallow: /
