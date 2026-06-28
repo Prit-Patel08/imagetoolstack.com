@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import RequestToolSection from "../../components/RequestToolSection.astro";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
 import competitors from "../../data/competitors.json";
 import toolsData from "../../data/tools.json";
 
@@ -17,6 +18,16 @@ export async function getStaticPaths() {
 
 const { competitor } = Astro.props;
 const topTools = toolsData.tools.slice(0, 12); // Feature top tools
+
+const competitorToolMap: Record<string, string> = {
+  "tinypng": "image-compressor",
+  "compressjpeg": "image-compressor",
+  "iloveimg": "image-resizer",
+  "canva": "crop-image",
+  "adobe-express": "image-resizer",
+  "ezgif": "rotate-image"
+};
+const associatedToolId = competitorToolMap[competitor.slug] || "image-compressor";
 
 const seoTitle = `Best Free ${competitor.name} Alternative in 2026 - No Limits`;
 const seoDescription = `Looking for a free alternative to ${competitor.name}? Image Tool Stack offers 100% free, private, and unlimited ${competitor.type.toLowerCase()} tools that run directly in your browser.`;
@@ -44,6 +55,13 @@ const seoDescription = `Looking for a free alternative to ${competitor.name}? Im
           Explore Free Tools
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
         </a>
+      </div>
+      
+      {/* Live Tool Widget */}
+      <div class="max-w-3xl mx-auto mb-20 p-6 sm:p-8 bg-white border border-gray-200 rounded-3xl shadow-sm">
+        <h2 class="text-xl font-bold text-gray-900 mb-2 text-center">Try the Free Alternative Tool</h2>
+        <p class="text-sm text-gray-500 mb-6 text-center">Process files locally in your browser. No files are uploaded to any server.</p>
+        <FormatConverter toolId={associatedToolId} />
       </div>
 
       {/* Comparison Section */}

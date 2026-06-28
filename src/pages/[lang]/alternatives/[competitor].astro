@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout.astro";
 import Navbar from "../../../components/Navbar.astro";
 import Footer from "../../../components/Footer.astro";
 import RequestToolSection from "../../../components/RequestToolSection.astro";
+import FormatConverter from "../../../components/tools/FormatConverter.astro";
 import competitors from "../../../data/competitors.json";
 import toolsData from "../../../data/tools.json";
 import { locales } from "../../../utils/i18n";
@@ -24,6 +25,16 @@ const { competitor } = Astro.props;
 const lang = Astro.params.lang as string;
 const topTools = toolsData.tools.slice(0, 12); // Use top 12 tools
 
+const competitorToolMap: Record<string, string> = {
+  "tinypng": "image-compressor",
+  "compressjpeg": "image-compressor",
+  "iloveimg": "image-resizer",
+  "canva": "crop-image",
+  "adobe-express": "image-resizer",
+  "ezgif": "rotate-image"
+};
+const associatedToolId = competitorToolMap[competitor.slug] || "image-compressor";
+
 // Localization Map for Alternative strings
 const textMap: Record<string, any> = {
   en: {
@@ -34,7 +45,9 @@ const textMap: Record<string, any> = {
     problem: `The Problem with ${competitor.name}`,
     whyChooseUs: "Why Choose Us",
     ourAlternative: "Our Free Alternative Tools",
-    everything: "Everything you need, completely free forever."
+    everything: "Everything you need, completely free forever.",
+    tryToolTitle: "Try the Free Alternative Tool",
+    tryToolDesc: "Process files locally in your browser. No files are uploaded to any server."
   },
   es: {
     freePrivate: "Alternativa 100% Gratuita y Privada",
@@ -44,7 +57,9 @@ const textMap: Record<string, any> = {
     problem: `El Problema con ${competitor.name}`,
     whyChooseUs: "Por Qué Elegirnos",
     ourAlternative: "Nuestras Herramientas Alternativas Gratuitas",
-    everything: "Todo lo que necesita, completamente gratis para siempre."
+    everything: "Todo lo que necesita, completamente gratis para siempre.",
+    tryToolTitle: "Pruebe la Herramienta Alternativa Gratuita",
+    tryToolDesc: "Procese archivos localmente en su navegador. Sus archivos nunca se suben al servidor."
   },
   fr: {
     freePrivate: "Alternative 100% Gratuite et Privée",
@@ -54,7 +69,9 @@ const textMap: Record<string, any> = {
     problem: `Le Problème avec ${competitor.name}`,
     whyChooseUs: "Pourquoi Nous Choisir",
     ourAlternative: "Nos Outils Alternatifs Gratuits",
-    everything: "Tout ce dont vous avez besoin, entièrement gratuit pour toujours."
+    everything: "Tout ce dont vous avez besoin, entièrement gratuit pour toujours.",
+    tryToolTitle: "Essayez l'Outil Alternatif Gratuit",
+    tryToolDesc: "Traisez des fichiers localement dans votre navigateur. Aucun fichier n'est téléversé."
   },
   de: {
     freePrivate: "100% Kostenlose & Private Alternative",
@@ -64,7 +81,9 @@ const textMap: Record<string, any> = {
     problem: `Das Problem mit ${competitor.name}`,
     whyChooseUs: "Warum uns wählen",
     ourAlternative: "Unsere kostenlosen alternativen Werkzeuge",
-    everything: "Alles, was Sie brauchen, für immer völlig kostenlos."
+    everything: "Alles, was Sie brauchen, für immer völlig kostenlos.",
+    tryToolTitle: "Kostenloses Alternativ-Tool ausprobieren",
+    tryToolDesc: "Verarbeiten Sie Dateien lokal im Browser. Keine Server-Uploads erforderlich."
   },
   pt: {
     freePrivate: "Alternativa 100% Gratuita e Privada",
@@ -74,7 +93,9 @@ const textMap: Record<string, any> = {
     problem: `O Problema com o ${competitor.name}`,
     whyChooseUs: "Por Que Nos Escolher",
     ourAlternative: "Nossas Ferramentas Alternativas Gratuitas",
-    everything: "Tudo o que você precisa, completamente grátis para sempre."
+    everything: "Tudo o que você precisa, completamente grátis para sempre.",
+    tryToolTitle: "Experimente a Ferramenta Alternativa Grátis",
+    tryToolDesc: "Processe arquivos localmente no seu navegador. Nenhum arquivo é enviado ao servidor."
   },
   id: {
     freePrivate: "Alternatif 100% Gratis & Pribadi",
@@ -84,7 +105,9 @@ const textMap: Record<string, any> = {
     problem: `Masalah dengan ${competitor.name}`,
     whyChooseUs: "Mengapa Memilih Kami",
     ourAlternative: "Alat Alternatif Gratis Kami",
-    everything: "Semua yang Anda butuhkan, sepenuhnya gratis selamanya."
+    everything: "Semua yang Anda butuhkan, sepenuhnya gratis selamanya.",
+    tryToolTitle: "Coba Alat Alternatif Gratis",
+    tryToolDesc: "Proses file secara lokal di browser Anda. Tidak ada file yang diunggah ke server."
   }
 };
 
@@ -112,6 +135,13 @@ const seoDescription = `${texts.frustrated.replace(/<[^>]+>/g, '')}`;
           {texts.explore}
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
         </a>
+      </div>
+      
+      {/* Live Tool Widget */}
+      <div class="max-w-3xl mx-auto mb-20 p-6 sm:p-8 bg-white border border-gray-200 rounded-3xl shadow-sm">
+        <h2 class="text-xl font-bold text-gray-900 mb-2 text-center">{texts.tryToolTitle}</h2>
+        <p class="text-sm text-gray-500 mb-6 text-center">{texts.tryToolDesc}</p>
+        <FormatConverter toolId={associatedToolId} />
       </div>
 
       {/* Comparison Section */}
