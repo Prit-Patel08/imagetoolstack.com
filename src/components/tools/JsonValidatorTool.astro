@@ -1,0 +1,463 @@
+---
+// JSON Validator & Parser Component
+---
+<div id="json-val-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Tabs Navigation -->
+  <div class="flex border-b border-hairline gap-4">
+    <button id="tab-val-btn" class="px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none">
+      JSON Validator & Formatter
+    </button>
+    <button id="tab-tree-btn" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none">
+      Interactive Tree Viewer
+    </button>
+  </div>
+
+  <!-- Tab Content: Validator & Formatter -->
+  <div id="tab-validator" class="flex flex-col gap-6">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+      <div class="flex items-center gap-3">
+        <label for="val-indent-select" class="text-xs font-bold text-ink uppercase tracking-wider">Tab Size:</label>
+        <select id="val-indent-select" class="bg-canvas border border-hairline rounded px-2 py-1 text-xs text-ink focus:border-link outline-none">
+          <option value="2" selected>2 Spaces</option>
+          <option value="4">4 Spaces</option>
+          <option value="tab">Tabs</option>
+        </select>
+      </div>
+      
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="val-beautify-btn" class="px-4 py-2 bg-link hover:bg-link-hover text-white text-xs font-semibold rounded-lg transition-colors shadow-sm">
+          Beautify
+        </button>
+        <button id="val-minify-btn" class="px-4 py-2 border border-hairline hover:bg-canvas-soft text-ink text-xs font-semibold rounded-lg transition-colors">
+          Minify
+        </button>
+        <button id="val-sample-btn" class="px-4 py-2 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+          Load Sample
+        </button>
+        <button id="val-clear-btn" class="px-4 py-2 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Bar (Validation Feedback) -->
+    <div id="val-status-box" class="w-full p-4 rounded-xl border flex items-center gap-3 transition-colors duration-200 bg-canvas-soft border-hairline text-body text-sm font-medium">
+      <span class="h-2.5 w-2.5 rounded-full bg-mute inline-block" id="val-status-indicator"></span>
+      <span id="val-status-text">Enter or paste JSON to start validation...</span>
+    </div>
+
+    <!-- Workspaces Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Input Panel -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center px-1">
+          <label for="val-input-area" class="text-xs font-bold text-mute uppercase tracking-wider">Input Raw JSON</label>
+          <span id="val-line-count" class="text-xs font-mono text-mute">0 lines</span>
+        </div>
+        <textarea 
+          id="val-input-area" 
+          class="w-full min-h-[400px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-inner shadow-sm"
+          placeholder='{
+  "api": "json-validator",
+  "status": "waiting",
+  "data": {
+    "nested": true,
+    "items": [1, 2, 3]
+  }
+}'
+        ></textarea>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center px-1">
+          <label for="val-output-area" class="text-xs font-bold text-mute uppercase tracking-wider">Formatted Output</label>
+          <div class="flex gap-2">
+            <button id="val-copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Copy
+            </button>
+            <button id="val-download-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+              Download .json
+            </button>
+          </div>
+        </div>
+        <textarea 
+          id="val-output-area" 
+          readonly
+          class="w-full min-h-[400px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-y cursor-text shadow-sm"
+          placeholder="Formatted JSON will be displayed here..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Tree Viewer -->
+  <div id="tab-tree" class="flex flex-col gap-6 hidden">
+    <!-- Tree Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+      <div class="flex items-center gap-2">
+        <button id="tree-expand-all" class="px-3 py-1.5 border border-hairline hover:bg-canvas text-ink text-xs font-semibold rounded-lg transition-colors">
+          Expand All
+        </button>
+        <button id="tree-collapse-all" class="px-3 py-1.5 border border-hairline hover:bg-canvas text-ink text-xs font-semibold rounded-lg transition-colors">
+          Collapse All
+        </button>
+      </div>
+      <span class="text-xs text-mute">Click on arrows or brackets to collapse/expand branches.</span>
+    </div>
+
+    <!-- Tree Workspace -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm min-h-[450px] overflow-auto">
+      <div id="tree-container" class="font-mono text-xs text-ink leading-relaxed select-text space-y-1">
+        <div class="text-mute italic">Please enter valid JSON in the Validator tab first to explore the tree.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // Navigation Tabs
+    const tabValBtn = document.getElementById('tab-val-btn')!;
+    const tabTreeBtn = document.getElementById('tab-tree-btn')!;
+    const tabValidator = document.getElementById('tab-validator')!;
+    const tabTree = document.getElementById('tab-tree')!;
+
+    // Core Elements
+    const valInputArea = document.getElementById('val-input-area') as HTMLTextAreaElement;
+    const valOutputArea = document.getElementById('val-output-area') as HTMLTextAreaElement;
+    const valIndentSelect = document.getElementById('val-indent-select') as HTMLSelectElement;
+    
+    const valBeautifyBtn = document.getElementById('val-beautify-btn')!;
+    const valMinifyBtn = document.getElementById('val-minify-btn')!;
+    const valSampleBtn = document.getElementById('val-sample-btn')!;
+    const valClearBtn = document.getElementById('val-clear-btn')!;
+    const valCopyBtn = document.getElementById('val-copy-btn')!;
+    const valDownloadBtn = document.getElementById('val-download-btn')!;
+
+    const valStatusBox = document.getElementById('val-status-box')!;
+    const valStatusIndicator = document.getElementById('val-status-indicator')!;
+    const valStatusText = document.getElementById('val-status-text')!;
+    const valLineCount = document.getElementById('val-line-count')!;
+
+    const treeContainer = document.getElementById('tree-container')!;
+    const treeExpandAll = document.getElementById('tree-expand-all')!;
+    const treeCollapseAll = document.getElementById('tree-collapse-all')!;
+
+    let currentParsedData: any = null;
+
+    // Sample JSON
+    const sampleData = {
+      "status": "success",
+      "timestamp": new Date().toISOString(),
+      "configuration": {
+        "appName": "ImageToolStack",
+        "features": {
+          "bulkProcessing": true,
+          "offlineCapable": true,
+          "supportedLanguages": ["en", "es", "fr", "de", "pt", "id"]
+        },
+        "limits": {
+          "maxUploadSizeMb": 100,
+          "rateLimitPerHour": null
+        }
+      },
+      "activeUsers": 12450,
+      "serverInfo": {
+        "region": "us-east",
+        "load": 0.42
+      }
+    };
+
+    // Helper to get selected indentation
+    function getIndent() {
+      const val = valIndentSelect.value;
+      if (val === 'tab') return '\t';
+      return parseInt(val, 10);
+    }
+
+    // Toggle Tabs
+    tabValBtn.addEventListener('click', () => {
+      tabValBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none";
+      tabTreeBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none";
+      tabValidator.classList.remove('hidden');
+      tabTree.classList.add('hidden');
+    });
+
+    tabTreeBtn.addEventListener('click', () => {
+      tabTreeBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none";
+      tabValBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none";
+      tabTree.classList.remove('hidden');
+      tabValidator.classList.add('hidden');
+      
+      // Render Tree if we have valid data
+      if (currentParsedData !== null) {
+        buildJSONTree(currentParsedData);
+      } else {
+        treeContainer.innerHTML = `<div class="text-mute italic">Please enter valid JSON in the Validator tab first to explore the tree.</div>`;
+      }
+    });
+
+    // Real-time validation
+    valInputArea.addEventListener('input', () => {
+      const val = valInputArea.value.trim();
+      
+      // Update line count
+      const lines = val ? val.split('\n').length : 0;
+      valLineCount.textContent = `${lines} line${lines === 1 ? '' : 's'}`;
+
+      if (!val) {
+        setValidatorStatus('idle', 'Enter or paste JSON to start validation...');
+        currentParsedData = null;
+        return;
+      }
+
+      try {
+        currentParsedData = JSON.parse(val);
+        setValidatorStatus('success', 'Valid JSON format');
+      } catch (err: any) {
+        setValidatorStatus('error', `Syntax Error: ${err.message}`);
+        currentParsedData = null;
+      }
+    });
+
+    // Format Operations
+    valBeautifyBtn.addEventListener('click', () => {
+      const raw = valInputArea.value.trim();
+      if (!raw) return;
+      trackUsage('beautify');
+      try {
+        const parsed = JSON.parse(raw);
+        const formatted = JSON.stringify(parsed, null, getIndent());
+        valOutputArea.value = formatted;
+        setValidatorStatus('success', 'JSON Beautified Successfully');
+      } catch (err: any) {
+        setValidatorStatus('error', `Beautification Failed: ${err.message}`);
+      }
+    });
+
+    valMinifyBtn.addEventListener('click', () => {
+      const raw = valInputArea.value.trim();
+      if (!raw) return;
+      trackUsage('minify');
+      try {
+        const parsed = JSON.parse(raw);
+        const formatted = JSON.stringify(parsed);
+        valOutputArea.value = formatted;
+        setValidatorStatus('success', 'JSON Minified Successfully');
+      } catch (err: any) {
+        setValidatorStatus('error', `Minification Failed: ${err.message}`);
+      }
+    });
+
+    valSampleBtn.addEventListener('click', () => {
+      valInputArea.value = JSON.stringify(sampleData, null, 2);
+      valInputArea.dispatchEvent(new Event('input'));
+      valOutputArea.value = '';
+      trackUsage('sample');
+    });
+
+    valClearBtn.addEventListener('click', () => {
+      valInputArea.value = '';
+      valOutputArea.value = '';
+      valInputArea.dispatchEvent(new Event('input'));
+    });
+
+    valCopyBtn.addEventListener('click', () => {
+      const text = valOutputArea.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = valCopyBtn.textContent;
+        valCopyBtn.textContent = 'Copied!';
+        setTimeout(() => { valCopyBtn.textContent = orig; }, 1500);
+      });
+    });
+
+    valDownloadBtn.addEventListener('click', () => {
+      const text = valOutputArea.value;
+      if (!text) return;
+      const blob = new Blob([text], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `validated-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Validation Status Helper
+    function setValidatorStatus(type: 'idle' | 'success' | 'error', message: string) {
+      valStatusBox.className = 'w-full p-4 rounded-xl border flex items-center gap-3 transition-colors duration-200';
+      valStatusIndicator.className = 'h-2.5 w-2.5 rounded-full inline-block';
+
+      if (type === 'success') {
+        valStatusBox.classList.add('bg-success/5', 'border-success/20', 'text-success');
+        valStatusIndicator.classList.add('bg-success');
+      } else if (type === 'error') {
+        valStatusBox.classList.add('bg-error/5', 'border-error/20', 'text-error');
+        valStatusIndicator.classList.add('bg-error');
+      } else {
+        valStatusBox.classList.add('bg-canvas-soft', 'border-hairline', 'text-body');
+        valStatusIndicator.classList.add('bg-mute');
+      }
+
+      valStatusText.textContent = message;
+    }
+
+    // JSON Tree Builder
+    function buildJSONTree(data: any) {
+      treeContainer.innerHTML = '';
+      const treeRoot = createTreeDOM(data, null, true);
+      treeContainer.appendChild(treeRoot);
+    }
+
+    function createTreeDOM(val: any, key: string | null, isLast: boolean): HTMLElement {
+      const row = document.createElement('div');
+      row.className = 'pl-4 relative';
+
+      // 1. Render Key if exists
+      let keySpan = '';
+      if (key !== null) {
+        keySpan = `<span class="text-indigo-600 dark:text-indigo-400 font-semibold">"${key}"</span>: `;
+      }
+
+      // 2. Process Values by Type
+      if (val === null) {
+        row.innerHTML = `${keySpan}<span class="text-rose-500 font-bold">null</span>${isLast ? '' : ','}`;
+      } else if (typeof val === 'boolean') {
+        row.innerHTML = `${keySpan}<span class="text-sky-600 dark:text-sky-400 font-bold">${val}</span>${isLast ? '' : ','}`;
+      } else if (typeof val === 'number') {
+        row.innerHTML = `${keySpan}<span class="text-amber-600 dark:text-amber-400">${val}</span>${isLast ? '' : ','}`;
+      } else if (typeof val === 'string') {
+        row.innerHTML = `${keySpan}<span class="text-emerald-600 dark:text-emerald-400">"${escapeHtml(val)}"</span>${isLast ? '' : ','}`;
+      } else if (Array.isArray(val)) {
+        // Render Array Container
+        const collapseBtn = document.createElement('button');
+        collapseBtn.className = 'text-mute hover:text-ink font-bold text-xs mr-1 focus:outline-none transition-transform duration-100 transform';
+        collapseBtn.innerHTML = '▼';
+
+        const header = document.createElement('span');
+        header.innerHTML = `${keySpan}<span class="text-purple-600 dark:text-purple-400 font-bold">[</span>`;
+
+        const body = document.createElement('div');
+        body.className = 'border-l border-hairline/60 ml-2';
+
+        val.forEach((item, idx) => {
+          body.appendChild(createTreeDOM(item, null, idx === val.length - 1));
+        });
+
+        const footer = document.createElement('div');
+        footer.innerHTML = `<span class="text-purple-600 dark:text-purple-400 font-bold">]</span>${isLast ? '' : ','}`;
+
+        // Collapse Event
+        collapseBtn.addEventListener('click', () => {
+          if (body.classList.contains('hidden')) {
+            body.classList.remove('hidden');
+            footer.classList.remove('hidden');
+            collapseBtn.innerHTML = '▼';
+            collapseBtn.style.transform = 'rotate(0deg)';
+          } else {
+            body.classList.add('hidden');
+            footer.classList.add('hidden');
+            collapseBtn.innerHTML = '▶';
+            collapseBtn.style.transform = 'rotate(-90deg)';
+          }
+        });
+
+        row.appendChild(collapseBtn);
+        row.appendChild(header);
+        row.appendChild(body);
+        row.appendChild(footer);
+      } else if (typeof val === 'object') {
+        // Render Object Container
+        const collapseBtn = document.createElement('button');
+        collapseBtn.className = 'text-mute hover:text-ink font-bold text-xs mr-1 focus:outline-none transition-transform duration-100 transform';
+        collapseBtn.innerHTML = '▼';
+
+        const header = document.createElement('span');
+        header.innerHTML = `${keySpan}<span class="text-purple-600 dark:text-purple-400 font-bold">{</span>`;
+
+        const body = document.createElement('div');
+        body.className = 'border-l border-hairline/60 ml-2';
+
+        const keys = Object.keys(val);
+        keys.forEach((k, idx) => {
+          body.appendChild(createTreeDOM(val[k], k, idx === keys.length - 1));
+        });
+
+        const footer = document.createElement('div');
+        footer.innerHTML = `<span class="text-purple-600 dark:text-purple-400 font-bold">}</span>${isLast ? '' : ','}`;
+
+        // Collapse Event
+        collapseBtn.addEventListener('click', () => {
+          if (body.classList.contains('hidden')) {
+            body.classList.remove('hidden');
+            footer.classList.remove('hidden');
+            collapseBtn.innerHTML = '▼';
+            collapseBtn.style.transform = 'rotate(0deg)';
+          } else {
+            body.classList.add('hidden');
+            footer.classList.add('hidden');
+            collapseBtn.innerHTML = '▶';
+            collapseBtn.style.transform = 'rotate(-90deg)';
+          }
+        });
+
+        row.appendChild(collapseBtn);
+        row.appendChild(header);
+        row.appendChild(body);
+        row.appendChild(footer);
+      }
+
+      return row;
+    }
+
+    function escapeHtml(str: string): string {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Expand/Collapse controls
+    treeExpandAll.addEventListener('click', () => {
+      const hiddenBodies = treeContainer.querySelectorAll('.hidden');
+      hiddenBodies.forEach(el => el.classList.remove('hidden'));
+      const buttons = treeContainer.querySelectorAll('button');
+      buttons.forEach((btn: any) => {
+        btn.innerHTML = '▼';
+        btn.style.transform = 'rotate(0deg)';
+      });
+      trackUsage('tree-expand');
+    });
+
+    treeCollapseAll.addEventListener('click', () => {
+      // Find all bodies containing content and hide them
+      const rootDivs = treeContainer.querySelectorAll('.pl-4 > div');
+      rootDivs.forEach(el => el.classList.add('hidden'));
+      const buttons = treeContainer.querySelectorAll('button');
+      buttons.forEach((btn: any) => {
+        btn.innerHTML = '▶';
+        btn.style.transform = 'rotate(-90deg)';
+      });
+      trackUsage('tree-collapse');
+    });
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'JSON Validator',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

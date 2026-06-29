@@ -339,16 +339,16 @@ Below is the structured implementation schedule for the next 90 days:
 2.  **Fine-tune sitemap weight**: Assign `1.0` to core tools in [astro.config.mjs](file:///Users/pritpatel/Desktop/imagetoolstack.com/astro.config.mjs). *(Implemented)*
 3.  **Fix timezone page breadcrumb translation leak**: Localize the joining conjunctions. *(Implemented)*
 4.  **Embed Converter widgets on alternatives pages**: Drive retention on alternatives routes. *(Implemented)*
-5.  **Enforce Canonical URL rewrites**: Implement hosting redirects to strip `.html`.
+5.  **Enforce Canonical URL rewrites**: Implement hosting redirects to strip `.html`. *(Implemented)*
 6.  **Create Category Hub SEO intros**: Add 150-word targeted intros to category index templates. *(Implemented)*
-7.  **Add FAQ sections to calculators**: Add H2/H3 targeted FAQs inside `tools.json`.
-8.  **Link Category tools on tool sidebars**: Update navigation sidebar to loop related tools.
-9.  **Build JSON Formatter Tool**: Deploy client-side JSON formatting converter page.
-10. **Build UUID Generator & Validator**: Deploy UUID v4 generation page.
+7.  **Add FAQ sections to calculators**: Add H2/H3 targeted FAQs inside `tools.json`. *(Implemented)*
+8.  **Link Category tools on tool sidebars**: Update navigation sidebar to loop related tools. *(Implemented)*
+9.  **Build JSON Formatter Tool**: Deploy client-side JSON formatting converter page. *(Implemented)*
+10. **Build UUID Generator & Validator**: Deploy UUID v4 generation page. *(Implemented)*
 
 ### Phase 2: Core Tool Expansion (Days 31–60)
-11. **Build JSON Validator Tool**: Deploy client-side JSON parsing validator page.
-12. **Build CSV to Excel Converter**: Deploy client-side CSV table parser page.
+11. **Build JSON Validator Tool**: Deploy client-side JSON parsing validator page. *(Implemented)*
+12. **Build CSV to Excel Converter**: Deploy client-side CSV table parser page. *(Implemented)*
 13. **Build Date Difference Calculator**: Count days and hours between selected dates.
 14. **Build Work Hours Timesheet Calculator**: Allow timesheet parsing for freelancers.
 15. **Build URL & HTML Encoder/Decoder**: HTML/URL character parsing page.

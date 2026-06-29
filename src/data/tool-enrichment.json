@@ -233,5 +233,2277 @@
         "answer": "Because you are discarding pixels from the original image, the resulting file will contain less data and naturally have a smaller file size in KB."
       }
     ]
+  },
+  "percentage-calculator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Multi-Format Math Calculations",
+          "description": "Calculate percentage values, percentage differences, percentage increases, and percentage ratios all in one place."
+        },
+        {
+          "title": "Zero Latency Processing",
+          "description": "Calculations run instantly as you type, with zero lag and no waiting for server responses."
+        },
+        {
+          "title": "100% Private & Safe",
+          "description": "Your mathematical inputs and calculations remain entirely inside your browser and are never transmitted to any external server."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Choose your calculation type",
+          "description": "Select the math function you need (e.g. percentage of, ratio of, or increase/decrease)."
+        },
+        {
+          "step": 2,
+          "title": "Enter your numbers",
+          "description": "Type your numeric values into the input boxes. The calculator computes results automatically in real-time."
+        },
+        {
+          "step": 3,
+          "title": "Copy the results",
+          "description": "Quickly copy the output values to your clipboard with a single click."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "How do I calculate a percentage increase?",
+          "answer": "Subtract the original value from the new value, divide the result by the original value, and multiply by 100. For example, if a price increases from $40 to $50, the change is ($50 - $40) / $40 * 100 = 25%."
+        },
+        {
+          "question": "Can I use this calculator for discounts?",
+          "answer": "Yes. To find a discount, calculate the percentage value (e.g., 20% of $80 = $16) and subtract it from the original price ($80 - $16 = $64)."
+        },
+        {
+          "question": "Does this calculator process data on a server?",
+          "answer": "No. Like all tools on our platform, the percentage calculations run entirely inside your browser's memory. No data is sent to external servers."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Cálculos matemáticos multiformato",
+          "description": "Calcule valores de porcentaje, diferencias, incrementos y proporciones de porcentaje en un solo lugar."
+        },
+        {
+          "title": "Procesamiento con latencia cero",
+          "description": "Los cálculos se ejecutan instantáneamente mientras escribe, sin retrasos y sin esperar respuestas del servidor."
+        },
+        {
+          "title": "100% privado y seguro",
+          "description": "Sus entradas matemáticas y cálculos permanecen completamente dentro de su navegador y nunca se transmiten a ningún servidor externo."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Elija su tipo de cálculo",
+          "description": "Seleccione la función matemática que necesita (por ejemplo, porcentaje de, proporción de o aumento/disminución)."
+        },
+        {
+          "step": 2,
+          "title": "Ingrese sus números",
+          "description": "Escriba sus valores numéricos en los cuadros de entrada. La calculadora calcula los resultados automáticamente en tiempo real."
+        },
+        {
+          "step": 3,
+          "title": "Copie los resultados",
+          "description": "Copie rápidamente los valores de salida en su portapapeles con un solo clic."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Cómo calculo un aumento porcentual?",
+          "answer": "Reste el valor original del nuevo valor, divida el resultado por el valor original y multiplique por 100. Por ejemplo, si un precio aumenta de $40 a $50, el cambio es ($50 - $40) / $40 * 100 = 25%."
+        },
+        {
+          "question": "¿Puedo usar esta calculadora para descuentos?",
+          "answer": "Sí. Para encontrar un descuento, calcule el valor del porcentaje (por ejemplo, 20% de $80 = $16) y réstelo del precio original ($80 - $16 = $64)."
+        },
+        {
+          "question": "¿Esta calculadora procesa datos en un servidor?",
+          "answer": "No. Al igual que todas las herramientas de nuestra plataforma, los cálculos de porcentaje se ejecutan completamente dentro de la memoria de su navegador. No se envían datos a servidores externos."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Calculs mathématiques multiformats",
+          "description": "Calculez les valeurs de pourcentage, les différences, les augmentations et les ratios de pourcentage en un seul endroit."
+        },
+        {
+          "title": "Traitement sans latence",
+          "description": "Les calculs s'exécutent instantanément au fur et à mesure que vous tapez, sans décalage ni attente de réponse du serveur."
+        },
+        {
+          "title": "100 % privé et sécurisé",
+          "description": "Vos entrées mathématiques et vos calculs restent entièrement dans votre navigateur et ne sont jamais transmis à un serveur externe."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Choisissez votre type de calcul",
+          "description": "Sélectionnez la fonction mathématique dont vous avez besoin (par exemple, pourcentage de, ratio de ou augmentation/diminution)."
+        },
+        {
+          "step": 2,
+          "title": "Entrez vos chiffres",
+          "description": "Saisissez vos valeurs numériques dans les cases de saisie. La calculatrice calcule les résultats automatiquement en temps réel."
+        },
+        {
+          "step": 3,
+          "title": "Copiez les résultats",
+          "description": "Copiez rapidement les valeurs de sortie dans votre presse-papiers en un seul clic."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Comment calculer une augmentation en pourcentage ?",
+          "answer": "Soustrayez la valeur d'origine de la nouvelle valeur, divisez le résultat par la valeur d'origine et multipliez par 100. Par exemple, si un prix passe de 40 $ à 50 $, la variation est de (50 $ - 40 $) / 40 $ * 100 = 25 %."
+        },
+        {
+          "question": "Puis-je utiliser cette calculatrice pour des remises ?",
+          "answer": "Oui. Pour trouver une remise, calculez la valeur en pourcentage (par exemple, 20 % de 80 $ = 16 $) et soustrayez-la du prix d'origine (80 $ - 16 $ = 64 $)."
+        },
+        {
+          "question": "Cette calculatrice traite-t-elle les données sur un serveur ?",
+          "answer": "Non. Comme tous les outils de notre plateforme, les calculs de pourcentage s'exécutent entièrement dans la mémoire de votre navigateur. Aucune donnée n'est envoyée à des serveurs externes."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Mathematische Berechnungen im Multiformat",
+          "description": "Berechnen Sie Prozentwerte, Prozentdifferenzen, Prozentsteigerungen und Prozentverhältnisse an einem Ort."
+        },
+        {
+          "title": "Verarbeitung ohne Latenz",
+          "description": "Berechnungen werden sofort während der Eingabe durchgeführt, ohne Verzögerung und ohne Warten auf Serverantworten."
+        },
+        {
+          "title": "100 % privat und sicher",
+          "description": "Ihre mathematischen Eingaben und Berechnungen verbleiben vollständig in Ihrem Browser und werden niemals an einen externen Server übertragen."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Wählen Sie Ihren Berechnungstyp",
+          "description": "Wählen Sie die benötigte mathematische Funktion aus (z. B. Prozentsatz von, Verhältnis von oder Zu-/Abnahme)."
+        },
+        {
+          "step": 2,
+          "title": "Geben Sie Ihre Zahlen ein",
+          "description": "Geben Sie Ihre Zahlenwerte in die Eingabefelder ein. Der Rechner ermittelt die Ergebnisse automatisch in Echtzeit."
+        },
+        {
+          "step": 3,
+          "title": "Kopieren Sie die Ergebnisse",
+          "description": "Kopieren Sie die Ausgabewerte schnell mit einem Klick in Ihre Zwischenablage."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Wie berechne ich eine prozentuale Steigerung?",
+          "answer": "Subtrahieren Sie den ursprünglichen Wert vom neuen Wert, teilen Sie das Ergebnis durch den ursprünglichen Wert und multiplizieren Sie mit 100. Wenn beispielsweise ein Preis von 40 $ auf 50 $ steigt, beträgt die Änderung (50 $ - 40 $) / 40 $ * 100 = 25 %."
+        },
+        {
+          "question": "Kann ich diesen Rechner für Rabatte verwenden?",
+          "answer": "Ja. Um einen Rabatt zu finden, berechnen Sie den Prozentwert (z. B. 20 % von 80 $ = 16 $) und subtrahieren Sie ihn vom Originalpreis (80 $ - 16 $ = 64 $)."
+        },
+        {
+          "question": "Verarbeitet dieser Rechner Daten auf einem Server?",
+          "answer": "Nein. Wie alle Tools auf unserer Plattform werden die Prozentberechnungen vollständig im Arbeitsspeicher Ihres Browsers ausgeführt. Es werden keine Daten an externe Server gesendet."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Cálculos matemáticos multiformato",
+          "description": "Calcule valores de porcentagem, diferenças, aumentos e proporções de porcentagem em um só lugar."
+        },
+        {
+          "title": "Processamento com latência zero",
+          "description": "Os cálculos são executados instantaneamente enquanto você digita, sem atrasos e sem esperar por respostas do servidor."
+        },
+        {
+          "title": "100% privado e seguro",
+          "description": "Suas entradas matemáticas e cálculos permanecem inteiramente no seu navegador e nunca são transmitidos para nenhum servidor externo."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Escolha o tipo de cálculo",
+          "description": "Selecione a função matemática que você precisa (por exemplo, porcentagem de, proporção de ou aumento/diminuição)."
+        },
+        {
+          "step": 2,
+          "title": "Insira seus números",
+          "description": "Digite seus valores numéricos nas caixas de entrada. A calculadora calcula os resultados automaticamente em tempo real."
+        },
+        {
+          "step": 3,
+          "title": "Copie os resultados",
+          "description": "Copie rapidamente os valores de saída para a área de transferência com um único clique."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Como calcular um aumento percentual?",
+          "answer": "Subtraia o valor original do novo valor, divida o resultado pelo valor original e multiplique por 100. Por exemplo, se um preço aumenta de $40 para $50, a alteração é ($50 - $40) / $40 * 100 = 25%."
+        },
+        {
+          "question": "Posso usar esta calculadora para descontos?",
+          "answer": "Sim. Para encontrar um desconto, calcule o valor da porcentagem (por exemplo, 20% de $80 = $16) e subtraia do preço original ($80 - $16 = $64)."
+        },
+        {
+          "question": "Esta calculadora processa dados em um servidor?",
+          "answer": "Não. Como todas as ferramentas da nossa plataforma, os cálculos de porcentagem são executados inteiramente na memória do seu navegador. Nenhum dado é enviado para servidores externos."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Perhitungan Matematika Multi-Format",
+          "description": "Hitung nilai persentase, selisih persentase, kenaikan persentase, dan rasio persentase semua di satu tempat."
+        },
+        {
+          "title": "Pemrosesan Tanpa Latensi",
+          "description": "Perhitungan berjalan instan saat Anda mengetik, tanpa jeda dan tanpa menunggu respons server."
+        },
+        {
+          "title": "100% Pribadi & Aman",
+          "description": "Input dan perhitungan matematika Anda tetap sepenuhnya berada di dalam browser Anda dan tidak pernah dikirim ke server eksternal."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pilih jenis perhitungan",
+          "description": "Pilih fungsi matematika yang Anda butuhkan (misalnya persentase dari, rasio dari, atau kenaikan/penurunan)."
+        },
+        {
+          "step": 2,
+          "title": "Masukkan angka Anda",
+          "description": "Ketik nilai numerik Anda ke dalam kotak input. Kalkulator menghitung hasil secara otomatis secara real-time."
+        },
+        {
+          "step": 3,
+          "title": "Salin hasilnya",
+          "description": "Salin hasil output ke papan klip Anda dengan cepat hanya dengan sekali klik."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Bagaimana cara menghitung kenaikan persentase?",
+          "answer": "Kurangi nilai awal dari nilai baru, bagi hasilnya dengan nilai awal, lalu kalikan dengan 100. Misalnya, jika harga naik dari $40 menjadi $50, perubahannya adalah ($50 - $40) / $40 * 100 = 25%."
+        },
+        {
+          "question": "Bisakah saya menggunakan kalkulator ini untuk diskon?",
+          "answer": "Ya. Untuk menghitung diskon, hitung nilai persentase (misalnya, 20% dari $80 = $16) lalu kurangi dari harga awal ($80 - $16 = $64)."
+        },
+        {
+          "question": "Apakah kalkulator ini memproses data di server?",
+          "answer": "Tidak. Seperti semua alat di platform kami, perhitungan persentase berjalan sepenuhnya di dalam memori browser Anda. Tidak ada data yang dikirim ke server luar."
+        }
+      ]
+    }
+  },
+  "word-counter": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Comprehensive Text Analytics",
+          "description": "Track word count, character count, sentence count, and paragraph count simultaneously as you type."
+        },
+        {
+          "title": "Readability & Time Estimates",
+          "description": "Get estimated reading and speaking times for your drafts, perfect for speech writing and script preparation."
+        },
+        {
+          "title": "Privacy-First Writing Space",
+          "description": "Write and edit essays, scripts, or sensitive documents safely knowing your text is never stored or sent over the internet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Paste or type your text",
+          "description": "Input your text into the editor area. The dashboard updates statistics in real-time."
+        },
+        {
+          "step": 2,
+          "title": "Analyze the metrics",
+          "description": "Review the summary panels for character counts, paragraph counts, and estimated reading speeds."
+        },
+        {
+          "step": 3,
+          "title": "Clear or copy text",
+          "description": "Click the Reset button to start over or click Copy to copy your clean text draft."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Does a character count include spaces?",
+          "answer": "Yes. Standard character counts include all letters, numbers, punctuation marks, and spaces. Our tool displays both 'characters with spaces' and 'characters without spaces' to meet different formatting requirements."
+        },
+        {
+          "question": "What is the average reading speed used for the speaking time estimate?",
+          "answer": "We calculate reading time using an average speed of 275 words per minute (wpm), and speaking time using an average speed of 150 words per minute, which are the standard benchmarks for speech writing and content optimization."
+        },
+        {
+          "question": "Is my text saved anywhere when I use this tool?",
+          "answer": "No. Your text is processed entirely in your local browser. We do not save, store, or transmit your text to any server, making it 100% secure for sensitive documents."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Análisis de texto completo",
+          "description": "Realice un seguimiento del recuento de palabras, caracteres, oraciones y párrafos simultáneamente mientras escribe."
+        },
+        {
+          "title": "Estimaciones de lectura y tiempo",
+          "description": "Obtenga tiempos estimados de lectura y habla para sus borradores, perfectos para la redacción de discursos y preparación de guiones."
+        },
+        {
+          "title": "Espacio de escritura privado",
+          "description": "Escriba y edite ensayos, guiones o documentos confidenciales con la seguridad de que su texto nunca se almacenará ni se enviará por Internet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pegue o escriba su texto",
+          "description": "Ingrese su texto en el área del editor. El panel actualiza las estadísticas en tiempo real."
+        },
+        {
+          "step": 2,
+          "title": "Analice las métricas",
+          "description": "Revise los paneles de resumen para recuentos de caracteres, párrafos y velocidades de lectura estimadas."
+        },
+        {
+          "step": 3,
+          "title": "Limpiar o copiar texto",
+          "description": "Haga clic en el botón Restablecer para comenzar de nuevo o haga clic en Copiar para copiar su borrador de texto limpio."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿El recuento de caracteres incluye espacios?",
+          "answer": "Sí. Los recuentos de caracteres estándar incluyen todas las letras, números, signos de puntuación y espacios. Nuestra herramienta muestra tanto 'caracteres con espacios' como 'caracteres sin espacios'."
+        },
+        {
+          "question": "¿Cuál es la velocidad de lectura promedio utilizada para la estimación del tiempo de habla?",
+          "answer": "Calculamos el tiempo de lectura utilizando una velocidad promedio de 275 palabras por minuto (wpm) y el tiempo de habla utilizando una velocidad promedio de 150 palabras por minuto."
+        },
+        {
+          "question": "¿Mi texto se guarda en algún lugar cuando uso esta herramienta?",
+          "answer": "No. Su texto se procesa completamente en su navegador local. No guardamos, almacenamos ni transmitimos su texto a ningún servidor, por lo que es 100% seguro."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Analyse de texte complète",
+          "description": "Suivez le nombre de mots, de caractères, de phrases et de paragraphes simultanément pendant que vous tapez."
+        },
+        {
+          "title": "Estimations du temps de lecture",
+          "description": "Obtenez des estimations de temps de lecture et de parole pour vos brouillons, idéales pour la rédaction de discours."
+        },
+        {
+          "title": "Espace d'écriture sécurisé",
+          "description": "Rédigez et modifiez vos documents en toute sécurité, sachant que votre texte n'est jamais stocké ni envoyé sur Internet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Collez ou saisissez votre texte",
+          "description": "Entrez votre texte dans la zone de l'éditeur. Le tableau de bord met à jour les statistiques en temps réel."
+        },
+        {
+          "step": 2,
+          "title": "Analysez les indicateurs",
+          "description": "Consultez les panneaux récapitulatifs pour le nombre de caractères, de paragraphes et les vitesses de lecture estimées."
+        },
+        {
+          "step": 3,
+          "title": "Effacer ou copier le texte",
+          "description": "Cliquez sur Réinitialiser pour recommencer ou sur Copier pour copier votre texte propre."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Le nombre de caractères inclut-il les espaces ?",
+          "answer": "Oui. Les nombres de caractères standard incluent toutes les lettres, chiffres, signes de ponctuation et espaces. Notre outil affiche les caractères avec et sans espaces."
+        },
+        {
+          "question": "Quelle est la vitesse de lecture moyenne utilisée ?",
+          "answer": "We calculate reading time using an average speed of 275 words per minute (wpm), and speaking time using an average speed of 150 words per minute."
+        },
+        {
+          "question": "Mon texte est-il enregistré quelque part ?",
+          "answer": "Non. Votre texte est traité entièrement dans votre navigateur local. Nous n'enregistrons ni ne transmettons votre texte à aucun serveur."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Umfassende Textanalyse",
+          "description": "Verfolgen Sie Wortzahl, Zeichenzahl, Satzzahl und Absatzzahl gleichzeitig während der Eingabe."
+        },
+        {
+          "title": "Lese- und Sprechzeitschätzungen",
+          "description": "Erhalten Sie geschätzte Lese- und Sprechzeiten für Ihre Entwürfe, perfekt für Reden und Skripte."
+        },
+        {
+          "title": "Privater Schreibbereich",
+          "description": "Schreiben und bearbeiten Sie Dokumente sicher im Wissen, dass Ihr Text niemals im Internet gespeichert oder gesendet wird."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Text einfügen oder eingeben",
+          "description": "Geben Sie Ihren Text in den Editorbereich ein. Die Statistiken werden in Echtzeit aktualisiert."
+        },
+        {
+          "step": 2,
+          "title": "Metriken analysieren",
+          "description": "Überprüfen Sie die Übersichtsfelder für Zeichenanzahl, Absatzanzahl und geschätzte Lesegeschwindigkeiten."
+        },
+        {
+          "step": 3,
+          "title": "Text löschen oder kopieren",
+          "description": "Klicken Sie auf Zurücksetzen, um neu zu beginnen, oder auf Kopieren, um Ihren Text zu kopieren."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Werden Leerzeichen bei der Zeichenzählung mitgezählt?",
+          "answer": "Ja. Die Standard-Zeichenzählung umfasst alle Buchstaben, Zahlen, Satzzeichen und Leerzeichen. Unser Tool zeigt beide Werte an."
+        },
+        {
+          "question": "Welche durchschnittliche Lesegeschwindigkeit wird verwendet?",
+          "answer": "Wir berechnen die Lesezeit mit einer durchschnittlichen Geschwindigkeit von 275 Wörtern pro Minute (WPM) und die Sprechzeit mit durchschnittlich 150 Wörtern pro Minute."
+        },
+        {
+          "question": "Wird mein Text irgendwo gespeichert?",
+          "answer": "Nein. Ihr Text wird vollständig in Ihrem lokalen Browser verarbeitet. Wir speichern oder übertragen Ihren Text nicht an Server."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Análise de texto abrangente",
+          "description": "Acompanhe a contagem de palavras, caracteres, frases e parágrafos simultaneamente enquanto digita."
+        },
+        {
+          "title": "Estimativas de tempo de leitura",
+          "description": "Obtenha estimativas de tempo de leitura e fala para seus rascunhos, ideal para discursos e roteiros."
+        },
+        {
+          "title": "Espaço de escrita privado",
+          "description": "Escreva e edite ensaios ou documentos confidenciais com segurança sabendo que seu texto nunca é enviado para a web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Cole ou digite seu texto",
+          "description": "Insira seu texto na área do editor. O painel atualiza as estatísticas em tempo real."
+        },
+        {
+          "step": 2,
+          "title": "Analise as métricas",
+          "description": "Revise os painéis de resumo para contagens de caracteres, parágrafos e velocidades de leitura estimadas."
+        },
+        {
+          "step": 3,
+          "title": "Limpar ou copiar texto",
+          "description": "Clique no botão Redefinir para recomeçar ou clique em Copiar para copiar o rascunho de texto limpo."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "A contagem de caracteres inclui espaços?",
+          "answer": "Sim. As contagens de caracteres padrão incluem todas as letras, números, pontuação e espaços. Nossa ferramenta exibe ambas as opções."
+        },
+        {
+          "question": "Qual é a velocidade média de leitura usada?",
+          "answer": "Calculamos o tempo de leitura usando uma velocidade média de 275 palavras por minuto (wpm) e o tempo de fala usando 150 palavras por minuto."
+        },
+        {
+          "question": "Meu texto é salvo em algum lugar?",
+          "answer": "Não. Seu texto é processado inteiramente no seu navegador local. Não salvamos nem transmitimos seu texto para servidores."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Analisis Teks Komprehensif",
+          "description": "Lacak jumlah kata, karakter, kalimat, dan paragraf secara bersamaan saat Anda mengetik."
+        },
+        {
+          "title": "Estimasi Keterbacaan & Waktu",
+          "description": "Dapatkan perkiraan waktu membaca dan berbicara untuk draf Anda, cocok untuk persiapan pidato."
+        },
+        {
+          "title": "Ruang Menulis yang Aman",
+          "description": "Tulis dan edit dokumen sensitif dengan aman karena teks Anda tidak pernah disimpan di internet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Tempel atau ketik teks Anda",
+          "description": "Masukkan teks Anda ke dalam area editor. Dasbor memperbarui statistik secara real-time."
+        },
+        {
+          "step": 2,
+          "title": "Analisis metriknya",
+          "description": "Tinjau panel ringkasan untuk jumlah karakter, jumlah paragraf, dan perkiraan kecepatan membaca."
+        },
+        {
+          "step": 3,
+          "title": "Hapus atau salin teks",
+          "description": "Klik tombol Reset untuk memulai dari awal atau klik Salin untuk menyalin draf teks bersih Anda."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah jumlah karakter termasuk spasi?",
+          "answer": "Ya. Jumlah karakter standar mencakup semua huruf, angka, tanda baca, dan spasi. Alat kami menampilkan kedua metrik tersebut."
+        },
+        {
+          "question": "Berapa kecepatan membaca rata-rata yang digunakan?",
+          "answer": "Kami menghitung waktu membaca menggunakan kecepatan rata-rata 275 kata per menit (wpm), dan waktu berbicara menggunakan kecepatan rata-rata 150 kata per menit."
+        },
+        {
+          "question": "Apakah teks saya disimpan di suatu tempat?",
+          "answer": "Tidak. Teks Anda diproses sepenuhnya di browser lokal Anda. Kami tidak menyimpan atau mengirimkan teks Anda ke server mana pun."
+        }
+      ]
+    }
+  },
+  "age-calculator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Leap Year Precision",
+          "description": "Our arithmetic rules account for leap years and the varying number of days in each month to calculate your exact age down to the day."
+        },
+        {
+          "title": "Secondary Age Metrics",
+          "description": "View your age converted into alternative metrics, including total months, weeks, days, hours, and seconds lived."
+        },
+        {
+          "title": "Future Reference Date Calculations",
+          "description": "Find what your exact age will be on any target date in the future (or past), not just the current day."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Enter your birth date",
+          "description": "Select your day, month, and year of birth using the date input controls."
+        },
+        {
+          "step": 2,
+          "title": "Set the reference date",
+          "description": "Leave it as the current date to calculate your present age, or choose a custom date in the future or past."
+        },
+        {
+          "step": 3,
+          "title": "Calculate and view statistics",
+          "description": "Click Calculate. The results are displayed instantly in years, months, and days alongside secondary metrics."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Does this calculator account for leap years?",
+          "answer": "Yes. Our age calculator tracks leap years and the varying number of days in each month to calculate your exact age down to the day."
+        },
+        {
+          "question": "How is age calculated in different calendar years?",
+          "answer": "The age is calculated dynamically using date arithmetic. If your birthday has not occurred yet in the current calendar year, the calculator adjusts the month and day count accordingly."
+        },
+        {
+          "question": "Can I calculate my age at a specific date in the future?",
+          "answer": "Yes. You can adjust the reference date input to any date in the future (or past) to find your age at that exact point in time."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Precisión de año bisiesto",
+          "description": "Nuestras reglas aritméticas tienen en cuenta los años bisiestos y la cantidad variable de días de cada mes para calcular su edad exacta."
+        },
+        {
+          "title": "Métricas de edad secundarias",
+          "description": "Vea su edad convertida en métricas alternativas, incluidos los meses, semanas, días, horas y segundos totales vividos."
+        },
+        {
+          "title": "Cálculo de fechas futuras",
+          "description": "Averigüe cuál será su edad exacta en cualquier fecha objetivo en el futuro (o en el pasado), no solo hoy."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Ingrese su fecha de nacimiento",
+          "description": "Seleccione su día, mes y año de nacimiento utilizando los controles de entrada de fecha."
+        },
+        {
+          "step": 2,
+          "title": "Establezca la fecha de referencia",
+          "description": "Déjela como la fecha actual para calcular su edad presente, o elija una fecha personalizada."
+        },
+        {
+          "step": 3,
+          "title": "Calcule y vea estadísticas",
+          "description": "Haga clic en Calcular. Los resultados se muestran al instante junto con las métricas secundarias."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Esta calculadora tiene en cuenta los años bisiestos?",
+          "answer": "Sí. Nuestra calculadora de edad realiza un seguimiento de los años bisiestos y los días de cada mes para calcular su edad exacta."
+        },
+        {
+          "question": "¿Cómo se calcula la edad en diferentes años calendario?",
+          "answer": "La edad se calcula dinámicamente. Si su cumpleaños aún no ha ocurrido en el año actual, se ajusta el recuento de meses y días."
+        },
+        {
+          "question": "¿Puedo calcular mi edad en una fecha futura específica?",
+          "answer": "Sí. Puede establecer la fecha de referencia en cualquier momento del futuro o del pasado para saber su edad exacta en ese momento."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Précision des années bissextiles",
+          "description": "Nos règles de calcul prennent en compte les années bissextiles et le nombre variable de jours de chaque mois."
+        },
+        {
+          "title": "Indicateurs d'âge secondaires",
+          "description": "Affichez votre âge converti en mois, semaines, jours, heures et secondes vécus."
+        },
+        {
+          "title": "Calculs de dates futures",
+          "description": "Découvrez votre âge exact à n'importe quelle date future ou passée."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Entrez votre date de naissance",
+          "description": "Sélectionnez votre jour, mois et année de naissance dans le sélecteur."
+        },
+        {
+          "step": 2,
+          "title": "Définissez la date de référence",
+          "description": "Laissez la date actuelle ou choisissez une date personnalisée dans le passé ou le futur."
+        },
+        {
+          "step": 3,
+          "title": "Calculez et affichez",
+          "description": "Cliquez sur Calculer. Les résultats s'affichent instantanément."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Cette calculatrice prend-elle en compte les années bissextiles ?",
+          "answer": "Oui. Notre calculatrice d'âge suit les années bissextiles et les jours de chaque mois pour calculer votre âge exact."
+        },
+        {
+          "question": "Comment l'âge est-il calculé ?",
+          "answer": "L'âge est calculé de manière dynamique. Si votre anniversaire n'est pas encore passé cette année, le calcul ajuste les mois et jours restants."
+        },
+        {
+          "question": "Puis-je calculer mon âge à une date future ?",
+          "answer": "Oui. Vous pouvez modifier la date de référence pour connaître votre âge exact à n'importe quel moment du futur."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Schaltjahr-Präzision",
+          "description": "Unsere Berechnungsregeln berücksichtigen Schaltjahre und die unterschiedliche Anzahl von Tagen in jedem Monat."
+        },
+        {
+          "title": "Sekundäre Altersmetriken",
+          "description": "Sehen Sie Ihr Alter umgerechnet in Monate, Wochen, Tage, Stunden und Sekunden."
+        },
+        {
+          "title": "Berechnung zukünftiger Daten",
+          "description": "Finden Sie heraus, wie alt Sie an einem bestimmten Datum in der Zukunft (oder Vergangenheit) sein werden."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Geburtsdatum eingeben",
+          "description": "Wählen Sie Ihren Geburtstag, Geburtsmonat und Ihr Geburtsjahr über die Eingabefelder aus."
+        },
+        {
+          "step": 2,
+          "title": "Referenzdatum festlegen",
+          "description": "Lassen Sie das aktuelle Datum stehen oder wählen Sie ein benutzerdefiniertes Datum."
+        },
+        {
+          "step": 3,
+          "title": "Berechnen und anzeigen",
+          "description": "Klicken Sie auf Berechnen. Die Ergebnisse werden sofort mit sekundären Metriken angezeigt."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Werden Schaltjahre berücksichtigt?",
+          "answer": "Ja. Unser Altersrechner berücksichtigt Schaltjahre und die genaue Anzahl der Tage in jedem Monat für eine präzise Altersberechnung."
+        },
+        {
+          "question": "Wie wird das Alter berechnet?",
+          "answer": "Das Alter wird dynamisch berechnet. Wenn Ihr Geburtstag im aktuellen Jahr noch nicht war, wird die Monats- und Tageszählung angepasst."
+        },
+        {
+          "question": "Kann ich mein Alter für ein zukünftiges Datum berechnen?",
+          "answer": "Ja. Sie können das Referenzdatum auf jedes beliebige zukünftige Datum einstellen, um Ihr Alter zu diesem Zeitpunkt zu berechnen."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Precisão de ano bissexto",
+          "description": "Nossas regras aritméticas consideram anos bissextos e o número variável de dias de cada mês."
+        },
+        {
+          "title": "Métricas de idade secundárias",
+          "description": "Veja sua idade convertida em meses, semanas, dias, horas e segundos totais vividos."
+        },
+        {
+          "title": "Cálculo de data futura",
+          "description": "Descubra qual será sua idade exata em qualquer data do futuro ou do passado."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Insira sua data de nascimento",
+          "description": "Selecione o dia, mês e ano de nascimento nos controles de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Defina a data de referência",
+          "description": "Deixe a data atual ou selecione uma data personalizada no futuro ou passado."
+        },
+        {
+          "step": 3,
+          "title": "Calcule e visualize",
+          "description": "Clique em Calcular. Os resultados são exibidos instantaneamente."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Esta calculadora considera anos bissextos?",
+          "answer": "Sim. Nossa calculadora de idade rastreia anos bissextos e os dias de cada mês para calcular sua idade exata."
+        },
+        {
+          "question": "Como a idade é calculada em diferentes anos?",
+          "answer": "A idade é calculada dinamicamente. Se o seu aniversário ainda não ocorreu no ano atual, a calculadora ajusta a contagem."
+        },
+        {
+          "question": "Posso calcular minha idade em uma data futura?",
+          "answer": "Sim. Você pode ajustar a data de referência para qualquer ponto no futuro ou no passado."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Presisi Tahun Kabisat",
+          "description": "Aturan aritmatika kami memperhitungkan tahun kabisat dan jumlah hari yang bervariasi di setiap bulan."
+        },
+        {
+          "title": "Metrik Usia Sekunder",
+          "description": "Lihat usia Anda dikonversi ke metrik alternatif, termasuk total bulan, minggu, hari, jam, dan detik."
+        },
+        {
+          "title": "Perhitungan Tanggal Depan",
+          "description": "Cari tahu berapa usia tepat Anda pada tanggal target tertentu di masa depan atau masa lalu."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Masukkan tanggal lahir",
+          "description": "Pilih hari, bulan, dan tahun lahir Anda menggunakan kontrol input tanggal."
+        },
+        {
+          "step": 2,
+          "title": "Atur tanggal referensi",
+          "description": "Biarkan tanggal saat ini untuk menghitung usia sekarang, atau pilih tanggal kustom."
+        },
+        {
+          "step": 3,
+          "title": "Hitung dan lihat statistik",
+          "description": "Klik Hitung. Hasil ditampilkan instan bersama metrik sekunder."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah kalkulator ini memperhitungkan tahun kabisat?",
+          "answer": "Ya. Kalkulator usia kami melacak tahun kabisat dan jumlah hari di setiap bulan untuk menghitung usia tepat Anda."
+        },
+        {
+          "question": "Bagaimana usia dihitung di tahun kalender yang berbeda?",
+          "answer": "Usia dihitung secara dinamis. Jika hari ulang tahun Anda belum terjadi di tahun berjalan, penghitungan disesuaikan."
+        },
+        {
+          "question": "Bisakah saya menghitung usia saya pada tanggal tertentu di masa depan?",
+          "answer": "Ya. Anda dapat menyesuaikan input tanggal referensi ke tanggal mana pun di masa depan atau masa lalu."
+        }
+      ]
+    }
+  },
+  "date-calculator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Timezone Safety",
+          "description": "All date calculations are normalized to Coordinated Universal Time (UTC) to prevent timezone shifts from altering your day counts."
+        },
+        {
+          "title": "Exclude or Include Options",
+          "description": "Add or subtract days easily while choosing to include or exclude the start date in the final tally."
+        },
+        {
+          "title": "Calculates Weeks and Months",
+          "description": "Display calculations broken down into months, weeks, days, and total hours for project tracking."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Select start date",
+          "description": "Input the starting calendar date for your calculation."
+        },
+        {
+          "step": 2,
+          "title": "Add or subtract parameters",
+          "description": "Choose whether you want to calculate days between dates or add/subtract a specific number of days, weeks, or months."
+        },
+        {
+          "step": 3,
+          "title": "Get results instantly",
+          "description": "View the calculated target date or the exact day count difference instantly in the summary box."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "How do I calculate the days between two dates?",
+          "answer": "Our date calculator translates both dates into UTC milliseconds, subtracts the start time from the end time, and converts the resulting difference into days, weeks, hours, and minutes."
+        },
+        {
+          "question": "Can I add or subtract business days only?",
+          "answer": "Yes. You can select parameters to exclude weekends (Saturdays and Sundays) to find the exact business day difference."
+        },
+        {
+          "question": "What happens if I cross timezone boundaries?",
+          "answer": "To prevent timezone shifts from altering your day count, all calculations are normalized to Coordinated Universal Time (UTC) before subtraction."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Seguridad de huso horario",
+          "description": "Todos los cálculos de fecha se normalizan a la Hora Universal Coordinada (UTC) para evitar que los cambios de huso horario alteren sus recuentos de días."
+        },
+        {
+          "title": "Opciones de inclusión",
+          "description": "Sume o reste días fácilmente mientras elige incluir o excluir la fecha de inicio en el recuento final."
+        },
+        {
+          "title": "Calcula semanas y meses",
+          "description": "Muestre cálculos desglosados en meses, semanas, días y horas totales para el seguimiento del proyecto."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Seleccione la fecha de inicio",
+          "description": "Ingrese la fecha de inicio del calendario para su cálculo."
+        },
+        {
+          "step": 2,
+          "title": "Suma o resta de parámetros",
+          "description": "Elija si desea calcular los días entre fechas o sumar/restar un número específico de días."
+        },
+        {
+          "step": 3,
+          "title": "Obtenga resultados al instante",
+          "description": "Vea la fecha de destino calculada o la diferencia de recuento de días en el cuadro de resumen."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Cómo calculo los días entre dos fechas?",
+          "answer": "Nuestra calculadora traduce ambas fechas a milisegundos UTC, resta el tiempo inicial del final y convierte la diferencia en días y semanas."
+        },
+        {
+          "question": "¿Puedo sumar o restar días hábiles únicamente?",
+          "answer": "Sí. Puede seleccionar parámetros para excluir fines de semana (sábados y domingos) para encontrar la diferencia exacta."
+        },
+        {
+          "question": "¿Qué pasa si cruzo límites de huso horario?",
+          "answer": "Para evitar alteraciones por huso horario, todos los cálculos se normalizan a UTC antes de la resta."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Sécurité du fuseau horaire",
+          "description": "Tous les calculs sont normalisés en UTC pour éviter que les décalages horaires n'altèrent les résultats."
+        },
+        {
+          "title": "Options d'inclusion/exclusion",
+          "description": "Ajoutez ou soustrayez des jours en choisissant d'inclure ou d'exclure la date de début."
+        },
+        {
+          "title": "Calcul des semaines et mois",
+          "description": "Affichez les calculs détaillés en mois, semaines, jours et heures pour le suivi de projet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Sélectionnez la date de début",
+          "description": "Saisissez la date de départ pour votre calcul."
+        },
+        {
+          "step": 2,
+          "title": "Ajoutez ou soustrayez",
+          "description": "Choisissez de calculer l'écart ou d'ajouter/soustraire un nombre de jours."
+        },
+        {
+          "step": 3,
+          "title": "Obtenez les résultats",
+          "description": "Visualisez instantanément la date cible ou le nombre exact de jours."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Comment calculer les jours entre deux dates ?",
+          "answer": "Notre calculatrice convertit les dates en millisecondes UTC, soustrait la première de la seconde et convertit le résultat en jours."
+        },
+        {
+          "question": "Puis-je compter uniquement les jours ouvrables ?",
+          "answer": "Oui. Vous pouvez exclure les week-ends (samedis et dimanches) pour obtenir uniquement les jours ouvrés."
+        },
+        {
+          "question": "Que se passe-t-il avec les fuseaux horaires ?",
+          "answer": "Pour éviter les décalages, tous les calculs sont normalisés en temps universel coordonné (UTC)."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Zeitzonen-Sicherheit",
+          "description": "Alle Datumsberechnungen werden auf die koordinierte Weltzeit (UTC) normiert, um Verfälschungen durch Zeitzonen zu vermeiden."
+        },
+        {
+          "title": "Optionen für Inklusion/Exklusion",
+          "description": "Addieren oder subtrahieren Sie Tage und wählen Sie, ob das Startdatum mitgezählt werden soll."
+        },
+        {
+          "title": "Berechnet Wochen und Monate",
+          "description": "Zeigt Berechnungen aufgeschlüsselt nach Monaten, Wochen, Tagen und Stunden für Ihr Projekttracking."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Startdatum auswählen",
+          "description": "Geben Sie das Startdatum für Ihre Berechnung ein."
+        },
+        {
+          "step": 2,
+          "title": "Parameter addieren/subtrahieren",
+          "description": "Wählen Sie, ob Sie Tage berechnen oder eine bestimmte Anzahl von Tagen hinzufügen/abziehen möchten."
+        },
+        {
+          "step": 3,
+          "title": "Ergebnisse sofort erhalten",
+          "description": "Sehen Sie das berechnete Zieldatum oder die genaue Tagesdifferenz sofort im Ergebnisfeld."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Wie berechne ich die Tage zwischen zwei Daten?",
+          "answer": "Unser Datumsrechner wandelt beide Daten in UTC-Millisekunden um, subtrahiert sie voneinander und rechnet die Differenz in Tage um."
+        },
+        {
+          "question": "Kann ich nur Arbeitstage addieren oder subtrahieren?",
+          "answer": "Ja. Sie können Wochenenden ausschließen, um die genaue Anzahl der Werktage zu ermitteln."
+        },
+        {
+          "question": "Was passiert bei Zeitzonenwechseln?",
+          "answer": "Um Fehler zu vermeiden, werden alle Berechnungen vor der Differenzbildung auf UTC normalisiert."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Segurança de fuso horário",
+          "description": "Todos os cálculos de data são normalizados para UTC para evitar que variações de fuso alterem os resultados."
+        },
+        {
+          "title": "Opções de inclusão",
+          "description": "Some ou subtraia dias escolhendo incluir ou excluir a data de início no total."
+        },
+        {
+          "title": "Calcula semanas e meses",
+          "description": "Exibe cálculos detalhados em meses, semanas, dias e horas para acompanhamento."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Selecione a data de início",
+          "description": "Insira a data inicial para o cálculo."
+        },
+        {
+          "step": 2,
+          "title": "Some ou subtraia",
+          "description": "Escolha calcular a diferença ou somar/subtrair uma quantidade específica de dias."
+        },
+        {
+          "step": 3,
+          "title": "Obtenha resultados",
+          "description": "Visualize instantaneamente a data final ou a diferença de dias."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Como calculo os dias entre duas datas?",
+          "answer": "A calculadora converte as datas em milissegundos UTC, subtrai o início do fim e transforma o resultado em dias."
+        },
+        {
+          "question": "Posso calcular apenas dias úteis?",
+          "answer": "Sim. Você pode marcar a opção para excluir fins de semana (sábados e domingos) do cálculo."
+        },
+        {
+          "question": "O que acontece com as mudanças de fuso?",
+          "answer": "Para garantir a precisão, todos os cálculos são normalizados para UTC antes da subtração."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Keamanan Zona Waktu",
+          "description": "Semua perhitungan tanggal dinormalisasi ke UTC untuk mencegah pergeseran zona waktu memengaruhi hasil."
+        },
+        {
+          "title": "Opsi Inklusi/Eksklusi",
+          "description": "Tambah atau kurangi hari dengan mudah sambil memilih untuk menyertakan atau mengecualikan tanggal mulai."
+        },
+        {
+          "title": "Menghitung Minggu dan Bulan",
+          "description": "Menampilkan perhitungan berdasarkan bulan, minggu, hari, dan total jam untuk pelacakan proyek."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pilih tanggal mulai",
+          "description": "Masukkan tanggal mulai kalender untuk perhitungan Anda."
+        },
+        {
+          "step": 2,
+          "title": "Tambah atau kurangi parameter",
+          "description": "Pilih apakah Anda ingin menghitung hari di antara tanggal atau menambah/mengurangi jumlah hari tertentu."
+        },
+        {
+          "step": 3,
+          "title": "Dapatkan hasil instan",
+          "description": "Lihat tanggal target yang dihitung atau selisih jumlah hari secara instan di kotak ringkasan."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Bagaimana cara menghitung hari di antara dua tanggal?",
+          "answer": "Kalkulator tanggal kami menerjemahkan kedua tanggal ke milidetik UTC, mengurangi waktu mulai dari waktu selesai, lalu mengonversinya ke hari."
+        },
+        {
+          "question": "Bisakah saya menambah atau mengurangi hari kerja saja?",
+          "answer": "Ya. Anda dapat memilih parameter untuk mengecualikan akhir pekan (Sabtu dan Minggu) untuk menemukan selisih hari kerja."
+        },
+        {
+          "question": "Apa yang terjadi jika saya melintasi batas zona waktu?",
+          "answer": "Untuk mencegah pergeseran zona waktu memengaruhi hitungan hari Anda, semua perhitungan dinormalisasi ke UTC sebelum pengurangan."
+        }
+      ]
+    }
+  },
+  "json-formatter": {
+    "en": {
+      "benefits": [
+        {
+          "title": "100% Private & Client-Side",
+          "description": "All JSON parsing, validation, and formatting happens directly in your browser. Your data never touches a server."
+        },
+        {
+          "title": "Real-Time Syntax Highlights",
+          "description": "Instantly locate errors, missing brackets, or mismatched quotes with line-numbered error reports."
+        },
+        {
+          "title": "Custom Indent Formatting",
+          "description": "Format with 2 spaces, 4 spaces, or tabs, or minify your JSON to a single line for web performance."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Paste or type JSON",
+          "description": "Input your raw JSON text or load a sample file into the input text area."
+        },
+        {
+          "step": 2,
+          "title": "Check validation status",
+          "description": "If there are errors, check the real-time validator box for syntax errors and line numbers."
+        },
+        {
+          "step": 3,
+          "title": "Beautify or minify",
+          "description": "Select your formatting tab size and click Beautify or Minify to format. Copy or download the results instantly."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Is my JSON data secure when using this tool?",
+          "answer": "Yes. All processing occurs locally within your web browser using JavaScript. No JSON data is ever uploaded or transmitted to our servers."
+        },
+        {
+          "question": "Can this validator identify syntax errors?",
+          "answer": "Yes. The validator highlights the exact line number and token position where the JSON syntax breaks (e.g. missing commas or mismatched brackets)."
+        },
+        {
+          "question": "Does this formatter support minifying?",
+          "answer": "Yes. You can compress your JSON into a single line to reduce file size and optimize web resource loading."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "100% Privado y del lado del cliente",
+          "description": "Todo el análisis, validación y formateo de JSON ocurre directamente en su navegador. Sus datos nunca tocan un servidor."
+        },
+        {
+          "title": "Resaltado de sintaxis en tiempo real",
+          "description": "Localice instantáneamente errores, corchetes faltantes o comillas no coincidentes con informes de errores numerados por líneas."
+        },
+        {
+          "title": "Formateo de sangría personalizado",
+          "description": "Formatee con 2 espacios, 4 espacios o pestañas, o minimice su JSON a una sola línea para rendimiento web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pegue o escriba JSON",
+          "description": "Ingrese su texto JSON sin formato o cargue un archivo de muestra en el área de texto de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Verifique el estado de validación",
+          "description": "Si hay errores, verifique el cuadro del validador en tiempo real para encontrar errores de sintaxis y números de línea."
+        },
+        {
+          "step": 3,
+          "title": "Embellecer o minimizar",
+          "description": "Seleccione el tamaño de sangría y haga clic en Beautify o Minify para formatear. Copie o descargue los resultados al instante."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Son seguros mis datos JSON al usar esta herramienta?",
+          "answer": "Sí. Todo el procesamiento ocurre localmente dentro de su navegador web mediante JavaScript. Ningún dato JSON se carga o transmite a nuestros servidores."
+        },
+        {
+          "question": "¿Puede este validador identificar errores de sintaxis?",
+          "answer": "Sí. El validador resalta el número de línea exacto y la posición del token donde se rompe la sintaxis JSON (por ejemplo, comas faltantes o corchetes no coincidentes)."
+        },
+        {
+          "question": "¿Este formateador admite la minimización?",
+          "answer": "Sí. Puede comprimir su JSON en una sola línea para reducir el tamaño del archivo y optimizar la carga de recursos web."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "100 % privé et côté client",
+          "description": "Toutes les opérations d'analyse, de validation et de formatage JSON se déroulent directement dans votre navigateur. Vos données ne touchent jamais un serveur."
+        },
+        {
+          "title": "Coloration syntaxique en temps réel",
+          "description": "Localisez instantanément les erreurs, les crochets manquants ou les guillemets incompatibles grâce à des rapports d'erreurs numérotés."
+        },
+        {
+          "title": "Formatage personnalisé de retrait",
+          "description": "Formatez avec 2 espaces, 4 espaces ou tabulations, ou compressez votre JSON sur une seule ligne pour des performances web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Coller ou saisir le JSON",
+          "description": "Saisissez votre texte JSON brut ou chargez un exemple de fichier dans la zone de texte d'entrée."
+        },
+        {
+          "step": 2,
+          "title": "Vérifier la validation",
+          "description": "En cas d'erreurs, vérifiez le panneau de validation en temps réel pour trouver l'erreur de syntaxe et la ligne concernée."
+        },
+        {
+          "step": 3,
+          "title": "Embellir ou compresser",
+          "description": "Choisissez la taille des retraits puis cliquez sur Beautify ou Minify. Copiez ou téléchargez les résultats instantanément."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Mes données JSON sont-elles sécurisées ?",
+          "answer": "Oui. Tout le traitement est effectué localement dans votre navigateur web via JavaScript. Aucune donnée JSON n'est chargée ou transmise à nos serveurs."
+        },
+        {
+          "question": "Ce validateur peut-il identifier les erreurs de syntaxe ?",
+          "answer": "Oui. Le validateur indique le numéro de ligne exact et la position du caractère où la syntaxe JSON est incorrecte (virgule manquante, crochet non fermé, etc.)."
+        },
+        {
+          "question": "Ce formateur prend-il en charge la minification ?",
+          "answer": "Oui. Vous pouvez compresser votre JSON sur une seule ligne pour réduire la taille du fichier et optimiser le chargement des ressources web."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "100 % privat & clientseitig",
+          "description": "Das gesamte Parsen, Validieren und Formatieren von JSON erfolgt direkt in Ihrem Browser. Ihre Daten berühren niemals einen Server."
+        },
+        {
+          "title": "Syntax-Hervorhebung in Echtzeit",
+          "description": "Lokalisieren Sie Fehler, fehlende Klammern oder falsch gesetzte Anführungszeichen sofort mit zeilennummerierten Fehlerberichten."
+        },
+        {
+          "title": "Benutzerdefinierte Einrückung",
+          "description": "Formatieren Sie mit 2 Leerzeichen, 4 Leerzeichen oder Tabs, oder minifizieren Sie Ihr JSON für Web-Performance auf eine Zeile."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "JSON einfügen oder eingeben",
+          "description": "Geben Sie Ihren rohen JSON-Text ein oder laden Sie eine Beispieldatei in den Eingabebereich."
+        },
+        {
+          "step": 2,
+          "title": "Validierungsstatus prüfen",
+          "description": "Prüfen Sie bei Fehlern das Echtzeit-Validierungsfeld auf Syntaxfehler und Zeilennummern."
+        },
+        {
+          "step": 3,
+          "title": "Formatieren oder Minifizieren",
+          "description": "Wählen Sie die Einrückung aus und klicken Sie auf Beautify oder Minify. Kopieren oder laden Sie die Ergebnisse sofort herunter."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Sind meine JSON-Daten bei der Verwendung dieses Tools sicher?",
+          "answer": "Ja. Die Verarbeitung erfolgt vollständig lokal in Ihrem Browser mittels JavaScript. Es werden keine JSON-Daten an unsere Server übertragen."
+        },
+        {
+          "question": "Kann dieser Validator Syntaxfehler erkennen?",
+          "answer": "Ja. Der Validator zeigt die genaue Zeilennummer und Zeichenposition an, an der die JSON-Syntax fehlerhaft ist (z. B. fehlende Kommas oder Klammern)."
+        },
+        {
+          "question": "Unterstützt dieser Formatierer Minifizierung?",
+          "answer": "Ja. Sie können Ihr JSON auf eine einzige Zeile komprimieren, um die Dateigröße zu reduzieren und Ladezeiten zu optimieren."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "100% Privado e no Cliente",
+          "description": "Toda a análise, validação e formatação de JSON ocorre diretamente no seu navegador. Seus dados nunca tocam um servidor."
+        },
+        {
+          "title": "Destaque de sintaxe em tempo real",
+          "description": "Localize erros instantaneamente, como colchetes ausentes ou aspas incompatíveis, com relatórios numerados."
+        },
+        {
+          "title": "Formatação de recuo personalizada",
+          "description": "Formate com 2 espaços, 4 espaços ou tabulações, ou minimize seu JSON em uma linha para desempenho web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Cole ou digite JSON",
+          "description": "Insira seu texto JSON bruto ou carregue um arquivo de amostra na caixa de entrada de texto."
+        },
+        {
+          "step": 2,
+          "title": "Verifique a validação",
+          "description": "Se houver erros, consulte a caixa do validador em tempo real para encontrar erros de sintaxis e linhas."
+        },
+        {
+          "step": 3,
+          "title": "Embelezar ou minimizar",
+          "description": "Selecione o tamanho do recuo e clique em Beautify ou Minify. Copie ou faça o download dos resultados instantaneamente."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Meus dados JSON estão seguros ao usar esta ferramenta?",
+          "answer": "Sim. Todo o processamento ocorre localmente no seu navegador web usando JavaScript. Nenhum dado JSON é enviado ou transmitido aos nossos servidores."
+        },
+        {
+          "question": "Este validador pode identificar erros de sintaxe?",
+          "answer": "Sim. O validador destaca a linha exata e a posição do token onde a sintaxe JSON é interrompida (por exemplo, vírgulas ausentes ou colchetes abertos)."
+        },
+        {
+          "question": "Este formatador suporta a minificação?",
+          "answer": "Sim. Você pode comprimir seu JSON em uma única linha para reduzir o tamanho do arquivo e otimizar o carregamento de recursos da web."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "100% Pribadi & Sisi Klien",
+          "description": "Semua penguraian, validasi, dan pemformatan JSON terjadi langsung di browser Anda. Data Anda tidak pernah menyentuh server."
+        },
+        {
+          "title": "Sorotan Sintaks Real-Time",
+          "description": "Temukan kesalahan, tanda kurung yang hilang, atau tanda kutip yang tidak cocok secara instan dengan laporan kesalahan bernomor baris."
+        },
+        {
+          "title": "Format Indentasi Kustom",
+          "description": "Format dengan 2 spasi, 4 spasi, atau tab, atau minify JSON Anda ke dalam satu baris untuk performa web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Tempel atau ketik JSON",
+          "description": "Masukkan teks JSON mentah Anda atau muat file sampel ke dalam area teks input."
+        },
+        {
+          "step": 2,
+          "title": "Periksa status validasi",
+          "description": "Jika ada kesalahan, periksa kotak validator real-time untuk menemukan kesalahan sintaks dan nomor baris."
+        },
+        {
+          "step": 3,
+          "title": "Beautify atau minify",
+          "description": "Pilih ukuran indentasi lalu klik Beautify atau Minify. Salin atau unduh hasilnya secara instan."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah data JSON saya aman saat menggunakan alat ini?",
+          "answer": "Ya. Semua pemrosesan terjadi secara lokal di dalam browser web Anda menggunakan JavaScript. Tidak ada data JSON yang diunggah atau dikirim ke server kami."
+        },
+        {
+          "question": "Bisakah validator ini mengidentifikasi kesalahan sintaks?",
+          "answer": "Ya. Validator menyoroti nomor baris dan posisi token yang tepat di mana sintaks JSON rusak (misalnya koma hilang atau kurung tidak cocok)."
+        },
+        {
+          "question": "Apakah pemformat ini mendukung minifikasi?",
+          "answer": "Ya. Anda dapat mengompresi JSON Anda ke dalam satu baris untuk mengurangi ukuran file dan mengoptimalkan pemuatan sumber daya web."
+        }
+      ]
+    }
+  },
+  "uuid-generator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Cryptographically Secure",
+          "description": "Generated using secure browser APIs (window.crypto) for maximum collision resistance."
+        },
+        {
+          "title": "Bulk Operations",
+          "description": "Generate up to 10,000 UUIDs in a single click with custom separators and casing options."
+        },
+        {
+          "title": "Instant Validation",
+          "description": "Paste or type UUIDs to instantly validate format standards and find version details."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configure generation settings",
+          "description": "Set the number of UUIDs to generate, choose uppercase or lowercase, and select your separator."
+        },
+        {
+          "step": 2,
+          "title": "Generate UUIDs",
+          "description": "Click Generate to generate UUIDs instantly in the output workspace."
+        },
+        {
+          "step": 3,
+          "title": "Validate existing UUIDs",
+          "description": "Switch to the Validator tab, paste any UUID, and view format correctness and version info."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "What is a UUID?",
+          "answer": "A Universally Unique Identifier (UUID) is a 128-bit label used for unique resources. Version 4 (v4) is completely random and widely used."
+        },
+        {
+          "question": "How secure is this generator?",
+          "answer": "It is 100% secure. Calculations occur locally within your browser using cryptographically strong random number generation. No data is sent to a server."
+        },
+        {
+          "question": "Can I validate UUIDs of other versions?",
+          "answer": "Yes. The validator supports checking RFC 4122 compliant UUIDs for Versions 1, 3, 4, and 5."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Criptográficamente seguro",
+          "description": "Generado utilizando API seguras del navegador (window.crypto) para una máxima resistencia a colisiones."
+        },
+        {
+          "title": "Operaciones masivas",
+          "description": "Genere hasta 10,000 UUID con un solo clic con separadores personalizados y opciones de mayúsculas y minúsculas."
+        },
+        {
+          "title": "Validación instantánea",
+          "description": "Pegue o escriba UUID para validar instantáneamente los estándares de formato y encontrar detalles de la versión."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurar ajustes de generación",
+          "description": "Establezca el número de UUID a generar, elija mayúsculas o minúsculas y seleccione su separador."
+        },
+        {
+          "step": 2,
+          "title": "Generar UUID",
+          "description": "Haga clic en Generar para crear UUID al instante en el espacio de trabajo de salida."
+        },
+        {
+          "step": 3,
+          "title": "Validar UUID existentes",
+          "description": "Cambie a la pestaña Validador, pegue cualquier UUID y vea la corrección del formato y la información de la versión."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Qué es un UUID?",
+          "answer": "Un Identificador Único Universal (UUID) es una etiqueta de 128 bits utilizada para recursos únicos. La versión 4 (v4) es completamente aleatoria y ampliamente utilizada."
+        },
+        {
+          "question": "¿Qué tan seguro es este generador?",
+          "answer": "Es 100% seguro. Los cálculos ocurren localmente dentro de su navegador utilizando generación de números aleatorios criptográficamente fuertes. No se envían datos a ningún servidor."
+        },
+        {
+          "question": "¿Puedo validar UUID de otras versiones?",
+          "answer": "Sí. El validador admite la comprobación de UUID compatibles con RFC 4122 para las versiones 1, 3, 4 y 5."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Sécurité cryptographique",
+          "description": "Généré à l'aide d'API de navigateur sécurisées (window.crypto) pour une résistance maximale aux collisions."
+        },
+        {
+          "title": "Opérations en bloc",
+          "description": "Générez jusqu'à 10 000 UUID en un seul clic avec des séparateurs personnalisés et des options de casse."
+        },
+        {
+          "title": "Validation instantanée",
+          "description": "Collez ou saisissez des UUID pour valider instantanément les normes de format et trouver les détails de la version."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurer les paramètres",
+          "description": "Définissez le nombre d'UUID à générer, choisissez les majuscules/minuscules et sélectionnez le séparateur."
+        },
+        {
+          "step": 2,
+          "title": "Générer les UUID",
+          "description": "Cliquez sur Générer pour créer instantanément des UUID dans l'espace de travail."
+        },
+        {
+          "step": 3,
+          "title": "Valider des UUID existants",
+          "description": "Basculez vers l'onglet Validateur, collez n'importe quel UUID et affichez sa conformité et sa version."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Qu'est-ce qu'un UUID ?",
+          "answer": "Un identifiant unique universel (UUID) est une étiquette de 128 bits utilisée pour des ressources uniques. La version 4 (v4) est entièrement aléatoire."
+        },
+        {
+          "question": "Ce générateur est-il sûr ?",
+          "answer": "Il est 100 % sûr. Le traitement a lieu localement dans votre navigateur en utilisant des générateurs de nombres aléatoires sécurisés. Aucun serveur n'est impliqué."
+        },
+        {
+          "question": "Puis-je valider d'autres versions d'UUID ?",
+          "answer": "Oui. Le validateur prend en charge la vérification des UUID conformes à la norme RFC 4122 pour les versions 1, 3, 4 et 5."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Kryptografisch sicher",
+          "description": "Generiert mit sicheren Browser-APIs (window.crypto) für maximale Kollisionssicherheit."
+        },
+        {
+          "title": "Massenoperationen",
+          "description": "Generieren Sie bis zu 10.000 UUIDs mit einem Klick, mit benutzerdefinierten Trennzeichen und Groß-/Kleinschreibung."
+        },
+        {
+          "title": "Sofortige Validierung",
+          "description": "Fügen Sie UUIDs ein oder geben Sie sie ein, um Formatstandards sofort zu validieren und Versionsdetails zu finden."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Generierungseinstellungen konfigurieren",
+          "description": "Legen Sie die Anzahl der zu generierenden UUIDs fest, wählen Sie Groß- oder Kleinschreibung und das Trennzeichen."
+        },
+        {
+          "step": 2,
+          "title": "UUIDs generieren",
+          "description": "Klicken Sie auf Generieren, um UUIDs sofort im Ausgabebereich zu erstellen."
+        },
+        {
+          "step": 3,
+          "title": "Vorhandene UUIDs validieren",
+          "description": "Wechseln Sie zum Validator-Tab, fügen Sie eine beliebige UUID ein und prüfen Sie Formatkorrektheit und Version."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Was ist eine UUID?",
+          "answer": "Ein universell eindeutiger Bezeichner (UUID) ist eine 128-Bit-Kennung für eindeutige Ressourcen. Version 4 (v4) ist völlig zufällig."
+        },
+        {
+          "question": "Wie sicher ist dieser Generator?",
+          "answer": "Er ist 100 % sicher. Berechnungen erfolgen lokal im Browser mit kryptografisch starken Zufallszahlen. Es werden keine Daten gesendet."
+        },
+        {
+          "question": "Kann ich UUIDs anderer Versionen validieren?",
+          "answer": "Ja. Der Validator unterstützt die Überprüfung von RFC 4122-konformen UUIDs für die Versionen 1, 3, 4 und 5."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Criptograficamente seguro",
+          "description": "Gerado usando APIs de navegador seguras (window.crypto) para máxima resistência a colisões."
+        },
+        {
+          "title": "Operações em lote",
+          "description": "Gere até 10.000 UUIDs em um único clique com separadores personalizados e opções de caixa."
+        },
+        {
+          "title": "Validação instantânea",
+          "description": "Cole ou digite UUIDs para validar instantaneamente os padrões de formato e encontrar detalhes da versão."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurar preferências",
+          "description": "Defina a quantidade de UUIDs, escolha maiúsculas ou minúsculas e selecione o separador."
+        },
+        {
+          "step": 2,
+          "title": "Gerar UUIDs",
+          "description": "Clique em Gerar para criar UUIDs instantaneamente no espaço de trabalho de saída."
+        },
+        {
+          "step": 3,
+          "title": "Validar UUIDs existentes",
+          "description": "Alterne para a guia Validador, cole qualquer UUID e verifique a conformidade de formato e versão."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "O que é um UUID?",
+          "answer": "Um Identificador Único Universal (UUID) é um rótulo de 128 bits para recursos exclusivos. A versão 4 (v4) é aleatória e amplamente utilizada."
+        },
+        {
+          "question": "Quão seguro é este gerador?",
+          "answer": "É 100% seguro. Os cálculos acontecem localmente no seu navegador usando geração criptográfica de números aleatórios. Nenhum dado é enviado."
+        },
+        {
+          "question": "Posso validar UUIDs de outras versões?",
+          "answer": "Sim. O validador suporta a verificação de UUIDs compatíveis com RFC 4122 para as versões 1, 3, 4 e 5."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Aman Secara Kriptografis",
+          "description": "Dibuat menggunakan API browser yang aman (window.crypto) untuk resistensi tabrakan maksimum."
+        },
+        {
+          "title": "Operasi Massal",
+          "description": "Hasilkan hingga 10.000 UUID dalam satu klik dengan pemisah khusus dan opsi huruf besar/kecil."
+        },
+        {
+          "title": "Validasi Instan",
+          "description": "Tempel atau ketik UUID untuk memvalidasi standar format secara instan dan menemukan detail versi."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Konfigurasi pengaturan pembuatan",
+          "description": "Atur jumlah UUID yang akan dibuat, pilih huruf besar atau kecil, dan pilih pemisah Anda."
+        },
+        {
+          "step": 2,
+          "title": "Hasilkan UUID",
+          "description": "Klik Hasilkan untuk membuat UUID secara instan di area kerja output."
+        },
+        {
+          "step": 3,
+          "title": "Validasi UUID yang ada",
+          "description": "Beralih ke tab Validator, tempelkan UUID apa pun, dan lihat kebenaran format dan info versi."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apa itu UUID?",
+          "answer": "Universally Unique Identifier (UUID) adalah label 128-bit yang digunakan untuk sumber daya unik. Versi 4 (v4) sepenuhnya acak dan banyak digunakan."
+        },
+        {
+          "question": "Seberapa amankah generator ini?",
+          "answer": "Ini 100% aman. Perhitungan terjadi secara lokal di dalam browser Anda menggunakan generator nomor acak yang kuat secara kriptografis. Tidak ada data yang dikirim ke server."
+        },
+        {
+          "question": "Bisakah saya memvalidasi UUID versi lain?",
+          "answer": "Ya. Validator mendukung pemeriksaan UUID yang mematuhi RFC 4122 untuk Versi 1, 3, 4, dan 5."
+        }
+      ]
+    }
+  },
+  "json-validator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Instant Syntax Checks",
+          "description": "Real-time validation shows the exact character offset and line numbers of any formatting errors."
+        },
+        {
+          "title": "Safe Data Parsing",
+          "description": "Your data remains in your browser cache. Zero network calls or storage means 100% data compliance."
+        },
+        {
+          "title": "Interactive Tree View",
+          "description": "View parsed JSON inside a collapsible and expandable structural layout node tree."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Paste JSON document",
+          "description": "Paste your JSON document or load a sample layout in the validator area."
+        },
+        {
+          "step": 2,
+          "title": "Check validator status",
+          "description": "Review the validator status block to check for error highlights and line pointers."
+        },
+        {
+          "step": 3,
+          "title": "Explore tree structure",
+          "description": "Examine the interactive tree node explorer to traverse nested elements cleanly."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "How does the validator trace syntax errors?",
+          "answer": "It uses strict JS parsing to locate mismatched tokens, missing keys, or illegal characters, pointing out the exact line and position."
+        },
+        {
+          "question": "Can I format or beautify code inside this validator?",
+          "answer": "Yes. It comes with a quick layout formatter that can beautify or compress valid JSON text with a single click."
+        },
+        {
+          "question": "Is there a limit on JSON file size?",
+          "answer": "No strict limit, but large files (above 10MB) might slow down the rendering of the interactive tree view depending on your browser memory."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Verificaciones de sintaxis al instante",
+          "description": "La validación en tiempo real muestra el desplazamiento exacto de caracteres y números de línea de cualquier error de formato."
+        },
+        {
+          "title": "Análisis de datos seguro",
+          "description": "Sus datos permanecen en la caché de su navegador. Cero llamadas de red o almacenamiento garantizan el cumplimiento de los datos al 100%."
+        },
+        {
+          "title": "Vista de árbol interactiva",
+          "description": "Vea el JSON analizado dentro de un árbol de nodos de diseño estructural colapsable y expandible."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pegar documento JSON",
+          "description": "Pegue su documento JSON o cargue un diseño de muestra en el área del validador."
+        },
+        {
+          "step": 2,
+          "title": "Verificar estado del validador",
+          "description": "Revise el bloque de estado del validador para verificar si hay fallos y líneas con errores."
+        },
+        {
+          "step": 3,
+          "title": "Explorar estructura de árbol",
+          "description": "Examine el explorador de nodos de árbol interactivo para recorrer los elementos anidados de forma limpia."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Cómo detecta el validador errores de sintaxis?",
+          "answer": "Utiliza análisis estricto de JS para localizar tokens no coincidentes, claves faltantes o caracteres ilegales, señalando la línea y posición exactas."
+        },
+        {
+          "question": "¿Puedo formatear o embellecer el código dentro de este validador?",
+          "answer": "Sí. Viene con un formateador de diseño rápido que puede embellecer o comprimir texto JSON válido con un solo clic."
+        },
+        {
+          "question": "¿Existe un límite en el tamaño del archivo JSON?",
+          "answer": "No hay un límite estricto, pero los archivos muy grandes (más de 10 MB) pueden ralentizar la representación de la vista de árbol interactiva."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Vérification instantanée de syntaxe",
+          "description": "La validation en temps réel affiche le numéro de ligne exact et la position du caractère pour chaque erreur."
+        },
+        {
+          "title": "Analyse sécurisée des données",
+          "description": "Vos données restent localement dans votre navigateur. Aucune requête réseau ni stockage externe pour une confidentialité totale."
+        },
+        {
+          "title": "Vue en arbre interactive",
+          "description": "Explorez la structure JSON analysée grâce à un visualiseur d'arbre avec nœuds pliables et dépliables."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Coller le document JSON",
+          "description": "Collez votre code JSON ou chargez un exemple dans la zone de validation."
+        },
+        {
+          "step": 2,
+          "title": "Vérifier les erreurs",
+          "description": "Regardez le bloc de validation pour voir les avertissements et localiser la ligne de l'erreur de syntaxe."
+        },
+        {
+          "step": 3,
+          "title": "Naviguer dans l'arbre",
+          "description": "Utilisez le visualiseur d'arbre interactif pour parcourir facilement les objets et tableaux imbriqués."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Comment le validateur détecte-t-il les erreurs ?",
+          "answer": "Il utilise un parseur JavaScript strict pour trouver les crochets orphelins, virgules manquantes ou caractères interdits en pointant la ligne exacte."
+        },
+        {
+          "question": "Puis-je formater ou embellir le code ici ?",
+          "answer": "Oui. L'outil intègre un formateur rapide pour embellir ou minifier votre JSON valide d'un simple clic."
+        },
+        {
+          "question": "Y a-t-il une taille maximale de fichier ?",
+          "answer": "Il n'y a pas de limite stricte, mais les fichiers volumineux (plus de 10 Mo) peuvent ralentir le rendu du visualiseur d'arbre."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Sofortige Syntaxprüfung",
+          "description": "Die Echtzeit-Validierung zeigt die genaue Zeichenposition und Zeilennummer bei Formatierungsfehlern."
+        },
+        {
+          "title": "Sichere Datenverarbeitung",
+          "description": "Ihre Daten verbleiben lokal im Browser. Keine Netzwerkzugriffe oder Datenspeicherung bedeuten 100 % Sicherheit."
+        },
+        {
+          "title": "Interaktive Baumansicht",
+          "description": "Visualisieren Sie geparstes JSON in einer übersichtlichen, einklappbaren und ausklappbaren Baumstruktur."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "JSON-Dokument einfügen",
+          "description": "Fügen Sie Ihr JSON ein oder laden Sie ein Beispiel-Layout in das Validierungsfeld."
+        },
+        {
+          "step": 2,
+          "title": "Validierungsstatus prüfen",
+          "description": "Prüfen Sie das Statusfeld auf Syntaxfehler und farbliche Fehlerkennzeichnungen."
+        },
+        {
+          "step": 3,
+          "title": "Baumstruktur durchsuchen",
+          "description": "Nutzen Sie den interaktiven Baumansicht-Explorer, um verschachtelte Elemente übersichtlich zu analysieren."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Wie findet der Validator Syntaxfehler?",
+          "answer": "Er verwendet striktes JavaScript-Parsing, um fehlende Kommas, falsche Klammern oder ungültige Zeichen mit Zeilenangabe aufzuspüren."
+        },
+        {
+          "question": "Kann ich Code in diesem Validator formatieren?",
+          "answer": "Ja. Ein Klick genügt, um gültiges JSON zu beautifizieren oder zu minifizieren."
+        },
+        {
+          "question": "Gibt es ein Limit für die JSON-Größe?",
+          "answer": "Kein festes Limit, aber Dateien über 10 MB können die Darstellung der interaktiven Baumansicht je nach Browser verlangsamen."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Validação de sintaxe instantânea",
+          "description": "A validação em tempo real indica a linha e o caractere exato de qualquer erro de formatação."
+        },
+        {
+          "title": "Processamento seguro",
+          "description": "Seus dados nunca saem do navegador. Zero requisições de rede garantem total conformidade com privacidade."
+        },
+        {
+          "title": "Visualização em árvore",
+          "description": "Exiba o JSON analisado em uma estrutura de árvore de nós interativa (expansível/recolhível)."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Cole o documento JSON",
+          "description": "Insira seu código JSON ou carregue um exemplo de modelo na área do validador."
+        },
+        {
+          "step": 2,
+          "title": "Verifique o status",
+          "description": "Revise o painel de status para localizar rapidamente a linha e a mensagem de erro de sintaxe."
+        },
+        {
+          "step": 3,
+          "title": "Explore a árvore",
+          "description": "Navegue pela árvore de nós interativa para inspecionar os campos e arrays aninhados."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Como o validador identifica erros de sintaxe?",
+          "answer": "Ele realiza uma análise sintática estrita para encontrar colchetes órfãos, aspas incompatíveis ou chaves ausentes, relatando a posição exata."
+        },
+        {
+          "question": "Posso formatar ou embelezar o código neste validador?",
+          "answer": "Sim. A ferramenta inclui funções rápidas para formatar ou minificar o JSON validado instantaneamente."
+        },
+        {
+          "question": "Existe um limite de tamanho para o JSON?",
+          "answer": "Não há limite estrito, mas arquivos muito grandes (acima de 10 MB) podem impactar o desempenho de renderização da árvore interativa."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Pemeriksaan Sintaks Instan",
+          "description": "Validasi real-time menunjukkan offset karakter dan nomor baris yang tepat dari kesalahan format apa pun."
+        },
+        {
+          "title": "Penguraian Data Aman",
+          "description": "Data Anda tetap berada di cache browser Anda. Tanpa panggilan jaringan atau penyimpanan pihak ketiga menjamin kerahasiaan 100%."
+        },
+        {
+          "title": "Tampilan Pohon Interaktif",
+          "description": "Lihat JSON yang diurai di dalam pohon node tata letak struktural yang dapat dilipat dan diperluas."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Tempel dokumen JSON",
+          "description": "Tempel dokumen JSON Anda atau muat tata letak sampel di area validator."
+        },
+        {
+          "step": 2,
+          "title": "Periksa status validator",
+          "description": "Tinjau blok status validator untuk memeriksa sorotan kesalahan dan penunjuk baris."
+        },
+        {
+          "step": 3,
+          "title": "Jelajahi struktur pohon",
+          "description": "Periksa penjelajah pohon node interaktif untuk melintasi elemen bersarang dengan bersih."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Bagaimana validator melacak kesalahan sintaks?",
+          "answer": "Ini menggunakan penguraian JS ketat untuk menemukan tanda yang tidak cocok, kunci yang hilang, atau karakter ilegal, menunjukkan baris dan posisi yang tepat."
+        },
+        {
+          "question": "Bisakah saya memformat atau mempercantik kode di dalam validator ini?",
+          "answer": "Ya. Ini dilengkapi dengan pemformat tata letak cepat yang dapat mempercantik atau mengompres teks JSON yang valid dengan satu klik."
+        },
+        {
+          "question": "Apakah ada batasan ukuran file JSON?",
+          "answer": "Tidak ada batas ketat, tetapi file besar (di atas 10MB) dapat memperlambat rendering tampilan pohon interaktif."
+        }
+      ]
+    }
+  },
+  "csv-to-excel": {
+    "en": {
+      "benefits": [
+        {
+          "title": "100% Browser-Based",
+          "description": "All table parsing and Excel workbook creation happens on your local device. Your sensitive financial data is never exposed."
+        },
+        {
+          "title": "Automatic Delimiter Sniffing",
+          "description": "Automatically detects commas, semicolons, tabs, and pipes in your raw input text."
+        },
+        {
+          "title": "Excel-Friendly Output",
+          "description": "Downloads spreadsheet files that open directly in Microsoft Excel, LibreOffice, or Google Sheets with native rows and columns."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Input CSV data",
+          "description": "Paste your CSV text or upload your CSV file into the converter input box."
+        },
+        {
+          "step": 2,
+          "title": "Choose delimiter options",
+          "description": "Choose your separator type (comma, semicolon, tab, or let the converter auto-detect it)."
+        },
+        {
+          "step": 3,
+          "title": "Convert & download",
+          "description": "Click Convert to Excel, then download the spreadsheet file directly to your system."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Will this converter work with semicolons or tabs?",
+          "answer": "Yes. The converter features automatic delimiter sniffing and supports custom separator selectors (comma, semicolon, tab, or pipe)."
+        },
+        {
+          "question": "Are my files uploaded to any server?",
+          "answer": "Never. All data parsing, row splitting, and file compiling is executed locally on your computer via client-side JavaScript."
+        },
+        {
+          "question": "Which spreadsheet programs are supported?",
+          "answer": "The generated spreadsheet file is fully compliant with Microsoft Excel, Google Sheets, LibreOffice Calc, Apple Numbers, and all major spreadsheet software."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "100% Basado en el navegador",
+          "description": "Todo el análisis de tablas y la creación de libros de Excel ocurren en su dispositivo local. Sus datos financieros confidenciales nunca se exponen."
+        },
+        {
+          "title": "Detección automática de delimitadores",
+          "description": "Detecta automáticamente comas, puntos y comas, tabulaciones y barras verticales en su texto de entrada."
+        },
+        {
+          "title": "Salida compatible con Excel",
+          "description": "Descarga archivos de hojas de cálculo que se abren directamente en Microsoft Excel, LibreOffice o Google Sheets con filas y columnas nativas."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Ingresar datos CSV",
+          "description": "Pegue su texto CSV o cargue su archivo CSV en el cuadro de entrada del convertidor."
+        },
+        {
+          "step": 2,
+          "title": "Elegir opciones de delimitador",
+          "description": "Elija su tipo de separador (coma, punto y coma, pestaña o deje que el convertidor lo detecte automáticamente)."
+        },
+        {
+          "step": 3,
+          "title": "Convertir y descargar",
+          "description": "Haga clic en Convertir a Excel, luego descargue el archivo de hoja de cálculo directamente a su sistema."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Funcionará este convertidor con puntos y comas o pestañas?",
+          "answer": "Sí. El convertidor cuenta con detección automática de delimitadores y admite selectores de separadores personalizados."
+        },
+        {
+          "question": "¿Se cargan mis archivos a algún servidor?",
+          "answer": "Nunca. Todo el análisis de datos, división de filas y compilación de archivos se ejecuta localmente en su computadora."
+        },
+        {
+          "question": "¿Qué programas de hojas de cálculo son compatibles?",
+          "answer": "El archivo generado es totalmente compatible con Microsoft Excel, Google Sheets, LibreOffice Calc, Apple Numbers y los principales programas."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "100% Local et Privé",
+          "description": "Toutes les opérations d'analyse de table et de création de classeur Excel se déroulent sur votre appareil. Vos données financières ne sont jamais exposées."
+        },
+        {
+          "title": "Détection Automatique du Séparateur",
+          "description": "Détecte automatiquement les virgules, points-virgules, tabulations et barres verticales dans votre texte."
+        },
+        {
+          "title": "Fichier Compatible Excel",
+          "description": "Génère des fichiers de feuille de calcul qui s'ouvrent directement dans Excel, Google Sheets ou LibreOffice avec des lignes et colonnes réelles."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Saisir les données CSV",
+          "description": "Pegue ou chargez votre fichier CSV dans la boîte d'entrée du convertisseur."
+        },
+        {
+          "step": 2,
+          "title": "Choisir le séparateur",
+          "description": "Sélectionnez le type de séparateur ou laissez l'outil le détecter automatiquement."
+        },
+        {
+          "step": 3,
+          "title": "Convertir & télécharger",
+          "description": "Cliquez sur Convertir en Excel, puis téléchargez le fichier généré directement sur votre système."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Est-ce que cela fonctionne avec des tabulations ?",
+          "answer": "Oui. Le convertisseur détecte automatiquement ou vous permet de choisir manuellement le séparateur (virgule, point-virgule, tabulation, etc.)."
+        },
+        {
+          "question": "Mes données transitent-elles par un serveur ?",
+          "answer": "Non, jamais. L'analyse des lignes et l'assemblage du fichier XML sont faits en local par votre navigateur."
+        },
+        {
+          "question": "Quels logiciels peuvent ouvrir le fichier ?",
+          "answer": "Le fichier généré s'ouvre parfaitement dans Microsoft Excel, Google Sheets, LibreOffice Calc et Apple Numbers."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "100 % im Browser",
+          "description": "Das Parsen der Tabellen und Erstellen von Excel-Dateien erfolgt lokal. Ihre vertraulichen Daten verlassen nie Ihr Gerät."
+        },
+        {
+          "title": "Automatische Trennzeichen-Erkennung",
+          "description": "Erkennt automatisch Kommas, Semikolons, Tabs und Pipes in Ihrem Quelltext."
+        },
+        {
+          "title": "Excel-optimierte Ausgabe",
+          "description": "Erstellt Tabellendateien, die sich direkt in Microsoft Excel, LibreOffice oder Google Sheets öffnen lassen."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "CSV-Daten eingeben",
+          "description": "Fügen Sie Ihre CSV-Tabelle ein oder laden Sie eine Datei hoch."
+        },
+        {
+          "step": 2,
+          "title": "Trennzeichen wählen",
+          "description": "Wählen Sie das Trennzeichen aus oder aktivieren Sie die automatische Erkennung."
+        },
+        {
+          "step": 3,
+          "title": "Konvertieren und herunterladen",
+          "description": "Klicken Sie auf In Excel konvertieren und laden Sie die fertige Datei herunter."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Funktioniert der Konverter mit Semikolons?",
+          "answer": "Ja. Die automatische Erkennung unterstützt Kommas, Semikolons, Tabulatoren und Pipes."
+        },
+        {
+          "question": "Werden meine Daten hochgeladen?",
+          "answer": "Nein. Alle Berechnungen und Dateierstellungen laufen lokal in Ihrem Browser via JavaScript."
+        },
+        {
+          "question": "Welche Programme werden unterstützt?",
+          "answer": "Die erzeugte Datei ist kompatibel mit Microsoft Excel, Google Sheets, LibreOffice Calc und Apple Numbers."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "100% no Navegador",
+          "description": "Toda a conversão e criação da planilha Excel ocorre no seu dispositivo local. Seus dados confidenciais nunca são expostos."
+        },
+        {
+          "title": "Detecção Automática de Delimitador",
+          "description": "Detecta automaticamente vírgulas, pontos e vírgulas, tabulações e barras verticais no texto."
+        },
+        {
+          "title": "Saída Compatível com Excel",
+          "description": "Gera arquivos de planilha que se abrem nativamente no Excel, LibreOffice ou Google Sheets com linhas e colunas reais."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Inserir dados CSV",
+          "description": "Cole o texto CSV ou faça o upload de um arquivo no campo de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Configurar delimitadores",
+          "description": "Selecione o tipo de separador de colunas ou deixe a detecção automática ativada."
+        },
+        {
+          "step": 3,
+          "title": "Converter e baixar",
+          "description": "Clique em Converter para Excel e depois salve o arquivo diretamente no seu computador."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Funciona com ponto e vírgula?",
+          "answer": "Sim. O convertor detecta automaticamente ou permite escolher manualmente (vírgula, ponto e vírgula, tabulação)."
+        },
+        {
+          "question": "Os arquivos são enviados para um servidor?",
+          "answer": "Não. O processamento das linhas e a geração do arquivo final ocorrem localmente no cliente."
+        },
+        {
+          "question": "Quais programas abrem a planilha?",
+          "answer": "O arquivo gerado é 100% compatível com Microsoft Excel, Google Sheets, LibreOffice Calc e Apple Numbers."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "100% Berbasis Browser",
+          "description": "Semua penguraian tabel dan pembuatan file Excel terjadi di perangkat lokal Anda. Data keuangan sensitif Anda tidak pernah terekspos."
+        },
+        {
+          "title": "Deteksi Pembatas Otomatis",
+          "description": "Mendeteksi koma, titik koma, tab, dan garis vertikal secara otomatis pada teks input Anda."
+        },
+        {
+          "title": "Output Ramah Excel",
+          "description": "Mengunduh file spreadsheet yang terbuka langsung di Microsoft Excel, LibreOffice, atau Google Sheets dengan baris dan kolom asli."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Input data CSV",
+          "description": "Tempel teks CSV Anda atau unggah file CSV Anda ke dalam kotak input konverter."
+        },
+        {
+          "step": 2,
+          "title": "Pilih opsi pembatas",
+          "description": "Pilih tipe pemisah Anda (koma, titik koma, tab, atau biarkan konverter mendeteksinya secara otomatis)."
+        },
+        {
+          "step": 3,
+          "title": "Konversi & unduh",
+          "description": "Klik Konversi ke Excel, lalu unduh file spreadsheet langsung ke sistem Anda."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah konverter ini berfungsi dengan titik koma atau tab?",
+          "answer": "Ya. Konverter ini dilengkapi dengan deteksi pembatas otomatis dan mendukung pemilih pemisah khusus."
+        },
+        {
+          "question": "Apakah file saya diunggah ke server?",
+          "answer": "Tidak pernah. Semua penguraian data, pembagian baris, dan penyusunan file dieksekusi secara lokal di komputer Anda."
+        },
+        {
+          "question": "Program spreadsheet mana yang didukung?",
+          "answer": "File spreadsheet yang dihasilkan sepenuhnya mematuhi Microsoft Excel, Google Sheets, LibreOffice Calc, Apple Numbers, dan program spreadsheet utama lainnya."
+        }
+      ]
+    }
   }
 }

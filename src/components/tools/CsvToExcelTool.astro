@@ -1,0 +1,353 @@
+---
+// CSV to Excel Converter Component
+---
+<div id="csv-to-excel-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Config Controls Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+    <div class="flex flex-wrap items-center gap-4">
+      <!-- Delimiter -->
+      <div class="flex items-center gap-2">
+        <label for="excel-delimiter" class="text-xs font-bold text-ink uppercase tracking-wider">Delimiter:</label>
+        <select id="excel-delimiter" class="bg-canvas border border-hairline rounded px-2 py-1 text-xs text-ink focus:border-link outline-none">
+          <option value="auto" selected>Auto-Detect</option>
+          <option value=",">Comma ( , )</option>
+          <option value=";">Semicolon ( ; )</option>
+          <option value="\t">Tab</option>
+          <option value="|">Pipe ( | )</option>
+        </select>
+      </div>
+
+      <!-- Headers -->
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="excel-headers" checked class="h-4 w-4 border border-hairline accent-link rounded cursor-pointer" />
+        <label for="excel-headers" class="text-xs font-bold text-ink uppercase tracking-wider cursor-pointer">Has Header Row</label>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2">
+      <button id="excel-sample-btn" class="px-3 py-1.5 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+        Load Sample
+      </button>
+      <button id="excel-clear-btn" class="px-3 py-1.5 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspace Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Input Workspace -->
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center px-1">
+        <label for="excel-input-area" class="text-xs font-bold text-mute uppercase tracking-wider">Paste CSV Data / Upload File</label>
+        <span id="excel-input-stats" class="text-xs font-mono text-mute">0 rows detected</span>
+      </div>
+      
+      <!-- Drag & Drop Zone -->
+      <div id="excel-drop-zone" class="w-full flex flex-col items-center justify-center p-6 border-2 border-dashed border-hairline rounded-xl bg-canvas hover:bg-canvas-soft hover:border-link transition-all cursor-pointer min-h-[120px] mb-2 group">
+        <svg class="h-6 w-6 text-mute group-hover:text-link group-hover:scale-110 transition-transform mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a2 2 0 00-2-2H5a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v8m-6 0h6" /></svg>
+        <p class="text-xs font-semibold text-ink">Upload a CSV or TXT file or drag & drop</p>
+        <input type="file" id="excel-file-input" class="hidden" accept=".csv,.txt" />
+      </div>
+
+      <textarea 
+        id="excel-input-area" 
+        class="w-full min-h-[250px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm"
+        placeholder="id,product,price,inStock
+p101,Wireless Mouse,24.99,true
+p102,Mechanical Keyboard,79.50,false
+p103,USB-C Adapter,15.00,true"
+      ></textarea>
+    </div>
+
+    <!-- Output Preview & Conversion -->
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center px-1">
+        <span class="text-xs font-bold text-mute uppercase tracking-wider">Excel Table Preview</span>
+        <button id="excel-download-btn" disabled class="px-4 py-1.5 bg-link hover:bg-link-hover disabled:bg-mute/40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+          Download Excel (.xls)
+        </button>
+      </div>
+
+      <!-- Preview Table Container -->
+      <div class="w-full min-h-[380px] p-4 bg-canvas-soft border border-hairline rounded-xl overflow-auto max-h-[450px] shadow-sm">
+        <div id="excel-preview-table-container" class="w-full">
+          <div class="text-mute italic text-xs py-10 text-center">Enter valid CSV data to see spreadsheet table preview.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // DOM Elements
+    const delimiterSelect = document.getElementById('excel-delimiter') as HTMLSelectElement;
+    const headersCheckbox = document.getElementById('excel-headers') as HTMLInputElement;
+    const sampleBtn = document.getElementById('excel-sample-btn')!;
+    const clearBtn = document.getElementById('excel-clear-btn')!;
+    const downloadBtn = document.getElementById('excel-download-btn') as HTMLButtonElement;
+    
+    const inputArea = document.getElementById('excel-input-area') as HTMLTextAreaElement;
+    const fileInput = document.getElementById('excel-file-input') as HTMLInputElement;
+    const dropZone = document.getElementById('excel-drop-zone')!;
+    const inputStats = document.getElementById('excel-input-stats')!;
+    const tableContainer = document.getElementById('excel-preview-table-container')!;
+
+    // Sample Data
+    const sampleCsv = `Product ID,Name,Price,Stock Quantity,Status
+P100,Gaming Mouse,39.99,45,In Stock
+P101,Mechanical Keyboard,99.50,12,In Stock
+P102,UltraWide Monitor,329.00,0,Out of Stock
+P103,USB-C Adapter Dock,19.99,150,In Stock
+P104,Noise-Canceling Headphones,149.00,8,Low Stock`;
+
+    let parsedRows: string[][] = [];
+
+    // Delimiter Detector
+    function detectDelimiter(text: string) {
+      const candidates = [',', ';', '\t', '|'];
+      const firstLine = text.split('\n')[0];
+      let bestDelim = ',';
+      let maxCount = -1;
+
+      candidates.forEach(delim => {
+        const count = firstLine.split(delim).length - 1;
+        if (count > maxCount) {
+          maxCount = count;
+          bestDelim = delim;
+        }
+      });
+      return maxCount > 0 ? bestDelim : ',';
+    }
+
+    // CSV parser complying with RFC-4180
+    function parseCSV(text: string, delimiter: string): string[][] {
+      const rows = [];
+      let row: string[] = [];
+      let col = "";
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            col += '"';
+            i++;
+          } else {
+            insideQuotes = !insideQuotes;
+          }
+        } else if (char === delimiter && !insideQuotes) {
+          row.push(col.trim());
+          col = "";
+        } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          row.push(col.trim());
+          if (row.some(c => c !== "")) rows.push(row);
+          row = [];
+          col = "";
+        } else {
+          col += char;
+        }
+      }
+      if (col !== "" || row.length > 0) {
+        row.push(col.trim());
+        if (row.some(c => c !== "")) rows.push(row);
+      }
+      return rows;
+    }
+
+    // Live preview table renderer
+    function renderPreview() {
+      const val = inputArea.value;
+      if (!val.trim()) {
+        tableContainer.innerHTML = `<div class="text-mute italic text-xs py-10 text-center">Enter valid CSV data to see spreadsheet table preview.</div>`;
+        inputStats.textContent = '0 rows detected';
+        downloadBtn.disabled = true;
+        parsedRows = [];
+        return;
+      }
+
+      let delim = delimiterSelect.value;
+      if (delim === 'auto') {
+        delim = detectDelimiter(val);
+      } else if (delim === '\\t') {
+        delim = '\t';
+      }
+
+      try {
+        parsedRows = parseCSV(val, delim);
+        inputStats.textContent = `${parsedRows.length} row${parsedRows.length === 1 ? '' : 's'} detected`;
+        
+        if (parsedRows.length === 0) {
+          tableContainer.innerHTML = `<div class="text-error italic text-xs py-10 text-center">Empty or invalid format.</div>`;
+          downloadBtn.disabled = true;
+          return;
+        }
+
+        // Render preview table
+        const table = document.createElement('table');
+        table.className = 'w-full text-xs text-left border-collapse border border-hairline';
+
+        const showHeaders = headersCheckbox.checked;
+        const maxPreviewRows = Math.min(parsedRows.length, 15);
+
+        parsedRows.slice(0, maxPreviewRows).forEach((row, rIdx) => {
+          const tr = document.createElement('tr');
+          const isHeader = showHeaders && rIdx === 0;
+          
+          tr.className = isHeader 
+            ? 'bg-canvas-soft border-b border-hairline' 
+            : 'border-b border-hairline hover:bg-canvas';
+
+          row.forEach(cell => {
+            const cellEl = document.createElement(isHeader ? 'th' : 'td');
+            cellEl.className = isHeader 
+              ? 'p-2.5 font-bold text-ink border-r border-hairline text-[11px] uppercase tracking-wider' 
+              : 'p-2 border-r border-hairline text-body font-mono';
+            cellEl.textContent = cell;
+            tr.appendChild(cellEl);
+          });
+          table.appendChild(tr);
+        });
+
+        tableContainer.innerHTML = '';
+        tableContainer.appendChild(table);
+
+        if (parsedRows.length > maxPreviewRows) {
+          const moreRows = document.createElement('div');
+          moreRows.className = 'text-center text-[10px] text-mute font-bold py-2 uppercase tracking-wider';
+          moreRows.textContent = `+ ${parsedRows.length - maxPreviewRows} more rows not shown in preview`;
+          tableContainer.appendChild(moreRows);
+        }
+
+        downloadBtn.disabled = false;
+
+      } catch (err: any) {
+        tableContainer.innerHTML = `<div class="text-error italic text-xs py-10 text-center">Error: ${err.message}</div>`;
+        downloadBtn.disabled = true;
+      }
+    }
+
+    inputArea.addEventListener('input', renderPreview);
+    delimiterSelect.addEventListener('change', renderPreview);
+    headersCheckbox.addEventListener('change', renderPreview);
+
+    // Sample Loader
+    sampleBtn.addEventListener('click', () => {
+      inputArea.value = sampleCsv;
+      renderPreview();
+      trackUsage('sample');
+    });
+
+    // Clear
+    clearBtn.addEventListener('click', () => {
+      inputArea.value = '';
+      fileInput.value = '';
+      renderPreview();
+    });
+
+    // File Drag & Drop Handlers
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault(); e.stopPropagation();
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    function handleFile(file: File) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        inputArea.value = e.target?.result as string;
+        renderPreview();
+      };
+      reader.readAsText(file);
+    }
+
+    // Microsoft Office SpreadsheetML (2003 XML) Workbook exporter
+    function generateExcelXML(rows: string[][]): string {
+      let xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+    <Created>${new Date().toISOString()}</Created>
+  </DocumentProperties>
+  <Worksheet ss:Name="CSV Export">
+    <Table>`;
+
+      rows.forEach(row => {
+        xml += '\n      <Row>';
+        row.forEach(cell => {
+          const escaped = escapeXml(cell);
+          const isNum = !isNaN(cell as any) && cell.trim() !== '';
+          const type = isNum ? 'Number' : 'String';
+          xml += `<Cell><Data ss:Type="${type}">${escaped}</Data></Cell>`;
+        });
+        xml += '</Row>';
+      });
+
+      xml += `\n    </Table>
+  </Worksheet>
+</Workbook>`;
+      return xml;
+    }
+
+    function escapeXml(str: string): string {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+
+    // Download action
+    downloadBtn.addEventListener('click', () => {
+      if (parsedRows.length === 0) return;
+
+      const xmlContent = generateExcelXML(parsedRows);
+      const blob = new Blob([xmlContent], { type: 'application/vnd.ms-excel' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `excel-export-${Date.now()}.xls`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      trackUsage('download');
+    });
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'CSV to Excel',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

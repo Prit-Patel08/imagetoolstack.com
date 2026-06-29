@@ -87,7 +87,10 @@ import ImageSkewTool from "../../components/tools/ImageSkewTool.astro";
 import ImageReflectionTool from "../../components/tools/ImageReflectionTool.astro";
 import VectorizerTool from "../../components/tools/VectorizerTool.astro";
 import JsonFormatterTool from "../../components/tools/JsonFormatterTool.astro";
+import JsonValidatorTool from "../../components/tools/JsonValidatorTool.astro";
+import UUIDGeneratorValidatorTool from "../../components/tools/UUIDGeneratorValidatorTool.astro";
 import CsvConverterTool from "../../components/tools/CsvConverterTool.astro";
+import CsvToExcelTool from "../../components/tools/CsvToExcelTool.astro";
 import UnixTimestampTool from "../../components/tools/UnixTimestampTool.astro";
 import TimezoneConverterTool from "../../components/tools/TimezoneConverterTool.astro";
 import DateCalculatorTool from "../../components/tools/DateCalculatorTool.astro";
@@ -295,8 +298,14 @@ if (tool.slug === 'avif-to-png') {
   ToolComponent = ExifRemoverTool;
 } else if (tool.slug === 'json-formatter') {
   ToolComponent = JsonFormatterTool;
+} else if (tool.slug === 'json-validator') {
+  ToolComponent = JsonValidatorTool;
+} else if (tool.slug === 'uuid-generator') {
+  ToolComponent = UUIDGeneratorValidatorTool;
 } else if (tool.slug === 'csv-to-json') {
   ToolComponent = CsvConverterTool;
+} else if (tool.slug === 'csv-to-excel') {
+  ToolComponent = CsvToExcelTool;
 }
 ---
 

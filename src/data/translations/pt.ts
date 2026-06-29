@@ -131,10 +131,16 @@ export const pt = {
   },
   toolNames: {
     "percentage-calculator": "Calculadora de Porcentagem",
-    "word-counter": "Contador de Palavras e Caracteres"
+    "word-counter": "Contador de Palavras e Caracteres",
+    "uuid-generator": "Gerador e validador de UUID",
+    "json-validator": "Validador e analisador de JSON",
+    "csv-to-excel": "Conversor de CSV para Excel"
   },
   toolDescriptions: {
     "percentage-calculator": "Calcule porcentagens, diferenças de porcentagem, aumentos de porcentagem e valores de porcentagem instantaneamente no seu navegador. Sem uploads no servidor, 100% privado.",
-    "word-counter": "Conte palavras, caracteres, frases, parágrafos e analise tempos de leitura/fala. Editor totalmente privado baseado no navegador."
+    "word-counter": "Conte palavras, caracteres, frases, parágrafos e analise tempos de leitura/fala. Editor totalmente privado baseado no navegador.",
+    "uuid-generator": "Gere UUIDs (v4) criptograficamente seguros compatíveis com RFC 4122 em lote e valide formatos localmente.",
+    "json-validator": "Valide, depure, analise e explore código JSON com indicação detalhada de erros de sintaxe e árvore interativa.",
+    "csv-to-excel": "Converta dados CSV e tabelas de valores separados por vírgulas em planilhas do Excel (.xml/.xls) com segurança no seu navegador."
   }
 };

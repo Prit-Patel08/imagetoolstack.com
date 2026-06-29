@@ -131,10 +131,16 @@ export const fr = {
   },
   toolNames: {
     "percentage-calculator": "Calculateur de Pourcentage",
-    "word-counter": "Compteur de Mots et Caractères"
+    "word-counter": "Compteur de Mots et Caractères",
+    "uuid-generator": "Générateur & Validateur d'UUID",
+    "json-validator": "Validateur & Parseur JSON",
+    "csv-to-excel": "Convertisseur CSV en Excel"
   },
   toolDescriptions: {
     "percentage-calculator": "Calculez des pourcentages, des différences de pourcentage, des augmentations de pourcentage et des valeurs de pourcentage instantanément dans votre navigateur. Sans envoi sur serveur, 100% privé.",
-    "word-counter": "Comptez les mots, les caractères, les phrases, les paragraphes et analysez les temps de lecture/parole. Éditeur entièrement privé basé sur le navigateur."
+    "word-counter": "Comptez les mots, les caractères, les phrases, les paragraphes et analysez les temps de lecture/parole. Éditeur entièrement privé basé sur le navigateur.",
+    "uuid-generator": "Générez des UUID (v4) sécurisés conformes à la norme RFC 4122 en bloc et validez les formats localement.",
+    "json-validator": "Valisez, déboguez, analysez et explorez votre code JSON avec détection d'erreurs en ligne et affichage en arbre interactif.",
+    "csv-to-excel": "Convertissez des données CSV et des tableaux en feuilles de calcul Excel (.xml/.xls) en toute sécurité dans votre navigateur."
   }
 };

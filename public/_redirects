@@ -13,3 +13,6 @@
 /de/index.html /de 301
 /pt/index.html /pt 301
 /id/index.html /id 301
+
+# Enforce clean URLs by stripping .html from all other pages
+/:path*.html /:path* 301

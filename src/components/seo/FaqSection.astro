@@ -1,5 +1,7 @@
 ---
 import { getTranslations } from "../../utils/i18n";
+import toolEnrichmentData from "../../data/tool-enrichment.json";
+
 interface Props {
   tool: any;
 }
@@ -7,7 +9,10 @@ const { tool } = Astro.props;
 
 const locale = Astro.currentLocale || 'en';
 const t = getTranslations(locale);
-const faqs = tool.faqs || tool.faq || [];
+
+// Suppress generic FAQs if custom topic-specific FAQs are defined in tool-enrichment.json
+const hasCustomFaqs = (toolEnrichmentData as any)[tool.slug]?.faqs?.length > 0;
+const faqs = hasCustomFaqs ? [] : (tool.faqs || tool.faq || []);
 ---
 {faqs.length > 0 && (
   <section class="mb-16">

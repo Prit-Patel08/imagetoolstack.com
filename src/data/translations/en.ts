@@ -131,10 +131,16 @@ export const en = {
   },
   toolNames: {
     "percentage-calculator": "Percentage Calculator",
-    "word-counter": "Word & Character Counter"
+    "word-counter": "Word & Character Counter",
+    "uuid-generator": "UUID Generator & Validator",
+    "json-validator": "JSON Validator & Parser",
+    "csv-to-excel": "CSV to Excel Converter"
   },
   toolDescriptions: {
     "percentage-calculator": "Calculate percentages, percentage differences, percentage increases, and percentage values instantly inside your browser. No server uploads, 100% private.",
-    "word-counter": "Count words, characters, sentences, paragraphs, and analyze reading/speaking times. Fully private, browser-based editor."
+    "word-counter": "Count words, characters, sentences, paragraphs, and analyze reading/speaking times. Fully private, browser-based editor.",
+    "uuid-generator": "Generate bulk cryptographically secure RFC 4122 compliant UUIDs (v4) and validate UUID format standards locally.",
+    "json-validator": "Validate, debug, parse, and analyze JSON code with detailed syntax error pointing and interactive structural tree views.",
+    "csv-to-excel": "Convert CSV data and comma-separated tables into Excel spreadsheets (.xml/.xls) securely inside your browser."
   }
 };

@@ -6,7 +6,10 @@ interface Props {
 }
 
 const { toolId } = Astro.props;
-const content = (toolEnrichmentData as any)[toolId];
+const locale = Astro.currentLocale || 'en';
+
+const rawContent = (toolEnrichmentData as any)[toolId];
+const content = rawContent ? (rawContent[locale] || rawContent['en'] || rawContent) : null;
 
 if (!content) {
   return null;

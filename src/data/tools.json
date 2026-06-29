@@ -10219,6 +10219,140 @@
         "image-redactor",
         "pdf-metadata-viewer"
       ]
+    },
+    {
+      "id": "uuid-generator",
+      "name": "UUID Generator & Validator",
+      "slug": "uuid-generator",
+      "categoryId": "utility",
+      "description": "Generate bulk cryptographically secure RFC 4122 compliant UUIDs (v4) and validate UUID patterns locally.",
+      "seoTitle": "Free UUID Generator & Validator Online — Secure [No Uploads]",
+      "seoDescription": "Generate bulk UUID v4 strings instantly. Complete client-side cryptographic processing keeps your data 100% secure. Offline-first, fast, and free.",
+      "icon": "tool",
+      "inputFormats": ["TXT"],
+      "outputFormats": ["TXT"],
+      "benefits": [
+        "Cryptographically Secure: Generated using secure browser APIs (window.crypto) for maximum collision resistance.",
+        "Bulk Operations: Generate up to 10,000 UUIDs in a single click with custom separators and casing options.",
+        "Instant Validation: Paste or type UUIDs to instantly validate format standards and find version details."
+      ],
+      "useCases": [
+        "Generating database keys and entity identifiers.",
+        "Validating UUID strings in API payloads.",
+        "Creating unique transaction IDs for mock testing."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Choose the number of UUIDs you want to generate (e.g. 1 to 500).",
+        "Select your casing preference (lowercase/uppercase) and format options.",
+        "Click Generate UUIDs to generate them instantly.",
+        "Paste any existing UUID into the validator box to check format correctness."
+      ],
+      "faqs": [
+        {
+          "q": "What is a UUID?",
+          "a": "A Universally Unique Identifier (UUID) is a 128-bit label used for information in computer systems. Standard UUIDs have 36 characters including hyphens."
+        },
+        {
+          "q": "Is the generator cryptographically secure?",
+          "a": "Yes. We use the browser's crypto.getRandomValues API, which uses hardware entropy to guarantee cryptographic randomness."
+        }
+      ],
+      "relatedTools": [
+        "json-formatter",
+        "word-counter"
+      ]
+    },
+    {
+      "id": "json-validator",
+      "name": "JSON Validator & Parser",
+      "slug": "json-validator",
+      "categoryId": "utility",
+      "description": "Validate, debug, parse, and analyze JSON code with detailed syntax error pointing and structure views.",
+      "seoTitle": "Free JSON Validator & Parser Online — Secure [No Uploads]",
+      "seoDescription": "Validate and parse JSON data with detailed line-by-line syntax validation. 100% client-side script guarantees privacy and security.",
+      "icon": "shield-check",
+      "inputFormats": ["JSON", "TXT"],
+      "outputFormats": ["JSON"],
+      "benefits": [
+        "Instant Syntax Checks: Real-time validation shows the exact character offset and line numbers of any formatting errors.",
+        "Safe Data Parsing: Your data remains in your browser cache. Zero network calls or storage means 100% data compliance.",
+        "Interactive Tree View: View parsed JSON inside a collapsible and expandable structural layout node tree."
+      ],
+      "useCases": [
+        "Verifying configuration format correctness.",
+        "Analyzing nesting levels and nodes in large JSON data structures.",
+        "Troubleshooting web services APIs payloads errors."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Paste your JSON document or load a sample layout in the validator area.",
+        "Review the validator status block to check for error highlights and line pointers.",
+        "Examine the interactive tree node explorer to traverse nested elements cleanly."
+      ],
+      "faqs": [
+        {
+          "q": "How does the validator trace syntax errors?",
+          "a": "It uses strict JS parsing to locate mismatched tokens, missing keys, or illegal characters, pointing out the exact line and position."
+        },
+        {
+          "q": "Can I format or beautify code inside this validator?",
+          "a": "Yes. It comes with a quick layout formatter that can beautify or compress valid JSON text with a single click."
+        }
+      ],
+      "relatedTools": [
+        "json-formatter",
+        "uuid-generator"
+      ]
+    },
+    {
+      "id": "csv-to-excel",
+      "name": "CSV to Excel Converter",
+      "slug": "csv-to-excel",
+      "categoryId": "utility",
+      "description": "Convert CSV data and comma-separated value tables into Excel spreadsheet formats (.xml/.xls) securely inside your browser.",
+      "seoTitle": "Free CSV to Excel Converter Online — Secure [No Uploads]",
+      "seoDescription": "Convert CSV files or pasted table text into Excel spreadsheets instantly. 100% client-side conversion keeps your data safe and private.",
+      "icon": "file-spreadsheet",
+      "inputFormats": ["CSV", "TXT"],
+      "outputFormats": ["XLS", "XML"],
+      "benefits": [
+        "100% Browser-Based: All table parsing and Excel workbook creation happens on your local device. Your sensitive financial data is never exposed.",
+        "Automatic Delimiter Sniffing: Automatically detects commas, semicolons, tabs, and pipes in your raw input text.",
+        "Excel-Friendly Output: Downloads spreadsheet files that open directly in Microsoft Excel, LibreOffice, or Google Sheets with native rows and columns."
+      ],
+      "useCases": [
+        "Formatting CSV bank exports into styled Excel reports.",
+        "Converting tab-delimited text logs into spreadsheet tables.",
+        "Prepping analytical raw text databases for spreadsheet analysis."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Paste your CSV text or upload your CSV file into the converter input box.",
+        "Choose your separator type (comma, semicolon, tab, or let the converter auto-detect it).",
+        "Click Convert to Excel to parse the table and prepare the file.",
+        "Click Download Excel to save the file directly to your system."
+      ],
+      "faqs": [
+        {
+          "q": "Will this converter work with semicolons or tabs?",
+          "a": "Yes. The converter features automatic delimiter sniffing and supports custom separator selectors (comma, semicolon, tab, or pipe)."
+        },
+        {
+          "q": "Are my files uploaded to any server?",
+          "a": "Never. All data parsing, row splitting, and file compiling is executed locally on your computer via client-side JavaScript."
+        }
+      ],
+      "relatedTools": [
+        "json-formatter",
+        "csv-to-json"
+      ]
     }
   ],
   "categories": [

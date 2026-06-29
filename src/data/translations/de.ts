@@ -131,10 +131,16 @@ export const de = {
   },
   toolNames: {
     "percentage-calculator": "Prozentrechner",
-    "word-counter": "Wort- und Zeichenzähler"
+    "word-counter": "Wort- und Zeichenzähler",
+    "uuid-generator": "UUID-Generator & Validator",
+    "json-validator": "JSON-Validator & Parser",
+    "csv-to-excel": "CSV-zu-Excel-Konverter"
   },
   toolDescriptions: {
     "percentage-calculator": "Berechnen Sie Prozentsätze, Prozentdifferenzen, Prozenterhöhungen und Prozentwerte sofort in Ihrem Browser. Keine Server-Uploads, 100% privat.",
-    "word-counter": "Zählen Sie Wörter, Zeichen, Sätze und Absätze und analysieren Sie Lese- und Sprechzeiten. Vollständig privater, browserbasierter Editor."
+    "word-counter": "Zählen Sie Wörter, Zeichen, Sätze und Absätze und analysieren Sie Lese- und Sprechzeiten. Vollständig privater, browserbasierter Editor.",
+    "uuid-generator": "Erstellen Sie kryptografisch sichere RFC 4122-konforme UUIDs (v4) in Serie und validieren Sie Formate lokal.",
+    "json-validator": "Validieren, debuggen und analysieren Sie JSON-Code mit genauer Syntaxfehler-Lokalisierung und interaktiver Baumansicht.",
+    "csv-to-excel": "Konvertieren Sie CSV-Daten und tabellarische Textdaten sicher in Ihrem Browser in Excel-Tabellen (.xml/.xls)."
   }
 };

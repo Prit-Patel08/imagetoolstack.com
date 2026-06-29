@@ -131,10 +131,16 @@ export const id = {
   },
   toolNames: {
     "percentage-calculator": "Kalkulator Persentase",
-    "word-counter": "Penghitung Kata & Karakter"
+    "word-counter": "Penghitung Kata & Karakter",
+    "uuid-generator": "Generator & Validator UUID",
+    "json-validator": "Validator & Parser JSON",
+    "csv-to-excel": "Konverter CSV ke Excel"
   },
   toolDescriptions: {
     "percentage-calculator": "Hitung persentase, selisih persentase, kenaikan persentase, dan nilai persentase secara instan di browser Anda. Tanpa unggah server, 100% privat.",
-    "word-counter": "Hitung kata, karakter, kalimat, paragraf, dan analisis waktu membaca/berbicara. Editor berbasis browser yang sepenuhnya privat."
+    "word-counter": "Hitung kata, karakter, kalimat, paragraf, dan analisis waktu membaca/berbicara. Editor berbasis browser yang sepenuhnya privat.",
+    "uuid-generator": "Hasilkan UUID (v4) massal yang aman secara kriptografis dan mematuhi RFC 4122, serta validasi standar format secara lokal.",
+    "json-validator": "Validasi, debug, urai, dan analisis kode JSON dengan penunjuk kesalahan sintaks terperinci dan tampilan pohon interaktif.",
+    "csv-to-excel": "Konversikan data CSV dan tabel nilai yang dipisahkan koma menjadi spreadsheet Excel (.xml/.xls) dengan aman di browser Anda."
   }
 };

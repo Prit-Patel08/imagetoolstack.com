@@ -1,0 +1,331 @@
+---
+// UUID Generator & Validator Component
+---
+<div id="uuid-tool-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Tabs Navigation -->
+  <div class="flex border-b border-hairline gap-4">
+    <button id="tab-gen-btn" class="px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none">
+      UUID Generator
+    </button>
+    <button id="tab-val-btn" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none">
+      UUID Validator
+    </button>
+  </div>
+
+  <!-- Tab Content: Generator -->
+  <div id="tab-generator" class="flex flex-col gap-6">
+    <!-- Controls Block -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        
+        <!-- Quantity Selector -->
+        <div class="flex flex-col gap-2">
+          <label for="uuid-quantity" class="text-xs font-bold text-mute uppercase tracking-wider">Number of UUIDs</label>
+          <select id="uuid-quantity" class="bg-canvas-soft border border-hairline rounded-xl px-3 py-2 text-sm text-ink focus:border-link outline-none">
+            <option value="1">1 UUID</option>
+            <option value="5" selected>5 UUIDs</option>
+            <option value="10">10 UUIDs</option>
+            <option value="50">50 UUIDs</option>
+            <option value="100">100 UUIDs</option>
+            <option value="500">500 UUIDs</option>
+            <option value="1000">1,000 UUIDs</option>
+          </select>
+        </div>
+
+        <!-- Casing Selection -->
+        <div class="flex flex-col gap-2">
+          <label for="uuid-casing" class="text-xs font-bold text-mute uppercase tracking-wider">Casing Preference</label>
+          <select id="uuid-casing" class="bg-canvas-soft border border-hairline rounded-xl px-3 py-2 text-sm text-ink focus:border-link outline-none">
+            <option value="lower" selected>lowercase (standard)</option>
+            <option value="upper">UPPERCASE</option>
+          </select>
+        </div>
+
+        <!-- Format Options -->
+        <div class="flex flex-col gap-2">
+          <label for="uuid-format" class="text-xs font-bold text-mute uppercase tracking-wider">Format Style</label>
+          <select id="uuid-format" class="bg-canvas-soft border border-hairline rounded-xl px-3 py-2 text-sm text-ink focus:border-link outline-none">
+            <option value="standard" selected>Standard (with hyphens)</option>
+            <option value="plain">Plain (no hyphens)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button id="generate-btn" class="mt-2 w-full py-2.5 bg-link hover:bg-link-hover text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
+        Generate UUIDs
+      </button>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <div class="flex justify-between items-center">
+        <label for="uuid-output" class="text-xs font-bold text-mute uppercase tracking-wider">Generated Output</label>
+        <div class="flex gap-2">
+          <button id="copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+            Copy
+          </button>
+          <button id="download-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+            Download .txt
+          </button>
+        </div>
+      </div>
+      <textarea 
+        id="uuid-output" 
+        readonly
+        class="w-full min-h-[300px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-y cursor-text shadow-sm"
+        placeholder="Output will be generated here..."
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- Tab Content: Validator -->
+  <div id="tab-validator" class="flex flex-col gap-6 hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Input Panel -->
+      <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+        <div class="flex justify-between items-center">
+          <label for="uuid-input" class="text-xs font-bold text-mute uppercase tracking-wider">UUIDs to Validate</label>
+          <button id="val-clear-btn" class="text-xs font-semibold text-rose-600 hover:underline">Clear</button>
+        </div>
+        <textarea 
+          id="uuid-input" 
+          placeholder="Paste one or more UUIDs (one per line) to validate..." 
+          class="w-full min-h-[300px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-inner shadow-sm"
+        ></textarea>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+        <h3 class="text-xs font-bold text-mute uppercase tracking-wider">Validation Summary</h3>
+        
+        <div id="validator-status-box" class="p-4 rounded-xl border flex items-center gap-3 bg-canvas-soft border-hairline text-body text-sm font-medium">
+          <span class="h-2.5 w-2.5 rounded-full bg-mute inline-block" id="val-status-indicator"></span>
+          <span id="val-status-text">Enter or paste UUIDs to validate...</span>
+        </div>
+
+        <div class="space-y-4 text-sm mt-2">
+          <div class="flex justify-between border-b border-hairline pb-2">
+            <span class="text-mute">Total Parsed</span>
+            <span id="stat-total" class="font-mono font-bold text-ink">0</span>
+          </div>
+          <div class="flex justify-between border-b border-hairline pb-2">
+            <span class="text-mute">Valid UUIDs</span>
+            <span id="stat-valid" class="font-mono font-bold text-success">0</span>
+          </div>
+          <div class="flex justify-between border-b border-hairline pb-2">
+            <span class="text-mute">Invalid UUIDs</span>
+            <span id="stat-invalid" class="font-mono font-bold text-error">0</span>
+          </div>
+        </div>
+
+        <div id="validation-errors-block" class="mt-2 hidden">
+          <div class="text-xs font-bold text-rose-600 mb-2 uppercase tracking-wider">Invalid Lines Found:</div>
+          <div id="invalid-lines-list" class="max-h-[100px] overflow-y-auto text-xs font-mono bg-rose-500/5 text-rose-600 border border-rose-500/20 rounded-xl p-3 space-y-1"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // Tabs Navigation
+    const tabGenBtn = document.getElementById('tab-gen-btn')!;
+    const tabValBtn = document.getElementById('tab-val-btn')!;
+    const tabGenerator = document.getElementById('tab-generator')!;
+    const tabValidator = document.getElementById('tab-validator')!;
+
+    tabGenBtn.addEventListener('click', () => {
+      tabGenBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none";
+      tabValBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none";
+      tabGenerator.classList.remove('hidden');
+      tabValidator.classList.add('hidden');
+    });
+
+    tabValBtn.addEventListener('click', () => {
+      tabValBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-link text-link transition-colors focus:outline-none";
+      tabGenBtn.className = "px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-mute hover:text-ink transition-colors focus:outline-none";
+      tabValidator.classList.remove('hidden');
+      tabGenerator.classList.add('hidden');
+    });
+
+    // Generator Elements
+    const uuidQuantity = document.getElementById('uuid-quantity') as HTMLSelectElement;
+    const uuidCasing = document.getElementById('uuid-casing') as HTMLSelectElement;
+    const uuidFormat = document.getElementById('uuid-format') as HTMLSelectElement;
+    const generateBtn = document.getElementById('generate-btn')!;
+    const uuidOutput = document.getElementById('uuid-output') as HTMLTextAreaElement;
+    const copyBtn = document.getElementById('copy-btn')!;
+    const downloadBtn = document.getElementById('download-btn')!;
+
+    // Cryptographic UUID generation (v4)
+    function generateUUIDv4() {
+      // Use crypto.randomUUID if available
+      if (typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+      
+      // Fallback using crypto.getRandomValues
+      const array = new Uint8Array(16);
+      crypto.getRandomValues(array);
+      
+      // Set version v4 (bits 12-15)
+      array[6] = (array[6] & 0x0f) | 0x40;
+      // Set variant (bits 16-17)
+      array[8] = (array[8] & 0x3f) | 0x80;
+      
+      const hex = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
+
+    function generateBatch() {
+      const quantity = parseInt(uuidQuantity.value, 10);
+      const casing = uuidCasing.value;
+      const format = uuidFormat.value;
+      
+      const list = [];
+      for (let i = 0; i < quantity; i++) {
+        let uuid = generateUUIDv4();
+        if (format === 'plain') {
+          uuid = uuid.replace(/-/g, '');
+        }
+        if (casing === 'upper') {
+          uuid = uuid.toUpperCase();
+        }
+        list.push(uuid);
+      }
+      
+      uuidOutput.value = list.join('\n');
+      trackUsage('generate');
+    }
+
+    // Auto-generate on load
+    generateBatch();
+
+    generateBtn.addEventListener('click', generateBatch);
+
+    copyBtn.addEventListener('click', () => {
+      const text = uuidOutput.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = originalText; }, 1500);
+      });
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const text = uuidOutput.value;
+      if (!text) return;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `uuids-${Date.now()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Validator Elements
+    const uuidInput = document.getElementById('uuid-input') as HTMLTextAreaElement;
+    const valClearBtn = document.getElementById('val-clear-btn')!;
+    const valStatusBox = document.getElementById('validator-status-box')!;
+    const valStatusIndicator = document.getElementById('val-status-indicator')!;
+    const valStatusText = document.getElementById('val-status-text')!;
+    
+    const statTotal = document.getElementById('stat-total')!;
+    const statValid = document.getElementById('stat-valid')!;
+    const statInvalid = document.getElementById('stat-invalid')!;
+    
+    const errorsBlock = document.getElementById('validation-errors-block')!;
+    const invalidLinesList = document.getElementById('invalid-lines-list')!;
+
+    // UUID regex pattern
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const plainUuidRegex = /^[0-9a-f]{8}[0-9a-f]{4}[1-5][0-9a-f]{3}[89ab][0-9a-f]{3}[0-9a-f]{12}$/i;
+
+    function validateUUIDs() {
+      const val = uuidInput.value.trim();
+      if (!val) {
+        setValidatorStatus('idle', 'Enter or paste UUIDs to validate...');
+        statTotal.textContent = '0';
+        statValid.textContent = '0';
+        statInvalid.textContent = '0';
+        errorsBlock.classList.add('hidden');
+        return;
+      }
+
+      const lines = val.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      let validCount = 0;
+      let invalidCount = 0;
+      const invalidIndices: number[] = [];
+
+      lines.forEach((line, index) => {
+        const isValid = uuidRegex.test(line) || plainUuidRegex.test(line);
+        if (isValid) {
+          validCount++;
+        } else {
+          invalidCount++;
+          invalidIndices.push(index + 1);
+        }
+      });
+
+      statTotal.textContent = lines.length.toString();
+      statValid.textContent = validCount.toString();
+      statInvalid.textContent = invalidCount.toString();
+
+      if (invalidCount === 0) {
+        setValidatorStatus('success', `Success: All ${lines.length} UUID(s) are valid RFC 4122 format.`);
+        errorsBlock.classList.add('hidden');
+      } else {
+        setValidatorStatus('error', `Warning: Found ${invalidCount} invalid UUID(s).`);
+        errorsBlock.classList.remove('hidden');
+        invalidLinesList.innerHTML = invalidIndices.map(idx => `<div>Line ${idx}: invalid format</div>`).join('');
+      }
+      
+      trackUsage('validate');
+    }
+
+    uuidInput.addEventListener('input', validateUUIDs);
+
+    valClearBtn.addEventListener('click', () => {
+      uuidInput.value = '';
+      validateUUIDs();
+    });
+
+    function setValidatorStatus(type: 'idle' | 'success' | 'error', message: string) {
+      valStatusBox.className = 'p-4 rounded-xl border flex items-center gap-3 transition-colors duration-200';
+      valStatusIndicator.className = 'h-2.5 w-2.5 rounded-full inline-block';
+
+      if (type === 'success') {
+        valStatusBox.classList.add('bg-success/5', 'border-success/20', 'text-success');
+        valStatusIndicator.classList.add('bg-success');
+      } else if (type === 'error') {
+        valStatusBox.classList.add('bg-error/5', 'border-error/20', 'text-error');
+        valStatusIndicator.classList.add('bg-error');
+      } else {
+        valStatusBox.classList.add('bg-canvas-soft', 'border-hairline', 'text-body');
+        valStatusIndicator.classList.add('bg-mute');
+      }
+
+      valStatusText.textContent = message;
+    }
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'UUID Generator',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>
