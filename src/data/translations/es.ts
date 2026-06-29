@@ -134,13 +134,27 @@ export const es = {
     "word-counter": "Contador de Palabras y Caracteres",
     "uuid-generator": "Generador y validador de UUID",
     "json-validator": "Validador y analizador de JSON",
-    "csv-to-excel": "Convertidor de CSV a Excel"
+    "csv-to-excel": "Convertidor de CSV a Excel",
+    "date-difference-calculator": "Calculadora de diferencia de fechas",
+    "timesheet-calculator": "Calculadora de hoja de horas de trabajo",
+    "url-encoder-decoder": "Codificador y decodificador de URL e HTML",
+    "text-case-converter": "Conversor de mayúsculas y minúsculas",
+    "image-resizer-cropper": "Redimensionador y recortador de imágenes",
+    "hash-generator": "Generador de hash",
+    "exif-remover-viewer": "Visor y eliminador de metadatos EXIF"
   },
   toolDescriptions: {
     "percentage-calculator": "Calcule porcentajes, diferencias de porcentajes, incrementos de porcentajes y valores de porcentajes al instante en su navegador. Sin subidas a servidores, 100% privado.",
     "word-counter": "Cuente palabras, caracteres, oraciones, párrafos y analice tiempos de lectura/oratoria. Editor basado en navegador totalmente privado.",
     "uuid-generator": "Genere UUID (v4) seguros y compatibles con RFC 4122 de forma masiva y valide estándares de formato de forma local.",
     "json-validator": "Valide, depure, analice y explore código JSON con señalamiento del error sintáctico detallado y vistas interactivas de árbol.",
-    "csv-to-excel": "Convierta datos CSV y tablas de valores separados por comas a hojas de cálculo de Excel (.xml/.xls) de forma segura en su navegador."
+    "csv-to-excel": "Convierta datos CSV y tablas de valores separados por comas a hojas de cálculo de Excel (.xml/.xls) de forma segura en su navegador.",
+    "date-difference-calculator": "Calcule la duración exacta, los días totales, las horas and los minutos entre dos fechas y horas personalizadas al instante.",
+    "timesheet-calculator": "Calcule las horas de trabajo diarias, los descansos y el total de horas semanales con tarifas decimales y seguimiento de ganancias.",
+    "url-encoder-decoder": "Codifique o decodifique URL, cadenas de consulta y entidades de caracteres HTML de forma instantánea y segura en su navegador.",
+    "text-case-converter": "Convierta estilos de mayúsculas y minúsculas de texto al instante. Cambie mayúsculas y minúsculas a UPPERCASE, lowercase, Title Case, camelCase y snake_case online.",
+    "image-resizer-cropper": "Recorte y cambie el tamaño de imágenes en línea a dimensiones, porcentajes o relaciones de aspecto personalizadas. Redimensionamiento en píxeles con 100% de privacidad.",
+    "hash-generator": "Genere hashes criptográficos al instante. Cree hashes SHA256, MD5, SHA-1, SHA-512 y HMAC a partir de texto o archivos localmente con 100% de privacidad.",
+    "exif-remover-viewer": "Vea y elimine los metadatos EXIF, las coordenadas GPS y los ajustes de la cámara de sus fotos. Procesamiento local en su navegador 100% privado."
   }
 };

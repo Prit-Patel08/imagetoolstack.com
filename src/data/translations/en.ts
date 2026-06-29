@@ -134,13 +134,27 @@ export const en = {
     "word-counter": "Word & Character Counter",
     "uuid-generator": "UUID Generator & Validator",
     "json-validator": "JSON Validator & Parser",
-    "csv-to-excel": "CSV to Excel Converter"
+    "csv-to-excel": "CSV to Excel Converter",
+    "date-difference-calculator": "Date Difference Calculator",
+    "timesheet-calculator": "Work Hours Timesheet Calculator",
+    "url-encoder-decoder": "URL & HTML Encoder/Decoder",
+    "text-case-converter": "Text Case Converter",
+    "image-resizer-cropper": "Image Resizer & Cropper",
+    "hash-generator": "Hash Generator",
+    "exif-remover-viewer": "EXIF Metadata Viewer & Remover"
   },
   toolDescriptions: {
     "percentage-calculator": "Calculate percentages, percentage differences, percentage increases, and percentage values instantly inside your browser. No server uploads, 100% private.",
     "word-counter": "Count words, characters, sentences, paragraphs, and analyze reading/speaking times. Fully private, browser-based editor.",
     "uuid-generator": "Generate bulk cryptographically secure RFC 4122 compliant UUIDs (v4) and validate UUID format standards locally.",
     "json-validator": "Validate, debug, parse, and analyze JSON code with detailed syntax error pointing and interactive structural tree views.",
-    "csv-to-excel": "Convert CSV data and comma-separated tables into Excel spreadsheets (.xml/.xls) securely inside your browser."
+    "csv-to-excel": "Convert CSV data and comma-separated tables into Excel spreadsheets (.xml/.xls) securely inside your browser.",
+    "date-difference-calculator": "Calculate the exact duration, total days, hours, and minutes between two custom dates and times instantly.",
+    "timesheet-calculator": "Calculate daily work hours, break times, and total weekly timesheet hours with decimal rates and earnings tracking.",
+    "url-encoder-decoder": "Encode or decode URLs, query strings, and HTML character entities instantly and securely in your browser.",
+    "text-case-converter": "Convert text capitalization styles instantly. Change case to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, and snake_case online.",
+    "image-resizer-cropper": "Crop and resize images online to custom dimensions, percentages, or aspect ratios. Pixel resizing with 100% privacy.",
+    "hash-generator": "Generate cryptographic hashes instantly. Create SHA256, MD5, SHA-1, SHA-512, and HMAC hashes from text or files locally with 100% privacy.",
+    "exif-remover-viewer": "View and remove EXIF metadata, GPS coordinates, and camera settings from your photos. 100% private client-side processing in your browser."
   }
 };

@@ -1,0 +1,313 @@
+---
+// Date & Time Difference Calculator Component
+---
+<div id="date-diff-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+
+  <!-- Inputs Panel -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-col gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Start Date & Time -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold text-mute uppercase tracking-wider">Start Date & Time</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="start-date" class="text-[10px] font-semibold text-mute uppercase">Date</label>
+            <input type="date" id="start-date" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link outline-none">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="start-time" class="text-[10px] font-semibold text-mute uppercase">Time</label>
+            <input type="time" id="start-time" value="12:00" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- End Date & Time -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold text-mute uppercase tracking-wider">End Date & Time</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="end-date" class="text-[10px] font-semibold text-mute uppercase">Date</label>
+            <input type="date" id="end-date" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link outline-none">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="end-time" class="text-[10px] font-semibold text-mute uppercase">Time</label>
+            <input type="time" id="end-time" value="12:00" class="rounded-lg border border-hairline bg-canvas-soft px-3 py-2 text-sm focus:border-link outline-none">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Options -->
+    <div class="flex flex-wrap gap-6 border-t border-hairline pt-4">
+      <label class="flex items-center gap-2 text-sm font-medium text-ink cursor-pointer select-none">
+        <input type="checkbox" id="include-end-date" class="rounded border-hairline text-link focus:ring-link h-4 w-4">
+        Include End Date in calculation (+1 day)
+      </label>
+    </div>
+  </div>
+
+  <!-- Primary Granular Breakdown Display -->
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 md:p-8 shadow-sm flex flex-col items-center justify-center text-center">
+    <span class="text-xs font-bold text-mute uppercase tracking-wider mb-2">Detailed Duration Breakdown</span>
+    <span id="res-sentence" class="text-xl md:text-2xl font-extrabold text-ink leading-relaxed">--</span>
+    <span id="res-period" class="text-xs text-mute mt-2">--</span>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Total Days</span>
+      <span id="stat-days" class="text-2xl font-extrabold text-link font-mono">--</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Total Hours</span>
+      <span id="stat-hours" class="text-2xl font-extrabold text-link font-mono">--</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Total Minutes</span>
+      <span id="stat-minutes" class="text-2xl font-extrabold text-link font-mono">--</span>
+    </div>
+    <div class="bg-canvas border border-hairline p-4 rounded-xl text-center shadow-sm">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Total Seconds</span>
+      <span id="stat-seconds" class="text-2xl font-extrabold text-link font-mono">--</span>
+    </div>
+  </div>
+
+  <!-- Secondary Breakdowns -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <h3 class="text-xs font-bold text-mute uppercase tracking-wider">Alternative Breakdowns</h3>
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between border-b border-hairline pb-2">
+          <span class="text-mute">Weeks & Days</span>
+          <span id="stat-weeks-days" class="font-mono font-bold text-ink">--</span>
+        </div>
+        <div class="flex justify-between border-b border-hairline pb-2">
+          <span class="text-mute">Percentage of Year</span>
+          <span id="stat-pct-year" class="font-mono font-bold text-ink">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-hairline bg-canvas p-6 shadow-sm flex flex-col gap-4">
+      <h3 class="text-xs font-bold text-mute uppercase tracking-wider">Quick Actions</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="btn-next-new-year" class="px-4 py-2 border border-hairline hover:bg-canvas-soft text-ink text-xs font-semibold rounded-lg transition-colors">
+          Until New Year
+        </button>
+        <button id="btn-reset-today" class="px-4 py-2 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+          Reset to Today
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // Inputs
+    const startDateInput = document.getElementById('start-date') as HTMLInputElement;
+    const startTimeInput = document.getElementById('start-time') as HTMLInputElement;
+    const endDateInput = document.getElementById('end-date') as HTMLInputElement;
+    const endTimeInput = document.getElementById('end-time') as HTMLInputElement;
+    const includeEndCheckbox = document.getElementById('include-end-date') as HTMLInputElement;
+
+    // Outputs
+    const resSentence = document.getElementById('res-sentence')!;
+    const resPeriod = document.getElementById('res-period')!;
+    
+    const statDays = document.getElementById('stat-days')!;
+    const statHours = document.getElementById('stat-hours')!;
+    const statMinutes = document.getElementById('stat-minutes')!;
+    const statSeconds = document.getElementById('stat-seconds')!;
+    
+    const statWeeksDays = document.getElementById('stat-weeks-days')!;
+    const statPctYear = document.getElementById('stat-pct-year')!;
+
+    // Buttons
+    const btnNewYear = document.getElementById('btn-next-new-year')!;
+    const btnReset = document.getElementById('btn-reset-today')!;
+
+    function formatLocalDate(date: Date): string {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    // Set Defaults
+    const now = new Date();
+    startDateInput.value = formatLocalDate(now);
+    
+    const tomorrow = new Date();
+    tomorrow.setDate(now.getDate() + 1);
+    endDateInput.value = formatLocalDate(tomorrow);
+
+    // Date helper
+    function getCombinedDate(dateStr: string, timeStr: string): Date {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return new Date(year, month - 1, day, hours, minutes, 0, 0);
+    }
+
+    function calculate() {
+      const startDStr = startDateInput.value;
+      const startTStr = startTimeInput.value;
+      const endDStr = endDateInput.value;
+      const endTStr = endTimeInput.value;
+
+      if (!startDStr || !startTStr || !endDStr || !endTStr) {
+        return;
+      }
+
+      const dateA = getCombinedDate(startDStr, startTStr);
+      const dateB = getCombinedDate(endDStr, endTStr);
+
+      let isNegative = false;
+      let d1 = dateA;
+      let d2 = dateB;
+
+      if (dateA > dateB) {
+        isNegative = true;
+        d1 = dateB;
+        d2 = dateA;
+      }
+
+      let diffMs = d2.getTime() - d1.getTime();
+
+      // Include end date (+24 hours) if checked
+      if (includeEndCheckbox.checked) {
+        diffMs += 24 * 3600 * 1000;
+        // Make a clone of d2 that is shifted by 1 day for calendar period calculations
+        const d2Adjusted = new Date(d2.getTime());
+        d2Adjusted.setDate(d2Adjusted.getDate() + 1);
+        d2 = d2Adjusted;
+      }
+
+      const totalSeconds = Math.floor(diffMs / 1000);
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const totalHours = Math.floor(totalMinutes / 60);
+      const totalDays = Math.floor(totalHours / 24);
+
+      // Render absolute numbers
+      const sign = isNegative ? '-' : '';
+      statDays.textContent = `${sign}${totalDays.toLocaleString()}`;
+      statHours.textContent = `${sign}${totalHours.toLocaleString()}`;
+      statMinutes.textContent = `${sign}${totalMinutes.toLocaleString()}`;
+      statSeconds.textContent = `${sign}${totalSeconds.toLocaleString()}`;
+
+      // Weeks & Days
+      const weeks = Math.floor(totalDays / 7);
+      const remDays = totalDays % 7;
+      statWeeksDays.textContent = `${sign}${weeks} week${weeks === 1 ? '' : 's'} and ${remDays} day${remDays === 1 ? '' : 's'}`;
+
+      // Percentage of Year (average year length = 365.2425 days)
+      const pct = (totalDays / 365.2425) * 100;
+      statPctYear.textContent = `${sign}${pct.toFixed(4)}%`;
+
+      // Calendar Period breakdown (years, months, days, hours, minutes)
+      let y = d2.getFullYear() - d1.getFullYear();
+      let m = d2.getMonth() - d1.getMonth();
+      let d = d2.getDate() - d1.getDate();
+      let hrs = d2.getHours() - d1.getHours();
+      let mins = d2.getMinutes() - d1.getMinutes();
+
+      if (mins < 0) {
+        mins += 60;
+        hrs--;
+      }
+
+      if (hrs < 0) {
+        hrs += 24;
+        d--;
+      }
+
+      if (d < 0) {
+        m--;
+        const prevMonth = new Date(d2.getFullYear(), d2.getMonth(), 0);
+        d += prevMonth.getDate();
+      }
+
+      if (m < 0) {
+        y--;
+        m += 12;
+      }
+
+      // Format sentence representation
+      const parts = [];
+      if (y > 0) parts.push(`${y} year${y === 1 ? '' : 's'}`);
+      if (m > 0) parts.push(`${m} month${m === 1 ? '' : 's'}`);
+      if (d > 0) parts.push(`${d} day${d === 1 ? '' : 's'}`);
+      if (hrs > 0) parts.push(`${hrs} hour${hrs === 1 ? '' : 's'}`);
+      if (mins > 0) parts.push(`${mins} minute${mins === 1 ? '' : 's'}`);
+
+      if (parts.length === 0) {
+        resSentence.textContent = "Same date and time";
+      } else {
+        let sentence = parts.join(', ');
+        // Inject "and" before the last item if multiple
+        if (parts.length > 1) {
+          const lastCommaIdx = sentence.lastIndexOf(',');
+          sentence = sentence.substring(0, lastCommaIdx) + ' and' + sentence.substring(lastCommaIdx + 1);
+        }
+        resSentence.textContent = `${sign}${sentence}`;
+      }
+
+      resPeriod.textContent = isNegative 
+        ? "Interval counts backward from Start to End"
+        : "Interval counts forward from Start to End";
+      
+      trackUsage('calculate');
+    }
+
+    [startDateInput, startTimeInput, endDateInput, endTimeInput, includeEndCheckbox].forEach(el => {
+      el.addEventListener('input', calculate);
+    });
+
+    calculate();
+
+    // Quick Actions
+    btnNewYear.addEventListener('click', () => {
+      const currentYear = new Date().getFullYear();
+      const nextNewYear = new Date(currentYear + 1, 0, 1, 0, 0, 0, 0);
+      
+      startDateInput.value = formatLocalDate(new Date());
+      startTimeInput.value = "12:00";
+      
+      endDateInput.value = formatLocalDate(nextNewYear);
+      endTimeInput.value = "00:00";
+      includeEndCheckbox.checked = false;
+
+      calculate();
+      trackUsage('until-new-year');
+    });
+
+    btnReset.addEventListener('click', () => {
+      const now = new Date();
+      startDateInput.value = formatLocalDate(now);
+      startTimeInput.value = "12:00";
+
+      const tomorrow = new Date();
+      tomorrow.setDate(now.getDate() + 1);
+      endDateInput.value = formatLocalDate(tomorrow);
+      endTimeInput.value = "12:00";
+      includeEndCheckbox.checked = false;
+
+      calculate();
+      trackUsage('reset');
+    });
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Date Difference Calculator',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

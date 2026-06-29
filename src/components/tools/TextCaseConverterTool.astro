@@ -1,0 +1,262 @@
+---
+// Text Case Converter Component
+---
+<div id="case-converter-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Casing Control Grid -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-4 md:p-6 shadow-sm flex flex-wrap gap-2 justify-center">
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="sentence">
+      Sentence case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="lower">
+      lower case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="upper">
+      UPPER CASE
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="capitalized">
+      Capitalized Case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="title">
+      Title Case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="alternating">
+      aLtErNaTiNg CaSe
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="camel">
+      camelCase
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="snake">
+      snake_case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="kebab">
+      kebab-case
+    </button>
+    <button class="case-btn px-4 py-2 bg-canvas-soft border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-case="pascal">
+      PascalCase
+    </button>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="grid grid-cols-1 gap-4">
+    <div class="flex flex-col gap-2">
+      <!-- Toolbar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 px-1">
+        <label for="case-input" class="text-xs font-bold text-mute uppercase tracking-wider">Workspace Text Editor</label>
+        
+        <div class="flex items-center gap-2">
+          <!-- Text Stats -->
+          <div class="flex gap-4 mr-2 text-[11px] text-mute font-mono">
+            <span>Words: <strong id="stat-words" class="text-ink">0</strong></span>
+            <span>Chars: <strong id="stat-chars" class="text-ink">0</strong></span>
+            <span>Lines: <strong id="stat-lines" class="text-ink">0</strong></span>
+          </div>
+
+          <button id="case-sample-btn" class="px-3 py-1.5 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+            Load Sample
+          </button>
+          <button id="case-copy-btn" class="px-3 py-1.5 bg-link hover:bg-link-hover text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+            Copy Text
+          </button>
+          <button id="case-clear-btn" class="px-3 py-1.5 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Textarea Workspace -->
+      <textarea 
+        id="case-input" 
+        class="w-full min-h-[350px] p-5 bg-canvas border border-hairline rounded-2xl font-mono text-sm text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm"
+        placeholder="Paste your paragraphs, document headers, or code variables here to convert capitalization styles instantly..."
+      ></textarea>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const inputArea = document.getElementById('case-input') as HTMLTextAreaElement;
+    
+    // Stats
+    const statWords = document.getElementById('stat-words')!;
+    const statChars = document.getElementById('stat-chars')!;
+    const statLines = document.getElementById('stat-lines')!;
+
+    // Buttons
+    const copyBtn = document.getElementById('case-copy-btn')!;
+    const clearBtn = document.getElementById('case-clear-btn')!;
+    const sampleBtn = document.getElementById('case-sample-btn')!;
+    const caseBtns = document.querySelectorAll('.case-btn');
+
+    // Minor words ignored in Standard English Title Case rules
+    const minorWords = /^(a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v\.?|via|vs\.?)$/i;
+
+    // Load Sample text
+    sampleBtn.addEventListener('click', () => {
+      inputArea.value = "this is a text case converter utility. it supports title case, UPPERCASE, camelCase, and developer formats! paste your content and click any formatting button above.";
+      updateStats();
+      trackUsage('sample');
+    });
+
+    // Clear
+    clearBtn.addEventListener('click', () => {
+      inputArea.value = '';
+      updateStats();
+    });
+
+    // Copy to clipboard
+    copyBtn.addEventListener('click', () => {
+      const text = inputArea.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      });
+      trackUsage('copy');
+    });
+
+    // Update statistics
+    function updateStats() {
+      const val = inputArea.value;
+      const chars = val.length;
+      
+      const words = val.trim() === '' 
+        ? 0 
+        : val.trim().split(/\s+/).length;
+      
+      const lines = val === '' 
+        ? 0 
+        : val.split('\n').length;
+
+      statChars.textContent = chars.toLocaleString();
+      statWords.textContent = words.toLocaleString();
+      statLines.textContent = lines.toLocaleString();
+    }
+
+    inputArea.addEventListener('input', updateStats);
+
+    // Bind Conversion Buttons
+    caseBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const type = (e.currentTarget as HTMLButtonElement).dataset.case;
+        const currentText = inputArea.value;
+        if (!currentText) return;
+
+        let result = '';
+
+        switch (type) {
+          case 'lower':
+            result = currentText.toLowerCase();
+            break;
+          case 'upper':
+            result = currentText.toUpperCase();
+            break;
+          case 'sentence':
+            result = convertToSentenceCase(currentText);
+            break;
+          case 'capitalized':
+            result = convertToCapitalizedCase(currentText);
+            break;
+          case 'title':
+            result = convertToTitleCase(currentText);
+            break;
+          case 'alternating':
+            result = convertToAlternatingCase(currentText);
+            break;
+          case 'camel':
+            result = convertToCamelCase(currentText);
+            break;
+          case 'snake':
+            result = convertToSnakeCase(currentText);
+            break;
+          case 'kebab':
+            result = convertToKebabCase(currentText);
+            break;
+          case 'pascal':
+            result = convertToPascalCase(currentText);
+            break;
+          default:
+            result = currentText;
+        }
+
+        inputArea.value = result;
+        updateStats();
+        trackUsage(type || 'convert');
+      });
+    });
+
+    // Conversion Algorithms
+    function convertToSentenceCase(str: string): string {
+      // Lowercase everything first
+      const lower = str.toLowerCase();
+      // Capitalize first character of string and any character after period/exclamation/question mark + spacing
+      return lower.replace(/(^\s*|[.!?]\s+)([a-z])/g, (match, separator, char) => {
+        return separator + char.toUpperCase();
+      });
+    }
+
+    function convertToCapitalizedCase(str: string): string {
+      return str.toLowerCase().replace(/\b[a-z]/g, (char) => char.toUpperCase());
+    }
+
+    function convertToTitleCase(str: string): string {
+      return str.toLowerCase().replace(/\b[a-z']+\b/g, (word, index) => {
+        // Always capitalize first word, and capitalize non-minor words
+        if (index > 0 && minorWords.test(word)) {
+          return word;
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      });
+    }
+
+    function convertToAlternatingCase(str: string): string {
+      let isUpper = false;
+      return str.split('').map(char => {
+        if (/[a-zA-Z]/.test(char)) {
+          const res = isUpper ? char.toUpperCase() : char.toLowerCase();
+          isUpper = !isUpper;
+          return res;
+        }
+        return char;
+      }).join('');
+    }
+
+    function cleanStringForCode(str: string): string[] {
+      // Split by spaces, hyphens, underscores
+      return str.toLowerCase().trim().split(/[\s\-_]+/);
+    }
+
+    function convertToCamelCase(str: string): string {
+      const words = cleanStringForCode(str);
+      if (words.length === 0) return '';
+      return words[0] + words.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+    }
+
+    function convertToSnakeCase(str: string): string {
+      return cleanStringForCode(str).join('_');
+    }
+
+    function convertToKebabCase(str: string): string {
+      return cleanStringForCode(str).join('-');
+    }
+
+    function convertToPascalCase(str: string): string {
+      return cleanStringForCode(str).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+    }
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Text Case Converter',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

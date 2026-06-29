@@ -349,17 +349,17 @@ Below is the structured implementation schedule for the next 90 days:
 ### Phase 2: Core Tool Expansion (Days 31–60)
 11. **Build JSON Validator Tool**: Deploy client-side JSON parsing validator page. *(Implemented)*
 12. **Build CSV to Excel Converter**: Deploy client-side CSV table parser page. *(Implemented)*
-13. **Build Date Difference Calculator**: Count days and hours between selected dates.
-14. **Build Work Hours Timesheet Calculator**: Allow timesheet parsing for freelancers.
-15. **Build URL & HTML Encoder/Decoder**: HTML/URL character parsing page.
-16. **Build Text Case Converter**: Case transformation utility.
-17. **Build Image Resizer & Cropper**: HTML5 Canvas dimensions and crop selector tool.
-18. **Build Hash Generator (SHA256, MD5)**: Cryptographic hash creator.
-19. **Deploy Timezone Cohort 1**: Map first 50 city-to-city timezone pairings.
-20. **Link comparison formats**: Interlink comparison pairs with corresponding tools.
+13. **Build Date Difference Calculator**: Count days and hours between selected dates. *(Implemented)*
+14. **Build Work Hours Timesheet Calculator**: Allow timesheet parsing for freelancers. *(Implemented)*
+15. **Build URL & HTML Encoder/Decoder**: HTML/URL character parsing page. *(Implemented)*
+16. **Build Text Case Converter**: Case transformation utility. *(Implemented)*
+17. **Build Image Resizer & Cropper**: HTML5 Canvas dimensions and crop selector tool. *(Implemented)*
+18. **Build Hash Generator (SHA256, MD5)**: Cryptographic hash creator. *(Implemented)*
+19. **Deploy Timezone Cohort 1**: Map first 50 city-to-city timezone pairings. *(Implemented)*
+20. **Link comparison formats**: Interlink comparison pairs with corresponding tools. *(Implemented)*
 
 ### Phase 3: Authority Building & Scaling (Days 61–90)
-21. **Build EXIF Metadata Viewer & Stripper**: Local photo privacy clean utility.
+21. **Build EXIF Metadata Viewer & Stripper**: Local photo privacy clean utility. *(Implemented)*
 22. **Build Diff Checker**: Side-by-side text compare page.
 23. **Build JWT Decoder & Generator**: JSON Web Token decoding tool.
 24. **Submit tools to Web Directories**: Submit to ProductHunt and design directories.

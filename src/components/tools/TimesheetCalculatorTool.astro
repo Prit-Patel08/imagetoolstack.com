@@ -1,0 +1,281 @@
+---
+// Work Hours Timesheet Calculator Component
+---
+<div id="timesheet-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Earnings Config & Quick Actions -->
+  <div class="rounded-2xl border border-hairline bg-canvas p-6 md:p-8 shadow-sm flex flex-wrap items-center justify-between gap-6">
+    <div class="flex flex-wrap items-center gap-4">
+      <!-- Currency -->
+      <div class="flex items-center gap-2">
+        <label for="currency-select" class="text-xs font-bold text-ink uppercase tracking-wider">Currency:</label>
+        <select id="currency-select" class="bg-canvas-soft border border-hairline rounded-lg px-3 py-2 text-sm text-ink focus:border-link outline-none">
+          <option value="$" selected>USD ($)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="¥">JPY (¥)</option>
+          <option value="₹">INR (₹)</option>
+          <option value="Rp">IDR (Rp)</option>
+        </select>
+      </div>
+
+      <!-- Hourly Rate -->
+      <div class="flex items-center gap-2">
+        <label for="hourly-rate" class="text-xs font-bold text-ink uppercase tracking-wider">Hourly Rate:</label>
+        <input type="number" id="hourly-rate" value="25.00" step="0.50" min="0" class="w-24 bg-canvas-soft border border-hairline rounded-lg px-3 py-2 text-sm text-ink focus:border-link outline-none font-mono">
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2">
+      <button id="timesheet-sample-btn" class="px-4 py-2 border border-hairline text-link hover:bg-link/5 text-xs font-bold rounded-lg transition-colors">
+        Fill Normal Week (Mon-Fri)
+      </button>
+      <button id="timesheet-clear-btn" class="px-4 py-2 border border-hairline text-error hover:bg-error/5 text-xs font-bold rounded-lg transition-colors">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <!-- Weekly Spreadsheet Table Grid -->
+  <div class="bg-canvas border border-hairline rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-canvas-soft border-b border-hairline">
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider w-16 text-center">Active</th>
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider w-36">Day</th>
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider w-36">Clock In</th>
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider w-36">Clock Out</th>
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider w-32">Break (min)</th>
+            <th class="p-4 text-xs font-bold text-mute uppercase tracking-wider text-right">Daily Hours</th>
+          </tr>
+        </thead>
+        <tbody id="days-tbody" class="divide-y divide-hairline">
+          <!-- Populated by script -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Summary Card -->
+  <div class="bg-canvas border border-hairline rounded-2xl p-6 md:p-8 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div class="flex flex-col items-center justify-center p-4 bg-canvas-soft border border-hairline rounded-xl text-center">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Total Time</span>
+      <span id="summary-formatted" class="text-2xl font-extrabold text-ink font-mono">0h 0m</span>
+    </div>
+    
+    <div class="flex flex-col items-center justify-center p-4 bg-canvas-soft border border-hairline rounded-xl text-center">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Decimal Hours</span>
+      <span id="summary-decimal" class="text-2xl font-extrabold text-link font-mono">0.00 hrs</span>
+    </div>
+
+    <div class="flex flex-col items-center justify-center p-4 bg-canvas-soft border border-hairline rounded-xl text-center">
+      <span class="text-[10px] font-bold text-mute uppercase tracking-widest block mb-1">Gross Earnings</span>
+      <span id="summary-earnings" class="text-2xl font-extrabold text-link font-mono">$0.00</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const currencySelect = document.getElementById('currency-select') as HTMLSelectElement;
+    const hourlyRateInput = document.getElementById('hourly-rate') as HTMLInputElement;
+    const tbody = document.getElementById('days-tbody')!;
+    
+    const summaryFormatted = document.getElementById('summary-formatted')!;
+    const summaryDecimal = document.getElementById('summary-decimal')!;
+    const summaryEarnings = document.getElementById('summary-earnings')!;
+
+    const sampleBtn = document.getElementById('timesheet-sample-btn')!;
+    const clearBtn = document.getElementById('timesheet-clear-btn')!;
+
+    const days = [
+      { id: 'mon', name: 'Monday', active: true, in: '09:00', out: '17:00', break: 30 },
+      { id: 'tue', name: 'Tuesday', active: true, in: '09:00', out: '17:00', break: 30 },
+      { id: 'wed', name: 'Wednesday', active: true, in: '09:00', out: '17:00', break: 30 },
+      { id: 'thu', name: 'Thursday', active: true, in: '09:00', out: '17:00', break: 30 },
+      { id: 'fri', name: 'Friday', active: true, in: '09:00', out: '17:00', break: 30 },
+      { id: 'sat', name: 'Saturday', active: false, in: '', out: '', break: 0 },
+      { id: 'sun', name: 'Sunday', active: false, in: '', out: '', break: 0 }
+    ];
+
+    // Build the grid rows DOM
+    function renderRows() {
+      tbody.innerHTML = '';
+      days.forEach(day => {
+        const tr = document.createElement('tr');
+        tr.id = `row-${day.id}`;
+        tr.className = day.active ? 'hover:bg-canvas-soft/30 transition-colors' : 'opacity-50 bg-canvas-soft/10';
+
+        tr.innerHTML = `
+          <td class="p-4 text-center">
+            <input type="checkbox" id="check-${day.id}" ${day.active ? 'checked' : ''} class="day-active-chk h-4 w-4 rounded border-hairline accent-link cursor-pointer">
+          </td>
+          <td class="p-4 font-semibold text-ink text-sm">${day.name}</td>
+          <td class="p-4">
+            <input type="time" id="in-${day.id}" value="${day.in}" ${!day.active ? 'disabled' : ''} class="time-in bg-canvas border border-hairline rounded px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none w-full">
+          </td>
+          <td class="p-4">
+            <input type="time" id="out-${day.id}" value="${day.out}" ${!day.active ? 'disabled' : ''} class="time-out bg-canvas border border-hairline rounded px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none w-full">
+          </td>
+          <td class="p-4">
+            <input type="number" id="break-${day.id}" value="${day.break || ''}" placeholder="0" min="0" ${!day.active ? 'disabled' : ''} class="time-break bg-canvas border border-hairline rounded px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none w-full font-mono">
+          </td>
+          <td class="p-4 text-right font-mono font-bold text-ink text-sm" id="total-${day.id}">--</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Bind events to new elements
+      document.querySelectorAll('.day-active-chk').forEach(chk => {
+        chk.addEventListener('change', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.id.split('-')[1];
+          const index = days.findIndex(d => d.id === id);
+          days[index].active = target.checked;
+          
+          // Enable/disable row fields
+          const inInput = document.getElementById(`in-${id}`) as HTMLInputElement;
+          const outInput = document.getElementById(`out-${id}`) as HTMLInputElement;
+          const breakInput = document.getElementById(`break-${id}`) as HTMLInputElement;
+          
+          if (target.checked) {
+            inInput.disabled = false;
+            outInput.disabled = false;
+            breakInput.disabled = false;
+            if (!inInput.value) inInput.value = '09:00';
+            if (!outInput.value) outInput.value = '17:00';
+            days[index].in = inInput.value;
+            days[index].out = outInput.value;
+          } else {
+            inInput.disabled = true;
+            outInput.disabled = true;
+            breakInput.disabled = true;
+          }
+          
+          document.getElementById(`row-${id}`)!.className = target.checked 
+            ? 'hover:bg-canvas-soft/30 transition-colors' 
+            : 'opacity-50 bg-canvas-soft/10';
+
+          calculate();
+        });
+      });
+
+      const inputListeners = ['.time-in', '.time-out', '.time-break'];
+      inputListeners.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+          el.addEventListener('input', (e) => {
+            const target = e.target as HTMLInputElement;
+            const id = target.id.split('-')[1];
+            const index = days.findIndex(d => d.id === id);
+            
+            if (target.classList.contains('time-in')) days[index].in = target.value;
+            if (target.classList.contains('time-out')) days[index].out = target.value;
+            if (target.classList.contains('time-break')) days[index].break = parseInt(target.value || '0', 10);
+            
+            calculate();
+          });
+        });
+      });
+    }
+
+    function calculate() {
+      let grandTotalMinutes = 0;
+
+      days.forEach(day => {
+        const cell = document.getElementById(`total-${day.id}`)!;
+        if (!day.active || !day.in || !day.out) {
+          cell.textContent = '--';
+          return;
+        }
+
+        const [inH, inM] = day.in.split(':').map(Number);
+        const [outH, outM] = day.out.split(':').map(Number);
+        const breakM = day.break || 0;
+
+        let diffM = (outH * 60 + outM) - (inH * 60 + inM);
+        
+        // Handle midnight crossover
+        if (diffM < 0) {
+          diffM += 24 * 60;
+        }
+
+        let netM = diffM - breakM;
+        if (netM < 0) netM = 0;
+
+        grandTotalMinutes += netM;
+
+        const h = Math.floor(netM / 60);
+        const m = netM % 60;
+        const dec = netM / 60;
+
+        cell.textContent = `${h}h ${m}m (${dec.toFixed(2)}h)`;
+      });
+
+      // Update Summary Cards
+      const totalH = Math.floor(grandTotalMinutes / 60);
+      const totalM = grandTotalMinutes % 60;
+      const decH = grandTotalMinutes / 60;
+
+      summaryFormatted.textContent = `${totalH}h ${totalM}m`;
+      summaryDecimal.textContent = `${decH.toFixed(2)} hrs`;
+
+      const rate = parseFloat(hourlyRateInput.value || '0');
+      const earnings = decH * rate;
+      const currency = currencySelect.value;
+      
+      summaryEarnings.textContent = `${currency}${earnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    currencySelect.addEventListener('change', calculate);
+    hourlyRateInput.addEventListener('input', calculate);
+
+    // Prefill standard week
+    sampleBtn.addEventListener('click', () => {
+      days.forEach((day, idx) => {
+        if (idx < 5) {
+          day.active = true;
+          day.in = '09:00';
+          day.out = '17:00';
+          day.break = 30;
+        } else {
+          day.active = false;
+          day.in = '';
+          day.out = '';
+          day.break = 0;
+        }
+      });
+      renderRows();
+      calculate();
+      trackUsage('prefill');
+    });
+
+    // Clear
+    clearBtn.addEventListener('click', () => {
+      days.forEach(day => {
+        day.active = false;
+        day.in = '';
+        day.out = '';
+        day.break = 0;
+      });
+      renderRows();
+      calculate();
+    });
+
+    // Initial state
+    renderRows();
+    calculate();
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Timesheet Calculator',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

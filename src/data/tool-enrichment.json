@@ -2505,5 +2505,2203 @@
         }
       ]
     }
+  },
+  "date-difference-calculator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Granular Time Tracking",
+          "description": "Counts exact hours, minutes, and seconds between dates for precise intervals."
+        },
+        {
+          "title": "Customizable Options",
+          "description": "Includes checkboxes to include or exclude start and end times, or target days only."
+        },
+        {
+          "title": "Offline & Local",
+          "description": "Calculations are performed 100% on your device, ensuring maximum speed and complete data privacy."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configure start parameters",
+          "description": "Select the starting date and time from the input pickers."
+        },
+        {
+          "step": 2,
+          "title": "Configure end parameters",
+          "description": "Select the ending date and time from the corresponding pickers."
+        },
+        {
+          "step": 3,
+          "title": "Include options",
+          "description": "Check the option to include the last day if you are calculating inclusive durations."
+        },
+        {
+          "step": 4,
+          "title": "View calculated outputs",
+          "description": "Instantly view the detailed breakdown in years, months, days, hours, and minutes."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Does this calculator support time zones?",
+          "answer": "It uses your browser's local timezone settings for inputs. To compare different timezones, use our Timezone Converter tool."
+        },
+        {
+          "question": "How does it handle variations in month lengths?",
+          "answer": "It computes the interval using UTC timestamps and calendar month boundaries, accounting for leap years and months with 28, 30, or 31 days accurately."
+        },
+        {
+          "question": "Can I calculate business days?",
+          "answer": "This calculator focus on calendar days and hours. For business-only calculations (excluding weekends), please use our Date Calculator."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Seguimiento de tiempo detallado",
+          "description": "Cuenta horas, minutos y segundos exactos entre fechas para intervalos precisos."
+        },
+        {
+          "title": "Opciones personalizables",
+          "description": "Incluye casillas para incluir o excluir horas de inicio y fin, o calcular solo días."
+        },
+        {
+          "title": "Fuera de línea y local",
+          "description": "Las cálculos se realizan 100% en su dispositivo, garantizando velocidad y privacidad."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurar inicio",
+          "description": "Seleccione la fecha y hora de inicio de los selectores de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Configurar fin",
+          "description": "Seleccione la fecha y hora de finalización de los selectores correspondientes."
+        },
+        {
+          "step": 3,
+          "title": "Ajustar inclusividad",
+          "description": "Marque la opción de incluir el último día si está calculando duraciones inclusivas."
+        },
+        {
+          "step": 4,
+          "title": "Ver resultados",
+          "description": "Vea instantáneamente el desglose detallado en años, meses, días, horas y minutos."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Soporta zonas horarias esta calculadora?",
+          "answer": "Utiliza la configuración de la zona horaria local de su navegador. Para comparar zonas horarias, use nuestro convertidor de zonas horarias."
+        },
+        {
+          "question": "¿Cómo maneja las variaciones en las longitudes de los meses?",
+          "answer": "Calcula el intervalo usando límites mensuales del calendario, teniendo en cuenta años bisiestos y meses de 28, 30 o 31 días."
+        },
+        {
+          "question": "¿Puedo calcular días laborables?",
+          "answer": "Esta calculadora se centra en días y horas de calendario. Para cálculos de días laborables, use nuestra Calculadora de fecha."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Suivi temporel granulaire",
+          "description": "Calcule précisément les heures, minutes et secondes exactes entre deux dates."
+        },
+        {
+          "title": "Options configurables",
+          "description": "Inclut des options pour inclure ou exclure le jour final ou calculer uniquement en jours."
+        },
+        {
+          "title": "Local et hors-ligne",
+          "description": "Les calculs s'effectuent à 100 % sur votre machine, garantissant rapidité et confidentialité."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Définir le début",
+          "description": "Sélectionnez la date et l'heure de départ."
+        },
+        {
+          "step": 2,
+          "title": "Définir la fin",
+          "description": "Sélectionnez la date et l'heure de fin."
+        },
+        {
+          "step": 3,
+          "title": "Activer l'inclusivité",
+          "description": "Cochez la case pour inclure le dernier jour si nécessaire dans votre calcul de durée."
+        },
+        {
+          "step": 4,
+          "title": "Consulter le résultat",
+          "description": "Obtenez instantanément le décompte en années, mois, jours, heures et minutes."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Cette calculatrice gère-t-elle les fuseaux horaires ?",
+          "answer": "Elle utilise le fuseau horaire de votre navigateur. Pour comparer des fuseaux différents, utilisez le Convertisseur de fuseau horaire."
+        },
+        {
+          "question": "Comment sont gérées les longueurs de mois variables ?",
+          "answer": "Elle calcule l'intervalle via des horodatages UTC et les limites réelles du calendrier (28, 30, 31 jours ou années bissextiles)."
+        },
+        {
+          "question": "Puis-je calculer les jours ouvrés ?",
+          "answer": "Cette calculatrice compte les jours calendaires et heures. Pour les jours ouvrés, utilisez notre Calculateur de date."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Präzise Zeiterfassung",
+          "description": "Zählt die genauen Stunden, Minuten und Sekunden zwischen den Daten für exakte Intervalle."
+        },
+        {
+          "title": "Flexible Optionen",
+          "description": "Erlaubt das Ein- oder Ausschließen von Start- und Endzeiten sowie die Fokussierung auf reine Tage."
+        },
+        {
+          "title": "Offline & Lokal",
+          "description": "Die Berechnungen erfolgen vollständig auf Ihrem Gerät, was hohe Geschwindigkeit und Datenschutz sichert."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Startparameter eingeben",
+          "description": "Wählen Sie das Startdatum und die Uhrzeit aus."
+        },
+        {
+          "step": 2,
+          "title": "Endparameter eingeben",
+          "description": "Wählen Sie das Enddatum und die Uhrzeit aus."
+        },
+        {
+          "step": 3,
+          "title": "Optionen anpassen",
+          "description": "Aktivieren Sie die Option, den letzten Tag einzuschließen, für eine inklusive Berechnung."
+        },
+        {
+          "step": 4,
+          "title": "Ergebnis ablesen",
+          "description": "Sehen Sie sofort die genaue Aufschlüsselung in Jahren, Monaten, Tagen, Stunden und Minuten."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Unterstützt dieser Rechner Zeitzonen?",
+          "answer": "Er verwendet die lokale Zeitzone Ihres Browsers. Für Vergleiche nutzen Sie bitte unseren Zeitzonen-Konverter."
+        },
+        {
+          "question": "Wie werden unterschiedliche Monatslängen berücksichtigt?",
+          "answer": "Er berechnet das Intervall anhand von UTC-Zeitstempeln und Kalendergrenzen unter Berücksichtigung von Schaltjahren und Monaten."
+        },
+        {
+          "question": "Kann ich Arbeitstage berechnen?",
+          "answer": "Dieser Rechner zählt Kalendertage und Stunden. Für reine Arbeitstage nutzen Sie bitte unseren Datum-Rechner."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Precisão Granular",
+          "description": "Conta horas, minutos e segundos exatos entre datas para obter intervalos de tempo precisos."
+        },
+        {
+          "title": "Opções Customizáveis",
+          "description": "Inclui caixas para incluir ou excluir horários de início e fim, ou contar apenas dias."
+        },
+        {
+          "title": "Local e Offline",
+          "description": "Os cálculos ocorrem 100% no seu dispositivo local, garantindo rapidez e privacidade."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Ajustar data de início",
+          "description": "Selecione a data e o horário de início nos seletores correspondentes."
+        },
+        {
+          "step": 2,
+          "title": "Ajustar data de término",
+          "description": "Selecione a data e o horário de término."
+        },
+        {
+          "step": 3,
+          "title": "Configurar inclusão",
+          "description": "Marque a opção para incluir o dia final caso deseje uma contagem inclusiva."
+        },
+        {
+          "step": 4,
+          "title": "Ver resultados",
+          "description": "Veja imediatamente o detalhamento em anos, meses, dias, horas e minutos."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Esta calculadora suporta fusos horários?",
+          "answer": "Ela utiliza a configuração local do seu navegador. Para fusos diferentes, use nosso Conversor de fusos horários."
+        },
+        {
+          "question": "Como ela lida com meses de tamanhos diferentes?",
+          "answer": "Ela calcula os intervalos usando limites do calendário gregoriano, lidando com anos bissextivos e meses de 28, 30 ou 31 dias."
+        },
+        {
+          "question": "Posso calcular dias úteis?",
+          "answer": "Esta calculadora é focada em dias corridos e horas. Para dias úteis (excluindo fins de semana), use nossa Calculadora de datas."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Pelacakan Waktu Granular",
+          "description": "Menghitung jam, menit, dan detik yang tepat antara tanggal untuk interval yang presisi."
+        },
+        {
+          "title": "Opsi yang Dapat Disesuaikan",
+          "description": "Menyertakan kotak centang untuk menyertakan atau mengecualikan waktu mulai dan berakhir, atau menargetkan hari saja."
+        },
+        {
+          "title": "Offline & Lokal",
+          "description": "Perhitungan dilakukan 100% di perangkat Anda, memastikan kecepatan maksimum dan privasi data lengkap."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Konfigurasi parameter mulai",
+          "description": "Pilih tanggal dan waktu mulai dari pemilih input."
+        },
+        {
+          "step": 2,
+          "title": "Konfigurasi parameter akhir",
+          "description": "Pilih tanggal dan waktu akhir dari pemilih yang sesuai."
+        },
+        {
+          "step": 3,
+          "title": "Sertakan opsi",
+          "description": "Centang opsi untuk menyertakan hari terakhir jika Anda menghitung durasi inklusif."
+        },
+        {
+          "step": 4,
+          "title": "Lihat hasil perhitungan",
+          "description": "Lihat rincian detail secara instan dalam tahun, bulan, hari, jam, dan menit."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah kalkulator ini mendukung zona waktu?",
+          "answer": "Kalkulator ini menggunakan pengaturan zona waktu lokal browser Anda. Untuk membandingkan zona waktu berbeda, gunakan alat Konverter Zona Waktu kami."
+        },
+        {
+          "question": "Bagaimana cara menangani variasi panjang bulan?",
+          "answer": "Kalkulator ini menghitung interval menggunakan batas bulan kalender, memperhitungkan tahun kabisat dan bulan dengan 28, 30, atau 31 hari secara akurat."
+        },
+        {
+          "question": "Bisakah saya menghitung hari kerja saja?",
+          "answer": "Kalkulator ini berfokus pada hari dan jam kalender. Untuk perhitungan hari kerja saja (mengecualikan akhir pekan), silakan gunakan Kalkulator Tanggal kami."
+        }
+      ]
+    }
+  },
+  "timesheet-calculator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Weekly Shift Calculation",
+          "description": "Enter start and end times for up to 7 days, complete with unpaid break deductions."
+        },
+        {
+          "title": "Earnings & Hourly Rate",
+          "description": "Set custom hourly rates and decimal formatting to calculate gross payouts automatically."
+        },
+        {
+          "title": "Total Privacy",
+          "description": "All timesheet entries, hourly rates, and payout amounts are kept locally. No server gets to see your income."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Set earnings configuration",
+          "description": "Enter your hourly pay rate and currency symbol in the earnings config section."
+        },
+        {
+          "step": 2,
+          "title": "Input daily work hours",
+          "description": "For each workday, select the start time (clock-in) and end time (clock-out)."
+        },
+        {
+          "step": 3,
+          "title": "Deduct unpaid breaks",
+          "description": "Enter the duration of any unpaid breaks taken during the shift (in minutes)."
+        },
+        {
+          "step": 4,
+          "title": "Review totals & payout",
+          "description": "The calculator instantly updates total decimal hours and gross earnings for the week."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "How does the break deduction work?",
+          "answer": "Unpaid break durations entered in minutes are subtracted from the gross duration (end time minus start time) for each shift."
+        },
+        {
+          "question": "Does this support night shifts that cross midnight?",
+          "answer": "Yes. If the end time is earlier than the start time, the calculator automatically shifts the end boundary to the next calendar day."
+        },
+        {
+          "question": "Are my earnings logs stored on a server?",
+          "answer": "No. All calculation logic is computed client-side in browser memory. Your salary rates and hours remain strictly confidential."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Cálculo de turnos semanal",
+          "description": "Ingrese horarios de inicio y fin para hasta 7 días, con deducción de descansos."
+        },
+        {
+          "title": "Ganancias y tarifa horaria",
+          "description": "Establezca tarifas por hora personalizadas y formato decimal para calcular pagos brutos."
+        },
+        {
+          "title": "Privacidad total",
+          "description": "Todas las entradas de horas y tarifas se guardan localmente. Ningún servidor ve sus ingresos."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurar tarifas",
+          "description": "Ingrese su tarifa de pago por hora y símbolo de moneda en la sección de configuración."
+        },
+        {
+          "step": 2,
+          "title": "Ingresar horas diarias",
+          "description": "Para cada día laboral, seleccione la hora de inicio y de finalización."
+        },
+        {
+          "step": 3,
+          "title": "Restar descansos",
+          "description": "Ingrese la duración de los descansos no pagados tomados durante el turno (en minutos)."
+        },
+        {
+          "step": 4,
+          "title": "Ver totales y pagos",
+          "description": "La calculadora actualiza al instante las horas decimales totales y las ganancias brutas de la semana."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Cómo funciona la deducción de descansos?",
+          "answer": "Las duraciones de los descansos no pagados en minutos se restan de la duración bruta de cada turno."
+        },
+        {
+          "question": "¿Soporta turnos nocturnos que cruzan la medianoche?",
+          "answer": "Sí. Si la hora de finalización es anterior a la de inicio, la calculadora asume que el turno termina al día siguiente."
+        },
+        {
+          "question": "¿Se almacenan mis ganancias en algún servidor?",
+          "answer": "No. Todo se calcula en el lado del cliente. Sus salarios y horas son estrictamente confidenciales."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Calcul d'horaires hebdomadaire",
+          "description": "Saisissez les heures de début et de fin pour 7 jours, avec déduction automatique des pauses."
+        },
+        {
+          "title": "Suivi des revenus bruts",
+          "description": "Configurez un taux horaire et la devise pour calculer automatiquement les rémunérations."
+        },
+        {
+          "title": "Confidentialité totale",
+          "description": "Toutes les données de paie et d'horaires restent en local dans votre navigateur. Aucun serveur n'y a accès."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurer les gains",
+          "description": "Saisissez votre taux horaire et le symbole monétaire dans les paramètres."
+        },
+        {
+          "step": 2,
+          "title": "Saisir les heures de travail",
+          "description": "Pour chaque jour, sélectionnez les heures de début et de fin de poste."
+        },
+        {
+          "step": 3,
+          "title": "Déduire les pauses",
+          "description": "Renseignez la durée des pauses non rémunérées en minutes."
+        },
+        {
+          "step": 4,
+          "title": "Consulter le bilan",
+          "description": "L'outil affiche instantanément le total des heures au format décimal et les gains hebdomadaires."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Comment fonctionne la déduction des pauses ?",
+          "answer": "Le temps de pause saisi (en minutes) est soustrait du temps de travail brut de chaque journée."
+        },
+        {
+          "question": "Les heures de nuit traversant minuit sont-elles gérées ?",
+          "answer": "Oui. Si l'heure de fin est antérieure à l'heure de début, l'outil comprend que le shift se termine le lendemain."
+        },
+        {
+          "question": "Mes salaires sont-ils envoyés sur Internet ?",
+          "answer": "Non. Tous les calculs sont faits localement par le navigateur. Vos données salariales restent privées."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Wöchentliche Schichtberechnung",
+          "description": "Tragen Sie Arbeitszeiten für bis zu 7 Tage ein, inklusive Pausenabzug."
+        },
+        {
+          "title": "Lohn- & Verdienstrechner",
+          "description": "Geben Sie Ihren Stundenlohn an, um die Bruttovergütung automatisch zu kalkulieren."
+        },
+        {
+          "title": "Voller Datenschutz",
+          "description": "Alle Einträge und Stundensätze verbleiben lokal auf Ihrem Gerät und werden nicht übertragen."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Verdienst einrichten",
+          "description": "Geben Sie Ihren Stundenlohn und das Währungssymbol in der Konfiguration ein."
+        },
+        {
+          "step": 2,
+          "title": "Arbeitszeiten eintragen",
+          "description": "Wählen Sie für jeden Arbeitstag die Start- und Enduhrzeiten aus."
+        },
+        {
+          "step": 3,
+          "title": "Pausen abziehen",
+          "description": "Geben Sie die unbezahlten Pausenzeiten während der Schicht in Minuten an."
+        },
+        {
+          "step": 4,
+          "title": "Gesamtverdienst prüfen",
+          "description": "Der Rechner aktualisiert sofort die Gesamtstunden im Dezimalformat und den Wochenverdienst."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Wie funktioniert der Pausenabzug?",
+          "answer": "Unbezahlte Pausen (in Minuten) werden von der Bruttoarbeitszeit des jeweiligen Tages abgezogen."
+        },
+        {
+          "question": "Werden Nachtschichten über Mitternacht unterstützt?",
+          "answer": "Ja. Wenn die Endzeit vor der Startzeit liegt, wird die Schicht automatisch für den Folgetag berechnet."
+        },
+        {
+          "question": "Werden meine Lohnabrechnungen auf Servern gespeichert?",
+          "answer": "Nein. Alle Berechnungen erfolgen lokal im Browser-Speicher. Ihre Gehaltsdaten bleiben vollkommen privat."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Cálculo de Turnos Semanal",
+          "description": "Insira horários de entrada e saída de até 7 dias, com dedução de intervalos não remunerados."
+        },
+        {
+          "title": "Rendimento e Valor/Hora",
+          "description": "Defina valores de hora personalizados para calcular a remuneração bruta total."
+        },
+        {
+          "title": "Privacidade de Dados",
+          "description": "Todas as suas informações financeiras e horas trabalhadas permanecem locais e privadas no navegador."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Configurar ganhos",
+          "description": "Insira o valor do seu pagamento por hora e o símbolo de moeda escolhido."
+        },
+        {
+          "step": 2,
+          "title": "Inserir turnos diários",
+          "description": "Para cada dia trabalhado, defina os horários de entrada e de saída."
+        },
+        {
+          "step": 3,
+          "title": "Deduzir intervalos",
+          "description": "Renseje o tempo em minutos gasto com intervalos não remunerados."
+        },
+        {
+          "step": 4,
+          "title": "Verificar faturamento",
+          "description": "O calculador computa instantaneamente o total de horas decimais e a renda bruta da semana."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Como funciona a dedução de pausas?",
+          "answer": "O total de minutos definidos para a pausa é subtraído do intervalo bruto trabalhado em cada dia."
+        },
+        {
+          "question": "Suporta turnos de noite que passam de meia-noite?",
+          "answer": "Sim. Se a hora de saída for menor que a de entrada, o sistema assume que o turno se estendeu para o dia seguinte."
+        },
+        {
+          "question": "Os meus ganhos são enviados para algum servidor?",
+          "answer": "Não. O processamento das horas e salários ocorre estritamente na memória local do cliente."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Perhitungan Shift Mingguan",
+          "description": "Masukkan waktu mulai dan berakhir hingga 7 hari, lengkap dengan pemotongan istirahat tanpa dibayar."
+        },
+        {
+          "title": "Pendapatan & Tarif Per Jam",
+          "description": "Atur tarif per jam khusus dan pemformatan desimal untuk menghitung pembayaran kotor secara otomatis."
+        },
+        {
+          "title": "Privasi Total",
+          "description": "Semua entri lembar waktu, tarif per jam, dan jumlah pembayaran disimpan secara lokal. Tidak ada server yang melihat pendapatan Anda."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Atur konfigurasi pendapatan",
+          "description": "Masukkan tarif pembayaran per jam dan simbol mata uang Anda di bagian konfigurasi pendapatan."
+        },
+        {
+          "step": 2,
+          "title": "Input jam kerja harian",
+          "description": "Untuk setiap hari kerja, pilih waktu mulai (clock-in) dan waktu berakhir (clock-out)."
+        },
+        {
+          "step": 3,
+          "title": "Potong istirahat tidak dibayar",
+          "description": "Masukkan durasi istirahat tidak dibayar yang diambil selama shift (dalam menit)."
+        },
+        {
+          "step": 4,
+          "title": "Tinjau total & pembayaran",
+          "description": "Kalkulator secara instan memperbarui total jam desimal dan pendapatan kotor untuk minggu tersebut."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Bagaimana cara kerja pemotongan istirahat?",
+          "answer": "Durasi istirahat tidak dibayar yang dimasukkan dalam menit dikurangi dari durasi kotor (waktu berakhir minus waktu mulai) untuk setiap shift."
+        },
+        {
+          "question": "Apakah ini mendukung shift malam yang melewati tengah malam?",
+          "answer": "Ya. Jika waktu berakhir lebih awal dari waktu mulai, kalkulator secara otomatis menggeser batas akhir ke hari kalender berikutnya."
+        },
+        {
+          "question": "Apakah catatan pendapatan saya disimpan di server?",
+          "answer": "Tidak. Semua logika perhitungan dihitung di sisi klien dalam memori browser. Tarif gaji dan jam kerja Anda tetap rahasia."
+        }
+      ]
+    }
+  },
+  "url-encoder-decoder": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Dual URL & HTML Modes",
+          "description": "Easily toggle between URL percent encoding and HTML character entity encoding/decoding."
+        },
+        {
+          "title": "Live Conversion",
+          "description": "As you type, the tool instantly updates the output without requiring button clicks."
+        },
+        {
+          "title": "100% Secure & Client-Side",
+          "description": "Your strings are processed entirely in browser memory. No text is ever transmitted to a server."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Input query string or text",
+          "description": "Paste the text or URL you want to process into the input workspace."
+        },
+        {
+          "step": 2,
+          "title": "Choose parsing mode",
+          "description": "Choose between 'URL Encode/Decode' or 'HTML Encode/Decode' modes."
+        },
+        {
+          "step": 3,
+          "title": "Encode or decode",
+          "description": "Click the corresponding Action button (Encode or Decode) to process."
+        },
+        {
+          "step": 4,
+          "title": "Copy results",
+          "description": "Click Copy to save the results to your clipboard instantly."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "What is the difference between URL encoding and HTML encoding?",
+          "answer": "URL encoding replaces unsafe query characters with percent-encoded bytes (like %20 for space), while HTML encoding replaces characters like < and > with safe HTML entities (like &lt; and &gt;)."
+        },
+        {
+          "question": "Are my strings sent to any server?",
+          "answer": "Never. All string manipulation, parsing, and character replacing happens entirely inside your browser using JavaScript."
+        },
+        {
+          "question": "What character sets are supported?",
+          "answer": "The tool fully supports standard Unicode/UTF-8 character ranges, including emojis and international characters."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Modos dobles URL e HTML",
+          "description": "Cambie fácilmente entre la codificación de porcentaje de URL y la codificación/decodificación de entidades HTML."
+        },
+        {
+          "title": "Conversión en vivo",
+          "description": "A medida que escribe, la herramienta updates instantáneamente el resultado."
+        },
+        {
+          "title": "100% seguro y del lado del cliente",
+          "description": "Sus cadenas se procesan completamente en la memoria del navegador. Ningún texto se transmite a un servidor."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Ingresar texto o URL",
+          "description": "Pegue el texto o la URL que desea procesar en el espacio de trabajo de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Elegir modo de análisis",
+          "description": "Elija entre los modos 'Codificar/Decodificar URL' o 'Codificar/Decodificar HTML'."
+        },
+        {
+          "step": 3,
+          "title": "Codificar o decodificar",
+          "description": "Haga clic en el botón de acción correspondiente (Codificar o Decodificar) para procesar."
+        },
+        {
+          "step": 4,
+          "title": "Copiar resultados",
+          "description": "Haga clic en Copiar para guardar los resultados en su portapapeles al instante."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Cuál es la diferencia entre la codificación URL y la codificación HTML?",
+          "answer": "La codificación URL reemplaza caracteres de consulta no seguros con bytes codificados en porcentaje, mientras que la codificación HTML reemplaza caracteres con entidades HTML seguras."
+        },
+        {
+          "question": "¿Se envían mis cadenas a algún servidor?",
+          "answer": "Nunca. Toda la manipulación de cadenas ocurre completamente dentro de su navegador."
+        },
+        {
+          "question": "¿Qué conjuntos de caracteres son compatibles?",
+          "answer": "La herramienta es totalmente compatible con los rangos de caracteres estándar de Unicode/UTF-8, incluidos emojis."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Double Mode URL & HTML",
+          "description": "Basculez facilement entre l'encodage URL (pour-cent) et l'encodage des entités de caractères HTML."
+        },
+        {
+          "title": "Conversion instantanée",
+          "description": "Dès que vous écrivez ou collez du texte, le résultat est calculé en temps réel."
+        },
+        {
+          "title": "100% Local et Sécurisé",
+          "description": "Les chaînes sont traitées localement dans le navigateur. Vos données textuelles ne transitent sur aucun serveur."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Saisir la chaîne",
+          "description": "Collez le texte ou l'URL à traiter dans l'espace de travail."
+        },
+        {
+          "step": 2,
+          "title": "Sélectionner le mode",
+          "description": "Choisissez entre l'option 'Encoder/Décoder URL' ou 'Encoder/Décoder HTML'."
+        },
+        {
+          "step": 3,
+          "title": "Lancer le traitement",
+          "description": "Cliquez sur le bouton correspondant à l'action souhaitée (Encoder ou Décoder)."
+        },
+        {
+          "step": 4,
+          "title": "Exporter le résultat",
+          "description": "Cliquez sur Copier pour récupérer directement le texte dans votre presse-papiers."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Quelle est la différence entre l'encodage URL et HTML ?",
+          "answer": "L'encodage URL remplace les caractères spéciaux par leur équivalent pour-cent (comme %20), tandis que l'encodage HTML convertit les balises comme < et > en entités de type &lt; et &gt;."
+        },
+        {
+          "question": "Mes textes sont-ils envoyés sur un serveur ?",
+          "answer": "Non, jamais. Toutes les conversions s'exécutent localement via JavaScript sur votre ordinateur."
+        },
+        {
+          "question": "Les caractères spéciaux et emojis sont-ils pris en charge ?",
+          "answer": "Oui, l'outil gère nativement le jeu de caractères complet UTF-8/Unicode."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Duale URL- & HTML-Modi",
+          "description": "Wechseln Sie einfach zwischen URL-Prozentkodierung und HTML-Zeichen-Entity-Kodierung."
+        },
+        {
+          "title": "Echtzeit-Konvertierung",
+          "description": "Die Ausgabe wird direkt während der Eingabe berechnet, ohne dass Sie warten müssen."
+        },
+        {
+          "title": "100% Sicher & Lokal",
+          "description": "Die Verarbeitung läuft ausschließlich im Arbeitsspeicher Ihres Browsers. Keine Datenübertragung."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Text oder URL eingeben",
+          "description": "Fügen Sie den zu verarbeitenden Text oder die URL in das Eingabefeld ein."
+        },
+        {
+          "step": 2,
+          "title": "Modus auswählen",
+          "description": "Wählen Sie zwischen 'URL Kodieren/Dekodieren' oder 'HTML Kodieren/Dekodieren'."
+        },
+        {
+          "step": 3,
+          "title": "Aktion ausführen",
+          "description": "Klicken Sie auf den entsprechenden Button (Kodieren oder Dekodieren)."
+        },
+        {
+          "step": 4,
+          "title": "Ergebnis kopieren",
+          "description": "Klicken Sie auf Kopieren, um das Ergebnis in Ihre Zwischenablage zu speichern."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Was ist der Unterschied zwischen URL- und HTML-Kodierung?",
+          "answer": "Die URL-Kodierung ersetzt unsichere Zeichen durch Prozent-Werte (z.B. %20), während die HTML-Kodierung Symbole wie < und > durch Entitäten wie &lt; und &gt; ersetzt."
+        },
+        {
+          "question": "Werden meine Eingaben auf einen Server übertragen?",
+          "answer": "Nein. Die Verarbeitung erfolgt vollständig lokal in Ihrem Webbrowser mittels JavaScript."
+        },
+        {
+          "question": "Werden Emojis unterstützt?",
+          "answer": "Ja. Der Konverter unterstützt Unicode (UTF-8) vollständig, inklusive Emojis und internationaler Sonderzeichen."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Modos URL & HTML",
+          "description": "Alterne facilmente entre codificação de porcentagem de URL e codificação/decodificação de entidades HTML."
+        },
+        {
+          "title": "Conversão em Tempo Real",
+          "description": "O resultado é atualizado instantaneamente conforme você digita ou cola no campo de entrada."
+        },
+        {
+          "title": "100% Local e Privado",
+          "description": "O processamento ocorre totalmente na memória do navegador. Nenhum dado é enviado para a web."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Inserir dados de origem",
+          "description": "Cole a string ou URL que deseja processar na área de entrada de texto."
+        },
+        {
+          "step": 2,
+          "title": "Selecionar tipo de conversão",
+          "description": "Escolha entre as opções 'Codificar/Decodificar URL' ou 'Codificar/Decodificar HTML'."
+        },
+        {
+          "step": 3,
+          "title": "Executar ação",
+          "description": "Clique no botão de ação correspondente (Codificar ou Decodificar)."
+        },
+        {
+          "step": 4,
+          "title": "Copiar resultado",
+          "description": "Clique em Copiar para salvar o conteúdo processado na sua área de transferência."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Qual a diferença entre codificação URL e HTML?",
+          "answer": "A codificação URL substitui caracteres inseguros por bytes percentuais (como %20), enquanto a codificação HTML transforma tags como < e > em entidades como &lt; e &gt;."
+        },
+        {
+          "question": "As minhas informações são transmitidas para algum site?",
+          "answer": "Não. O script roda integralmente no cliente via JavaScript."
+        },
+        {
+          "question": "Suporta acertos e emojis?",
+          "answer": "Sim. O codificador é totalmente compatível com a codificação Unicode e UTF-8."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Mode Ganda URL & HTML",
+          "description": "Beralih dengan mudah antara pengodean persen URL dan pengodean/dekode entitas karakter HTML."
+        },
+        {
+          "title": "Konversi Langsung",
+          "description": "Saat Anda mengetik, alat ini secara instan memperbarui output tanpa memerlukan klik tombol."
+        },
+        {
+          "title": "100% Aman & Sisi Klien",
+          "description": "String Anda diproses sepenuhnya di memori browser. Tidak ada teks yang dikirim ke server."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Masukkan string input",
+          "description": "Tempel teks atau URL yang ingin Anda proses ke dalam ruang kerja input."
+        },
+        {
+          "step": 2,
+          "title": "Pilih mode penguraian",
+          "description": "Pilih antara mode 'Kodekan/Dekode URL' atau 'Kodekan/Dekode HTML'."
+        },
+        {
+          "step": 3,
+          "title": "Kodekan atau dekode",
+          "description": "Klik tombol Tindakan yang sesuai (Encode atau Decode) untuk memproses."
+        },
+        {
+          "step": 4,
+          "title": "Salin hasil",
+          "description": "Klik Salin untuk menyimpan hasil ke papan klip Anda secara instan."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apa perbedaan antara pengodean URL dan pengodean HTML?",
+          "answer": "Pengodean URL menggantikan karakter kueri tidak aman dengan byte persen (seperti %20 untuk spasi), sementara pengodean HTML menggantikan karakter seperti < dan > dengan entitas HTML aman (seperti &lt; dan &gt;)."
+        },
+        {
+          "question": "Apakah teks saya dikirim ke server?",
+          "answer": "Tidak pernah. Semua manipulasi string, penguraian, dan penggantian karakter terjadi sepenuhnya di dalam browser Anda."
+        },
+        {
+          "question": "Karakter apa saja yang didukung?",
+          "answer": "Alat ini sepenuhnya mendukung rentang karakter standar Unicode/UTF-8, termasuk emoji dan karakter internasional."
+        }
+      ]
+    }
+  },
+  "text-case-converter": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Multiple Case Modes",
+          "description": "Easily switch text to UPPERCASE, lowercase, sentence case, Title Case, camelCase, snake_case, and kebab-case."
+        },
+        {
+          "title": "Developer-Friendly Casing",
+          "description": "Instantly generate variable names using camelCase, snake_case, and PascalCase formats."
+        },
+        {
+          "title": "100% Private",
+          "description": "All case transformations are computed in browser memory. No data is ever transmitted to external servers."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Input text",
+          "description": "Paste or type the text you want to transform into the input text box."
+        },
+        {
+          "step": 2,
+          "title": "Choose case conversion",
+          "description": "Choose the conversion format from the available case buttons (e.g. Title Case, camelCase, UPPERCASE)."
+        },
+        {
+          "step": 3,
+          "title": "Verify statistics",
+          "description": "Check text stats (words, characters, lines) if needed."
+        },
+        {
+          "step": 4,
+          "title": "Copy result",
+          "description": "Click Copy to save the formatted text to your clipboard."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "What casing formats does this tool support?",
+          "answer": "It supports sentence case, UPPERCASE, lowercase, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case, and kebab-case."
+        },
+        {
+          "question": "How does the Sentence case format handle punctuation?",
+          "answer": "It capitalizes the first character of each sentence following a period, exclamation mark, or question mark, while converting the rest to lowercase."
+        },
+        {
+          "question": "Is there a limit to the text length?",
+          "answer": "There is no strict limit. The tool processes strings instantly using browser memory, handling large paragraphs and documents easily."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Múltiples modos de caso",
+          "description": "Cambie fácilmente el texto a MAYÚSCULAS, minúsculas, caso de oración, Title Case, camelCase, snake_case y kebab-case."
+        },
+        {
+          "title": "Formato amigable para desarrolladores",
+          "description": "Genere instantáneamente nombres de variables utilizando formatos camelCase, snake_case y PascalCase."
+        },
+        {
+          "title": "100% privado",
+          "description": "Todas las transformaciones se calculan en la memoria de su navegador. No se transmiten datos a servidores."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Ingresar texto",
+          "description": "Pegue o escriba el texto que desea transformar en el cuadro de texto de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Elegir conversión de caso",
+          "description": "Elija el formato de conversión entre los botones de caso disponibles."
+        },
+        {
+          "step": 3,
+          "title": "Verificar estadísticas",
+          "description": "Compruebe las estadísticas de texto (palabras, caracteres, líneas) si es necesario."
+        },
+        {
+          "step": 4,
+          "title": "Copiar resultado",
+          "description": "Haga clic en Copiar para guardar el texto con formato en su portapapeles."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Qué formatos de mayúsculas y minúsculas admite esta herramienta?",
+          "answer": "Admite mayúsculas, minúsculas, caso de oración, Title Case, camelCase, snake_case y kebab-case."
+        },
+        {
+          "question": "¿Cómo maneja la puntuación el formato de caso de oración?",
+          "answer": "Capitaliza el primer carácter de cada oración después de un punto, signo de exclamación o interrogación."
+        },
+        {
+          "question": "¿Existe un límite de longitud para el texto?",
+          "answer": "No hay límite estricto. La herramienta procesa cadenas al instante en el navegador."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Plusieurs formats pris en charge",
+          "description": "Basculez facilement votre texte en MAJUSCULES, minuscules, casse de phrase, Title Case, camelCase, snake_case et kebab-case."
+        },
+        {
+          "title": "Formatage pour développeurs",
+          "description": "Générez instantanément des noms de variables aux formats camelCase, snake_case et PascalCase."
+        },
+        {
+          "title": "100% Privé",
+          "description": "Toutes les transformations de casse sont calculées localement. Aucun texte n'est transmis sur internet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Saisir le texte",
+          "description": "Collez ou saisissez votre texte dans la zone de saisie."
+        },
+        {
+          "step": 2,
+          "title": "Choisir la casse",
+          "description": "Sélectionnez le format souhaité via les boutons d'action (ex: Title Case, camelCase, UPPERCASE)."
+        },
+        {
+          "step": 3,
+          "title": "Analyser les statistiques",
+          "description": "Visualisez le nombre de mots, caractères et lignes calculés."
+        },
+        {
+          "step": 4,
+          "title": "Copier le résultat",
+          "description": "Cliquez sur le bouton Copier pour sauvegarder le texte formaté dans le presse-papiers."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Quels formats de casse sont pris en charge ?",
+          "answer": "L'outil gère la casse de phrase, MAJUSCULES, minuscules, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case et kebab-case."
+        },
+        {
+          "question": "Comment la casse de phrase traite-t-elle la ponctuation ?",
+          "answer": "Elle met une majuscule au premier caractère de chaque phrase après un point, un point d'exclamation ou d'interrogation."
+        },
+        {
+          "question": "Y a-t-il une limite de caractères ?",
+          "answer": "Non, l'outil traite le texte en local dans la mémoire du navigateur, ce qui permet de gérer de longs documents."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Diverse Schreibweisen",
+          "description": "Konvertieren Sie Text ganz einfach in GROSSBUCHSTABEN, Kleinbuchstaben, Satzanfang, Title Case, camelCase, snake_case und kebab-case."
+        },
+        {
+          "title": "Entwickler-Schreibweisen",
+          "description": "Erzeugen Sie im Handumdrehen Variablennamen im camelCase-, snake_case- und PascalCase-Format."
+        },
+        {
+          "title": "100% Privat",
+          "description": "Alle Konvertierungen laufen lokal im Browser ab. Ihre Texte werden niemals an Server gesendet."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Text eingeben",
+          "description": "Fügen Sie Ihren Text in das Eingabefeld ein."
+        },
+        {
+          "step": 2,
+          "title": "Format wählen",
+          "description": "Klicken Sie auf das gewünschte Format (z.B. Title Case, camelCase, GROSSBUCHSTABEN)."
+        },
+        {
+          "step": 3,
+          "title": "Statistiken prüfen",
+          "description": "Lesen Sie bei Bedarf die Wort-, Zeichen- und Zeilenanzahl ab."
+        },
+        {
+          "step": 4,
+          "title": "Ergebnis kopieren",
+          "description": "Klicken Sie auf Kopieren, um den formatierten Text zu sichern."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Welche Schreibweisen werden unterstützt?",
+          "answer": "Der Rechner unterstützt Satzanfang, GROSSBUCHSTABEN, Kleinbuchstaben, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case und kebab-case."
+        },
+        {
+          "question": "Wie verhält sich der Satzanfang-Modus bei Satzzeichen?",
+          "answer": "Er schreibt den ersten Buchstaben nach jedem Punkt, Ausrufe- oder Fragezeichen groß und den Rest klein."
+        },
+        {
+          "question": "Gibt es eine Längenbegrenzung für den Text?",
+          "answer": "Nein. Die Verarbeitung erfolgt lokal im Arbeitsspeicher des Browsers, sodass auch große Textmengen schnell verarbeitet werden."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Múltiplos formatos de caixa",
+          "description": "Mude facilmente o texto para MAIÚSCULAS, minúsculas, caso de frase, Title Case, camelCase, snake_case e kebab-case."
+        },
+        {
+          "title": "Casing para programadores",
+          "description": "Gere nomes de variáveis rapidamente usando os padrões camelCase, snake_case e PascalCase."
+        },
+        {
+          "title": "Privacidade de Conteúdo",
+          "description": "Toda a conversão ocorre localmente na memória do seu navegador, sem expor seus textos."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Inserir texto",
+          "description": "Cole ou digite seu texto no campo de entrada."
+        },
+        {
+          "step": 2,
+          "title": "Escolher formato de caixa",
+          "description": "Selecione o estilo desejado nos botões de ação (ex: Title Case, camelCase, UPPERCASE)."
+        },
+        {
+          "step": 3,
+          "title": "Acompanhar estatísticas",
+          "description": "Verifique a quantidade de palavras, caracteres e linhas."
+        },
+        {
+          "step": 4,
+          "title": "Copiar resultado",
+          "description": "Clique em Copiar para salvar o texto formatado na sua área de transferência."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Quais estilos de caixa são suportados?",
+          "answer": "A ferramenta suporta caso de frase, MAIÚSCULAS, minúsculas, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case e kebab-case."
+        },
+        {
+          "question": "Como a caixa de frase trata pontuações?",
+          "answer": "Ela capitaliza a primeira letra de cada frase após pontos finais, de exclamação ou interrogação."
+        },
+        {
+          "question": "Existe limite de tamanho de caracteres?",
+          "answer": "Não há limites rígidos. O processamento é instantâneo na memória local do navegador."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Beberapa Mode Casing",
+          "description": "Ubah teks dengan mudah ke HURUF BESAR, huruf kecil, huruf kalimat, Title Case, camelCase, snake_case, dan kebab-case."
+        },
+        {
+          "title": "Casing Ramah Developer",
+          "description": "Buat nama variabel secara instan menggunakan format camelCase, snake_case, dan PascalCase."
+        },
+        {
+          "title": "100% Privat",
+          "description": "Semua transformasi casing dihitung di memori browser. Tidak ada data yang dikirim ke server eksternal."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Input teks Anda",
+          "description": "Tempel atau ketik teks yang ingin Anda ubah ke dalam kotak teks input."
+        },
+        {
+          "step": 2,
+          "title": "Pilih konversi casing",
+          "description": "Pilih format konversi dari tombol casing yang tersedia (misalnya Title Case, camelCase, HURUF BESAR)."
+        },
+        {
+          "step": 3,
+          "title": "Periksa statistik",
+          "description": "Periksa statistik teks (kata, karakter, baris) jika diperlukan."
+        },
+        {
+          "step": 4,
+          "title": "Salin hasil",
+          "description": "Klik Salin untuk menyimpan teks yang diformat ke papan klip Anda."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Format casing apa saja yang didukung oleh alat ini?",
+          "answer": "Alat ini mendukung huruf kalimat, HURUF BESAR, huruf kecil, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case, dan kebab-case."
+        },
+        {
+          "question": "Bagaimana format huruf kalimat menangani tanda baca?",
+          "answer": "Format ini memperbesar karakter pertama dari setiap kalimat setelah tanda titik, tanda seru, atau tanda tanya, sambil mengubah sisanya menjadi huruf kecil."
+        },
+        {
+          "question": "Apakah ada batasan panjang teks?",
+          "answer": "Tidak ada batasan ketat. Alat ini memproses string secara instan menggunakan memori browser, menangani paragraf dan dokumen besar dengan mudah."
+        }
+      ]
+    }
+  },
+  "image-resizer-cropper": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Resize & Crop in Pixels",
+          "description": "Adjust image size exactly to pixel dimensions, percentage values, or custom crop bounding boxes."
+        },
+        {
+          "title": "Standard Aspect Ratio Presets",
+          "description": "Instant crop selections for 16:9, 4:5, 1:1, and predefined social media crop presets."
+        },
+        {
+          "title": "100% Client-Side Processing",
+          "description": "Resize images directly in your browser using HTML5 Canvas. Your images are never uploaded to a server."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Upload source image",
+          "description": "Upload or drag and drop your image file into the workspace dropzone."
+        },
+        {
+          "step": 2,
+          "title": "Set crop boundaries",
+          "description": "Adjust crop handle borders or select an aspect ratio preset (like 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Select output dimensions",
+          "description": "Alternatively, enter target width and height in pixels or set a percentage resize."
+        },
+        {
+          "step": 4,
+          "title": "Process & Download",
+          "description": "Click Download to save the cropped and resized image locally."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Will resizing or cropping my image reduce its quality?",
+          "answer": "Resizing down reduces pixels, while cropping trims boundaries. HTML5 Canvas scaling preserves maximum clarity, and we never compress or stretch unless instructed."
+        },
+        {
+          "question": "Are my images uploaded to a server?",
+          "answer": "No. All canvas edits, dimensions changes, cropping, and downloading occur locally inside your browser's memory."
+        },
+        {
+          "question": "What image formats are supported?",
+          "answer": "The tool supports importing PNG, JPEG/JPG, WebP, SVG, and GIF formats, and exporting as PNG, JPEG, or WebP."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Cambiar tamaño y recortar en píxeles",
+          "description": "Ajuste el tamaño de la imagen exactamente a las dimensiones en píxeles, valores de porcentaje o cuadros de recorte personalizados."
+        },
+        {
+          "title": "Ajustes preestablecidos de relación de aspecto estándar",
+          "description": "Selecciones de recorte instantáneas para 16:9, 4:5, 1:1 y ajustes preestablecidos de redes sociales."
+        },
+        {
+          "title": "Procesamiento 100% del lado del cliente",
+          "description": "Cambie el tamaño de las imágenes directamente en su navegador usando HTML5 Canvas. Sus imágenes nunca se cargan a un servidor."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Cargar imagen de origen",
+          "description": "Cargue o arrastre y suelte su archivo de imagen en la zona de colocación del espacio de trabajo."
+        },
+        {
+          "step": 2,
+          "title": "Establecer límites de recorte",
+          "description": "Ajuste los bordes del controlador de recorte o seleccione una relación de aspecto preestablecida (como 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Seleccionar dimensiones de salida",
+          "description": "Alternativamente, ingrese el ancho y el alto objetivo en píxeles o establezca un cambio de tamaño por porcentaje."
+        },
+        {
+          "step": 4,
+          "title": "Procesar y descargar",
+          "description": "Haga clic en Descargar para guardar la imagen recortada y redimensionada localmente."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Reducirá la calidad de mi imagen al cambiar su tamaño o recortarla?",
+          "answer": "Cambiar el tamaño reduce los píxeles, mientras que recortar elimina los bordes. El escalado de HTML5 Canvas conserva la máxima claridad."
+        },
+        {
+          "question": "¿Se cargan mis imágenes a algún servidor?",
+          "answer": "No. Todos los cambios de lienzo, dimensiones, recorte y descarga ocurren localmente en la memoria del navegador."
+        },
+        {
+          "question": "¿Qué formatos de imagen son compatibles?",
+          "answer": "La herramienta admite la importación de PNG, JPEG/JPG, WebP, SVG y GIF, y la exportación como PNG, JPEG o WebP."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Redimensionner & Recadrer en Pixels",
+          "description": "Ajustez la taille de l'image précisément aux dimensions en pixels, en pourcentage, ou via un cadre de sélection."
+        },
+        {
+          "title": "Préréglages de rapports d'aspect",
+          "description": "Bénéficiez de sélections de recadrage instantanées pour les formats 16:9, 4:5, 1:1, et des formats d'image réseaux sociaux."
+        },
+        {
+          "title": "Traitement local 100% sécurisé",
+          "description": "Modifiez vos images directement dans votre navigateur via HTML5 Canvas. Aucun fichier n'est téléversé sur un serveur."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Importer l'image",
+          "description": "Glissez-déposez ou sélectionnez votre fichier image dans la zone dédiée."
+        },
+        {
+          "step": 2,
+          "title": "Ajuster la zone de recadrage",
+          "description": "Ajustez les poignées de recadrage ou sélectionnez un ratio prédéfini (ex : 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Définir la taille finale",
+          "description": "Saisissez les dimensions cibles en pixels ou appliquez un pourcentage de réduction."
+        },
+        {
+          "step": 4,
+          "title": "Télécharger l'image",
+          "description": "Cliquez sur Télécharger pour sauvegarder l'image finale recadrée et redimensionnée localement."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Le redimensionnement ou le recadrage diminue-t-il la qualité ?",
+          "answer": "Le redimensionnement diminue le nombre de pixels, et le recadrage supprime les bords. L'utilisation du Canvas HTML5 garantit une netteté maximale."
+        },
+        {
+          "question": "Mes images sont-elles envoyées sur vos serveurs ?",
+          "answer": "Non. Tous les calculs, transformations et téléchargements s'exécutent entièrement en local sur votre poste."
+        },
+        {
+          "question": "Quels formats d'images sont supportés ?",
+          "answer": "L'outil prend en charge le PNG, JPEG/JPG, WebP, SVG et GIF en entrée, et permet l'export en PNG, JPEG ou WebP."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Größe ändern & Zuschneiden in Pixeln",
+          "description": "Passen Sie die Bildgröße exakt in Pixeln, Prozentwerten oder über benutzerdefinierte Zuschneide-Rahmen an."
+        },
+        {
+          "title": "Standard-Seitenverhältnis-Presets",
+          "description": "Sofortige Zuschneide-Optionen für 16:9, 4:5, 1:1 sowie vordefinierte Social-Media-Formate."
+        },
+        {
+          "title": "100% Lokale Verarbeitung im Browser",
+          "description": "Bearbeiten Sie Bilder direkt in Ihrem Browser mittels HTML5 Canvas. Ihre Bilder werden niemals auf einen Server hochgeladen."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Bild hochladen",
+          "description": "Laden Sie Ihr Bild per Klick oder Drag-and-Drop in den Arbeitsbereich hoch."
+        },
+        {
+          "step": 2,
+          "title": "Zuschnitt anpassen",
+          "description": "Passen Sie die Zuschnitt-Rahmen an oder wählen Sie ein festes Seitenverhältnis (z. B. 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Zielmaße festlegen",
+          "description": "Geben Sie alternativ Breite und Höhe in Pixeln ein oder wählen Sie eine prozentuale Größenänderung."
+        },
+        {
+          "step": 4,
+          "title": "Herunterladen",
+          "description": "Klicken Sie auf Herunterladen, um das bearbeitete Bild lokal zu speichern."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Wird die Qualität meines Bildes durch das Zuschneiden oder Skalieren beeinträchtigt?",
+          "answer": "Das Herunterskalieren reduziert die Pixelanzahl, das Zuschneiden entfernt Ränder. Die HTML5-Canvas-Skalierung sorgt für maximale Schärfe."
+        },
+        {
+          "question": "Werden meine Bilder auf einen Server übertragen?",
+          "answer": "Nein. Alle Bildbearbeitungen, Größenänderungen, Zuschnitte und Downloads finden lokal im Browser-Arbeitsspeicher statt."
+        },
+        {
+          "question": "Welche Bildformate werden unterstützt?",
+          "answer": "Das Tool unterstützt den Import von PNG, JPEG/JPG, WebP, SVG und GIF sowie den Export als PNG, JPEG oder WebP."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Redimensionar e Recortar em Pixels",
+          "description": "Ajuste o tamanho da imagem exatamente para as dimensões em pixels, valores percentuais ou caixas de corte personalizadas."
+        },
+        {
+          "title": "Proporções de Aspecto Padrão",
+          "description": "Seleções instantâneas de corte para 16:9, 4:5, 1:1 e formatos recomendados para redes sociais."
+        },
+        {
+          "title": "Processamento 100% no Navegador",
+          "description": "Edite suas fotos localmente via HTML5 Canvas. Suas imagens nunca são enviadas a servidores externos."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Carregar imagem de origem",
+          "description": "Arraste ou selecione a imagem que deseja processar na área de trabalho."
+        },
+        {
+          "step": 2,
+          "title": "Ajustar alças de recorte",
+          "description": "Ajuste os cantos da caixa de seleção ou defina uma proporção de aspecto (como 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Definir dimensões de saída",
+          "description": "Opcionalmente, insira a largura e altura desejadas em pixels ou ajuste por porcentagem."
+        },
+        {
+          "step": 4,
+          "title": "Baixar arquivo processado",
+          "description": "Clique em Baixar para salvar a imagem final recortada e redimensionada localmente."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Recortar ou alterar as dimensões da minha imagem afeta a qualidade?",
+          "answer": "Reduzir o tamanho diminui os pixels, e recortar remove áreas externas. O Canvas HTML5 é otimizado para reter a clareza máxima."
+        },
+        {
+          "question": "As minhas imagens são enviadas para algum servidor?",
+          "answer": "Não. Todas as edições e exportações ocorrem de forma offline na memória do navegador."
+        },
+        {
+          "question": "Quais formatos são aceitos para conversão?",
+          "answer": "O importador aceita PNG, JPEG/JPG, WebP, SVG e GIF, e exporta em PNG, JPEG ou WebP."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Ubah Ukuran & Potong dalam Piksel",
+          "description": "Sesuaikan ukuran gambar secara tepat ke dimensi piksel, nilai persentase, atau kotak pembatas potong khusus."
+        },
+        {
+          "title": "Preset Rasio Aspek Standar",
+          "description": "Pilihan potong instan untuk 16:9, 4:5, 1:1, dan preset potong media sosial yang telah ditentukan."
+        },
+        {
+          "title": "100% Pemrosesan Sisi Klien",
+          "description": "Ubah ukuran gambar langsung di browser Anda menggunakan HTML5 Canvas. Gambar Anda tidak pernah diunggah ke server."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Unggah gambar sumber",
+          "description": "Unggah atau seret dan letakkan file gambar Anda ke dalam dropzone ruang kerja."
+        },
+        {
+          "step": 2,
+          "title": "Atur batas potongan",
+          "description": "Sesuaikan batas pegangan potong atau pilih preset rasio aspek (seperti 16:9)."
+        },
+        {
+          "step": 3,
+          "title": "Pilih dimensi output",
+          "description": "Atau, masukkan lebar dan tinggi target dalam piksel atau atur ubah ukuran persentase."
+        },
+        {
+          "step": 4,
+          "title": "Proses & Unduh",
+          "description": "Klik Unduh untuk menyimpan gambar yang dipotong dan diubah ukurannya secara lokal."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apakah mengubah ukuran atau memotong gambar saya akan mengurangi kualitasnya?",
+          "answer": "Mengurangi ukuran akan mengurangi piksel, sementara memotong akan memotong batas. Penskalaan HTML5 Canvas mempertahankan kejelasan maksimum."
+        },
+        {
+          "question": "Apakah gambar saya diunggah ke server?",
+          "answer": "Tidak. Semua pengeditan kanvas, perubahan dimensi, pemotongan, dan pengunduhan terjadi secara lokal di dalam memori browser Anda."
+        },
+        {
+          "question": "Format gambar apa saja yang didukung?",
+          "answer": "Alat ini mendukung impor format PNG, JPEG/JPG, WebP, SVG, dan GIF, serta ekspor sebagai PNG, JPEG, atau WebP."
+        }
+      ]
+    }
+  },
+  "hash-generator": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Multiple Hashing Algorithms",
+          "description": "Create SHA256, MD5, SHA-1, SHA-512, and SHA-384 hashes with a single click."
+        },
+        {
+          "title": "Verify File Integrity Checksums",
+          "description": "Drag and drop files of any size to compute standard SHA-256 or MD5 checksums instantly in your browser."
+        },
+        {
+          "title": "100% Local Hashing",
+          "description": "All calculations are performed in the browser using the Web Cryptography API or local JS. Your data never leaves your computer."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Select input format",
+          "description": "Select your input type (Plain Text or File Upload)."
+        },
+        {
+          "step": 2,
+          "title": "Input text or file",
+          "description": "Type your string or drop your target file into the dropzone."
+        },
+        {
+          "step": 3,
+          "title": "Configure algorithm",
+          "description": "Choose your target hashing algorithm (e.g. SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Generate & Copy",
+          "description": "Optionally enter an HMAC secret key to sign the output, then copy the hex hash."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "What is a cryptographic hash generator?",
+          "answer": "It takes an input string or file and applies a mathematical hashing algorithm to produce a fixed-length hexadecimal signature. This is a one-way process and cannot be reversed."
+        },
+        {
+          "question": "Are my files uploaded to generate checksums?",
+          "answer": "No. The tool reads the file locally into browser memory using the FileReader API and hashes it on your CPU. No files or text are sent to a server."
+        },
+        {
+          "question": "What is HMAC?",
+          "answer": "Hash-based Message Authentication Code (HMAC) is a specific type of message authentication code involving a cryptographic hash function and a secret cryptographic key, used to verify both data integrity and authenticity."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Múltiples algoritmos de hash",
+          "description": "Cree hashes SHA256, MD5, SHA-1, SHA-512 y SHA-384 con un solo clic."
+        },
+        {
+          "title": "Verificar sumas de comprobación de archivos",
+          "description": "Arrastre y suelte archivos de cualquier tamaño para calcular sumas de comprobación estándar SHA-256 o MD5 al instante."
+        },
+        {
+          "title": "Hash 100% local",
+          "description": "Todos los cálculos se realizan localmente en su navegador. Sus datos nunca salen de su computadora."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Seleccionar formato de entrada",
+          "description": "Seleccione su tipo de entrada (Texto plano o Carga de archivo)."
+        },
+        {
+          "step": 2,
+          "title": "Ingresar texto o archivo",
+          "description": "Escriba su cadena o arrastre su archivo en la zona de colocación."
+        },
+        {
+          "step": 3,
+          "title": "Configurar algoritmo",
+          "description": "Elija su algoritmo de hash de destino (por ejemplo, SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Generar y copiar",
+          "description": "Opcionalmente, ingrese una clave secreta HMAC para firmar el resultado y luego copie el hash hexadecimal."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Qué es un generador de hash criptográfico?",
+          "answer": "Toma una cadena de entrada o un archivo y aplica un algoritmo matemático para producir una firma de longitud fija. Es un proceso de una sola vía."
+        },
+        {
+          "question": "¿Se cargan mis archivos para generar sumas de comprobación?",
+          "answer": "No. La herramienta lee el archivo localmente en la memoria del navegador y realiza el hash en su CPU."
+        },
+        {
+          "question": "¿Qué es HMAC?",
+          "answer": "El Código de autenticación de mensajes basado en hash es un tipo específico de código que involucra una función hash criptográfica y una clave secreta."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Multiples algorithmes de hachage",
+          "description": "Générez des clés SHA256, MD5, SHA-1, SHA-512 et SHA-384 en un clic."
+        },
+        {
+          "title": "Calcul d'empreinte (Checksum)",
+          "description": "Glissez-déposez des fichiers de n'importe quelle taille pour obtenir des signatures SHA-256 ou MD5 instantanées."
+        },
+        {
+          "title": "100% Local et Privé",
+          "description": "Tous les calculs sont effectués en local sur votre navigateur via la Web Cryptography API. Vos données restent sécurisées."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Sélectionner la source",
+          "description": "Choisissez le type d'entrée (Texte brut ou Fichier)."
+        },
+        {
+          "step": 2,
+          "title": "Saisir ou déposer le fichier",
+          "description": "Saisissez votre chaîne de caractères ou déposez votre fichier dans la zone dédiée."
+        },
+        {
+          "step": 3,
+          "title": "Choisir l'algorithme",
+          "description": "Sélectionnez l'algorithme cible (ex: SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Copier la clé générée",
+          "description": "Saisissez optionnellement une clé secrète HMAC, puis cliquez sur Copier."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Qu'est-ce qu'un générateur de hachage ?",
+          "answer": "Il s'agit d'une fonction mathématique à sens unique qui convertit n'importe quel texte ou fichier en une chaîne hexadécimale de longueur fixe."
+        },
+        {
+          "question": "Mes fichiers sont-ils envoyés sur un serveur ?",
+          "answer": "Non, jamais. L'API FileReader lit le fichier directement en mémoire locale pour calculer l'empreinte."
+        },
+        {
+          "question": "Qu'est-ce que le HMAC ?",
+          "answer": "HMAC est un code d'authentification de message utilisant une fonction de hachage couplée à une clé secrète pour valider l'intégrité et l'authenticité d'une donnée."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Mehrere Hash-Algorithmen",
+          "description": "Erzeugen Sie SHA256-, MD5-, SHA-1-, SHA-512- und SHA-384-Hashes mit einem Klick."
+        },
+        {
+          "title": "Prüfsummen-Verifizierung",
+          "description": "Berechnen Sie MD5- oder SHA-256-Checksummen direkt im Browser per Drag-and-Drop."
+        },
+        {
+          "title": "100% Lokale Berechnung",
+          "description": "Die Hashing-Berechnung erfolgt über die Web Cryptography API direkt im Browser. Ihre Daten verlassen Ihren PC nie."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Eingabetyp wählen",
+          "description": "Wählen Sie zwischen Freitext oder Datei-Upload."
+        },
+        {
+          "step": 2,
+          "title": "Inhalt bereitstellen",
+          "description": "Geben Sie Ihren Text ein oder ziehen Sie eine Datei in das Upload-Feld."
+        },
+        {
+          "step": 3,
+          "title": "Algorithmus konfigurieren",
+          "description": "Wählen Sie den gewünschten Algorithmus aus (z.B. SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Erzeugen & Kopieren",
+          "description": "Geben Sie optional einen HMAC-Schlüssel ein und kopieren Sie das erzeugte Ergebnis."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Was ist ein kryptografischer Hash-Generator?",
+          "answer": "Ein Tool, das Texte oder Dateien mittels mathematischer Algorithmen in eine eindeutige hexadezimale Zeichenfolge konvertiert. Dies ist unumkehrbar."
+        },
+        {
+          "question": "Werden meine Dateien auf einen Server hochgeladen?",
+          "answer": "Nein. Dateien werden lokal im Browser-Arbeitsspeicher mithilfe des FileReaders eingelesen und berechnet."
+        },
+        {
+          "question": "Was ist HMAC?",
+          "answer": "Ein Hash-based Message Authentication Code ist ein spezieller Typ zur Nachrichtenauthentifizierung, der Hashing mit einem geheimen Schlüssel kombiniert."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Múltiplos Algoritmos de Hash",
+          "description": "Gere assinaturas SHA256, MD5, SHA-1, SHA-512 e SHA-384 com um único clique."
+        },
+        {
+          "title": "Verificação de Checksum de Arquivos",
+          "description": "Arraste e solte arquivos de qualquer tamanho para calcular checksums SHA-256 ou MD5 de forma instantânea."
+        },
+        {
+          "title": "Hachagem 100% Local",
+          "description": "Os cálculos são processados na memória local do browser usando a API nativa Web Cryptography."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Selecionar o tipo de entrada",
+          "description": "Escolha a origem (Texto Simples ou Upload de Arquivos)."
+        },
+        {
+          "step": 2,
+          "title": "Inserir conteúdo de origem",
+          "description": "Digite o texto ou arraste o arquivo até o campo de destino."
+        },
+        {
+          "step": 3,
+          "title": "Escolher algoritmo",
+          "description": "Selecione o algoritmo desejado (como SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Assinar e Copiar",
+          "description": "Opcionalmente, use uma chave HMAC para autenticar a assinatura antes de copiar."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "O que é um hash criptográfico?",
+          "answer": "É um algoritmo unidirecional que mapeia dados de tamanho variável para uma cadeia de caracteres hexadecimal de tamanho fixo."
+        },
+        {
+          "question": "Os meus arquivos de origem são enviados à internet?",
+          "answer": "Não. O script realiza o cálculo na sua CPU de forma local via FileReader API."
+        },
+        {
+          "question": "O que significa HMAC?",
+          "answer": "É um código de autenticação de mensagem que combina uma função de hash com uma chave secreta compartilhada."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Beberapa Algoritma Hashing",
+          "description": "Buat hash SHA256, MD5, SHA-1, SHA-512, dan SHA-384 dengan sekali klik."
+        },
+        {
+          "title": "Verifikasi Checksum Integritas File",
+          "description": "Seret dan letakkan file ukuran apa pun untuk menghitung checksum standar SHA-256 atau MD5 secara instan di browser Anda."
+        },
+        {
+          "title": "100% Hashing Lokal",
+          "description": "Semua perhitungan dilakukan di browser menggunakan Web Cryptography API atau JS lokal. Data Anda tidak pernah meninggalkan komputer Anda."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Pilih format input",
+          "description": "Pilih tipe input Anda (Teks Biasa atau Unggah File)."
+        },
+        {
+          "step": 2,
+          "title": "Masukkan teks atau file",
+          "description": "Ketik string Anda atau letakkan file target Anda ke dalam dropzone."
+        },
+        {
+          "step": 3,
+          "title": "Konfigurasikan algoritma",
+          "description": "Pilih algoritma hashing target Anda (misalnya SHA-256, MD5, SHA-512)."
+        },
+        {
+          "step": 4,
+          "title": "Hasilkan & Salin",
+          "description": "Masukkan kunci rahasia HMAC secara opsional untuk menandatangani output, lalu salin hash heksadesimal."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apa itu generator hash kriptografis?",
+          "answer": "Alat ini mengambil string input atau file dan menerapkan algoritma hashing matematika untuk menghasilkan tanda tangan heksadesimal dengan panjang tetap. Ini adalah proses satu arah."
+        },
+        {
+          "question": "Apakah file saya diunggah untuk menghasilkan checksum?",
+          "answer": "Tidak. Alat ini membaca file secara lokal ke dalam memori browser menggunakan FileReader API dan melakukan hash pada CPU Anda."
+        },
+        {
+          "question": "Apa itu HMAC?",
+          "answer": "Hash-based Message Authentication Code (HMAC) adalah jenis kode autentikasi pesan khusus yang melibatkan fungsi hash kriptografis dan kunci kriptografis rahasia."
+        }
+      ]
+    }
+  },
+  "exif-remover-viewer": {
+    "en": {
+      "benefits": [
+        {
+          "title": "Inspect Camera & GPS Metadata",
+          "description": "View detailed camera specs, exposure settings, focal length, capture time, and GPS coordinates embedded in your images."
+        },
+        {
+          "title": "Strip Location & Device Tracking",
+          "description": "Erase geotags, serial numbers, and device details with a single click to protect your personal privacy before sharing online."
+        },
+        {
+          "title": "100% Client-Side Privacy",
+          "description": "Your photos are never sent to external servers. All EXIF reading and metadata stripping is done locally in your browser."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Upload photo",
+          "description": "Drag and drop your image (JPEG, PNG, WebP) into the dropzone area."
+        },
+        {
+          "step": 2,
+          "title": "Inspect metadata",
+          "description": "Review the structured list of metadata categories (Camera, GPS, Image)."
+        },
+        {
+          "step": 3,
+          "title": "Strip & Download",
+          "description": "Click the Strip EXIF & Download button to save a clean version."
+        },
+        {
+          "step": 4,
+          "title": "Saved clean copy",
+          "description": "Your new clean copy is exported locally without any embedded trackable metadata."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "What is EXIF metadata?",
+          "answer": "EXIF (Exchangeable Image File Format) is metadata embedded inside images by cameras and smartphones, storing GPS locations, timestamps, and device descriptions."
+        },
+        {
+          "question": "Are my images uploaded to read or strip metadata?",
+          "answer": "No. The parsing and removal scripts run entirely within your web browser. No files are transferred to any external server."
+        },
+        {
+          "question": "Which image formats are supported?",
+          "answer": "The viewer and remover supports JPEG, JPG, PNG, and WebP formats."
+        }
+      ]
+    },
+    "es": {
+      "benefits": [
+        {
+          "title": "Inspeccionar metadatos de cámara y GPS",
+          "description": "Vea especificaciones detalladas de la cámara, ajustes de exposición, coordenadas GPS y marcas de tiempo."
+        },
+        {
+          "title": "Eliminar ubicación y seguimiento de dispositivo",
+          "description": "Borre geoetiquetas y perfiles de dispositivo con un solo clic para proteger su privacidad."
+        },
+        {
+          "title": "Privacidad 100% en el cliente",
+          "description": "Sus imágenes nunca se suben a un servidor. El procesamiento se ejecuta localmente en su navegador."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Cargar foto",
+          "description": "Arrastre y suelte su imagen (JPEG, PNG, WebP) en el área de colocación."
+        },
+        {
+          "step": 2,
+          "title": "Inspeccionar metadatos",
+          "description": "Revise la lista estructurada de metadatos (Cámara, GPS, Imagen)."
+        },
+        {
+          "step": 3,
+          "title": "Limpiar y descargar",
+          "description": "Haga clic en el botón Eliminar EXIF y descargar para guardar una versión limpia."
+        },
+        {
+          "step": 4,
+          "title": "Copia limpia guardada",
+          "description": "Su nueva copia limpia se exporta localmente sin metadatos rastreables."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "¿Qué son los metadatos EXIF?",
+          "answer": "EXIF es información incrustada dentro de las imágenes por cámaras y teléfonos, que almacena coordenadas GPS, fechas y detalles del dispositivo."
+        },
+        {
+          "question": "¿Se suben mis imágenes para procesar los metadatos?",
+          "answer": "No. El análisis y la eliminación se realizan localmente en su navegador web."
+        },
+        {
+          "question": "¿Qué formatos de imagen son compatibles?",
+          "answer": "Es compatible con formatos JPEG, JPG, PNG y WebP."
+        }
+      ]
+    },
+    "fr": {
+      "benefits": [
+        {
+          "title": "Inspecter les données caméra & GPS",
+          "description": "Visualisez les caractéristiques détaillées, l'exposition, la date et les coordonnées géographiques GPS de vos photos."
+        },
+        {
+          "title": "Supprimer la géolocalisation",
+          "description": "Effacez les tags de localisation GPS et les signatures d'appareils pour sécuriser votre vie privée."
+        },
+        {
+          "title": "100% Client-Side & Privé",
+          "description": "Vos photos ne quittent jamais votre ordinateur. Le traitement s'effectue intégralement en local dans le navigateur."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Déposer l'image",
+          "description": "Glissez-déposez votre image (JPEG, PNG, WebP) dans la zone dédiée."
+        },
+        {
+          "step": 2,
+          "title": "Inspecter les métadonnées",
+          "description": "Parcourez la liste structurée des métadonnées (Appareil photo, GPS, Image)."
+        },
+        {
+          "step": 3,
+          "title": "Nettoyer & Télécharger",
+          "description": "Cliquez sur Nettoyer EXIF & Télécharger pour enregistrer une copie propre."
+        },
+        {
+          "step": 4,
+          "title": "Copie sécurisée",
+          "description": "Votre fichier est exporté en local, débarrassé de toute trace de métadonnées."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Qu'est-ce que les métadonnées EXIF ?",
+          "answer": "L'EXIF est un ensemble d'informations enregistrées par l'appareil photo (coordonnées GPS, heure, modèle de l'appareil, etc.) au sein du fichier image."
+        },
+        {
+          "question": "Mes photos sont-elles téléchargées sur un serveur ?",
+          "answer": "Non, l'analyse et la suppression des données s'exécutent entièrement côté client dans votre navigateur."
+        },
+        {
+          "question": "Quels formats d'images sont pris en charge ?",
+          "answer": "L'outil gère les formats JPEG, JPG, PNG et WebP."
+        }
+      ]
+    },
+    "de": {
+      "benefits": [
+        {
+          "title": "Kamera- & GPS-Metadaten prüfen",
+          "description": "Betrachten Sie Kameraeinstellungen, Belichtungszeiten, GPS-Koordinaten und Zeitstempel direkt."
+        },
+        {
+          "title": "Standort- & Geräte-Tracking entfernen",
+          "description": "Löschen Sie Geotags und Gerätedaten mit einem Klick, um Ihre Privatsphäre zu schützen."
+        },
+        {
+          "title": "100% lokaler Datenschutz",
+          "description": "Bilder werden nicht auf Server hochgeladen. Der EXIF-Cleaner läuft komplett lokal in Ihrem Webbrowser."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Foto hochladen",
+          "description": "Ziehen Sie Ihr Bild (JPEG, PNG, WebP) in das Upload-Feld."
+        },
+        {
+          "step": 2,
+          "title": "Metadaten analysieren",
+          "description": "Prüfen Sie die strukturierten Kategorien (Kamera, GPS, Bild)."
+        },
+        {
+          "step": 3,
+          "title": "EXIF bereinigen & laden",
+          "description": "Klicken Sie auf 'EXIF entfernen & herunterladen', um eine bereinigte Version zu speichern."
+        },
+        {
+          "step": 4,
+          "title": "Bereinigte Datei sichern",
+          "description": "Ihre neue, metadatenfreie Bildkopie wird lokal heruntergeladen."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Was sind EXIF-Metadaten?",
+          "answer": "EXIF ist ein Standardformat für Bilder, das GPS-Koordinaten, Aufnahmedatum und Kameramodell im Bild speichert."
+        },
+        {
+          "question": "Werden meine Bilder online verarbeitet?",
+          "answer": "Nein. Die Auslesung und Löschung der Metadaten erfolgt lokal auf Ihrem Gerät im Browser."
+        },
+        {
+          "question": "Welche Bildformate werden unterstützt?",
+          "answer": "Der Viewer unterstützt JPEG, JPG, PNG und WebP."
+        }
+      ]
+    },
+    "pt": {
+      "benefits": [
+        {
+          "title": "Inspecionar Metadados de Câmera & GPS",
+          "description": "Veja detalhes do modelo da câmera, abertura, tempo de exposição, data e coordenadas GPS."
+        },
+        {
+          "title": "Remover Localização & Rastreamento",
+          "description": "Apague etiquetas de geolocalização e dados do aparelho com um clique antes de publicar online."
+        },
+        {
+          "title": "Privacidade 100% Local",
+          "description": "Nenhuma foto é enviada a servidores externos. Todo o processo ocorre localmente no navegador."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Carregar a foto",
+          "description": "Arraste e solte sua foto (JPEG, PNG, WebP) na área indicada."
+        },
+        {
+          "step": 2,
+          "title": "Inspecionar metadados",
+          "description": "Verifique a lista organizada de propriedades (Câmera, GPS, Imagem)."
+        },
+        {
+          "step": 3,
+          "title": "Limpar e baixar",
+          "description": "Clique em 'Limpar EXIF e Baixar' para salvar a cópia livre de rastreadores."
+        },
+        {
+          "step": 4,
+          "title": "Cópia limpa salva",
+          "description": "O seu arquivo final é baixado sem nenhuma informação de metadados integrada."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "O que são metadados EXIF?",
+          "answer": "EXIF são informações embutidas em fotos que salvam a geolocalização, data de captura e especificações da câmera."
+        },
+        {
+          "question": "As fotos são salvas em algum servidor para processar?",
+          "answer": "Não. O script lê e reconstrói as imagens localmente na CPU do seu navegador."
+        },
+        {
+          "question": "Quais formatos são aceitos?",
+          "answer": "O visualizador e limpador aceita os formatos JPEG, JPG, PNG e WebP."
+        }
+      ]
+    },
+    "id": {
+      "benefits": [
+        {
+          "title": "Periksa Metadata Kamera & GPS",
+          "description": "Lihat spesifikasi kamera terperinci, pengaturan eksposur, koordinat GPS, dan stempel waktu."
+        },
+        {
+          "title": "Hapus Lokasi & Pelacakan Perangkat",
+          "description": "Hapus geo-tag dan profil perangkat dengan satu klik untuk melindungi privasi Anda."
+        },
+        {
+          "title": "Privasi 100% Sisi Klien",
+          "description": "Foto Anda tidak pernah dikirim ke server eksternal. Semua pemrosesan EXIF dilakukan secara lokal di browser Anda."
+        }
+      ],
+      "howTo": [
+        {
+          "step": 1,
+          "title": "Unggah foto",
+          "description": "Seret dan letakkan gambar Anda (JPEG, PNG, WebP) ke dalam area dropzone."
+        },
+        {
+          "step": 2,
+          "title": "Periksa metadata",
+          "description": "Tinjau daftar kategori metadata terstruktur (Kamera, GPS, Gambar)."
+        },
+        {
+          "step": 3,
+          "title": "Hapus & Unduh",
+          "description": "Klik tombol Hapus EXIF & Unduh untuk menyimpan versi bersih."
+        },
+        {
+          "step": 4,
+          "title": "Salinan bersih disimpan",
+          "description": "Salinan bersih baru Anda diekspor secara lokal tanpa metadata pelacakan tersemat."
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Apa itu metadata EXIF?",
+          "answer": "EXIF adalah metadata yang tertanam di dalam gambar oleh kamera dan ponsel pintar, menyimpan lokasi GPS, stempel waktu, dan deskripsi perangkat."
+        },
+        {
+          "question": "Apakah gambar saya diunggah untuk membaca atau menghapus metadata?",
+          "answer": "Tidak. Skrip parsing dan penghapusan berjalan sepenuhnya di dalam browser web Anda."
+        },
+        {
+          "question": "Format gambar apa saja yang didukung?",
+          "answer": "Alat ini mendukung format JPEG, JPG, PNG, dan WebP."
+        }
+      ]
+    }
   }
 }

@@ -10353,6 +10353,322 @@
         "json-formatter",
         "csv-to-json"
       ]
+    },
+    {
+      "id": "date-difference-calculator",
+      "name": "Date Difference Calculator",
+      "slug": "date-difference-calculator",
+      "categoryId": "time-date",
+      "description": "Calculate the exact duration, total days, hours, and minutes between two custom dates and times instantly.",
+      "seoTitle": "Free Date & Time Difference Calculator — Days, Hours, Minutes",
+      "seoDescription": "Calculate the exact interval between two dates and times. Get breakdowns in total days, hours, minutes, and calendar periods. 100% free and client-side.",
+      "icon": "clock",
+      "inputFormats": ["Date", "Time"],
+      "outputFormats": ["Days", "Hours", "Minutes"],
+      "benefits": [
+        "Granular Time Tracking: Counts exact hours, minutes, and seconds between dates for precise intervals.",
+        "Customizable Options: Includes checkboxes to include or exclude start and end times, or target days only.",
+        "Offline & Local: Calculations are performed 100% on your device, ensuring maximum speed and complete data privacy."
+      ],
+      "useCases": [
+        "Measuring countdowns or durations for events and project tracking.",
+        "Calculating time sheet differences for shifts and work schedules.",
+        "Finding exact ages, elapsed intervals, or milestone gaps."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Select the starting date and time from the input pickers.",
+        "Select the ending date and time from the corresponding pickers.",
+        "Check the option to include the last day if you are calculating inclusive durations.",
+        "Instantly view the detailed breakdown in years, months, days, hours, and minutes."
+      ],
+      "faqs": [
+        {
+          "q": "Does this calculator support time zones?",
+          "a": "It uses your browser's local timezone settings for inputs. To compare different timezones, use our Timezone Converter tool."
+        },
+        {
+          "q": "How does it handle variations in month lengths?",
+          "a": "It computes the interval using UTC timestamps and calendar month boundaries, accounting for leap years and months with 28, 30, or 31 days accurately."
+        }
+      ],
+      "relatedTools": [
+        "date-calculator",
+        "age-calculator"
+      ]
+    },
+    {
+      "id": "timesheet-calculator",
+      "name": "Work Hours Timesheet Calculator",
+      "slug": "timesheet-calculator",
+      "categoryId": "time-date",
+      "description": "Calculate daily work hours, break times, and total weekly timesheet hours with decimal rates and earnings tracking.",
+      "seoTitle": "Free Work Hours Timesheet Calculator — Calculate Shift Hours",
+      "seoDescription": "Free online timesheet calculator. Calculate your daily and weekly work hours, breaks, and total earnings. 100% private and secure browser-based tool.",
+      "icon": "file-text",
+      "inputFormats": ["Time", "Number"],
+      "outputFormats": ["Hours", "Earnings"],
+      "benefits": [
+        "Weekly Shift Calculation: Enter start and end times for up to 7 days, complete with unpaid break deductions.",
+        "Earnings & Hourly Rate: Set custom hourly rates and decimal formatting to calculate gross payouts automatically.",
+        "Total Privacy: All timesheet entries, hourly rates, and payout amounts are kept locally. No server gets to see your income."
+      ],
+      "useCases": [
+        "Contractors and freelancers tracking weekly billable hours.",
+        "Employees calculating clock-in and clock-out hours with break offsets.",
+        "Managers verifying payroll timesheets and hourly wage summaries."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Enter your hourly pay rate and currency symbol in the earnings config section.",
+        "For each workday, select the start time (clock-in) and end time (clock-out).",
+        "Enter the duration of any unpaid breaks taken during the shift (in minutes).",
+        "The calculator instantly updates total decimal hours and gross earnings for the week."
+      ],
+      "faqs": [
+        {
+          "q": "How does the break deduction work?",
+          "a": "Unpaid break durations entered in minutes are subtracted from the gross duration (end time minus start time) for each shift."
+        },
+        {
+          "q": "Does this support night shifts that cross midnight?",
+          "a": "Yes. If the end time is earlier than the start time, the calculator automatically shifts the end boundary to the next calendar day."
+        }
+      ],
+      "relatedTools": [
+        "date-calculator",
+        "date-difference-calculator"
+      ]
+    },
+    {
+      "id": "url-encoder-decoder",
+      "name": "URL & HTML Encoder/Decoder",
+      "slug": "url-encoder-decoder",
+      "categoryId": "utility",
+      "description": "Encode or decode URLs, query strings, and HTML character entities instantly and securely in your browser.",
+      "seoTitle": "Free URL & HTML Encoder Decoder Online — Secure [No Uploads]",
+      "seoDescription": "Secure client-side URL & HTML encoder and decoder. Convert special characters, URLs, and HTML entities instantly. 100% private.",
+      "icon": "code",
+      "inputFormats": ["TXT"],
+      "outputFormats": ["TXT"],
+      "benefits": [
+        "Dual URL & HTML Modes: Easily toggle between URL percent encoding and HTML character entity encoding/decoding.",
+        "Live Conversion: As you type, the tool instantly updates the output without requiring button clicks.",
+        "100% Secure & Client-Side: Your strings are processed entirely in browser memory. No text is ever transmitted to a server."
+      ],
+      "useCases": [
+        "Escaping query string parameters for API calls.",
+        "Decoding URL-encoded tracking parameters or redirection links.",
+        "Converting special symbols to safe HTML entities to prevent rendering issues."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Paste the text or URL you want to process into the input workspace.",
+        "Choose between 'URL Encode/Decode' or 'HTML Encode/Decode' modes.",
+        "Click the corresponding Action button (Encode or Decode) to process.",
+        "Click Copy to save the results to your clipboard instantly."
+      ],
+      "faqs": [
+        {
+          "q": "What is the difference between URL encoding and HTML encoding?",
+          "a": "URL encoding replaces unsafe query characters with percent-encoded bytes (like %20 for space), while HTML encoding replaces characters like < and > with safe HTML entities (like &lt; and &gt;)."
+        },
+        {
+          "q": "Are my strings sent to any server?",
+          "a": "Never. All string manipulation, parsing, and character replacing happens entirely inside your browser using JavaScript."
+        }
+      ],
+      "relatedTools": [
+        "json-formatter",
+        "json-validator"
+      ]
+    },
+    {
+      "id": "text-case-converter",
+      "name": "Text Case Converter",
+      "slug": "text-case-converter",
+      "categoryId": "utility",
+      "description": "Convert text capitalization styles instantly. Change case to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, and snake_case online.",
+      "seoTitle": "Free Text Case Converter Online — Title Case, UPPERCASE, lowercase",
+      "seoDescription": "Convert text capitalization styles instantly. Change text case to sentence case, UPPERCASE, lowercase, Title Case, camelCase, and snake_case online. 100% free and secure.",
+      "icon": "type",
+      "inputFormats": ["TXT"],
+      "outputFormats": ["TXT"],
+      "benefits": [
+        "Multiple Case Modes: Easily switch text to UPPERCASE, lowercase, sentence case, Title Case, camelCase, snake_case, and kebab-case.",
+        "Developer-Friendly Casing: Instantly generate variable names using camelCase, snake_case, and PascalCase formats.",
+        "100% Private: All case transformations are computed in browser memory. No data is ever transmitted to external servers."
+      ],
+      "useCases": [
+        "Formatting document headers into Title Case or sentence case.",
+        "Converting coding parameters to snake_case or camelCase.",
+        "Changing uppercase text log outputs into readable lowercase."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Paste or type the text you want to transform into the input text box.",
+        "Choose the conversion format from the available case buttons (e.g. Title Case, camelCase, UPPERCASE).",
+        "Check text stats (words, characters, lines) if needed.",
+        "Click Copy to save the formatted text to your clipboard."
+      ],
+      "faqs": [
+        {
+          "q": "What casing formats does this tool support?",
+          "a": "It supports sentence case, UPPERCASE, lowercase, Title Case, Capitalized Case, Alternating Case, camelCase, snake_case, and kebab-case."
+        },
+        {
+          "q": "How does the Sentence case format handle punctuation?",
+          "a": "It capitalizes the first character of each sentence following a period, exclamation mark, or question mark, while converting the rest to lowercase."
+        }
+      ],
+      "relatedTools": [
+        "word-counter",
+        "uuid-generator"
+      ]
+    },
+    {
+      "id": "image-resizer-cropper",
+      "name": "Image Resizer & Cropper",
+      "slug": "image-resizer-cropper",
+      "categoryId": "optimization",
+      "description": "Crop and resize images online to custom dimensions, percentages, or aspect ratios. Pixel resizing with 100% privacy.",
+      "seoTitle": "Free Image Resizer & Cropper Online — Crop & Resize to Pixels",
+      "seoDescription": "Crop and resize images online to custom dimensions, percentages, or aspect ratios. Bulk options, pixel resizing, and crop tools with 100% privacy.",
+      "icon": "crop",
+      "inputFormats": ["PNG", "JPG", "WEBP", "GIF"],
+      "outputFormats": ["PNG", "JPG", "WEBP"],
+      "benefits": [
+        "Resize & Crop in Pixels: Adjust image size exactly to pixel dimensions, percentage values, or custom crop bounding boxes.",
+        "Standard Aspect Ratio Presets: Instant crop selections for 16:9, 4:5, 1:1, and predefined social media crop presets.",
+        "100% Client-Side Processing: Resize images directly in your browser using HTML5 Canvas. Your images are never uploaded to a server."
+      ],
+      "useCases": [
+        "Cropping images to square aspect ratio (1:1) for social media profile pictures.",
+        "Resizing website layout screenshots to specific pixel dimensions.",
+        "Reducing image width and height without quality degradation."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Upload or drag and drop your image file into the workspace dropzone.",
+        "Adjust crop handle borders or select an aspect ratio preset (like 16:9).",
+        "Alternatively, enter target width and height in pixels or set a percentage resize.",
+        "Click Download to save the cropped and resized image locally."
+      ],
+      "faqs": [
+        {
+          "q": "Will resizing or cropping my image reduce its quality?",
+          "a": "Resizing down reduces pixels, while cropping trims boundaries. HTML5 Canvas scaling preserves maximum clarity, and we never compress or stretch unless instructed."
+        },
+        {
+          "q": "Are my images uploaded to a server?",
+          "a": "No. All canvas edits, dimensions changes, cropping, and downloading occur locally inside your browser's memory."
+        }
+      ],
+      "relatedTools": [
+        "image-compressor",
+        "image-converter"
+      ]
+    },
+    {
+      "id": "hash-generator",
+      "name": "Hash Generator",
+      "slug": "hash-generator",
+      "categoryId": "utility",
+      "description": "Generate cryptographic hashes instantly. Create SHA256, MD5, SHA-1, SHA-512, and HMAC hashes from text or files locally with 100% privacy.",
+      "seoTitle": "Free Hash Generator Online — SHA256, MD5, SHA-1, SHA-512",
+      "seoDescription": "Generate cryptographic hashes instantly in your browser. Create SHA256, MD5, SHA-1, SHA-512, and HMAC hashes from text or files securely with 100% privacy.",
+      "icon": "key",
+      "inputFormats": ["TXT"],
+      "outputFormats": ["TXT"],
+      "benefits": [
+        "Multiple Hashing Algorithms: Create SHA256, MD5, SHA-1, SHA-512, and SHA-384 hashes with a single click.",
+        "Verify File Integrity Checksums: Drag and drop files of any size to compute standard SHA-256 or MD5 checksums instantly in your browser.",
+        "100% Local Hashing: All calculations are performed in the browser using the Web Cryptography API or local JS. Your data never leaves your computer."
+      ],
+      "useCases": [
+        "Generating MD5 or SHA256 checksums to verify software downloads.",
+        "Hashing passwords or keys for database records.",
+        "Creating HMAC signatures for API request authentication."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Select your input type (Plain Text or File Upload).",
+        "Type your string or drop your target file into the dropzone.",
+        "Choose your target hashing algorithm (e.g. SHA-256, MD5, SHA-512).",
+        "Optionally enter an HMAC secret key to sign the output.",
+        "Click Copy to save the computed hexadecimal hash signature."
+      ],
+      "faqs": [
+        {
+          "q": "What is a cryptographic hash generator?",
+          "a": "It takes an input string or file and applies a mathematical hashing algorithm to produce a fixed-length hexadecimal signature. This is a one-way process and cannot be reversed."
+        },
+        {
+          "q": "Are my files uploaded to generate checksums?",
+          "a": "No. The tool reads the file locally into browser memory using the FileReader API and hashes it on your CPU. No files or text are sent to a server."
+        }
+      ],
+      "relatedTools": [
+        "uuid-generator",
+        "json-validator"
+      ]
+    },
+    {
+      "id": "exif-remover-viewer",
+      "name": "EXIF Metadata Viewer & Remover",
+      "slug": "exif-remover-viewer",
+      "categoryId": "optimization",
+      "description": "View and remove EXIF metadata, GPS coordinates, and camera settings from your photos. 100% private client-side processing in your browser.",
+      "seoTitle": "Free EXIF Metadata Viewer & Remover Online (100% Private)",
+      "seoDescription": "View and remove EXIF metadata, GPS coordinates, and camera settings from your photos online. 100% private client-side processing in your browser.",
+      "icon": "eye",
+      "inputFormats": ["PNG", "JPG", "JPEG", "WEBP"],
+      "outputFormats": ["PNG", "JPG", "JPEG", "WEBP"],
+      "benefits": [
+        "Inspect Camera & GPS Metadata: View detailed camera specs, exposure settings, focal length, capture time, and GPS coordinates embedded in your images.",
+        "Strip Location & Device Tracking: Erase geotags, serial numbers, and device details with a single click to protect your personal privacy before sharing online.",
+        "100% Client-Side Privacy: Your photos are never sent to external servers. All EXIF reading and metadata stripping is done locally in your browser."
+      ],
+      "useCases": [
+        "Checking camera settings and exposure values (aperture, shutter speed, ISO) of photos.",
+        "Removing location tracking coordinates before uploading pictures to social media.",
+        "Stripping author and device profiles from design assets or stock photos."
+      ],
+      "relatedArticles": [
+        "browser-based-image-tools"
+      ],
+      "howToSteps": [
+        "Drag and drop your image (JPEG, PNG, WebP) into the dropzone area.",
+        "Review the structured list of metadata categories (Camera, GPS, Image).",
+        "Click the Strip EXIF & Download button to save a clean version.",
+        "Your new clean copy is exported locally without any embedded trackable metadata."
+      ],
+      "faqs": [
+        {
+          "q": "What is EXIF metadata?",
+          "a": "EXIF (Exchangeable Image File Format) is metadata embedded inside images by cameras and smartphones, storing GPS locations, timestamps, and device descriptions."
+        },
+        {
+          "q": "Are my images uploaded to read or strip metadata?",
+          "a": "No. The parsing and removal scripts run entirely within your web browser. No files are transferred to any external server."
+        }
+      ],
+      "relatedTools": [
+        "image-compressor",
+        "image-resizer-cropper"
+      ]
     }
   ],
   "categories": [

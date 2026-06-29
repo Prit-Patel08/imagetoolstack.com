@@ -134,13 +134,27 @@ export const id = {
     "word-counter": "Penghitung Kata & Karakter",
     "uuid-generator": "Generator & Validator UUID",
     "json-validator": "Validator & Parser JSON",
-    "csv-to-excel": "Konverter CSV ke Excel"
+    "csv-to-excel": "Konverter CSV ke Excel",
+    "date-difference-calculator": "Kalkulator Selisih Tanggal",
+    "timesheet-calculator": "Kalkulator Lembar Waktu Kerja",
+    "url-encoder-decoder": "Pengode & Dekode URL dan HTML",
+    "text-case-converter": "Pengubah Casing Teks",
+    "image-resizer-cropper": "Pengubah Ukuran & Pemotong Gambar",
+    "hash-generator": "Generator Hash",
+    "exif-remover-viewer": "Penampil & Penghapus Metadata EXIF"
   },
   toolDescriptions: {
     "percentage-calculator": "Hitung persentase, selisih persentase, kenaikan persentase, dan nilai persentase secara instan di browser Anda. Tanpa unggah server, 100% privat.",
     "word-counter": "Hitung kata, karakter, kalimat, paragraf, dan analisis waktu membaca/berbicara. Editor berbasis browser yang sepenuhnya privat.",
     "uuid-generator": "Hasilkan UUID (v4) massal yang aman secara kriptografis dan mematuhi RFC 4122, serta validasi standar format secara lokal.",
     "json-validator": "Validasi, debug, urai, dan analisis kode JSON dengan penunjuk kesalahan sintaks terperinci dan tampilan pohon interaktif.",
-    "csv-to-excel": "Konversikan data CSV dan tabel nilai yang dipisahkan koma menjadi spreadsheet Excel (.xml/.xls) dengan aman di browser Anda."
+    "csv-to-excel": "Konversikan data CSV dan tabel nilai yang dipisahkan koma menjadi spreadsheet Excel (.xml/.xls) dengan aman di browser Anda.",
+    "date-difference-calculator": "Hitung durasi tepat, total hari, jam, dan menit antara dua tanggal dan waktu khusus secara instan.",
+    "timesheet-calculator": "Hitung jam kerja harian, waktu istirahat, dan total jam lembar kerja mingguan dengan tarif desimal dan pelacakan pendapatan.",
+    "url-encoder-decoder": "Kodekan atau dekodekan URL, string kueri, dan entitas karakter HTML secara instan dan aman di browser Anda.",
+    "text-case-converter": "Ubah gaya kapitalisasi teks secara instan. Ubah casing menjadi huruf besar, huruf kecil, Title Case, camelCase, dan snake_case online.",
+    "image-resizer-cropper": "Potong dan ubah ukuran gambar online ke dimensi, persentase, atau rasio aspek khusus. Pengubahan ukuran piksel dengan 100% privasi.",
+    "hash-generator": "Hasilkan hash kriptografis secara instan. Buat hash SHA256, MD5, SHA-1, SHA-512, dan HMAC dari teks atau file secara lokal dengan 100% privasi.",
+    "exif-remover-viewer": "Lihat dan hapus metadata EXIF, koordinat GPS, dan pengaturan kamera dari foto Anda. Pemrosesan lokal di browser Anda 100% privat."
   }
 };

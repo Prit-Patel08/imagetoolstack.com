@@ -91,6 +91,13 @@ import JsonValidatorTool from "../../components/tools/JsonValidatorTool.astro";
 import UUIDGeneratorValidatorTool from "../../components/tools/UUIDGeneratorValidatorTool.astro";
 import CsvConverterTool from "../../components/tools/CsvConverterTool.astro";
 import CsvToExcelTool from "../../components/tools/CsvToExcelTool.astro";
+import DateDifferenceCalculatorTool from "../../components/tools/DateDifferenceCalculatorTool.astro";
+import TimesheetCalculatorTool from "../../components/tools/TimesheetCalculatorTool.astro";
+import UrlEncoderDecoderTool from "../../components/tools/UrlEncoderDecoderTool.astro";
+import TextCaseConverterTool from "../../components/tools/TextCaseConverterTool.astro";
+import ImageResizerCropperTool from "../../components/tools/ImageResizerCropperTool.astro";
+import HashGeneratorTool from "../../components/tools/HashGeneratorTool.astro";
+import ExifMetadataViewerTool from "../../components/tools/ExifMetadataViewerTool.astro";
 import UnixTimestampTool from "../../components/tools/UnixTimestampTool.astro";
 import TimezoneConverterTool from "../../components/tools/TimezoneConverterTool.astro";
 import DateCalculatorTool from "../../components/tools/DateCalculatorTool.astro";
@@ -306,6 +313,20 @@ if (tool.slug === 'avif-to-png') {
   ToolComponent = CsvConverterTool;
 } else if (tool.slug === 'csv-to-excel') {
   ToolComponent = CsvToExcelTool;
+} else if (tool.slug === 'date-difference-calculator') {
+  ToolComponent = DateDifferenceCalculatorTool;
+} else if (tool.slug === 'timesheet-calculator') {
+  ToolComponent = TimesheetCalculatorTool;
+} else if (tool.slug === 'url-encoder-decoder') {
+  ToolComponent = UrlEncoderDecoderTool;
+} else if (tool.slug === 'text-case-converter') {
+  ToolComponent = TextCaseConverterTool;
+} else if (tool.slug === 'image-resizer-cropper') {
+  ToolComponent = ImageResizerCropperTool;
+} else if (tool.slug === 'hash-generator') {
+  ToolComponent = HashGeneratorTool;
+} else if (tool.slug === 'exif-remover-viewer') {
+  ToolComponent = ExifMetadataViewerTool;
 }
 ---
 

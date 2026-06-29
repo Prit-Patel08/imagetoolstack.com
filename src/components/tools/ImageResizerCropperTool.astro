@@ -1,0 +1,527 @@
+---
+// Image Resizer & Cropper Component
+---
+<div id="resizer-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Upload Dropzone / Workspace -->
+  <div id="dropzone" class="w-full min-h-[220px] p-6 border-2 border-dashed border-hairline hover:border-link rounded-2xl bg-canvas flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer text-center group">
+    <div class="p-4 bg-link/5 rounded-full text-link group-hover:scale-110 transition-transform">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-ink">Drag and drop your image here, or <span class="text-link">browse files</span></p>
+      <p class="text-xs text-mute mt-1">Supports PNG, JPG, JPEG, WEBP, and GIF up to 50MB</p>
+    </div>
+    <input type="file" id="image-input" accept="image/*" class="hidden" />
+  </div>
+
+  <!-- Interactive Editor Workspace (Hidden until uploaded) -->
+  <div id="editor-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Column: Image Canvas & Live Crop Guides -->
+    <div class="lg:col-span-7 flex flex-col gap-3">
+      <span class="text-xs font-bold text-mute uppercase tracking-wider">Crop Preview & Selection</span>
+      <div class="relative w-full bg-canvas-soft border border-hairline rounded-2xl flex items-center justify-center p-4 overflow-hidden min-h-[350px] shadow-sm">
+        <canvas id="editor-canvas" class="max-w-full max-h-[500px] object-contain shadow-md rounded"></canvas>
+      </div>
+      <p class="text-[11px] text-mute text-center italic">Drag on the image to select a custom crop area, or use the controls on the right.</p>
+    </div>
+
+    <!-- Right Column: Control Panel -->
+    <div class="lg:col-span-5 flex flex-col gap-5 bg-canvas border border-hairline p-5 rounded-2xl shadow-sm">
+      
+      <!-- Aspect Ratio Presets -->
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-bold text-ink uppercase tracking-wider">Aspect Ratio Preset</span>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="free">Free Form</button>
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="1:1">1:1 Square</button>
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="16:9">16:9 Wide</button>
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="4:5">4:5 Portrait</button>
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="3:2">3:2 Classic</button>
+          <button class="ratio-btn px-2.5 py-1.5 border border-hairline hover:border-link text-ink hover:text-link text-xs font-bold rounded-lg transition-all" data-ratio="9:16">9:16 Story</button>
+        </div>
+      </div>
+
+      <!-- Crop Bounding Box coordinates -->
+      <div class="flex flex-col gap-2.5 border-t border-hairline pt-4">
+        <span class="text-xs font-bold text-ink uppercase tracking-wider">Crop Boundaries (Pixels)</span>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="crop-left" class="text-[10px] font-bold text-mute uppercase">Left X</label>
+            <input type="number" id="crop-left" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="0" value="0" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="crop-top" class="text-[10px] font-bold text-mute uppercase">Top Y</label>
+            <input type="number" id="crop-top" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="0" value="0" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="crop-width" class="text-[10px] font-bold text-mute uppercase">Crop Width</label>
+            <input type="number" id="crop-width" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="1" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="crop-height" class="text-[10px] font-bold text-mute uppercase">Crop Height</label>
+            <input type="number" id="crop-height" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="1" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Resize Output Dimensions -->
+      <div class="flex flex-col gap-2.5 border-t border-hairline pt-4">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-ink uppercase tracking-wider">Target Resize Scale</span>
+          <div class="flex items-center gap-1.5">
+            <input type="checkbox" id="keep-aspect" checked class="h-3.5 w-3.5 accent-link rounded cursor-pointer" />
+            <label for="keep-aspect" class="text-[10px] font-bold text-mute uppercase cursor-pointer">Lock Aspect Ratio</label>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="resize-width" class="text-[10px] font-bold text-mute uppercase">Output Width (px)</label>
+            <input type="number" id="resize-width" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="1" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="resize-height" class="text-[10px] font-bold text-mute uppercase">Output Height (px)</label>
+            <input type="number" id="resize-height" class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-1.5 text-xs text-ink focus:border-link outline-none" min="1" />
+          </div>
+        </div>
+        
+        <!-- Percentage Slider -->
+        <div class="flex flex-col gap-1 mt-1">
+          <div class="flex justify-between text-[10px] font-bold text-mute uppercase">
+            <span>Quick Scale Percentage</span>
+            <span id="percent-label">100%</span>
+          </div>
+          <input type="range" id="resize-percent" min="10" max="200" value="100" class="w-full accent-link h-1 bg-canvas-soft rounded-lg cursor-pointer" />
+        </div>
+      </div>
+
+      <!-- Export Settings -->
+      <div class="flex flex-col gap-3 border-t border-hairline pt-4">
+        <span class="text-xs font-bold text-ink uppercase tracking-wider">Export Format</span>
+        <div class="flex gap-2">
+          <label class="flex-1 flex items-center justify-center gap-1.5 p-2 bg-canvas-soft border border-hairline rounded-lg cursor-pointer text-xs font-bold text-ink hover:bg-link/5 transition-colors">
+            <input type="radio" name="export-format" value="image/png" class="accent-link" /> PNG
+          </label>
+          <label class="flex-1 flex items-center justify-center gap-1.5 p-2 bg-canvas-soft border border-hairline rounded-lg cursor-pointer text-xs font-bold text-ink hover:bg-link/5 transition-colors">
+            <input type="radio" name="export-format" value="image/jpeg" checked class="accent-link" /> JPEG
+          </label>
+          <label class="flex-1 flex items-center justify-center gap-1.5 p-2 bg-canvas-soft border border-hairline rounded-lg cursor-pointer text-xs font-bold text-ink hover:bg-link/5 transition-colors">
+            <input type="radio" name="export-format" value="image/webp" class="accent-link" /> WebP
+          </label>
+        </div>
+
+        <!-- Quality slider for JPEG/WebP -->
+        <div id="quality-container" class="flex flex-col gap-1">
+          <div class="flex justify-between text-[10px] font-bold text-mute uppercase">
+            <span>Compression Quality</span>
+            <span id="quality-label">90%</span>
+          </div>
+          <input type="range" id="export-quality" min="10" max="100" value="90" class="w-full accent-link h-1 bg-canvas-soft rounded-lg cursor-pointer" />
+        </div>
+      </div>
+
+      <!-- Final Action -->
+      <button id="download-btn" class="w-full mt-2 py-3 bg-link hover:bg-link-hover text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download Resized Image
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+<style>
+  /* Standard Slider Casing styling */
+  input[type="range"]::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-link, #0284c7);
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  (function() {
+    const dropzone = document.getElementById('dropzone')!;
+    const imgInput = document.getElementById('image-input') as HTMLInputElement;
+    const workspace = document.getElementById('editor-workspace')!;
+    
+    // Canvas & Context
+    const canvas = document.getElementById('editor-canvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+
+    // Controls
+    const ratioBtns = document.querySelectorAll('.ratio-btn');
+    const cropLeft = document.getElementById('crop-left') as HTMLInputElement;
+    const cropTop = document.getElementById('crop-top') as HTMLInputElement;
+    const cropWidth = document.getElementById('crop-width') as HTMLInputElement;
+    const cropHeight = document.getElementById('crop-height') as HTMLInputElement;
+    
+    const resizeWidth = document.getElementById('resize-width') as HTMLInputElement;
+    const resizeHeight = document.getElementById('resize-height') as HTMLInputElement;
+    const resizePercent = document.getElementById('resize-percent') as HTMLInputElement;
+    const percentLabel = document.getElementById('percent-label')!;
+    const keepAspect = document.getElementById('keep-aspect') as HTMLInputElement;
+
+    const exportFormats = document.getElementsByName('export-format') as NodeListOf<HTMLInputElement>;
+    const exportQuality = document.getElementById('export-quality') as HTMLInputElement;
+    const qualityLabel = document.getElementById('quality-label')!;
+    const qualityContainer = document.getElementById('quality-container')!;
+    
+    const downloadBtn = document.getElementById('download-btn')!;
+
+    // State Variables
+    let originalImage = new Image();
+    let cropBox = { x: 0, y: 0, w: 0, h: 0 };
+    let currentAspectRatio = 'free';
+    
+    // Canvas drag-crop state
+    let isDrawingCrop = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Trigger File Picker
+    dropzone.addEventListener('click', () => imgInput.click());
+    
+    // Drag Over highlights
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-link', 'bg-link/5');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-link', 'bg-link/5');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-link', 'bg-link/5');
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        processUploadedFile(files[0]);
+      }
+    });
+
+    imgInput.addEventListener('change', () => {
+      if (imgInput.files && imgInput.files.length > 0) {
+        processUploadedFile(imgInput.files[0]);
+      }
+    });
+
+    // Format changes hide quality slider for PNG
+    exportFormats.forEach(r => {
+      r.addEventListener('change', () => {
+        if (r.checked && r.value === 'image/png') {
+          qualityContainer.classList.add('hidden');
+        } else {
+          qualityContainer.classList.remove('hidden');
+        }
+      });
+    });
+
+    exportQuality.addEventListener('input', () => {
+      qualityLabel.textContent = `${exportQuality.value}%`;
+    });
+
+    // Handle uploaded file
+    function processUploadedFile(file: File) {
+      if (!file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalImage = new Image();
+        originalImage.onload = () => {
+          // Unhide editor workspace
+          workspace.classList.remove('hidden');
+          dropzone.classList.add('hidden');
+          
+          // Set initial cropBox to entire image bounds
+          cropBox = { x: 0, y: 0, w: originalImage.width, h: originalImage.height };
+          
+          // Initialise Inputs
+          cropLeft.value = '0';
+          cropTop.value = '0';
+          cropWidth.value = String(originalImage.width);
+          cropHeight.value = String(originalImage.height);
+          
+          resizeWidth.value = String(originalImage.width);
+          resizeHeight.value = String(originalImage.height);
+          
+          resizePercent.value = '100';
+          percentLabel.textContent = '100%';
+
+          currentAspectRatio = 'free';
+          setActiveRatioBtn('free');
+          
+          drawCanvas();
+        };
+        originalImage.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Set Active State on Aspect Ratio preset buttons
+    function setActiveRatioBtn(ratio: string) {
+      ratioBtns.forEach(btn => {
+        const val = (btn as HTMLButtonElement).dataset.ratio;
+        if (val === ratio) {
+          btn.classList.add('border-link', 'text-link', 'bg-link/5');
+        } else {
+          btn.classList.remove('border-link', 'text-link', 'bg-link/5');
+        }
+      });
+    }
+
+    // Draw the image and the crop overlay on the interactive editor canvas
+    function drawCanvas() {
+      if (!originalImage.src) return;
+
+      // Adjust Canvas size to match image dimensions
+      canvas.width = originalImage.width;
+      canvas.height = originalImage.height;
+
+      // Clear
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw base image
+      ctx.drawImage(originalImage, 0, 0);
+
+      // Draw overlay dimming outside the crop area
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      
+      // Left side block
+      ctx.fillRect(0, 0, cropBox.x, canvas.height);
+      // Right side block
+      ctx.fillRect(cropBox.x + cropBox.w, 0, canvas.width - (cropBox.x + cropBox.w), canvas.height);
+      // Top block (covering crop box width)
+      ctx.fillRect(cropBox.x, 0, cropBox.w, cropBox.y);
+      // Bottom block
+      ctx.fillRect(cropBox.x, cropBox.y + cropBox.h, cropBox.w, canvas.height - (cropBox.y + cropBox.h));
+
+      // Draw Crop box outline border
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = Math.max(3, Math.min(canvas.width, canvas.height) / 250);
+      ctx.strokeRect(cropBox.x, cropBox.y, cropBox.w, cropBox.h);
+
+      // Draw dotted interior grid lines (rule of thirds style)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = ctx.lineWidth / 2;
+      ctx.setLineDash([5, 5]);
+      
+      // Vertical grid
+      ctx.strokeRect(cropBox.x + cropBox.w / 3, cropBox.y, 0, cropBox.h);
+      ctx.strokeRect(cropBox.x + (cropBox.w * 2) / 3, cropBox.y, 0, cropBox.h);
+      // Horizontal grid
+      ctx.strokeRect(cropBox.x, cropBox.y + cropBox.h / 3, cropBox.w, 0);
+      ctx.strokeRect(cropBox.x, cropBox.y + (cropBox.h * 2) / 3, cropBox.w, 0);
+      
+      ctx.setLineDash([]); // Reset dash
+    }
+
+    // Aspect Ratio Toggles
+    ratioBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const val = (e.currentTarget as HTMLButtonElement).dataset.ratio!;
+        currentAspectRatio = val;
+        setActiveRatioBtn(val);
+        applyAspectRatio();
+      });
+    });
+
+    function applyAspectRatio() {
+      if (currentAspectRatio === 'free') return;
+      
+      const [aw, ah] = currentAspectRatio.split(':').map(Number);
+      const targetRatio = aw / ah;
+
+      // Calculate matching dimensions starting from width
+      let w = cropBox.w;
+      let h = Math.round(w / targetRatio);
+
+      if (h > originalImage.height) {
+        h = cropBox.h;
+        w = Math.round(h * targetRatio);
+      }
+
+      // Centre the box
+      cropBox.w = Math.min(w, originalImage.width);
+      cropBox.h = Math.min(h, originalImage.height);
+      cropBox.x = Math.max(0, Math.round((originalImage.width - cropBox.w) / 2));
+      cropBox.y = Math.max(0, Math.round((originalImage.height - cropBox.h) / 2));
+
+      updateCropInputBoxes();
+      updateResizeDimensions();
+      drawCanvas();
+    }
+
+    // Drag to Draw Crop Box on Canvas
+    function getCanvasCoordinates(e: MouseEvent): { x: number, y: number } {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: Math.round((e.clientX - rect.left) * scaleX),
+        y: Math.round((e.clientY - rect.top) * scaleY)
+      };
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawingCrop = true;
+      const coords = getCanvasCoordinates(e);
+      startX = coords.x;
+      startY = coords.y;
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDrawingCrop) return;
+      const coords = getCanvasCoordinates(e);
+      
+      let x = Math.max(0, Math.min(startX, coords.x));
+      let y = Math.max(0, Math.min(startY, coords.y));
+      let w = Math.min(canvas.width - x, Math.abs(coords.x - startX));
+      let h = Math.min(canvas.height - y, Math.abs(coords.y - startY));
+
+      if (w < 5 || h < 5) return; // ignore micro-drags
+
+      if (currentAspectRatio !== 'free') {
+        const [aw, ah] = currentAspectRatio.split(':').map(Number);
+        const targetRatio = aw / ah;
+        
+        // Adjust bounds to preserve ratio
+        if (w / h > targetRatio) {
+          w = Math.round(h * targetRatio);
+        } else {
+          h = Math.round(w / targetRatio);
+        }
+      }
+
+      cropBox = { x, y, w, h };
+      updateCropInputBoxes();
+      updateResizeDimensions();
+      drawCanvas();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      isDrawingCrop = false;
+    });
+
+    // Update Numerical Input boxes
+    function updateCropInputBoxes() {
+      cropLeft.value = String(cropBox.x);
+      cropTop.value = String(cropBox.y);
+      cropWidth.value = String(cropBox.w);
+      cropHeight.value = String(cropBox.h);
+    }
+
+    function updateResizeDimensions() {
+      const percent = Number(resizePercent.value) / 100;
+      resizeWidth.value = String(Math.round(cropBox.w * percent));
+      resizeHeight.value = String(Math.round(cropBox.h * percent));
+    }
+
+    // Handle Manual Coordinate changes
+    function onCropCoordinateInputChange() {
+      let x = Math.max(0, Math.min(originalImage.width - 5, Number(cropLeft.value)));
+      let y = Math.max(0, Math.min(originalImage.height - 5, Number(cropTop.value)));
+      let w = Math.max(5, Math.min(originalImage.width - x, Number(cropWidth.value)));
+      let h = Math.max(5, Math.min(originalImage.height - y, Number(cropHeight.value)));
+
+      cropBox = { x, y, w, h };
+      updateResizeDimensions();
+      drawCanvas();
+    }
+
+    cropLeft.addEventListener('change', onCropCoordinateInputChange);
+    cropTop.addEventListener('change', onCropCoordinateInputChange);
+    cropWidth.addEventListener('change', onCropCoordinateInputChange);
+    cropHeight.addEventListener('change', onCropCoordinateInputChange);
+
+    // Percentage resizing slider
+    resizePercent.addEventListener('input', () => {
+      percentLabel.textContent = `${resizePercent.value}%`;
+      updateResizeDimensions();
+    });
+
+    // Direct width/height changes
+    resizeWidth.addEventListener('input', () => {
+      if (keepAspect.checked) {
+        const ratio = cropBox.w / cropBox.h;
+        resizeHeight.value = String(Math.round(Number(resizeWidth.value) / ratio));
+      }
+    });
+
+    resizeHeight.addEventListener('input', () => {
+      if (keepAspect.checked) {
+        const ratio = cropBox.w / cropBox.h;
+        resizeWidth.value = String(Math.round(Number(resizeHeight.value) * ratio));
+      }
+    });
+
+    // Perform final crop, scale using an offscreen canvas, and trigger download
+    downloadBtn.addEventListener('click', () => {
+      const finalWidth = Math.max(1, Number(resizeWidth.value));
+      const finalHeight = Math.max(1, Number(resizeHeight.value));
+
+      // Create temporary offscreen canvas
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = finalWidth;
+      exportCanvas.height = finalHeight;
+      const exportCtx = exportCanvas.getContext('2d')!;
+
+      // Draw cropped slice into target coordinates scaled
+      exportCtx.drawImage(
+        originalImage,
+        cropBox.x, cropBox.y, cropBox.w, cropBox.h, // Source bounds
+        0, 0, finalWidth, finalHeight               // Target bounds
+      );
+
+      // Sniff format
+      let format = 'image/jpeg';
+      let extension = '.jpg';
+      
+      exportFormats.forEach(r => {
+        if (r.checked) {
+          format = r.value;
+          if (format === 'image/png') extension = '.png';
+          else if (format === 'image/webp') extension = '.webp';
+        }
+      });
+
+      const quality = format === 'image/png' ? undefined : (Number(exportQuality.value) / 100);
+
+      // Export file URL
+      try {
+        const dataUrl = exportCanvas.toDataURL(format, quality);
+        
+        // Trigger download anchor
+        const link = document.createElement('a');
+        link.download = `resized-image-${finalWidth}x${finalHeight}${extension}`;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        trackUsage(format);
+      } catch (err: any) {
+        alert(`Error exporting image: ${err.message}`);
+      }
+    });
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Image Resizer Cropper',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

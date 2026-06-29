@@ -1,0 +1,609 @@
+---
+// Hash Generator Component
+---
+<div id="hash-generator-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Toggle Workspace Mode -->
+  <div class="flex p-1 bg-canvas-soft border border-hairline rounded-xl max-w-xs mx-auto shadow-sm">
+    <button id="mode-text-btn" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors bg-canvas text-link shadow-sm">
+      Plain Text
+    </button>
+    <button id="mode-file-btn" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors text-mute hover:text-ink">
+      File Checksum
+    </button>
+  </div>
+
+  <!-- Workspace Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Column: Inputs -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+      
+      <!-- Plain Text Input Area -->
+      <div id="input-text-container" class="flex flex-col gap-2">
+        <label for="hash-input-text" class="text-xs font-bold text-mute uppercase tracking-wider">Input Plain Text</label>
+        <textarea 
+          id="hash-input-text" 
+          class="w-full min-h-[220px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm"
+          placeholder="Type or paste the text you want to hash..."
+        ></textarea>
+      </div>
+
+      <!-- File Checksum Input Area (Hidden initially) -->
+      <div id="input-file-container" class="hidden flex flex-col gap-2">
+        <span class="text-xs font-bold text-mute uppercase tracking-wider">Verify File Integrity</span>
+        <div id="hash-dropzone" class="w-full min-h-[220px] p-6 border-2 border-dashed border-hairline hover:border-link rounded-2xl bg-canvas flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer text-center group">
+          <div class="p-3.5 bg-link/5 rounded-full text-link group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-ink">Select or drop a file here</p>
+            <p id="dropzone-file-name" class="text-[11px] text-mute mt-1">Calculations are done locally in your browser memory</p>
+          </div>
+          <input type="file" id="hash-file-input" class="hidden" />
+        </div>
+      </div>
+
+      <!-- Configuration Panel -->
+      <div class="p-4 bg-canvas-soft border border-hairline rounded-xl flex flex-wrap items-center gap-4 justify-between shadow-sm">
+        
+        <!-- Algorithm dropdown -->
+        <div class="flex items-center gap-2">
+          <label for="hash-algorithm" class="text-xs font-bold text-ink uppercase tracking-wider">Algorithm:</label>
+          <select id="hash-algorithm" class="bg-canvas border border-hairline rounded-lg px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none">
+            <option value="SHA-256" selected>SHA-256</option>
+            <option value="MD5">MD5</option>
+            <option value="SHA-1">SHA-1</option>
+            <option value="SHA-512">SHA-512</option>
+            <option value="SHA-384">SHA-384</option>
+          </select>
+        </div>
+
+        <!-- Output casing -->
+        <div class="flex items-center gap-2">
+          <label for="hash-casing" class="text-xs font-bold text-ink uppercase tracking-wider">Output:</label>
+          <select id="hash-casing" class="bg-canvas border border-hairline rounded-lg px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none">
+            <option value="lower" selected>lowercase hex</option>
+            <option value="upper">UPPERCASE HEX</option>
+          </select>
+        </div>
+
+        <!-- HMAC toggle -->
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="enable-hmac" class="h-4 w-4 border border-hairline accent-link rounded cursor-pointer" />
+          <label for="enable-hmac" class="text-xs font-bold text-ink uppercase tracking-wider cursor-pointer">Use HMAC key</label>
+        </div>
+
+      </div>
+
+      <!-- HMAC Key Input Panel (Hidden by default) -->
+      <div id="hmac-key-container" class="hidden flex flex-col gap-2">
+        <label for="hmac-key" class="text-xs font-bold text-mute uppercase tracking-wider">HMAC Secret Key</label>
+        <input 
+          type="password" 
+          id="hmac-key" 
+          class="w-full bg-canvas border border-hairline rounded-xl px-4 py-2.5 text-xs text-ink focus:border-link outline-none shadow-sm" 
+          placeholder="Enter HMAC signing key..." 
+        />
+      </div>
+
+    </div>
+
+    <!-- Right Column: Result & Comparison -->
+    <div class="lg:col-span-5 flex flex-col gap-4">
+      
+      <!-- Hashed Output -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-mute uppercase tracking-wider">Generated Signature</span>
+          <button id="hash-copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+            Copy Hash
+          </button>
+        </div>
+        <textarea 
+          id="hash-output" 
+          readonly 
+          class="w-full min-h-[140px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-none cursor-text shadow-sm"
+          placeholder="Hexadecimal signature will appear here..."
+        ></textarea>
+      </div>
+
+      <!-- Integrity Check Comparison box -->
+      <div class="flex flex-col gap-2.5 p-4 bg-canvas border border-hairline rounded-xl shadow-sm">
+        <span class="text-xs font-bold text-ink uppercase tracking-wider">Compare with expected Checksum</span>
+        <input 
+          type="text" 
+          id="expected-checksum" 
+          class="w-full bg-canvas-soft border border-hairline rounded-lg px-3 py-2 text-xs text-ink font-mono focus:border-link outline-none" 
+          placeholder="Paste expected MD5/SHA256 checksum..." 
+        />
+        
+        <!-- Compare match indicator -->
+        <div id="compare-indicator" class="hidden text-center py-2 px-3 rounded-lg text-xs font-bold"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // Mode toggles
+    const modeTextBtn = document.getElementById('mode-text-btn')!;
+    const modeFileBtn = document.getElementById('mode-file-btn')!;
+    const inputTextContainer = document.getElementById('input-text-container')!;
+    const inputFileContainer = document.getElementById('input-file-container')!;
+    
+    // Inputs
+    const inputText = document.getElementById('hash-input-text') as HTMLTextAreaElement;
+    const fileDropzone = document.getElementById('hash-dropzone')!;
+    const fileInput = document.getElementById('hash-file-input') as HTMLInputElement;
+    const dropzoneFileName = document.getElementById('dropzone-file-name')!;
+    
+    const algorithmSelect = document.getElementById('hash-algorithm') as HTMLSelectElement;
+    const casingSelect = document.getElementById('hash-casing') as HTMLSelectElement;
+    
+    const enableHmac = document.getElementById('enable-hmac') as HTMLInputElement;
+    const hmacKeyContainer = document.getElementById('hmac-key-container')!;
+    const hmacKeyInput = document.getElementById('hmac-key') as HTMLInputElement;
+
+    // Outputs
+    const hashOutput = document.getElementById('hash-output') as HTMLTextAreaElement;
+    const copyBtn = document.getElementById('hash-copy-btn')!;
+    
+    // Comparison
+    const expectedChecksum = document.getElementById('expected-checksum') as HTMLInputElement;
+    const compareIndicator = document.getElementById('compare-indicator')!;
+
+    // State Variables
+    let currentMode: 'text' | 'file' = 'text';
+    let uploadedFile: File | null = null;
+
+    // Toggle Workspace Modes
+    modeTextBtn.addEventListener('click', () => {
+      currentMode = 'text';
+      modeTextBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors bg-canvas text-link shadow-sm";
+      modeFileBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors text-mute hover:text-ink";
+      inputTextContainer.classList.remove('hidden');
+      inputFileContainer.classList.add('hidden');
+      triggerHashing();
+    });
+
+    modeFileBtn.addEventListener('click', () => {
+      currentMode = 'file';
+      modeFileBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors bg-canvas text-link shadow-sm";
+      modeTextBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors text-mute hover:text-ink";
+      inputTextContainer.classList.add('hidden');
+      inputFileContainer.classList.remove('hidden');
+      triggerHashing();
+    });
+
+    // HMAC Input Toggle
+    enableHmac.addEventListener('change', () => {
+      if (enableHmac.checked) {
+        hmacKeyContainer.classList.remove('hidden');
+      } else {
+        hmacKeyContainer.classList.add('hidden');
+      }
+      triggerHashing();
+    });
+
+    // File input event bindings
+    fileDropzone.addEventListener('click', () => fileInput.click());
+    
+    fileDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileDropzone.classList.add('border-link', 'bg-link/5');
+    });
+
+    fileDropzone.addEventListener('dragleave', () => {
+      fileDropzone.classList.remove('border-link', 'bg-link/5');
+    });
+
+    fileDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileDropzone.classList.remove('border-link', 'bg-link/5');
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        setUploadedFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        setUploadedFile(fileInput.files[0]);
+      }
+    });
+
+    function setUploadedFile(file: File) {
+      uploadedFile = file;
+      dropzoneFileName.textContent = `${file.name} (${formatBytes(file.size)})`;
+      triggerHashing();
+    }
+
+    function formatBytes(bytes: number): string {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Input change triggers
+    inputText.addEventListener('input', () => triggerHashing());
+    hmacKeyInput.addEventListener('input', () => triggerHashing());
+    algorithmSelect.addEventListener('change', () => triggerHashing());
+    casingSelect.addEventListener('change', () => applyCasing());
+    expectedChecksum.addEventListener('input', () => performComparison());
+
+    // Copy Action
+    copyBtn.addEventListener('click', () => {
+      const text = hashOutput.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      });
+      trackUsage('copy');
+    });
+
+    // Main hashing coordinator
+    function triggerHashing() {
+      if (currentMode === 'text') {
+        const value = inputText.value;
+        if (!value) {
+          hashOutput.value = '';
+          performComparison();
+          return;
+        }
+        computeTextHash(value);
+      } else {
+        if (!uploadedFile) {
+          hashOutput.value = '';
+          performComparison();
+          return;
+        }
+        computeFileHash(uploadedFile);
+      }
+    }
+
+    // Computes hash for plain text (supports standard crypto & MD5 fallback)
+    async function computeTextHash(val: string) {
+      const algo = algorithmSelect.value;
+      const enc = new TextEncoder();
+      const data = enc.encode(val);
+
+      try {
+        let hex = '';
+
+        if (enableHmac.checked) {
+          const keyVal = hmacKeyInput.value || '';
+          hex = await computeHMAC(val, keyVal, algo);
+        } else {
+          if (algo === 'MD5') {
+            hex = md5(val);
+          } else {
+            const hashBuffer = await window.crypto.subtle.digest(algo, data);
+            hex = bufToHex(hashBuffer);
+          }
+        }
+
+        hashOutput.value = hex;
+        applyCasing();
+      } catch (err: any) {
+        hashOutput.value = `Error hashing text: ${err.message}`;
+      }
+    }
+
+    // Computes hash for files locally in blocks
+    function computeFileHash(file: File) {
+      const algo = algorithmSelect.value;
+      const reader = new FileReader();
+
+      hashOutput.value = 'Calculating checksum...';
+
+      reader.onload = async (e) => {
+        const buffer = e.target?.result as ArrayBuffer;
+        try {
+          let hex = '';
+
+          if (enableHmac.checked) {
+            // HMAC file hashing
+            const keyVal = hmacKeyInput.value || '';
+            const keyData = new TextEncoder().encode(keyVal);
+            
+            let subtleAlgo = algo;
+            if (algo === 'MD5') subtleAlgo = 'SHA-256'; // Fallback to SHA256 signing for HMAC file since WebCrypto lacks MD5
+
+            const key = await window.crypto.subtle.importKey(
+              "raw",
+              keyData,
+              { name: "HMAC", hash: subtleAlgo },
+              false,
+              ["sign"]
+            );
+            const sig = await window.crypto.subtle.sign("HMAC", key, buffer);
+            hex = bufToHex(sig);
+          } else {
+            if (algo === 'MD5') {
+              hex = md5Buffer(new Uint8Array(buffer));
+            } else {
+              const hashBuffer = await window.crypto.subtle.digest(algo, buffer);
+              hex = bufToHex(hashBuffer);
+            }
+          }
+
+          hashOutput.value = hex;
+          applyCasing();
+        } catch (err: any) {
+          hashOutput.value = `Error hashing file: ${err.message}`;
+        }
+      };
+
+      reader.onerror = () => {
+        hashOutput.value = 'Error reading file.';
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Compute HMAC for Text
+    async function computeHMAC(val: string, keyVal: string, algo: string): Promise<string> {
+      if (algo === 'MD5') {
+        // Fallback MD5 HMAC implementation in JS since SubtleCrypto doesn't support MD5
+        return hmacMd5(val, keyVal);
+      }
+
+      const enc = new TextEncoder();
+      const keyData = enc.encode(keyVal);
+      const data = enc.encode(val);
+
+      const key = await window.crypto.subtle.importKey(
+        "raw",
+        keyData,
+        { name: "HMAC", hash: algo },
+        false,
+        ["sign"]
+      );
+
+      const signature = await window.crypto.subtle.sign("HMAC", key, data);
+      return bufToHex(signature);
+    }
+
+    // Apply Casing preference
+    function applyCasing() {
+      const hex = hashOutput.value;
+      if (!hex || hex.startsWith('Error') || hex.startsWith('Calculating')) {
+        performComparison();
+        return;
+      }
+      hashOutput.value = casingSelect.value === 'upper' ? hex.toUpperCase() : hex.toLowerCase();
+      performComparison();
+    }
+
+    // Perform Checksum matching comparison
+    function performComparison() {
+      const gen = hashOutput.value.trim().toLowerCase();
+      const exp = expectedChecksum.value.trim().toLowerCase();
+
+      if (!gen || !exp || gen.startsWith('error') || gen.startsWith('calculating')) {
+        compareIndicator.classList.add('hidden');
+        return;
+      }
+
+      compareIndicator.classList.remove('hidden');
+      if (gen === exp) {
+        compareIndicator.textContent = '✓ Checksums MATCH perfectly!';
+        compareIndicator.className = 'text-center py-2 px-3 rounded-lg text-xs font-bold bg-success/10 text-success border border-success/20';
+      } else {
+        compareIndicator.textContent = '✗ Checksums DO NOT match!';
+        compareIndicator.className = 'text-center py-2 px-3 rounded-lg text-xs font-bold bg-error/10 text-error border border-error/20';
+      }
+    }
+
+    // Buffer helper
+    function bufToHex(buf: ArrayBuffer): string {
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    // MD5 algorithm implementation in plain JS
+    function md5(str: string): string {
+      const bytes = new TextEncoder().encode(str);
+      return md5Buffer(bytes);
+    }
+
+    function md5Buffer(bytes: Uint8Array): string {
+      let words: number[] = [];
+      const len = bytes.length;
+      for (let i = 0; i < len; i++) {
+        words[i >> 2] |= bytes[i] << ((i % 4) * 8);
+      }
+      return binl2hex(core_md5(words, len * 8));
+    }
+
+    // MD5 HMAC implementation
+    function hmacMd5(data: string, key: string): string {
+      const enc = new TextEncoder();
+      let keyBytes = enc.encode(key);
+      const dataBytes = enc.encode(data);
+
+      if (keyBytes.length > 64) {
+        const hashedKey = md5(key);
+        keyBytes = new Uint8Array(hashedKey.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+      }
+
+      const ipad = new Uint8Array(64);
+      const opad = new Uint8Array(64);
+      
+      for (let i = 0; i < 64; i++) {
+        const k = i < keyBytes.length ? keyBytes[i] : 0;
+        ipad[i] = k ^ 0x36;
+        opad[i] = k ^ 0x5c;
+      }
+
+      const ipadData = new Uint8Array(64 + dataBytes.length);
+      ipadData.set(ipad, 0);
+      ipadData.set(dataBytes, 64);
+      
+      const innerHashHex = md5Buffer(ipadData);
+      const innerHashBytes = new Uint8Array(innerHashHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+
+      const opadData = new Uint8Array(64 + innerHashBytes.length);
+      opadData.set(opad, 0);
+      opadData.set(innerHashBytes, 64);
+
+      return md5Buffer(opadData);
+    }
+
+    /* MD5 Cryptographic Hash Core Functions */
+    function safe_add(x: number, y: number): number {
+      const lsw = (x & 0xFFFF) + (y & 0xFFFF);
+      const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+      return (msw << 16) | (lsw & 0xFFFF);
+    }
+
+    function bit_rol(num: number, cnt: number): number {
+      return (num << cnt) | (num >>> (32 - cnt));
+    }
+
+    function md5_cmn(q: number, a: number, b: number, x: number, s: number, t: number): number {
+      return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b);
+    }
+
+    function md5_ff(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+    }
+
+    function md5_gg(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+    }
+
+    function md5_hh(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+    }
+
+    function md5_ii(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+    }
+
+    function core_md5(x: number[], len: number): number[] {
+      x[len >> 5] |= 0x80 << ((len % 32));
+      x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+      let a =  1732584193;
+      let b = -271733879;
+      let c = -1732584194;
+      let d =  271733878;
+
+      for (let i = 0; i < x.length; i += 16) {
+        let olda = a;
+        let oldb = b;
+        let oldc = c;
+        let oldd = d;
+
+        a = md5_ff(a, b, c, d, x[i], 7 , -680876936);
+        d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+        c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+        b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+        a = md5_ff(a, b, c, d, x[i+ 4], 5 , -176418897);
+        d = md5_ff(d, a, b, c, x[i+ 5], 9 ,  1200080426);
+        c = md5_ff(c, d, a, b, x[i+ 6], 14, -1473231341);
+        b = md5_ff(b, c, d, a, x[i+ 7], 20, -45705983);
+        a = md5_ff(a, b, c, d, x[i+ 8], 5 ,  1770035416);
+        d = md5_ff(d, a, b, c, x[i+ 9], 9 , -1958414417);
+        c = md5_ff(c, d, a, b, x[i+10], 14, -42063);
+        b = md5_ff(b, c, d, a, x[i+11], 20, -1990404162);
+        a = md5_ff(a, b, c, d, x[i+12], 5 ,  1804603682);
+        d = md5_ff(d, a, b, c, x[i+13], 9 , -40341101);
+        c = md5_ff(c, d, a, b, x[i+14], 14, -1502002290);
+        b = md5_ff(b, c, d, a, x[i+15], 20,  1236535329);
+
+        a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+        d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+        c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+        b = md5_gg(b, c, d, a, x[i], 20, -373897302);
+        a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+        d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+        c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+        b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+        a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+        d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+        c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+        b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+        a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+        d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+        c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+        b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+        a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+        d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+        c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+        b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+        a = md5_hh(a, b, c, d, x[i+11], 4 , -1530992060);
+        d = md5_hh(d, a, b, c, x[i+14], 11,  1272893353);
+        c = md5_hh(c, d, a, b, x[i+ 1], 16, -155497632);
+        b = md5_hh(b, c, d, a, x[i+ 4], 23, -1094730640);
+        a = md5_hh(a, b, c, d, x[i+ 7], 4 ,  881616370);
+        d = md5_hh(d, a, b, c, x[i+10], 11, -76439779);
+        c = md5_hh(c, d, a, b, x[i+13], 16, -165796510);
+        b = md5_hh(b, c, d, a, x[i], 23, -1051523);
+        a = md5_hh(a, b, c, d, x[i+ 3], 4 , -2054922799);
+        d = md5_hh(d, a, b, c, x[i+ 6], 11,  1873313359);
+        c = md5_hh(c, d, a, b, x[i+ 9], 16, -30611744);
+        b = md5_hh(b, c, d, a, x[i+12], 23, -1560198380);
+
+        a = md5_ii(a, b, c, d, x[i], 6 , -145523070);
+        d = md5_ii(d, a, b, c, x[i+ 7], 10, -1120210379);
+        c = md5_ii(c, d, a, b, x[i+14], 15,  718787259);
+        b = md5_ii(b, c, d, a, x[i+ 5], 21, -343485551);
+        a = md5_ii(a, b, c, d, x[i+12], 6 , -12520413);
+        d = md5_ii(d, a, b, c, x[i+ 3], 10, -11724046);
+        c = md5_ii(c, d, a, b, x[i+10], 15,  38214364);
+        b = md5_ii(b, c, d, a, x[i+ 1], 21, -643717713);
+        a = md5_ii(a, b, c, d, x[i+ 8], 6 , -373897302);
+        d = md5_ii(d, a, b, c, x[i+15], 10, -1019803690);
+        c = md5_ii(c, d, a, b, x[i+ 6], 15,  1163531501);
+        b = md5_ii(b, c, d, a, x[i+13], 21, -1444681467);
+        a = md5_ii(a, b, c, d, x[i+ 4], 6 , -51403784);
+        d = md5_ii(d, a, b, c, x[i+11], 10,  1735328473);
+        c = md5_ii(c, d, a, b, x[i+ 2], 15, -1921207734);
+        b = md5_ii(b, c, d, a, x[i+ 9], 21,  9793235);
+
+        a = safe_add(a, olda);
+        b = safe_add(b, oldb);
+        c = safe_add(c, oldc);
+        d = safe_add(d, oldd);
+      }
+      return [a, b, c, d];
+    }
+
+    function binl2hex(binarray: number[]): string {
+      let hex_tab = "0123456789abcdef";
+      let str = "";
+      for (let i = 0; i < binarray.length * 4; i++) {
+        str += hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) +
+               hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8)) & 0xF);
+      }
+      return str;
+    }
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'Hash Generator',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>

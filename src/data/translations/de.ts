@@ -134,13 +134,27 @@ export const de = {
     "word-counter": "Wort- und Zeichenzähler",
     "uuid-generator": "UUID-Generator & Validator",
     "json-validator": "JSON-Validator & Parser",
-    "csv-to-excel": "CSV-zu-Excel-Konverter"
+    "csv-to-excel": "CSV-zu-Excel-Konverter",
+    "date-difference-calculator": "Datumsdifferenz-Rechner",
+    "timesheet-calculator": "Arbeitszeiterfassungs-Rechner",
+    "url-encoder-decoder": "URL- & HTML-Kodierer/Dekodierer",
+    "text-case-converter": "Text-Case-Konverter",
+    "image-resizer-cropper": "Bild-Resizer & Zuschneider",
+    "hash-generator": "Hash-Generator",
+    "exif-remover-viewer": "EXIF-Metadaten Viewer & Cleaner"
   },
   toolDescriptions: {
     "percentage-calculator": "Berechnen Sie Prozentsätze, Prozentdifferenzen, Prozenterhöhungen und Prozentwerte sofort in Ihrem Browser. Keine Server-Uploads, 100% privat.",
     "word-counter": "Zählen Sie Wörter, Zeichen, Sätze und Absätze und analysieren Sie Lese- und Sprechzeiten. Vollständig privater, browserbasierter Editor.",
     "uuid-generator": "Erstellen Sie kryptografisch sichere RFC 4122-konforme UUIDs (v4) in Serie und validieren Sie Formate lokal.",
     "json-validator": "Validieren, debuggen und analysieren Sie JSON-Code mit genauer Syntaxfehler-Lokalisierung und interaktiver Baumansicht.",
-    "csv-to-excel": "Konvertieren Sie CSV-Daten und tabellarische Textdaten sicher in Ihrem Browser in Excel-Tabellen (.xml/.xls)."
+    "csv-to-excel": "Konvertieren Sie CSV-Daten und tabellarische Textdaten sicher in Ihrem Browser in Excel-Tabellen (.xml/.xls).",
+    "date-difference-calculator": "Berechnen Sie sofort die genaue Dauer, Gesamttage, Stunden und Minuten zwischen zwei benutzerdefinierten Daten und Zeiten.",
+    "timesheet-calculator": "Berechnen Sie tägliche Arbeitszeiten, Pausen und wöchentliche Gesamtstunden mit Dezimalraten und Verdiensterfassung.",
+    "url-encoder-decoder": "Kodieren oder dekodieren Sie URLs, Query-Strings und HTML-Zeichen-Entities sofort und sicher in Ihrem Browser.",
+    "text-case-converter": "Konvertieren Sie Text-Schreibweisen im Handumdrehen. Ändern Sie Schreibweisen online in GROSSBUCHSTABEN, Kleinbuchstaben, Title Case, camelCase und snake_case.",
+    "image-resizer-cropper": "Bilder online zuschneiden und in der Größe anpassen. Pixelgenaue Größenänderung mit 100% Datenschutz im Browser.",
+    "hash-generator": "Erzeugen Sie kryptografische Hashes sofort online. Erstellen Sie SHA256, MD5, SHA-1, SHA-512 und HMAC Hashes aus Texten oder Dateien 100% privat.",
+    "exif-remover-viewer": "Metadaten, Kameraeinstellungen und GPS-Standortdaten von Fotos auslesen und spurlos löschen. 100% privater In-Browser-Cleaner."
   }
 };

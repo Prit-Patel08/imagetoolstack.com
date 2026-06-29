@@ -134,13 +134,27 @@ export const pt = {
     "word-counter": "Contador de Palavras e Caracteres",
     "uuid-generator": "Gerador e validador de UUID",
     "json-validator": "Validador e analisador de JSON",
-    "csv-to-excel": "Conversor de CSV para Excel"
+    "csv-to-excel": "Conversor de CSV para Excel",
+    "date-difference-calculator": "Calculadora de Diferença de Datas",
+    "timesheet-calculator": "Calculadora de Folha de Ponto",
+    "url-encoder-decoder": "Codificador e decodificador de URL e HTML",
+    "text-case-converter": "Conversor de caixa de texto",
+    "image-resizer-cropper": "Redimensionador e recortador de imagem",
+    "hash-generator": "Gerador de hash",
+    "exif-remover-viewer": "Visualizador & Removedor de metadados EXIF"
   },
   toolDescriptions: {
     "percentage-calculator": "Calcule porcentagens, diferenças de porcentagem, aumentos de porcentagem e valores de porcentagem instantaneamente no seu navegador. Sem uploads no servidor, 100% privado.",
     "word-counter": "Conte palavras, caracteres, frases, parágrafos e analise tempos de leitura/fala. Editor totalmente privado baseado no navegador.",
     "uuid-generator": "Gere UUIDs (v4) criptograficamente seguros compatíveis com RFC 4122 em lote e valide formatos localmente.",
     "json-validator": "Valide, depure, analise e explore código JSON com indicação detalhada de erros de sintaxe e árvore interativa.",
-    "csv-to-excel": "Converta dados CSV e tabelas de valores separados por vírgulas em planilhas do Excel (.xml/.xls) com segurança no seu navegador."
+    "csv-to-excel": "Converta dados CSV e tabelas de valores separados por vírgulas em planilhas do Excel (.xml/.xls) com segurança no seu navegador.",
+    "date-difference-calculator": "Calcule a duração exata, o total de dias, horas e minutos entre duas datas e horas personalizadas instantaneamente.",
+    "timesheet-calculator": "Calcule horas de trabalho diárias, tempos de intervalo e total de horas semanais com taxas decimais e acompanhamento de ganhos.",
+    "url-encoder-decoder": "Codifique ou decodifique URLs, strings de consulta e entidades de caracteres HTML de forma instantânea e segura em seu navegador.",
+    "text-case-converter": "Converta estilos de caixa de texto instantaneamente. Alterne o tipo de letra para maiúsculas, minúsculas, Title Case, camelCase e snake_case online.",
+    "image-resizer-cropper": "Recorte e redimensione imagens online para dimensões, porcentagens ou proporções personalizadas. Redimensionamento em pixels com 100% de privacidade.",
+    "hash-generator": "Gere hashes criptográficos instantaneamente. Crie assinaturas SHA256, MD5, SHA-1, SHA-512 e HMAC a partir de texto ou arquivos localmente com 100% de privacidade.",
+    "exif-remover-viewer": "Visualize e remova metadados EXIF, coordenadas de GPS e dados de câmera das suas fotos. Processamento local no navegador 100% privado."
   }
 };

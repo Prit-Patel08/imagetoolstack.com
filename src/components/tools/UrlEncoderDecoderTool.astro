@@ -1,0 +1,233 @@
+---
+// URL & HTML Encoder/Decoder Component
+---
+<div id="encoder-root" class="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+  
+  <!-- Config Options Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-canvas-soft border border-hairline rounded-xl shadow-sm">
+    <div class="flex flex-wrap items-center gap-4">
+      
+      <!-- Primary Mode Toggle -->
+      <div class="flex items-center gap-2">
+        <label for="encoder-mode" class="text-xs font-bold text-ink uppercase tracking-wider">Mode:</label>
+        <select id="encoder-mode" class="bg-canvas border border-hairline rounded-lg px-2.5 py-1.5 text-xs text-ink focus:border-link outline-none">
+          <option value="url" selected>URL Percent Encode</option>
+          <option value="html">HTML Entity Encode</option>
+        </select>
+      </div>
+
+      <!-- URL-specific options -->
+      <div id="url-options-container" class="flex items-center gap-2">
+        <input type="checkbox" id="url-encode-all" checked class="h-4 w-4 border border-hairline accent-link rounded cursor-pointer" />
+        <label for="url-encode-all" class="text-xs font-bold text-ink uppercase tracking-wider cursor-pointer">Encode All Characters (encodeURIComponent)</label>
+      </div>
+
+      <!-- HTML-specific options (Hidden initially) -->
+      <div id="html-options-container" class="hidden flex items-center gap-2">
+        <label for="html-type" class="text-xs font-bold text-ink uppercase tracking-wider">Entity Type:</label>
+        <select id="html-type" class="bg-canvas border border-hairline rounded px-2 py-1 text-xs text-ink focus:border-link outline-none">
+          <option value="named" selected>Named (&lt; &gt; &amp;)</option>
+          <option value="decimal">Numeric Decimal (&#60; &#62;)</option>
+          <option value="hex">Numeric Hex (&#x3c; &#x3e;)</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="flex gap-2">
+      <button id="encoder-sample-btn" class="px-3 py-1.5 border border-hairline text-link hover:bg-link/5 text-xs font-semibold rounded-lg transition-colors">
+        Load Sample
+      </button>
+      <button id="encoder-clear-btn" class="px-3 py-1.5 border border-hairline text-error hover:bg-error/5 text-xs font-semibold rounded-lg transition-colors">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspace Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- Input Workspace -->
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center px-1">
+        <label for="encoder-input" class="text-xs font-bold text-mute uppercase tracking-wider">Input Text / URL</label>
+        <div class="flex gap-1.5">
+          <button id="action-encode-btn" class="px-3 py-1 bg-link hover:bg-link-hover text-white text-[10px] font-bold rounded transition-colors shadow-sm">
+            Encode
+          </button>
+          <button id="action-decode-btn" class="px-3 py-1 bg-link hover:bg-link-hover text-white text-[10px] font-bold rounded transition-colors shadow-sm">
+            Decode
+          </button>
+        </div>
+      </div>
+      <textarea 
+        id="encoder-input" 
+        class="w-full min-h-[300px] p-4 bg-canvas border border-hairline rounded-xl font-mono text-xs text-ink focus:border-link outline-none leading-relaxed resize-y shadow-sm"
+        placeholder="Paste your source text, URL query parameters, or HTML entities here..."
+      ></textarea>
+    </div>
+
+    <!-- Output Workspace -->
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center px-1">
+        <span class="text-xs font-bold text-mute uppercase tracking-wider">Result Output</span>
+        <button id="encoder-copy-btn" class="text-[10px] font-semibold text-link bg-link/5 hover:bg-link/10 border border-link/20 px-3 py-1 rounded transition-colors">
+          Copy Result
+        </button>
+      </div>
+      <textarea 
+        id="encoder-output" 
+        readonly 
+        class="w-full min-h-[300px] p-4 bg-canvas-soft border border-hairline rounded-xl font-mono text-xs text-ink leading-relaxed resize-y cursor-text shadow-sm"
+        placeholder="Encoded or decoded output will appear here in real-time..."
+      ></textarea>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const encoderMode = document.getElementById('encoder-mode') as HTMLSelectElement;
+    
+    // Mode specific options panels
+    const urlOptions = document.getElementById('url-options-container')!;
+    const htmlOptions = document.getElementById('html-options-container')!;
+    
+    // Action Option values
+    const urlEncodeAll = document.getElementById('url-encode-all') as HTMLInputElement;
+    const htmlType = document.getElementById('html-type') as HTMLSelectElement;
+
+    // Inputs & Outputs
+    const inputArea = document.getElementById('encoder-input') as HTMLTextAreaElement;
+    const outputArea = document.getElementById('encoder-output') as HTMLTextAreaElement;
+
+    // Controls
+    const encodeBtn = document.getElementById('action-encode-btn')!;
+    const decodeBtn = document.getElementById('action-decode-btn')!;
+    const copyBtn = document.getElementById('encoder-copy-btn')!;
+    const sampleBtn = document.getElementById('encoder-sample-btn')!;
+    const clearBtn = document.getElementById('encoder-clear-btn')!;
+
+    // Toggle Modes Panel Visibility
+    encoderMode.addEventListener('change', () => {
+      const mode = encoderMode.value;
+      if (mode === 'url') {
+        urlOptions.classList.remove('hidden');
+        htmlOptions.classList.add('hidden');
+      } else {
+        urlOptions.classList.add('hidden');
+        htmlOptions.classList.remove('hidden');
+      }
+      triggerConversion('encode'); // Default to encode preview
+    });
+
+    // Sample data depending on mode
+    sampleBtn.addEventListener('click', () => {
+      const mode = encoderMode.value;
+      if (mode === 'url') {
+        inputArea.value = "https://example.com/search?query=hello world & details=special chars! @#$";
+      } else {
+        inputArea.value = "<div class=\"header\">Hello & Welcome!</div>\nPrice: © $10.00 & discount < 5%";
+      }
+      triggerConversion('encode');
+      trackUsage('sample');
+    });
+
+    // Clear
+    clearBtn.addEventListener('click', () => {
+      inputArea.value = '';
+      outputArea.value = '';
+    });
+
+    // Copy Action
+    copyBtn.addEventListener('click', () => {
+      const text = outputArea.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      });
+      trackUsage('copy');
+    });
+
+    // Trigger Explicit buttons
+    encodeBtn.addEventListener('click', () => triggerConversion('encode'));
+    decodeBtn.addEventListener('click', () => triggerConversion('decode'));
+
+    // Live conversion as you type
+    inputArea.addEventListener('input', () => triggerConversion('encode'));
+    urlEncodeAll.addEventListener('change', () => triggerConversion('encode'));
+    htmlType.addEventListener('change', () => triggerConversion('encode'));
+
+    // Core conversion logic
+    function triggerConversion(action: 'encode' | 'decode') {
+      const val = inputArea.value;
+      if (!val) {
+        outputArea.value = '';
+        return;
+      }
+
+      const mode = encoderMode.value;
+
+      try {
+        if (mode === 'url') {
+          if (action === 'encode') {
+            outputArea.value = urlEncodeAll.checked ? encodeURIComponent(val) : encodeURI(val);
+          } else {
+            outputArea.value = decodeURIComponent(val);
+          }
+        } else {
+          // HTML Entity encoding
+          if (action === 'encode') {
+            outputArea.value = encodeHtmlEntities(val, htmlType.value);
+          } else {
+            outputArea.value = decodeHtmlEntities(val);
+          }
+        }
+      } catch (err: any) {
+        outputArea.value = `Error: ${err.message}`;
+      }
+    }
+
+    // HTML Entity encoder
+    function encodeHtmlEntities(str: string, type: string): string {
+      if (type === 'named') {
+        const temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
+      }
+      
+      // Numeric encoding
+      return str.split('').map(char => {
+        const code = char.charCodeAt(0);
+        // Skip normal alphanumeric and standard safe chars
+        if (code > 127 || /[\<\>\"\'\&]/.test(char)) {
+          return type === 'hex' ? `&#x${code.toString(16)};` : `&#${code};`;
+        }
+        return char;
+      }).join('');
+    }
+
+    // HTML Entity decoder
+    function decodeHtmlEntities(str: string): string {
+      const doc = new DOMParser().parseFromString(str, 'text/html');
+      return doc.documentElement.textContent || '';
+    }
+
+    function trackUsage(action: string) {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'tool_usage', {
+          'event_category': 'URL HTML Encoder Decoder',
+          'event_label': action,
+          'value': 1
+        });
+      }
+    }
+  })();
+</script>
