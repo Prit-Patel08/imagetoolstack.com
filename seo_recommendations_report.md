@@ -369,3 +369,17 @@ Below is the structured implementation schedule for the next 90 days:
 28. **Configure automated broken link checks**: Scan internal pages for 404s.
 29. **Verify dynamic schemas**: Validate output JSON-LD in Google Rich Results tester.
 30. **Generate locale-specific OG images**: Provide matching social share cards.
+
+### Phase 4: Organic Growth & Viral Loop Tools (Post-Phase 3 / Next Expansion)
+31. **Build Aesthetic Code-to-Image Snippet Generator**: Drag and drop editor converting code blocks to beautiful styled screenshot mockups with neon/gradient backgrounds and macOS window styles. Drives high social sharing (X, LinkedIn) and referral link loops.
+32. **Build Client-Side SVG Minifier & Cleaner**: Parse SVG elements in-browser, drop useless namespace headers (Figma, Sketch, Adobe), strip editor comments, and round coordinate path float decimals to optimize loading speeds.
+33. **Build CSS Glassmorphism & UI Card Generator**: Interactive canvas with sliders for backdrop-filter blur, border radius, shadows, and opacity. Outputs copy-ready CSS properties.
+34. **Build Favicon ICO Suite**: Bundle PNG/JPG files into standard multi-resolution web browser favicon formats (16x16, 32x32, 48x48, 180x180 Apple touch icons) with a browser-based binary `.ico` writer.
+35. **Build SVG Pattern & CSS Gradient Background Creator**: Interactive editor to design seamless repeating patterns, grid lines, stripes, and aesthetic backgrounds for websites.
+36. **Build Image Dominant Color Palette Extractor**: Use canvas pixel quantization to scan uploaded photos and output exact HEX/RGB color palette themes for designers.
+37. **Build Client-Side SVG Wave & Section Divider Generator**: Visually customize linear, smooth wave, and multi-layered gradient section curves to copy/paste optimized SVG code directly into web layouts. Target SEO keywords: `svg wave generator`, `css wave maker`, `section divider online`.
+38. **Build CSS Smooth Box Shadow Generator**: Multi-layered box shadow builder with sliders for blur, spread, colors, and opacity, facilitating soft aesthetic UI cards. Target SEO keywords: `css box shadow generator`, `smooth box shadows tool`, `css soft shadow generator`.
+39. **Build In-Browser Image Placeholder Maker**: Select customized sizing dimensions (e.g. 800x600, 300x250 ad banners), edit backdrop/text hex colors, assign labels, and generate PNG, JPG, WebP, or vector SVG placeholder images offline. Target SEO keywords: `placeholder image generator`, `custom placeholder image`, `dummy image generator`.
+40. **Build CSS Grid & Flexbox visual Layout Builder**: Interactive visual workspace allowing developers to click-and-drag grid tracks, edit row/column gaps, align content settings, and copy-paste layout code blocks. Target SEO keywords: `css grid generator`, `css flexbox layout maker`, `visual grid builder`.
+41. **Build CSS Background Patterns & SVG Noise Generator**: Tweak visual sliders to generate repeating vector grid, dot grid, stripe pattern overlays, or noise textures to inject into web backgrounds. Target SEO keywords: `css background pattern generator`, `svg noise generator`, `grid pattern css maker`.
+
