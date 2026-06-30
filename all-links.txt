@@ -1,22 +1,34 @@
 # === CATEGORY 1: CONSUMER CALCULATORS & TIME/DATE TOOLS (Priority 1 - High Traffic) ===
 https://imagetoolstack.com/de/tools/age-calculator
 https://imagetoolstack.com/de/tools/date-calculator
+https://imagetoolstack.com/de/tools/date-difference-calculator
 https://imagetoolstack.com/de/tools/percentage-calculator
+https://imagetoolstack.com/de/tools/timesheet-calculator
 https://imagetoolstack.com/es/tools/age-calculator
 https://imagetoolstack.com/es/tools/date-calculator
+https://imagetoolstack.com/es/tools/date-difference-calculator
 https://imagetoolstack.com/es/tools/percentage-calculator
+https://imagetoolstack.com/es/tools/timesheet-calculator
 https://imagetoolstack.com/fr/tools/age-calculator
 https://imagetoolstack.com/fr/tools/date-calculator
+https://imagetoolstack.com/fr/tools/date-difference-calculator
 https://imagetoolstack.com/fr/tools/percentage-calculator
+https://imagetoolstack.com/fr/tools/timesheet-calculator
 https://imagetoolstack.com/id/tools/age-calculator
 https://imagetoolstack.com/id/tools/date-calculator
+https://imagetoolstack.com/id/tools/date-difference-calculator
 https://imagetoolstack.com/id/tools/percentage-calculator
+https://imagetoolstack.com/id/tools/timesheet-calculator
 https://imagetoolstack.com/pt/tools/age-calculator
 https://imagetoolstack.com/pt/tools/date-calculator
+https://imagetoolstack.com/pt/tools/date-difference-calculator
 https://imagetoolstack.com/pt/tools/percentage-calculator
+https://imagetoolstack.com/pt/tools/timesheet-calculator
 https://imagetoolstack.com/tools/age-calculator
 https://imagetoolstack.com/tools/date-calculator
+https://imagetoolstack.com/tools/date-difference-calculator
 https://imagetoolstack.com/tools/percentage-calculator
+https://imagetoolstack.com/tools/timesheet-calculator
 
 # === CATEGORY 2: IMAGE & PDF OPTIMIZATION TOOLS (Priority 2 - High Traffic) ===
 https://imagetoolstack.com/best-bulk-image-resizer-free
@@ -136,6 +148,7 @@ https://imagetoolstack.com/de/tools/compress-image-to-50kb
 https://imagetoolstack.com/de/tools/crop-image
 https://imagetoolstack.com/de/tools/image-compressor
 https://imagetoolstack.com/de/tools/image-resizer
+https://imagetoolstack.com/de/tools/image-resizer-cropper
 https://imagetoolstack.com/de/tools/remove-bg
 https://imagetoolstack.com/de/tools/resize-image-to-100kb
 https://imagetoolstack.com/de/tools/resize-image-to-1mb
@@ -242,6 +255,7 @@ https://imagetoolstack.com/es/tools/compress-image-to-50kb
 https://imagetoolstack.com/es/tools/crop-image
 https://imagetoolstack.com/es/tools/image-compressor
 https://imagetoolstack.com/es/tools/image-resizer
+https://imagetoolstack.com/es/tools/image-resizer-cropper
 https://imagetoolstack.com/es/tools/remove-bg
 https://imagetoolstack.com/es/tools/resize-image-to-100kb
 https://imagetoolstack.com/es/tools/resize-image-to-1mb
@@ -358,6 +372,7 @@ https://imagetoolstack.com/fr/tools/compress-image-to-50kb
 https://imagetoolstack.com/fr/tools/crop-image
 https://imagetoolstack.com/fr/tools/image-compressor
 https://imagetoolstack.com/fr/tools/image-resizer
+https://imagetoolstack.com/fr/tools/image-resizer-cropper
 https://imagetoolstack.com/fr/tools/remove-bg
 https://imagetoolstack.com/fr/tools/resize-image-to-100kb
 https://imagetoolstack.com/fr/tools/resize-image-to-1mb
@@ -464,6 +479,7 @@ https://imagetoolstack.com/id/tools/compress-image-to-50kb
 https://imagetoolstack.com/id/tools/crop-image
 https://imagetoolstack.com/id/tools/image-compressor
 https://imagetoolstack.com/id/tools/image-resizer
+https://imagetoolstack.com/id/tools/image-resizer-cropper
 https://imagetoolstack.com/id/tools/remove-bg
 https://imagetoolstack.com/id/tools/resize-image-to-100kb
 https://imagetoolstack.com/id/tools/resize-image-to-1mb
@@ -571,6 +587,7 @@ https://imagetoolstack.com/pt/tools/compress-image-to-50kb
 https://imagetoolstack.com/pt/tools/crop-image
 https://imagetoolstack.com/pt/tools/image-compressor
 https://imagetoolstack.com/pt/tools/image-resizer
+https://imagetoolstack.com/pt/tools/image-resizer-cropper
 https://imagetoolstack.com/pt/tools/remove-bg
 https://imagetoolstack.com/pt/tools/resize-image-to-100kb
 https://imagetoolstack.com/pt/tools/resize-image-to-1mb
@@ -647,6 +664,7 @@ https://imagetoolstack.com/tools/compress-image-to-50kb
 https://imagetoolstack.com/tools/crop-image
 https://imagetoolstack.com/tools/image-compressor
 https://imagetoolstack.com/tools/image-resizer
+https://imagetoolstack.com/tools/image-resizer-cropper
 https://imagetoolstack.com/tools/remove-bg
 https://imagetoolstack.com/tools/resize-image-to-100kb
 https://imagetoolstack.com/tools/resize-image-to-1mb
@@ -667,6 +685,7 @@ https://imagetoolstack.com/de/tools/bmp-to-jpeg
 https://imagetoolstack.com/de/tools/bmp-to-jpg
 https://imagetoolstack.com/de/tools/bmp-to-png
 https://imagetoolstack.com/de/tools/bmp-to-webp
+https://imagetoolstack.com/de/tools/csv-to-excel
 https://imagetoolstack.com/de/tools/csv-to-json
 https://imagetoolstack.com/de/tools/favicon-generator
 https://imagetoolstack.com/de/tools/gif-to-jpeg
@@ -731,6 +750,7 @@ https://imagetoolstack.com/es/tools/bmp-to-jpeg
 https://imagetoolstack.com/es/tools/bmp-to-jpg
 https://imagetoolstack.com/es/tools/bmp-to-png
 https://imagetoolstack.com/es/tools/bmp-to-webp
+https://imagetoolstack.com/es/tools/csv-to-excel
 https://imagetoolstack.com/es/tools/csv-to-json
 https://imagetoolstack.com/es/tools/favicon-generator
 https://imagetoolstack.com/es/tools/gif-to-jpeg
@@ -795,6 +815,7 @@ https://imagetoolstack.com/fr/tools/bmp-to-jpeg
 https://imagetoolstack.com/fr/tools/bmp-to-jpg
 https://imagetoolstack.com/fr/tools/bmp-to-png
 https://imagetoolstack.com/fr/tools/bmp-to-webp
+https://imagetoolstack.com/fr/tools/csv-to-excel
 https://imagetoolstack.com/fr/tools/csv-to-json
 https://imagetoolstack.com/fr/tools/favicon-generator
 https://imagetoolstack.com/fr/tools/gif-to-jpeg
@@ -859,6 +880,7 @@ https://imagetoolstack.com/id/tools/bmp-to-jpeg
 https://imagetoolstack.com/id/tools/bmp-to-jpg
 https://imagetoolstack.com/id/tools/bmp-to-png
 https://imagetoolstack.com/id/tools/bmp-to-webp
+https://imagetoolstack.com/id/tools/csv-to-excel
 https://imagetoolstack.com/id/tools/csv-to-json
 https://imagetoolstack.com/id/tools/favicon-generator
 https://imagetoolstack.com/id/tools/gif-to-jpeg
@@ -923,6 +945,7 @@ https://imagetoolstack.com/pt/tools/bmp-to-jpeg
 https://imagetoolstack.com/pt/tools/bmp-to-jpg
 https://imagetoolstack.com/pt/tools/bmp-to-png
 https://imagetoolstack.com/pt/tools/bmp-to-webp
+https://imagetoolstack.com/pt/tools/csv-to-excel
 https://imagetoolstack.com/pt/tools/csv-to-json
 https://imagetoolstack.com/pt/tools/favicon-generator
 https://imagetoolstack.com/pt/tools/gif-to-jpeg
@@ -987,6 +1010,7 @@ https://imagetoolstack.com/tools/bmp-to-jpeg
 https://imagetoolstack.com/tools/bmp-to-jpg
 https://imagetoolstack.com/tools/bmp-to-png
 https://imagetoolstack.com/tools/bmp-to-webp
+https://imagetoolstack.com/tools/csv-to-excel
 https://imagetoolstack.com/tools/csv-to-json
 https://imagetoolstack.com/tools/favicon-generator
 https://imagetoolstack.com/tools/gif-to-jpeg
@@ -1418,7 +1442,9 @@ https://imagetoolstack.com/de/tools/duotone-filter
 https://imagetoolstack.com/de/tools/edge-detection
 https://imagetoolstack.com/de/tools/emboss-filter
 https://imagetoolstack.com/de/tools/exif-remover
+https://imagetoolstack.com/de/tools/exif-remover-viewer
 https://imagetoolstack.com/de/tools/grayscale-filter
+https://imagetoolstack.com/de/tools/hash-generator
 https://imagetoolstack.com/de/tools/hex-viewer
 https://imagetoolstack.com/de/tools/image-ocr
 https://imagetoolstack.com/de/tools/image-redactor
@@ -1431,6 +1457,7 @@ https://imagetoolstack.com/de/tools/image-to-base64
 https://imagetoolstack.com/de/tools/image-to-data-uri
 https://imagetoolstack.com/de/tools/invert-colors
 https://imagetoolstack.com/de/tools/json-formatter
+https://imagetoolstack.com/de/tools/json-validator
 https://imagetoolstack.com/de/tools/metadata-viewer
 https://imagetoolstack.com/de/tools/pdf-metadata-viewer
 https://imagetoolstack.com/de/tools/pdf-to-base64
@@ -1441,8 +1468,10 @@ https://imagetoolstack.com/de/tools/qr-scanner
 https://imagetoolstack.com/de/tools/sepia-filter
 https://imagetoolstack.com/de/tools/solarize-filter
 https://imagetoolstack.com/de/tools/sprite-generator
+https://imagetoolstack.com/de/tools/text-case-converter
 https://imagetoolstack.com/de/tools/timezone-converter
 https://imagetoolstack.com/de/tools/unix-timestamp
+https://imagetoolstack.com/de/tools/url-encoder-decoder
 https://imagetoolstack.com/de/tools/vintage-filter
 https://imagetoolstack.com/de/tools/word-counter
 https://imagetoolstack.com/es/best-add-watermark-tool-online
@@ -1475,7 +1504,9 @@ https://imagetoolstack.com/es/tools/duotone-filter
 https://imagetoolstack.com/es/tools/edge-detection
 https://imagetoolstack.com/es/tools/emboss-filter
 https://imagetoolstack.com/es/tools/exif-remover
+https://imagetoolstack.com/es/tools/exif-remover-viewer
 https://imagetoolstack.com/es/tools/grayscale-filter
+https://imagetoolstack.com/es/tools/hash-generator
 https://imagetoolstack.com/es/tools/hex-viewer
 https://imagetoolstack.com/es/tools/image-ocr
 https://imagetoolstack.com/es/tools/image-redactor
@@ -1488,6 +1519,7 @@ https://imagetoolstack.com/es/tools/image-to-base64
 https://imagetoolstack.com/es/tools/image-to-data-uri
 https://imagetoolstack.com/es/tools/invert-colors
 https://imagetoolstack.com/es/tools/json-formatter
+https://imagetoolstack.com/es/tools/json-validator
 https://imagetoolstack.com/es/tools/metadata-viewer
 https://imagetoolstack.com/es/tools/pdf-metadata-viewer
 https://imagetoolstack.com/es/tools/pdf-to-base64
@@ -1498,8 +1530,10 @@ https://imagetoolstack.com/es/tools/qr-scanner
 https://imagetoolstack.com/es/tools/sepia-filter
 https://imagetoolstack.com/es/tools/solarize-filter
 https://imagetoolstack.com/es/tools/sprite-generator
+https://imagetoolstack.com/es/tools/text-case-converter
 https://imagetoolstack.com/es/tools/timezone-converter
 https://imagetoolstack.com/es/tools/unix-timestamp
+https://imagetoolstack.com/es/tools/url-encoder-decoder
 https://imagetoolstack.com/es/tools/vintage-filter
 https://imagetoolstack.com/es/tools/word-counter
 https://imagetoolstack.com/fr/best-add-watermark-tool-online
@@ -1532,7 +1566,9 @@ https://imagetoolstack.com/fr/tools/duotone-filter
 https://imagetoolstack.com/fr/tools/edge-detection
 https://imagetoolstack.com/fr/tools/emboss-filter
 https://imagetoolstack.com/fr/tools/exif-remover
+https://imagetoolstack.com/fr/tools/exif-remover-viewer
 https://imagetoolstack.com/fr/tools/grayscale-filter
+https://imagetoolstack.com/fr/tools/hash-generator
 https://imagetoolstack.com/fr/tools/hex-viewer
 https://imagetoolstack.com/fr/tools/image-ocr
 https://imagetoolstack.com/fr/tools/image-redactor
@@ -1545,6 +1581,7 @@ https://imagetoolstack.com/fr/tools/image-to-base64
 https://imagetoolstack.com/fr/tools/image-to-data-uri
 https://imagetoolstack.com/fr/tools/invert-colors
 https://imagetoolstack.com/fr/tools/json-formatter
+https://imagetoolstack.com/fr/tools/json-validator
 https://imagetoolstack.com/fr/tools/metadata-viewer
 https://imagetoolstack.com/fr/tools/pdf-metadata-viewer
 https://imagetoolstack.com/fr/tools/pdf-to-base64
@@ -1555,8 +1592,10 @@ https://imagetoolstack.com/fr/tools/qr-scanner
 https://imagetoolstack.com/fr/tools/sepia-filter
 https://imagetoolstack.com/fr/tools/solarize-filter
 https://imagetoolstack.com/fr/tools/sprite-generator
+https://imagetoolstack.com/fr/tools/text-case-converter
 https://imagetoolstack.com/fr/tools/timezone-converter
 https://imagetoolstack.com/fr/tools/unix-timestamp
+https://imagetoolstack.com/fr/tools/url-encoder-decoder
 https://imagetoolstack.com/fr/tools/vintage-filter
 https://imagetoolstack.com/fr/tools/word-counter
 https://imagetoolstack.com/how-to-add-a-watermark-to-images
@@ -1592,7 +1631,9 @@ https://imagetoolstack.com/id/tools/duotone-filter
 https://imagetoolstack.com/id/tools/edge-detection
 https://imagetoolstack.com/id/tools/emboss-filter
 https://imagetoolstack.com/id/tools/exif-remover
+https://imagetoolstack.com/id/tools/exif-remover-viewer
 https://imagetoolstack.com/id/tools/grayscale-filter
+https://imagetoolstack.com/id/tools/hash-generator
 https://imagetoolstack.com/id/tools/hex-viewer
 https://imagetoolstack.com/id/tools/image-ocr
 https://imagetoolstack.com/id/tools/image-redactor
@@ -1605,6 +1646,7 @@ https://imagetoolstack.com/id/tools/image-to-base64
 https://imagetoolstack.com/id/tools/image-to-data-uri
 https://imagetoolstack.com/id/tools/invert-colors
 https://imagetoolstack.com/id/tools/json-formatter
+https://imagetoolstack.com/id/tools/json-validator
 https://imagetoolstack.com/id/tools/metadata-viewer
 https://imagetoolstack.com/id/tools/pdf-metadata-viewer
 https://imagetoolstack.com/id/tools/pdf-to-base64
@@ -1615,8 +1657,10 @@ https://imagetoolstack.com/id/tools/qr-scanner
 https://imagetoolstack.com/id/tools/sepia-filter
 https://imagetoolstack.com/id/tools/solarize-filter
 https://imagetoolstack.com/id/tools/sprite-generator
+https://imagetoolstack.com/id/tools/text-case-converter
 https://imagetoolstack.com/id/tools/timezone-converter
 https://imagetoolstack.com/id/tools/unix-timestamp
+https://imagetoolstack.com/id/tools/url-encoder-decoder
 https://imagetoolstack.com/id/tools/vintage-filter
 https://imagetoolstack.com/id/tools/word-counter
 https://imagetoolstack.com/pt/best-add-watermark-tool-online
@@ -1649,7 +1693,9 @@ https://imagetoolstack.com/pt/tools/duotone-filter
 https://imagetoolstack.com/pt/tools/edge-detection
 https://imagetoolstack.com/pt/tools/emboss-filter
 https://imagetoolstack.com/pt/tools/exif-remover
+https://imagetoolstack.com/pt/tools/exif-remover-viewer
 https://imagetoolstack.com/pt/tools/grayscale-filter
+https://imagetoolstack.com/pt/tools/hash-generator
 https://imagetoolstack.com/pt/tools/hex-viewer
 https://imagetoolstack.com/pt/tools/image-ocr
 https://imagetoolstack.com/pt/tools/image-redactor
@@ -1662,6 +1708,7 @@ https://imagetoolstack.com/pt/tools/image-to-base64
 https://imagetoolstack.com/pt/tools/image-to-data-uri
 https://imagetoolstack.com/pt/tools/invert-colors
 https://imagetoolstack.com/pt/tools/json-formatter
+https://imagetoolstack.com/pt/tools/json-validator
 https://imagetoolstack.com/pt/tools/metadata-viewer
 https://imagetoolstack.com/pt/tools/pdf-metadata-viewer
 https://imagetoolstack.com/pt/tools/pdf-to-base64
@@ -1672,8 +1719,10 @@ https://imagetoolstack.com/pt/tools/qr-scanner
 https://imagetoolstack.com/pt/tools/sepia-filter
 https://imagetoolstack.com/pt/tools/solarize-filter
 https://imagetoolstack.com/pt/tools/sprite-generator
+https://imagetoolstack.com/pt/tools/text-case-converter
 https://imagetoolstack.com/pt/tools/timezone-converter
 https://imagetoolstack.com/pt/tools/unix-timestamp
+https://imagetoolstack.com/pt/tools/url-encoder-decoder
 https://imagetoolstack.com/pt/tools/vintage-filter
 https://imagetoolstack.com/pt/tools/word-counter
 https://imagetoolstack.com/tools/add-watermark
@@ -1690,7 +1739,9 @@ https://imagetoolstack.com/tools/duotone-filter
 https://imagetoolstack.com/tools/edge-detection
 https://imagetoolstack.com/tools/emboss-filter
 https://imagetoolstack.com/tools/exif-remover
+https://imagetoolstack.com/tools/exif-remover-viewer
 https://imagetoolstack.com/tools/grayscale-filter
+https://imagetoolstack.com/tools/hash-generator
 https://imagetoolstack.com/tools/hex-viewer
 https://imagetoolstack.com/tools/image-ocr
 https://imagetoolstack.com/tools/image-redactor
@@ -1703,6 +1754,7 @@ https://imagetoolstack.com/tools/image-to-base64
 https://imagetoolstack.com/tools/image-to-data-uri
 https://imagetoolstack.com/tools/invert-colors
 https://imagetoolstack.com/tools/json-formatter
+https://imagetoolstack.com/tools/json-validator
 https://imagetoolstack.com/tools/metadata-viewer
 https://imagetoolstack.com/tools/pdf-metadata-viewer
 https://imagetoolstack.com/tools/pdf-to-base64
@@ -1713,8 +1765,10 @@ https://imagetoolstack.com/tools/qr-scanner
 https://imagetoolstack.com/tools/sepia-filter
 https://imagetoolstack.com/tools/solarize-filter
 https://imagetoolstack.com/tools/sprite-generator
+https://imagetoolstack.com/tools/text-case-converter
 https://imagetoolstack.com/tools/timezone-converter
 https://imagetoolstack.com/tools/unix-timestamp
+https://imagetoolstack.com/tools/url-encoder-decoder
 https://imagetoolstack.com/tools/vintage-filter
 https://imagetoolstack.com/tools/word-counter
 
@@ -2942,6 +2996,7 @@ https://imagetoolstack.com/de/tools/round-corners
 https://imagetoolstack.com/de/tools/split-pdf
 https://imagetoolstack.com/de/tools/twitter-header-maker
 https://imagetoolstack.com/de/tools/unlock-pdf
+https://imagetoolstack.com/de/tools/uuid-generator
 https://imagetoolstack.com/de/tools/vignette-effect
 https://imagetoolstack.com/de/tools/youtube-thumbnail
 https://imagetoolstack.com/de/tools/youtube-thumbnail-resizer
@@ -3037,6 +3092,7 @@ https://imagetoolstack.com/es/tools/round-corners
 https://imagetoolstack.com/es/tools/split-pdf
 https://imagetoolstack.com/es/tools/twitter-header-maker
 https://imagetoolstack.com/es/tools/unlock-pdf
+https://imagetoolstack.com/es/tools/uuid-generator
 https://imagetoolstack.com/es/tools/vignette-effect
 https://imagetoolstack.com/es/tools/youtube-thumbnail
 https://imagetoolstack.com/es/tools/youtube-thumbnail-resizer
@@ -3132,6 +3188,7 @@ https://imagetoolstack.com/fr/tools/round-corners
 https://imagetoolstack.com/fr/tools/split-pdf
 https://imagetoolstack.com/fr/tools/twitter-header-maker
 https://imagetoolstack.com/fr/tools/unlock-pdf
+https://imagetoolstack.com/fr/tools/uuid-generator
 https://imagetoolstack.com/fr/tools/vignette-effect
 https://imagetoolstack.com/fr/tools/youtube-thumbnail
 https://imagetoolstack.com/fr/tools/youtube-thumbnail-resizer
@@ -3222,6 +3279,7 @@ https://imagetoolstack.com/id/tools/round-corners
 https://imagetoolstack.com/id/tools/split-pdf
 https://imagetoolstack.com/id/tools/twitter-header-maker
 https://imagetoolstack.com/id/tools/unlock-pdf
+https://imagetoolstack.com/id/tools/uuid-generator
 https://imagetoolstack.com/id/tools/vignette-effect
 https://imagetoolstack.com/id/tools/youtube-thumbnail
 https://imagetoolstack.com/id/tools/youtube-thumbnail-resizer
@@ -3318,6 +3376,7 @@ https://imagetoolstack.com/pt/tools/round-corners
 https://imagetoolstack.com/pt/tools/split-pdf
 https://imagetoolstack.com/pt/tools/twitter-header-maker
 https://imagetoolstack.com/pt/tools/unlock-pdf
+https://imagetoolstack.com/pt/tools/uuid-generator
 https://imagetoolstack.com/pt/tools/vignette-effect
 https://imagetoolstack.com/pt/tools/youtube-thumbnail
 https://imagetoolstack.com/pt/tools/youtube-thumbnail-resizer
@@ -3375,6 +3434,7 @@ https://imagetoolstack.com/tools/round-corners
 https://imagetoolstack.com/tools/split-pdf
 https://imagetoolstack.com/tools/twitter-header-maker
 https://imagetoolstack.com/tools/unlock-pdf
+https://imagetoolstack.com/tools/uuid-generator
 https://imagetoolstack.com/tools/vignette-effect
 https://imagetoolstack.com/tools/youtube-thumbnail
 https://imagetoolstack.com/tools/youtube-thumbnail-resizer
