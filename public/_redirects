@@ -14,5 +14,9 @@
 /pt/index.html /pt 301
 /id/index.html /id 301
 
-# Enforce clean URLs by stripping .html from all other pages
-/:path*.html /:path* 301
+# Enforce clean URLs by stripping .html from all other pages.
+# Cloudflare Pages placeholders match path segments; avoid :path* here because it
+# redirects nested URLs like /compare/jpg-pdf.html to /compare*.
+/:page.html /:page 301
+/:dir/:page.html /:dir/:page 301
+/:dir/:subdir/:page.html /:dir/:subdir/:page 301
