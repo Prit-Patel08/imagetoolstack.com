@@ -2,94 +2,149 @@
   "image-compressor": {
     "benefits": [
       {
-        "title": "Boost Website SEO & Speed",
-        "description": "Large images are the #1 cause of slow websites. By compressing your images, you instantly improve your Core Web Vitals, resulting in higher Google rankings and lower bounce rates."
+        "title": "Reduce page weight",
+        "description": "Compressed images load faster, which helps visitors on mobile networks and supports better web performance."
       },
       {
-        "title": "Bypass Upload Limits",
-        "description": "Many government portals, job applications, and social media platforms restrict uploads to 2MB or less. Our compressor guarantees your files meet these strict requirements without noticeable quality loss."
+        "title": "Meet upload limits",
+        "description": "Make photos smaller for forms, job portals, government sites, email attachments, and CMS uploads."
       },
       {
-        "title": "100% Private & Secure",
-        "description": "Unlike other tools that upload your private photos to external servers, our compressor runs entirely inside your web browser. Your images never leave your device."
+        "title": "Private compression",
+        "description": "Files are processed locally in your browser instead of being uploaded to a compression server."
       }
     ],
     "howTo": [
       {
         "step": 1,
-        "title": "Upload your image",
-        "description": "Drag and drop your JPG, PNG, or WebP image into the drop zone, or click to browse your files."
+        "title": "Choose an image",
+        "description": "Upload a JPG, PNG, or WebP file from your device."
       },
       {
         "step": 2,
-        "title": "Adjust the compression",
-        "description": "Use the interactive slider to balance image quality and file size. We automatically show you the exact KB savings in real-time."
+        "title": "Adjust quality",
+        "description": "Use compression settings to balance file size and visual quality."
       },
       {
         "step": 3,
-        "title": "Download instantly",
-        "description": "Once you hit your target file size, click Download. The optimized image is saved instantly to your device."
+        "title": "Download the smaller file",
+        "description": "Save the compressed image and use it on your site, form, or message."
       }
     ],
     "faqs": [
       {
-        "question": "Does compressing an image reduce its quality?",
-        "answer": "We use advanced lossy compression algorithms that strip out hidden metadata and optimize color profiles. While mathematically 'lossy', the visual difference is virtually imperceptible to the human eye, even at 70% compression."
+        "question": "What quality setting should I use?",
+        "answer": "For most web photos, a medium-high quality setting keeps the image looking good while reducing file size."
       },
       {
-        "question": "What is the maximum file size I can compress?",
-        "answer": "Because our tool processes images locally in your browser using JavaScript, there are no artificial file size limits. You can compress images as large as your device's memory can handle (often 50MB+)."
+        "question": "Can compression damage an image?",
+        "answer": "Aggressive lossy compression can reduce quality. Keep an original copy and use moderate settings when quality matters."
       },
       {
-        "question": "Can I compress images on my iPhone or Android?",
-        "answer": "Yes! Our image compressor is fully responsive and works perfectly on mobile browsers like Safari and Chrome without needing to download an app."
+        "question": "Is local compression slower?",
+        "answer": "It depends on your device, but it avoids upload time and keeps files private."
+      }
+    ]
+  },
+  "image-to-pdf": {
+    "benefits": [
+      {
+        "title": "Convert without uploading",
+        "description": "The PDF is generated in your browser, which makes the tool useful for private photos, IDs, receipts, handwritten notes, and client files that should not be sent to a server."
+      },
+      {
+        "title": "One PDF from many images",
+        "description": "Select several JPG, PNG, or WebP images and combine them into a single PDF document for applications, school submissions, invoices, archives, or quick sharing."
+      },
+      {
+        "title": "No signup or watermark",
+        "description": "Create and download your PDF directly. There is no account requirement, queue, watermark, or hidden upload step between your images and the final document."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Select your images",
+        "description": "Choose the JPG, PNG, or WebP files you want to place into a PDF. Use clear, readable images if the PDF will be printed or submitted online."
+      },
+      {
+        "step": 2,
+        "title": "Check the order",
+        "description": "Put the images in the same order you want them to appear in the PDF, such as front page first, receipt pages together, or screenshots in sequence."
+      },
+      {
+        "step": 3,
+        "title": "Create and download",
+        "description": "Generate the PDF locally in your browser, preview it, and download the finished document to your device."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is this image to PDF converter private?",
+        "answer": "Yes. The conversion runs in your browser, so your images are not uploaded to Image Tool Stack servers. This is especially helpful for personal documents, IDs, receipts, and confidential screenshots."
+      },
+      {
+        "question": "Can I use it for scanned documents?",
+        "answer": "Yes. If you have photos or screenshots of document pages, you can convert them into one PDF. For best results, crop the edges, keep the page straight, and use bright lighting before converting."
+      },
+      {
+        "question": "What is the best image format before converting to PDF?",
+        "answer": "JPG is usually best for photos and scanned paper documents because it keeps file size smaller. PNG is better for screenshots, text-heavy images, diagrams, and graphics with sharp edges."
+      },
+      {
+        "question": "Why is my PDF file large?",
+        "answer": "PDF size depends mostly on the image resolution and format. If the PDF is too large, resize or compress the images first, then convert the optimized versions to PDF."
+      },
+      {
+        "question": "Will each image become a separate PDF page?",
+        "answer": "Yes. The converter is designed to place images into a clean PDF document so each selected image can appear as its own page."
       }
     ]
   },
   "image-resizer": {
     "benefits": [
       {
-        "title": "Pixel-Perfect Precision",
-        "description": "Resize your images to exact pixel dimensions. Whether you need a 1080x1080 Instagram post or a 2560x1440 YouTube banner, get exact results every time."
+        "title": "Exact pixel control",
+        "description": "Set precise dimensions for social posts, website layouts, profile images, banners, and upload forms."
       },
       {
-        "title": "Maintain Aspect Ratio",
-        "description": "Our smart resizer automatically calculates the correct height or width to prevent your image from looking stretched or distorted."
+        "title": "Avoid oversized uploads",
+        "description": "Reduce camera-size images before publishing or sending them."
       },
       {
-        "title": "Fast & Serverless",
-        "description": "No waiting in queues or uploading to servers. Your image is resized instantly using your browser's native canvas API."
+        "title": "Private resizing",
+        "description": "The image is resized in your browser, keeping your files on your device."
       }
     ],
     "howTo": [
       {
         "step": 1,
-        "title": "Select your photo",
-        "description": "Upload the image you need to resize. We support all major formats including JPG, PNG, and WebP."
+        "title": "Open your image",
+        "description": "Select a JPG, PNG, or WebP image."
       },
       {
         "step": 2,
-        "title": "Enter target dimensions",
-        "description": "Type in your desired width or height. Leave the 'lock' icon active to maintain the original aspect ratio automatically."
+        "title": "Enter dimensions",
+        "description": "Set the target width or height and preserve aspect ratio when needed."
       },
       {
         "step": 3,
-        "title": "Export the result",
-        "description": "Click Apply & Download. The newly sized image is immediately saved to your device."
+        "title": "Save the resized copy",
+        "description": "Download the new file after checking the preview."
       }
     ],
     "faqs": [
       {
-        "question": "Will resizing an image make it blurry?",
-        "answer": "If you are reducing the size (downscaling), the image will remain sharp. If you are significantly increasing the size (upscaling) beyond its original resolution, it may become pixelated. We recommend our AI Upscaler tool for large enlargements."
+        "question": "What size should website images be?",
+        "answer": "Use the largest display size needed by your layout, not the full camera resolution."
       },
       {
-        "question": "What are the best dimensions for Instagram?",
-        "answer": "For Instagram square posts, use 1080x1080 pixels. For portrait posts, use 1080x1350 pixels. For Stories and Reels, use 1080x1920 pixels."
+        "question": "What is aspect ratio?",
+        "answer": "Aspect ratio is the relationship between width and height. Preserving it prevents stretching."
       },
       {
-        "question": "Does resizing change the file size?",
-        "answer": "Yes. Reducing the pixel dimensions (width and height) will also significantly reduce the file size in kilobytes (KB)."
+        "question": "Can resizing improve speed?",
+        "answer": "Yes. Smaller dimensions usually mean fewer bytes and faster image loading."
       }
     ]
   },
@@ -4703,5 +4758,475 @@
         }
       ]
     }
+  },
+  "bulk-image-resizer": {
+    "benefits": [
+      {
+        "title": "Resize batches for real workflows",
+        "description": "Prepare dozens of product photos, blog images, thumbnails, or document uploads with one consistent set of dimensions."
+      },
+      {
+        "title": "No server upload",
+        "description": "The resize work happens inside your browser, which is safer for client files, private photos, IDs, and unreleased product images."
+      },
+      {
+        "title": "Cleaner site performance",
+        "description": "Resizing oversized images before publishing them can reduce page weight and help pages load faster."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Add a batch",
+        "description": "Choose multiple JPG, PNG, or WebP images from your device."
+      },
+      {
+        "step": 2,
+        "title": "Set dimensions",
+        "description": "Enter the target size or choose a resize mode that keeps your images proportional."
+      },
+      {
+        "step": 3,
+        "title": "Export resized files",
+        "description": "Resize locally and download the finished image set."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is batch resizing safe for private images?",
+        "answer": "Yes. Files are handled locally in your browser, so they do not need to be uploaded to a remote server."
+      },
+      {
+        "question": "What should I resize before uploading to a website?",
+        "answer": "Resize very large camera photos, product photos, screenshots, and hero images to the maximum display size your site actually needs."
+      },
+      {
+        "question": "Can bulk resizing help with AdSense and SEO?",
+        "answer": "Indirectly, yes. Smaller properly sized images improve user experience and can support better Core Web Vitals."
+      }
+    ]
+  },
+  "bulk-resizer": {
+    "benefits": [
+      {
+        "title": "Batch workflow, one setting",
+        "description": "Apply the same dimensions to many files instead of repeating the same resize task image by image."
+      },
+      {
+        "title": "Useful for product and content teams",
+        "description": "Standardize images for ecommerce, blogs, portfolios, directories, and form submissions."
+      },
+      {
+        "title": "Local and private",
+        "description": "Images are processed in the browser, so sensitive batches stay on your device."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Choose images",
+        "description": "Select the files you want to resize together."
+      },
+      {
+        "step": 2,
+        "title": "Pick the output size",
+        "description": "Use exact dimensions or preserve aspect ratio depending on the destination."
+      },
+      {
+        "step": 3,
+        "title": "Download results",
+        "description": "Export the resized files and use them wherever needed."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "How many images should I resize at once?",
+        "answer": "Use batches your device can comfortably handle. Very large files or hundreds of images may take more memory."
+      },
+      {
+        "question": "Will images be stretched?",
+        "answer": "Use aspect ratio preserving options to avoid distortion."
+      },
+      {
+        "question": "Should I compress after resizing?",
+        "answer": "If upload size still matters, resize first and compress the resized output afterward."
+      }
+    ]
+  },
+  "heic-to-jpg": {
+    "benefits": [
+      {
+        "title": "Make iPhone photos universal",
+        "description": "JPG is accepted by more websites, devices, printers, forms, and older apps than HEIC."
+      },
+      {
+        "title": "No upload for personal photos",
+        "description": "Convert family photos, documents, or client images locally in your browser."
+      },
+      {
+        "title": "Quick sharing format",
+        "description": "Download a JPG copy that is easier to email, submit, and open."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Select HEIC file",
+        "description": "Choose the HEIC or HEIF image from your device."
+      },
+      {
+        "step": 2,
+        "title": "Convert locally",
+        "description": "Let the browser create a JPG version without uploading the photo."
+      },
+      {
+        "step": 3,
+        "title": "Download JPG",
+        "description": "Save the compatible JPG output."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Why do iPhones use HEIC?",
+        "answer": "HEIC stores high quality photos at smaller sizes, but not every service supports it."
+      },
+      {
+        "question": "Will the JPG work on Windows?",
+        "answer": "Yes. JPG is widely supported on Windows, Android, macOS, browsers, and printers."
+      },
+      {
+        "question": "Can I convert private photos?",
+        "answer": "Yes, because the conversion is handled locally in the browser."
+      }
+    ]
+  },
+  "jpg-to-png": {
+    "benefits": [
+      {
+        "title": "Lossless PNG copy",
+        "description": "Create a PNG version for workflows where repeated editing or sharper graphics are preferred."
+      },
+      {
+        "title": "Useful for screenshots and graphics",
+        "description": "PNG is better for images with text, UI elements, icons, and sharp edges."
+      },
+      {
+        "title": "Browser-based conversion",
+        "description": "Convert the file locally without uploading your image."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Choose JPG",
+        "description": "Select a JPG or JPEG image from your device."
+      },
+      {
+        "step": 2,
+        "title": "Convert to PNG",
+        "description": "Generate a PNG version in your browser."
+      },
+      {
+        "step": 3,
+        "title": "Download PNG",
+        "description": "Save the output and use it in editing, design, or document workflows."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Will PNG make my file smaller?",
+        "answer": "Not usually for photos. PNG is often larger than JPG but can preserve sharp details better."
+      },
+      {
+        "question": "Can PNG have transparency?",
+        "answer": "PNG supports transparency, but converting a normal JPG does not automatically remove the background."
+      },
+      {
+        "question": "When should I use PNG?",
+        "answer": "Use PNG for screenshots, graphics, text-heavy images, icons, and transparent assets."
+      }
+    ]
+  },
+  "pdf-to-jpg": {
+    "benefits": [
+      {
+        "title": "Share PDF pages as photos",
+        "description": "Turn document pages into JPG files for previews, thumbnails, chats, and upload forms."
+      },
+      {
+        "title": "Private document conversion",
+        "description": "Your PDF is converted locally in the browser rather than uploaded."
+      },
+      {
+        "title": "Smaller image output",
+        "description": "JPG is usually a good choice for photo-heavy PDF pages where file size matters."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Choose PDF",
+        "description": "Select the PDF document from your device."
+      },
+      {
+        "step": 2,
+        "title": "Render pages",
+        "description": "Convert the pages to JPG images locally."
+      },
+      {
+        "step": 3,
+        "title": "Download JPG files",
+        "description": "Save the exported page images."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is PDF to JPG private?",
+        "answer": "Yes. The PDF is handled in your browser, so it does not need to be uploaded."
+      },
+      {
+        "question": "Is JPG good for text pages?",
+        "answer": "JPG works, but PNG can be sharper for text-heavy pages and diagrams."
+      },
+      {
+        "question": "Can I use JPG pages in social posts?",
+        "answer": "Yes. Converting a PDF page to JPG makes it easier to share as an image."
+      }
+    ]
+  },
+  "pdf-to-png": {
+    "benefits": [
+      {
+        "title": "Sharper document images",
+        "description": "PNG is good for text, forms, diagrams, UI screenshots, and pages with crisp edges."
+      },
+      {
+        "title": "No upload conversion",
+        "description": "The PDF is rendered locally in your browser."
+      },
+      {
+        "title": "Useful for screenshots and documentation",
+        "description": "Export PDF pages as PNG when clarity matters more than smallest file size."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Open PDF",
+        "description": "Choose the PDF file from your device."
+      },
+      {
+        "step": 2,
+        "title": "Convert pages",
+        "description": "Render the pages into PNG images locally."
+      },
+      {
+        "step": 3,
+        "title": "Download PNG output",
+        "description": "Save the resulting image files."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Why choose PNG over JPG for PDF pages?",
+        "answer": "PNG preserves text and line details better, while JPG is usually smaller for photos."
+      },
+      {
+        "question": "Will my PDF be uploaded?",
+        "answer": "No. The conversion happens inside your browser."
+      },
+      {
+        "question": "Can PNG files be large?",
+        "answer": "Yes. PNG files may be larger, especially for high-resolution pages."
+      }
+    ]
+  },
+  "png-to-jpg": {
+    "benefits": [
+      {
+        "title": "Reduce PNG file size",
+        "description": "Photo-based PNG files can be much larger than JPG. Converting can make them easier to upload and share."
+      },
+      {
+        "title": "Widely compatible output",
+        "description": "JPG is accepted almost everywhere across websites, email, forms, and apps."
+      },
+      {
+        "title": "Private local conversion",
+        "description": "Your PNG stays on your device while the browser creates the JPG."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Select PNG",
+        "description": "Choose a PNG image from your device."
+      },
+      {
+        "step": 2,
+        "title": "Convert to JPG",
+        "description": "Flatten transparency if needed and create a JPG copy locally."
+      },
+      {
+        "step": 3,
+        "title": "Download JPG",
+        "description": "Save the smaller, compatible file."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Does JPG support transparency?",
+        "answer": "No. Transparent PNG areas become a solid background after conversion."
+      },
+      {
+        "question": "Why is JPG smaller than PNG?",
+        "answer": "JPG uses lossy compression that is efficient for photos and complex colors."
+      },
+      {
+        "question": "Should screenshots be JPG?",
+        "answer": "Usually no. PNG is often better for screenshots and text-heavy graphics."
+      }
+    ]
+  },
+  "exif-remover": {
+    "benefits": [
+      {
+        "title": "Remove location clues",
+        "description": "Strip GPS and device metadata that can reveal where or how a photo was taken."
+      },
+      {
+        "title": "Safer sharing",
+        "description": "Create clean copies before posting images publicly or sending them to clients."
+      },
+      {
+        "title": "Private by design",
+        "description": "Metadata removal happens locally in your browser."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Choose image",
+        "description": "Select the photo that may contain metadata."
+      },
+      {
+        "step": 2,
+        "title": "Remove hidden data",
+        "description": "Strip EXIF and GPS details locally."
+      },
+      {
+        "step": 3,
+        "title": "Download clean copy",
+        "description": "Save the image without hidden metadata."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can photos contain GPS data?",
+        "answer": "Yes. Some photos contain location coordinates, depending on camera and phone settings."
+      },
+      {
+        "question": "Does removing EXIF reduce quality?",
+        "answer": "The visible image should stay the same; the hidden metadata is removed."
+      },
+      {
+        "question": "Should I check metadata before sharing?",
+        "answer": "Yes, especially for photos from phones or cameras with location services enabled."
+      }
+    ]
+  },
+  "image-redactor": {
+    "benefits": [
+      {
+        "title": "Hide sensitive content",
+        "description": "Cover private text, faces, IDs, addresses, or screenshots before sharing online."
+      },
+      {
+        "title": "Choose redaction style",
+        "description": "Use blur, pixelate, black box, or whiteout depending on how visible and permanent the redaction should be."
+      },
+      {
+        "title": "Local editing",
+        "description": "Redact in the browser without uploading confidential images."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Open image",
+        "description": "Select the screenshot or photo you need to redact."
+      },
+      {
+        "step": 2,
+        "title": "Mark private areas",
+        "description": "Apply blur, pixelation, black box, or whiteout to sensitive regions."
+      },
+      {
+        "step": 3,
+        "title": "Download safe copy",
+        "description": "Export the redacted image after checking it carefully."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is blur secure enough?",
+        "answer": "For sensitive information, black box or whiteout is safer than light blur."
+      },
+      {
+        "question": "Can I redact screenshots?",
+        "answer": "Yes. The tool is useful for hiding names, account details, and private UI content in screenshots."
+      },
+      {
+        "question": "Will my original be changed?",
+        "answer": "No. You download a new redacted copy."
+      }
+    ]
+  },
+  "metadata-viewer": {
+    "benefits": [
+      {
+        "title": "Inspect hidden data",
+        "description": "See EXIF, camera, file, dimension, and possible GPS details stored inside images."
+      },
+      {
+        "title": "Check before publishing",
+        "description": "Find out whether a photo contains private metadata before sharing it."
+      },
+      {
+        "title": "No upload inspection",
+        "description": "Metadata is read locally in the browser."
+      }
+    ],
+    "howTo": [
+      {
+        "step": 1,
+        "title": "Choose image",
+        "description": "Select the image file you want to inspect."
+      },
+      {
+        "step": 2,
+        "title": "Read metadata",
+        "description": "View EXIF, camera, and file information locally."
+      },
+      {
+        "step": 3,
+        "title": "Clean if needed",
+        "description": "Use EXIF Remover if the image contains private information."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Does viewing metadata upload my photo?",
+        "answer": "No. Metadata is read in your browser."
+      },
+      {
+        "question": "Can metadata reveal location?",
+        "answer": "Sometimes. Photos may contain GPS coordinates if location tagging was enabled."
+      },
+      {
+        "question": "Can I remove metadata after viewing it?",
+        "answer": "Yes. Use the EXIF Remover to create a clean copy."
+      }
+    ]
   }
 }

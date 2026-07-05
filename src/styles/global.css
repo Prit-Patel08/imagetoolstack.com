@@ -118,4 +118,78 @@
     filter: blur(100px);
     opacity: 0.15;
   }
+
+  /* Premium Article & Markdown Typography Styles */
+  .prose {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-body);
+  }
+
+  .prose p {
+    @apply mb-6 leading-relaxed;
+    color: var(--color-body);
+  }
+
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply font-bold text-ink tracking-tight mt-12 mb-4;
+  }
+
+  .prose h1 {
+    @apply text-3xl sm:text-4xl lg:text-5xl tracking-[-0.04em] mb-6;
+  }
+
+  .prose h2 {
+    @apply text-2xl sm:text-3xl tracking-[-0.03em] border-b border-hairline pb-2 mb-4;
+  }
+
+  .prose h3 {
+    @apply text-xl sm:text-2xl tracking-[-0.02em] mt-8 mb-3;
+  }
+
+  .prose a {
+    @apply text-link hover:text-link-deep underline font-medium transition-colors;
+  }
+
+  .prose ul {
+    @apply list-disc pl-6 mb-6 space-y-2;
+  }
+
+  .prose ol {
+    @apply list-decimal pl-6 mb-6 space-y-2;
+  }
+
+  .prose li {
+    @apply leading-relaxed;
+    color: var(--color-body);
+  }
+
+  .prose li strong {
+    @apply text-ink font-semibold;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-link bg-canvas-soft p-5 rounded-r-lg my-8 italic;
+    color: var(--color-body);
+  }
+
+  .prose blockquote p {
+    @apply m-0;
+  }
+
+  .prose hr {
+    @apply my-10 border-hairline;
+  }
+
+  .prose code {
+    @apply bg-canvas-soft-2 text-ink font-mono text-sm px-1.5 py-0.5 rounded border border-hairline font-semibold;
+  }
+
+  .prose pre {
+    @apply bg-canvas-soft-2 p-5 rounded-lg border border-hairline font-mono text-sm overflow-x-auto my-6 shadow-inner;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0 border-none font-normal text-inherit;
+  }
 }

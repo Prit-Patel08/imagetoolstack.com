@@ -154,9 +154,10 @@ export function translateTool(tool: any, locale: string) {
   const outFmt = tool.outputFormats?.[0] || 'file';
   const inFmtsStr = tool.inputFormats?.join(', ') || 'supported formats';
   const action = tool.categoryId === 'conversion' ? `Convert to ${outFmt}` : (tool.categoryId === 'pdf' ? 'Process PDF' : 'Apply Changes');
+  const preserveCustomContent = cleanLocale === 'en' && tool.preserveCustomContent;
 
   // Steps
-  if (t.toolTemplates?.howToSteps?.steps) {
+  if (t.toolTemplates?.howToSteps?.steps && !preserveCustomContent) {
     localized.howToSteps = t.toolTemplates.howToSteps.steps.map(step => 
       step.replace(/{inFmt}/g, inFmt)
           .replace(/{outFmt}/g, outFmt)
@@ -166,7 +167,7 @@ export function translateTool(tool: any, locale: string) {
   }
 
   // Benefits
-  if (t.toolTemplates?.benefits?.items) {
+  if (t.toolTemplates?.benefits?.items && !preserveCustomContent) {
     localized.benefits = t.toolTemplates.benefits.items.map(b => 
       b.replace(/{inFmt}/g, inFmt)
        .replace(/{outFmt}/g, outFmt)
@@ -175,7 +176,7 @@ export function translateTool(tool: any, locale: string) {
   }
 
   // Use cases
-  if (t.toolTemplates?.useCases?.items) {
+  if (t.toolTemplates?.useCases?.items && !preserveCustomContent) {
     localized.useCases = t.toolTemplates.useCases.items.map(uc => 
       uc.replace(/{inFmt}/g, inFmt)
         .replace(/{outFmt}/g, outFmt)
@@ -184,7 +185,7 @@ export function translateTool(tool: any, locale: string) {
   }
 
   // FAQs
-  if (t.toolTemplates?.faqs?.items) {
+  if (t.toolTemplates?.faqs?.items && !preserveCustomContent) {
     localized.faqs = t.toolTemplates.faqs.items.map(faq => ({
       q: faq.q.replace(/{toolName}/g, name)
              .replace(/{inFmt}/g, inFmt),

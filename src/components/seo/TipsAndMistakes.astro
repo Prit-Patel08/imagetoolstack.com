@@ -1,0 +1,82 @@
+---
+import { getTranslations } from "../../utils/i18n";
+
+interface Props {
+  tool: any;
+}
+const { tool } = Astro.props;
+
+const locale = Astro.currentLocale || 'en';
+const t = getTranslations(locale);
+
+const tips = tool.tips || [];
+const mistakes = tool.commonMistakes || [];
+
+const supportedFormatsHeading = locale === 'es' ? 'Formatos Soportados' :
+                                locale === 'fr' ? 'Formats Supportés' :
+                                locale === 'de' ? 'Unterstützte Formate' :
+                                locale === 'pt' ? 'Formatos Suportados' :
+                                locale === 'id' ? 'Format yang Didukung' : 'Supported Formats';
+
+const tipsHeading = locale === 'es' ? 'Mejores Ajustes y Consejos' :
+                    locale === 'fr' ? 'Meilleurs Paramètres et Conseils' :
+                    locale === 'de' ? 'Beste Einstellungen & Tipps' :
+                    locale === 'pt' ? 'Melhores Configurações e Dicas' :
+                    locale === 'id' ? 'Pengaturan Terbaik & Tips Pro' : 'Best Settings & Pro Tips';
+
+const mistakesHeading = locale === 'es' ? 'Errores Comunes a Evitar' :
+                        locale === 'fr' ? 'Erreurs Courantes à Éviter' :
+                        locale === 'de' ? 'Häufige Fehler, die Sie vermeiden sollten' :
+                        locale === 'pt' ? 'Erros Comuns a Evitar' :
+                        locale === 'id' ? 'Kesalahan Umum yang Harus Dihindari' : 'Common Mistakes to Avoid';
+
+const formatsDesc = locale === 'es' ? `Esta herramienta de procesamiento local es totalmente compatible con archivos de entrada ${tool.inputFormats?.join(", ")} y los exporta en formato ${tool.outputFormats?.join(", ")} de manera segura.` :
+                      locale === 'fr' ? `Cet outil de traitement local prend entièrement en charge les fichiers d'entrée ${tool.inputFormats?.join(", ")} et les exporte au format ${tool.outputFormats?.join(", ")} en toute sécurité.` :
+                      locale === 'de' ? `Dieses lokale Verarbeitungstool unterstützt ${tool.inputFormats?.join(", ")}-Dateien und exportiert sie sicher im ${tool.outputFormats?.join(", ")}-Format.` :
+                      locale === 'pt' ? `Esta ferramenta de processamento local suporta arquivos de entrada ${tool.inputFormats?.join(", ")} e os exporta no formato ${tool.outputFormats?.join(", ")} de forma segura.` :
+                      locale === 'id' ? `Alat pemrosesan lokal ini sepenuhnya mendukung file input ${tool.inputFormats?.join(", ")} dan mengekspornya dalam format ${tool.outputFormats?.join(", ")} secara aman.` : `This local processing tool fully supports ${tool.inputFormats?.join(", ")} input files and exports them in ${tool.outputFormats?.join(", ")} format securely.`;
+---
+
+{((tips.length > 0) || (mistakes.length > 0)) && (
+  <div class="space-y-12 mb-16">
+    {/* Supported Formats Section */}
+    <section>
+      <h2 class="text-2xl font-semibold tracking-tight text-ink mb-4">{supportedFormatsHeading}</h2>
+      <p class="text-sm text-body leading-relaxed mb-6">{formatsDesc}</p>
+    </section>
+
+    {/* Tips Section */}
+    {tips.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-ink mb-6">{tipsHeading}</h2>
+        <div class="grid grid-cols-1 gap-4">
+          {tips.map((tip: string) => (
+            <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas border border-hairline">
+              <div class="mt-1 shrink-0 h-5 w-5 rounded-full bg-indigo-500/10 flex items-center justify-center dark:bg-indigo-400/20">
+                <svg class="h-3 w-3 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <span class="text-sm text-body">{tip}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Common Mistakes Section */}
+    {mistakes.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-ink mb-6">{mistakesHeading}</h2>
+        <div class="grid grid-cols-1 gap-4">
+          {mistakes.map((mistake: string) => (
+            <div class="flex items-start gap-3 p-4 rounded-lg bg-canvas border border-hairline">
+              <div class="mt-1 shrink-0 h-5 w-5 rounded-full bg-red-500/10 flex items-center justify-center dark:bg-red-400/20">
+                <svg class="h-3 w-3 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <span class="text-sm text-body">{mistake}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+)}

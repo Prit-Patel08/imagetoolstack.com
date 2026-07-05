@@ -19,6 +19,7 @@ import RelatedGuides from "../components/seo/RelatedGuides.astro";
 import AdSlot from "../components/seo/AdSlot.astro";
 import CrossLinkBlock from "../components/seo/CrossLinkBlock.astro";
 import ToolEnrichment from "../components/seo/ToolEnrichment.astro";
+import TipsAndMistakes from "../components/seo/TipsAndMistakes.astro";
 
 interface Props {
   tool: any;
@@ -199,6 +200,8 @@ const relatedCategoryHeading = locale === 'es' ? `Más herramientas de ${categor
 
           <!-- SEO Components -->
           <HowItWorks tool={tool} />
+          
+          <TipsAndMistakes tool={tool} />
           
           <WhyUseThisTool tool={tool} />
           
