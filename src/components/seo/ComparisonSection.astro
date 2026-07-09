@@ -1,22 +1,58 @@
 ---
 import comparisonsData from "../../data/comparisons.json";
+import { getLocalizedPath, translateComparison } from "../../utils/i18n";
 
 interface Props {
   tool: any;
 }
 const { tool } = Astro.props;
 
+const locale = Astro.currentLocale || 'en';
+
+const titleMap = {
+  en: "Related Comparisons",
+  es: "Comparaciones Relacionadas",
+  fr: "Comparaisons Connexes",
+  de: "Zugehörige Vergleiche",
+  pt: "Comparações Relacionadas",
+  id: "Perbandingan Terkait"
+};
+
+const pdfHubMap = {
+  en: "Explore PDF Hub",
+  es: "Explorar el Centro de PDF",
+  fr: "Explorer le Hub PDF",
+  de: "PDF-Hub erkunden",
+  pt: "Explorar o Hub PDF",
+  id: "Jelajahi Hub PDF"
+};
+
+const pdfHubDescMap = {
+  en: "Discover our complete collection of secure, browser-based PDF tools and utilities.",
+  es: "Descubra nuestra colección completa de herramientas y utilidades PDF seguras basadas en el navegador.",
+  fr: "Découvrez notre collection complète d'outils et d'utilitaires PDF sécurisés basés sur le navigateur.",
+  de: "Entdecken Sie unsere vollständige Sammlung sicherer, browserbasierter PDF-Tools und -Dienstprogramme.",
+  pt: "Descubra nossa coleção completa de ferramentas e utilitários PDF seguros baseados no navegador.",
+  id: "Temukan koleksi lengkap alat dan utilitas PDF berbasis browser yang aman."
+};
+
+const heading = titleMap[locale as keyof typeof titleMap] || titleMap.en;
+const pdfHubTitle = pdfHubMap[locale as keyof typeof pdfHubMap] || pdfHubMap.en;
+const pdfHubDesc = pdfHubDescMap[locale as keyof typeof pdfHubDescMap] || pdfHubDescMap.en;
+
 const compSlugs = tool.relatedComparisons || [];
-const comparisons = comparisonsData.comparisons.filter(c => compSlugs.includes(c.id));
+const comparisons = comparisonsData.comparisons
+  .filter(c => compSlugs.includes(c.id))
+  .map(c => translateComparison(c, locale));
 
 const isPdfTool = tool.categoryId === 'pdf' || (tool.inputFormats && tool.inputFormats.includes('pdf')) || (tool.outputFormats && tool.outputFormats.includes('pdf'));
 ---
 {(comparisons.length > 0 || isPdfTool) && (
   <section class="mb-16">
-    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">Related Comparisons</h2>
+    <h2 class="text-2xl font-semibold tracking-tight text-ink mb-8">{heading}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {comparisons.map((comp: any) => (
-        <a href={`/compare/${comp.id}`} class="p-6 rounded-lg bg-canvas-soft border border-hairline relative overflow-hidden group hover:border-link transition-colors block">
+        <a href={getLocalizedPath(`/compare/${comp.id}`, locale)} class="p-6 rounded-lg bg-canvas-soft border border-hairline relative overflow-hidden group hover:border-link transition-colors block">
           <div class="absolute top-0 left-0 w-1 h-full bg-link/50 group-hover:bg-link transition-colors"></div>
           <h3 class="font-semibold text-ink mb-3 group-hover:text-link transition-colors">{comp.format1} vs {comp.format2}</h3>
           <p class="text-sm text-body leading-relaxed">{comp.seoDescription}</p>
@@ -24,13 +60,13 @@ const isPdfTool = tool.categoryId === 'pdf' || (tool.inputFormats && tool.inputF
       ))}
       
       {isPdfTool && (
-        <a href="/category/pdf" class="p-6 rounded-lg bg-link/5 border border-link/20 relative overflow-hidden group hover:bg-link/10 transition-colors block">
+        <a href={getLocalizedPath("/category/pdf", locale)} class="p-6 rounded-lg bg-link/5 border border-link/20 relative overflow-hidden group hover:bg-link/10 transition-colors block">
           <div class="absolute top-0 left-0 w-1 h-full bg-link group-hover:bg-link-hover transition-colors"></div>
           <h3 class="font-semibold text-link mb-3 group-hover:text-link-hover transition-colors flex items-center gap-2">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-            Explore PDF Hub
+            {pdfHubTitle}
           </h3>
-          <p class="text-sm text-body leading-relaxed">Discover our complete collection of secure, browser-based PDF tools and utilities.</p>
+          <p class="text-sm text-body leading-relaxed">{pdfHubDesc}</p>
         </a>
       )}
     </div>

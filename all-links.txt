@@ -10,13 +10,13 @@ Legend:
 - hold = not part of current 90-day focus
 
 # === P0: ADSENSE REVIEW CORE - inspect first, improve first, keep indexable ===
-https://imagetoolstack.com/image-compressor | indexed | improved
-https://imagetoolstack.com/tools/bulk-image-resizer | indexed | improved
-https://imagetoolstack.com/tools/bulk-resizer | indexed | improved
-https://imagetoolstack.com/tools/image-compressor | indexed | improved
+https://imagetoolstack.com/image-compressor | indexed | finalized
+https://imagetoolstack.com/tools/bulk-image-resizer | indexed | finalized
+https://imagetoolstack.com/tools/bulk-resizer | indexed | finalized
+https://imagetoolstack.com/tools/image-compressor | indexed | finalized
 https://imagetoolstack.com/tools/image-resizer | indexed | finalized
 https://imagetoolstack.com/tools/heic-to-jpg | indexed | finalized
-https://imagetoolstack.com/tools/image-to-pdf | requested | improved
+https://imagetoolstack.com/tools/image-to-pdf | requested | finalized
 https://imagetoolstack.com/tools/jpg-to-png | indexed | finalized
 https://imagetoolstack.com/tools/pdf-to-jpg | indexed | finalized
 https://imagetoolstack.com/tools/pdf-to-png | requested | finalized
@@ -45,9 +45,9 @@ https://imagetoolstack.com/privacy | indexed | improve-first
 https://imagetoolstack.com/terms | indexed | improve-first
 
 # === P1: SEO QUICK WINS - indexed/impression candidates to improve next ===
-https://imagetoolstack.com/best-bulk-image-resizer-free | indexed | improve-next
-https://imagetoolstack.com/best-free-image-resizer-online | indexed | improve-next
-https://imagetoolstack.com/best-image-compressor-online | indexed | improve-next
+https://imagetoolstack.com/best-bulk-image-resizer-free | indexed | finalized
+https://imagetoolstack.com/best-free-image-resizer-online | indexed | finalized
+https://imagetoolstack.com/best-image-compressor-online | indexed | finalized
 https://imagetoolstack.com/crop-image-online | unchecked | improve-next
 https://imagetoolstack.com/for/discord | indexed | improve-next
 https://imagetoolstack.com/for/instagram | indexed | improve-next
@@ -82,8 +82,8 @@ https://imagetoolstack.com/compare/jpg-pdf | unchecked | improve-next
 https://imagetoolstack.com/compare/png-pdf | unchecked | improve-next
 https://imagetoolstack.com/compare/tiff-vs-jpg | unchecked | improve-next
 https://imagetoolstack.com/how-to-compress-images-without-losing-quality | unchecked | improve-next
-https://imagetoolstack.com/how-to-convert-heic-to-jpg | unchecked | improve-next
-https://imagetoolstack.com/how-to-convert-images-to-pdf | unchecked | improve-next
+https://imagetoolstack.com/how-to-convert-heic-to-jpg | unchecked | finalized
+https://imagetoolstack.com/how-to-convert-images-to-pdf | unchecked | finalized
 https://imagetoolstack.com/how-to-convert-pdf-to-jpg | unchecked | finalized
 https://imagetoolstack.com/how-to-save-pdf-as-png | unchecked | finalized
 https://imagetoolstack.com/how-to-convert-png-to-jpg | unchecked | finalized
@@ -195,7 +195,7 @@ https://imagetoolstack.com/tools/text-case-converter | unchecked | later
 https://imagetoolstack.com/tools/vintage-filter | unchecked | later
 https://imagetoolstack.com/best-free-background-remover-online | unchecked | later
 https://imagetoolstack.com/best-free-image-upscaler-online | unchecked | later
-https://imagetoolstack.com/best-free-jpg-to-png-converter | unchecked | later
+https://imagetoolstack.com/best-free-jpg-to-png-converter | unchecked | finalized
 https://imagetoolstack.com/best-free-pdf-tools-online | unchecked | later
 https://imagetoolstack.com/best-free-png-to-jpg-converter | unchecked | later
 https://imagetoolstack.com/best-heic-to-jpg-converter | unchecked | later

@@ -1,0 +1,39 @@
+{
+  "_comment": "Pages that pass AGENTS.md quality tests and are approved for Google indexing. All other pages will be noindex, nofollow and excluded from sitemap.",
+  
+  "tools": [
+    "image-compressor",
+    "bulk-image-resizer",
+    "bulk-resizer",
+    "image-resizer",
+    "heic-to-jpg",
+    "image-to-pdf",
+    "jpg-to-png",
+    "pdf-to-jpg",
+    "pdf-to-png",
+    "png-to-jpg",
+    "exif-remover"
+  ],
+
+  "articles": [
+    "best-bulk-image-resizer-free",
+    "best-free-image-resizer-online",
+    "best-image-compressor-online",
+    "how-to-remove-image-metadata",
+    "how-to-convert-heic-to-jpg",
+    "how-to-convert-images-to-pdf",
+    "how-to-convert-pdf-to-jpg",
+    "how-to-save-pdf-as-png",
+    "how-to-convert-png-to-jpg",
+    "best-free-jpg-to-png-converter"
+  ],
+
+  "staticPages": [
+    "/",
+    "/about",
+    "/privacy",
+    "/terms",
+    "/contact",
+    "/articles"
+  ]
+}

@@ -1,10 +1,23 @@
 ---
 import toolsData from "../../data/tools.json";
+import { getLocalizedPath, translateTool } from "../../utils/i18n";
 
 interface Props {
   tool?: any;
 }
 const { tool } = Astro.props;
+
+const locale = Astro.currentLocale || 'en';
+
+const titleMap = {
+  en: "Related Tools",
+  es: "Herramientas Relacionadas",
+  fr: "Outils Connexes",
+  de: "Zugehörige Werkzeuge",
+  pt: "Ferramentas Relacionadas",
+  id: "Alat Terkait"
+};
+const heading = titleMap[locale as keyof typeof titleMap] || titleMap.en;
 
 const allTools = toolsData.tools || [];
 const allSlugs = new Set(allTools.map(t => t.slug));
@@ -33,15 +46,17 @@ if (!tool) {
   }
 }
 
-const relatedTools = allTools.filter(t => requestedSlugs.includes(t.slug));
+const relatedTools = allTools
+  .filter(t => requestedSlugs.includes(t.slug))
+  .map(t => translateTool(t, locale));
 ---
 {relatedTools.length > 0 && (
   <div class="card-marketing p-6 mb-8">
-    <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">Related Tools</h4>
+    <h4 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute mb-4">{heading}</h4>
     <ul class="space-y-2">
       {relatedTools.map((rt) => (
         <li>
-          <a href={`/tools/${rt.slug}`} class="flex items-center justify-between p-2 rounded-md text-sm text-ink hover:text-link hover:bg-canvas-soft transition-all group">
+          <a href={getLocalizedPath(`/tools/${rt.slug}`, locale)} class="flex items-center justify-between p-2 rounded-md text-sm text-ink hover:text-link hover:bg-canvas-soft transition-all group">
             <span>{rt.name}</span>
             <svg class="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
           </a>

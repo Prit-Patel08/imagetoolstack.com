@@ -33,8 +33,13 @@ const articleSchema = {
     "name": "Image Tool Stack"
   }
 };
+
+// Indexing: only finalized articles get index,follow
+import indexablePages from "../data/indexable-pages.json";
+const isIndexable = indexablePages.articles.includes(entry.id);
+const robots = isIndexable ? "index, follow" : "noindex, nofollow";
 ---
-<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description}>
+<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description} robots={robots}>
   <Navbar />
   
   <main class="w-full">
