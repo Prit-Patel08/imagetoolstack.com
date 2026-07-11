@@ -53,7 +53,7 @@ export default defineConfig({
         // Allowlisted static pages
         const indexableStatic = [
           "/", "/about", "/privacy", "/terms", "/contact", "/articles",
-          "/image-compressor"
+          "/image-compressor", "/compare/webp-vs-png"
         ];
 
         // Check static pages (exact match)
