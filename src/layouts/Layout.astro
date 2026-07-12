@@ -6,13 +6,15 @@ interface Props {
 	description?: string;
 	keywords?: string;
 	robots?: string;
+	schema?: any;
 }
 
 const { 
 	title, 
 	description = "Fast, privacy-friendly, browser-based image utilities.",
 	keywords,
-	robots = "noindex, nofollow"
+	robots = "noindex, nofollow",
+	schema
 } = Astro.props;
 
 const siteName = "Image Tool Stack";
@@ -125,6 +127,8 @@ const canonicalUrl = getUrl(currentLocale);
 				"url": "https://imagetoolstack.com"
 			}
 		</script>
+
+		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
 
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
