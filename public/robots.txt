@@ -1,37 +1,59 @@
 # Image Tool Stack - Robots.txt
-# Optimized for search engine indexation and blocking AI scrapers
+# Allow search + AI citation, block AI training
 
 User-agent: *
 Disallow: /cdn-cgi/
 Disallow: /undefined
 Allow: /
 
-# Block AI training scrapers but allow search & citation agents
+# --- AI Training bots - BLOCK ---
 User-agent: GPTBot
 Disallow: /
 
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: CCBot
+User-agent: Google-Extended
 Disallow: /
 
 User-agent: Anthropic-ai
 Disallow: /
 
 User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Omgili
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Cohere-ai
+Disallow: /
+
+# --- AI Search / Citation / Social Previews - ALLOW ---
+User-agent: ChatGPT-User
 Allow: /
 
-User-agent: Google-Extended
-Disallow: /
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: OMgili
-Disallow: /
+User-agent: Meta-ExternalFetcher
+Allow: /
 
 User-agent: FacebookBot
-Disallow: /
+Allow: /
 
 Sitemap: https://imagetoolstack.com/sitemap-index.xml
