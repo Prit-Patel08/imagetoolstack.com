@@ -31,60 +31,92 @@ export default defineConfig({
         if (page.includes('/embed/')) return false;
 
         const url = new URL(page);
-        const path = url.pathname.replace(/\/$/, '') || '/';
+        let path = url.pathname.replace(/\/$/, '') || '/';
 
-        // Allowlisted tool slugs
-        const indexableTools = [
-          "image-compressor", "bulk-image-resizer", "bulk-resizer",
-          "image-resizer", "heic-to-jpg", "image-to-pdf",
-          "jpg-to-png", "pdf-to-jpg", "pdf-to-png",
-          "png-to-jpg", "exif-remover"
+        // Strip locale prefix /es, /fr, /de, /pt, /id for matching
+        const stripLocale = (p) => p.replace(/^\/(es|fr|de|pt|id)(?=\/|$)/, '') || '/';
+        const cleanPath = stripLocale(path);
+
+        // === YOUR P1 - CORE IMAGE MONEY PAGES (12) - from all-links.txt ===
+        // Removed pdf-to-jpg, pdf-to-png, image-to-pdf for image-only focus
+        const P1_TOOLS = [
+          "image-compressor",   // 165k
+          "image-resizer",      // 201k
+          "bulk-image-resizer", // ✅ done
+          "bulk-resizer",      // ✅ done
+          "heic-to-jpg",       // ✅ 90k
+          "png-to-jpg",        // ✅ 110k
+          "jpg-to-png",        // ✅ 74k
+          "exif-remover",      // ✅ privacy intent
+          "crop-image",        // high comp core
+          "image-redactor",    // P1
+          "metadata-viewer",   // P1
+          "image-upscaler"
         ];
 
-        // Allowlisted article slugs
-        const indexableArticles = [
-          "best-bulk-image-resizer-free", "best-free-image-resizer-online",
-          "best-image-compressor-online", "how-to-remove-image-metadata",
-          "how-to-convert-heic-to-jpg", "how-to-convert-images-to-pdf",
-          "how-to-convert-pdf-to-jpg", "how-to-save-pdf-as-png",
-          "how-to-convert-png-to-jpg", "best-free-jpg-to-png-converter"
+        // === YOUR P1 ARTICLES (7) - Image-only focus, removed PDF articles ===
+        const P1_ARTICLES = [
+          "best-bulk-image-resizer-free",
+          "best-free-image-resizer-online",
+          "best-image-compressor-online",
+          "how-to-remove-image-metadata",
+          "how-to-convert-heic-to-jpg",
+          "how-to-convert-png-to-jpg",
+          "best-free-jpg-to-png-converter"
         ];
 
-        // Allowlisted static pages
-        const indexableStatic = [
-          "/", "/about", "/privacy", "/terms", "/contact", "/articles",
-          "/image-compressor", "/compare/webp-vs-png"
+        // === YOUR P0 - TOPICAL AUTHORITY BUILDERS (15) - highest GSC impression ===
+        const P0_PAGES = [
+          "/compare/webp-vs-png",   // High GSC, Very High
+          "/compare/png-vs-jpg",    // High GSC
+          "/compare/avif-vs-jpg",   // Growing
+          "/compare/heic-vs-jpg",   // Very High
+          "/compare/webp-vs-svg",
+          "/compare/png-vs-svg",
+          "/compare/jpg-vs-tiff",
+          "/compare/avif-vs-webp",  // Key next-gen
+          "/compare/heic-vs-png",
+          "/compare/jpg-vs-jpeg",   // High vol, low diff
+          "/formats/png",           // P0
+          "/formats/webp",
+          "/formats/heic",
+          "/what-is-png",
+          "/what-is-webp"
         ];
 
-        // Check static pages (exact match)
-        if (indexableStatic.includes(path)) return true;
+        // Static money pages
+        const STATIC = ["/", "/image-compressor", "/image-tools", "/image-converter"];
 
-        // Check tools (match /tools/<slug> pattern)
-        const toolMatch = path.match(/^\/tools\/([^/]+)$/);
-        if (toolMatch && indexableTools.includes(toolMatch[1])) return true;
+        // Match static pages and P0 pages
+        if (STATIC.includes(cleanPath)) return true;
+        if (P0_PAGES.includes(cleanPath)) return true;
 
-        // Check articles (match /<slug> pattern — articles are at root level)
-        const articleSlug = path.replace(/^\//, '');
-        if (indexableArticles.includes(articleSlug)) return true;
+        // Match tools
+        const toolMatch = cleanPath.match(/^\/tools\/([^/]+)$/);
+        if (toolMatch && P1_TOOLS.includes(toolMatch[1])) return true;
 
-        // Block everything else
+        // Match root-level articles
+        const articleSlug = cleanPath.replace(/^\//, '');
+        if (P1_ARTICLES.includes(articleSlug)) return true;
+
+        // Block everything else (about, privacy, terms, pdf, timezone, utility)
         return false;
       },
       serialize(item) {
         item.lastmod = new Date();
-        const url = item.url;
-        if (url.includes('/tools/')) {
+        const path = new URL(item.url).pathname;
+        if (path.includes('/tools/')) {
           item.priority = 1.0;
           item.changefreq = 'weekly';
-        } else if (url.endsWith('/about') || url.endsWith('/contact') || url.endsWith('/articles')) {
-          item.priority = 0.5;
-          item.changefreq = 'monthly';
-        } else if (url.endsWith('/privacy') || url.endsWith('/terms')) {
-          item.priority = 0.3;
+        } else if (path.includes('/compare/')) {
+          item.priority = 0.9; // P0 comparisons are highly important
+          item.changefreq = 'weekly';
+        } else if (path.includes('/formats/') || path.includes('/what-is-')) {
+          item.priority = 0.8;
           item.changefreq = 'monthly';
         } else {
-          item.priority = 0.8;
-          item.changefreq = 'weekly';
+          item.priority = 0.7; // Articles get 0.7 priority
+          item.changefreq = 'monthly';
         }
         return item;
       }

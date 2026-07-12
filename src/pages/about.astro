@@ -96,7 +96,7 @@ const stackBody = locale === 'es' ? "Image Tool Stack está construido con **Ast
                   locale === 'id' ? "Image Tool Stack dibangun dengan **Astro** untuk pembuatan situs statis secepat kilat, **Tailwind CSS v4** untuk desain modern, dan menggunakan **WebAssembly** untuk pemrosesan gambar yang berat langsung di browser Anda." : "Image Tool Stack is built with Astro for lightning-fast static generation, Tailwind CSS v4 for modern styling, and utilizes WebAssembly for heavy-duty image processing tasks directly in your browser.";
 ---
 
-<Layout title={title} description={subheading} robots="index, follow">
+<Layout title={title} description={subheading} robots="noindex, follow">
   <Navbar />
   
   <main class="mx-auto max-w-3xl px-6 py-16 lg:px-8 lg:py-24">

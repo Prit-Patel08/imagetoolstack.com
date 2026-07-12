@@ -7,12 +7,13 @@
     "bulk-resizer",
     "image-resizer",
     "heic-to-jpg",
-    "image-to-pdf",
     "jpg-to-png",
-    "pdf-to-jpg",
-    "pdf-to-png",
     "png-to-jpg",
-    "exif-remover"
+    "exif-remover",
+    "crop-image",
+    "image-redactor",
+    "metadata-viewer",
+    "image-upscaler"
   ],
 
   "articles": [
@@ -21,20 +22,12 @@
     "best-image-compressor-online",
     "how-to-remove-image-metadata",
     "how-to-convert-heic-to-jpg",
-    "how-to-convert-images-to-pdf",
-    "how-to-convert-pdf-to-jpg",
-    "how-to-save-pdf-as-png",
     "how-to-convert-png-to-jpg",
     "best-free-jpg-to-png-converter"
   ],
 
   "staticPages": [
     "/",
-    "/about",
-    "/privacy",
-    "/terms",
-    "/contact",
-    "/articles",
     "/compare/webp-vs-png"
   ]
 }
