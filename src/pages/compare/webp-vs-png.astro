@@ -133,7 +133,7 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
 
       <!-- Technical Comparison Matrix -->
       <section class="mb-16">
-        <h2 class="text-3xl font-bold text-ink mb-6">Technical Comparison: WebP vs PNG</h2>
+        <h2 class="text-3xl font-bold text-ink mb-6">WebP vs PNG File Size & Compression (Tested)</h2>
         <p class="text-lg text-body leading-relaxed mb-6">
           While both formats support transparency and lossless encoding, they utilize entirely different compression math. Let's compare their technical structures side-by-side.
         </p>
@@ -236,6 +236,21 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
         </p>
       </section>
 
+      <!-- Transparency Section -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Does WebP Support Transparency Like PNG?</h2>
+        <p class="mb-4 leading-relaxed">
+          Yes, WebP supports transparency (alpha-channel) in exactly the same way as PNG. In fact, WebP offers a unique feature: <strong>lossy transparency</strong>.
+        </p>
+        <p class="mb-4 leading-relaxed">
+          Standard PNG elements only support lossless transparency, meaning all alpha values and colors are preserved at full bit depth, which results in larger file sizes. WebP allows you to choose:
+        </p>
+        <ul class="list-disc pl-6 space-y-2 mb-6">
+          <li><strong>Lossless WebP Transparency:</strong> Replicates PNG transparency perfectly with 100% color-perfection, but at a <strong>30% smaller size</strong>.</li>
+          <li><strong>Lossy WebP Transparency:</strong> Slightly compresses the colors and alpha gradients while keeping the transparent boundaries clean. This results in file sizes that are up to <strong>80% smaller than PNG</strong>, making it ideal for large transparent illustrations and hero layouts.</li>
+        </ul>
+      </section>
+
       <!-- The Core Battle: WebP vs PNG vs JPG -->
       <section class="mb-16 prose prose-vercel max-w-none text-body">
         <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">The Three-Way Choice: WebP vs PNG vs JPG</h2>
@@ -336,11 +351,11 @@ const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-png");
         </ol>
       </section>
 
-      <!-- Fallback Best Practices (The picture tag) -->
+      <!-- Browser Support Section -->
       <section class="mb-16 prose prose-vercel max-w-none text-body">
-        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Web Fallback Best Practices</h2>
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">WebP vs PNG Browser Support (98% in 2026)</h2>
         <p class="mb-6 leading-relaxed">
-          While modern browser support for WebP is over 98%, you can use the HTML5 `<picture>` tag to serve WebP while providing a PNG fallback for legacy browsers:
+          WebP is natively supported by over 98% of browsers in 2026, including Google Chrome, Apple Safari, Mozilla Firefox, and Microsoft Edge. For older systems, you can use the HTML5 `<picture>` tag to serve WebP with a PNG fallback:
         </p>
         <pre class="rounded-xl overflow-hidden bg-canvas-soft border border-hairline p-4 mb-6"><code class="language-html">&lt;picture&gt;
   &lt;source srcset="/images/logo.webp" type="image/webp"&gt;
