@@ -39,6 +39,20 @@ if (data.articles) {
   });
 }
 
+// Comparisons
+if (data.comparisons) {
+  data.comparisons.forEach(id => {
+    urls.push(`https://${HOST}/compare/${id}`);
+  });
+}
+
+// Formats
+if (data.formats) {
+  data.formats.forEach(slug => {
+    urls.push(`https://${HOST}/formats/${slug}`);
+  });
+}
+
 // 4. Send POST request to IndexNow endpoint
 async function submit() {
   if (urls.length === 0) {
