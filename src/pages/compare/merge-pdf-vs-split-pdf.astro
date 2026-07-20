@@ -80,9 +80,14 @@ const relatedComparisons = comparisonsData.comparisons
   .slice(0, 4);
 
 const relatedTool = toolsData.tools.find(t => t.slug === "merge-pdf");
+
+// Indexing check
+import indexablePages from "../../data/indexable-pages.json";
+const isIndexable = indexablePages.comparisons.includes("merge-pdf-vs-split-pdf");
+const robots = isIndexable ? "index, follow" : "noindex, nofollow";
 ---
 
-<Layout title={seoTitle} description={seoDescription}>
+<Layout title={seoTitle} description={seoDescription} robots={robots}>
   <Navbar />
   
   <main class="w-full">

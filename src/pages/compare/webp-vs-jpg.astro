@@ -87,9 +87,14 @@ const relatedComparisons = comparisonsData.comparisons
   .slice(0, 4);
 
 const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-jpg");
+
+// Indexing check
+import indexablePages from "../../data/indexable-pages.json";
+const isIndexable = indexablePages.comparisons.includes("webp-vs-jpg");
+const robots = isIndexable ? "index, follow" : "noindex, nofollow";
 ---
 
-<Layout title={seoTitle} description={seoDescription} robots="index, follow" schema={schema}>
+<Layout title={seoTitle} description={seoDescription} robots={robots} schema={schema}>
   <Navbar />
   
   <main class="w-full">
