@@ -28,7 +28,7 @@ Client-side tools run entirely within your web browser using HTML5 Canvas APIs a
 
 ---
 
-## Detailed breakdown of bulk resizing modes
+## Bulk Resize by Width, Height or Percentage
 
 Different projects require different resizing strategies. Modern bulk resizers offer three primary modes to handle image dimensions:
 
@@ -48,7 +48,7 @@ When you must force every image in the batch to match exact dimensions (e.g., 80
 
 ---
 
-## Preserving image quality: The enlargement safeguard
+## Does Bulk Resizing Reduce Quality?
 
 One of the most common mistakes in batch resizing is upscaling smaller images. If you upload a mix of high-resolution photos and small thumbnail images (e.g., 400px wide) and set a target width of 1200px, standard resizers will stretch the small thumbnails. This forces the browser to duplicate pixel grids, creating highly pixelated, blurry, and unprofessional images.
 
@@ -97,7 +97,7 @@ For standard web resizing jobs (batches of 10 to 100 images), browser-based clie
 
 ---
 
-## How to audit your bulk resizer for privacy
+## How to Resize Multiple Images at Once
 
 If you are handling sensitive company receipts, identity documents, client contracts, or unreleased assets, you must verify that the resizer does not transmit your files:
 

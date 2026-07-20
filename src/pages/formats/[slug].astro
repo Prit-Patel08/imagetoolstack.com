@@ -32,8 +32,11 @@ const articleSchema = {
     "name": "Image Tool Stack"
   }
 };
+import indexablePages from "../../data/indexable-pages.json";
+const isIndexable = indexablePages.formats.includes(entry.id);
+const robots = isIndexable ? "index, follow" : "noindex, nofollow";
 ---
-<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description}>
+<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description} robots={robots} schema={articleSchema}>
   <Navbar />
   
   <main class="w-full">
@@ -105,6 +108,4 @@ const articleSchema = {
   </main>
 
   <Footer />
-  
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
 </Layout>

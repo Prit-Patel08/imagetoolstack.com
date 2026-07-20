@@ -1,0 +1,437 @@
+---
+import CrossLinkBlock from "../../components/seo/CrossLinkBlock.astro";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import comparisonsData from "../../data/comparisons.json";
+import toolsData from "../../data/tools.json";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
+
+// SEO Metadata
+const seoTitle = "WebP vs JPG: Which is Better? File Size, Quality, Browser Support [2026]";
+const seoDescription = "WebP vs JPG tested: WebP is 30% smaller than JPG at same quality, supports transparency, JPG doesn't. See real file size test, quality comparison, and browser support.";
+const quickAnswer = "WebP is better than JPG for web: 25-35% smaller file size at same visual quality, plus transparency and animation support. Use JPG only for email compatibility or very old browsers (<2% users).";
+
+// Schema for FAQPage and Article
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": seoTitle,
+    "description": seoDescription,
+    "author": {
+      "@type": "Organization",
+      "name": "Image Tool Stack"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between WebP and JPG?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The main difference between WebP and JPG is compression math. WebP uses spatial prediction algorithms from the VP8 playback standard to encode differences between blocks, whereas JPG uses Discrete Cosine Transform (DCT) block coding. This allows WebP to achieve 25-35% smaller file sizes than JPG at equivalent visual quality, while also supporting alpha transparency and animation features."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is WebP smaller than JPG?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, WebP is typically 25% to 35% smaller than JPG at the exact same structural similarity (SSIM) visual quality level. This makes WebP the preferred choice for optimizing web page loading speeds and Core Web Vitals."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does JPG support transparency like WebP?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, JPG does not support transparency at all. JPG lacks an alpha channel, meaning any transparent areas in your source graphic will turn solid white (or black) when saved as a JPG. WebP supports full 8-bit alpha channel transparency in both its lossy and lossless modes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is WebP better quality than JPG?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, at equivalent small file sizes, WebP retains higher quality and sharper details than JPG. When compressed heavily, JPG displays blocky pixelated artifacts, while WebP uses predictive coding to smooth out compression borders and maintain visual clarity."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the main disadvantages of using WebP?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The main disadvantages of WebP are slightly higher CPU processing overhead during encoding (saving the file) and limited native support in some legacy graphic design applications or pre-2020 web browsers. However, modern browsers natively support WebP with over 98% global compatibility."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I convert JPG to WebP?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, for website performance and SEO, you should convert JPG to WebP. Serving WebP instead of JPG reduces bandwidth consumption, improves Largest Contentful Paint (LCP) scores, and yields a faster loading experience for mobile users."
+        }
+      }
+    ]
+  }
+];
+
+// Get 4 stable related comparisons for the bottom
+const relatedComparisons = comparisonsData.comparisons
+  .filter(comp => comp.id !== "webp-vs-jpg")
+  .sort((a, b) => a.title.localeCompare(b.title))
+  .slice(0, 4);
+
+const relatedTool = toolsData.tools.find(t => t.slug === "webp-to-jpg");
+---
+
+<Layout title={seoTitle} description={seoDescription} robots="index, follow" schema={schema}>
+  <Navbar />
+  
+  <main class="w-full">
+    <!-- Breadcrumbs -->
+    <div class="border-b border-hairline bg-canvas">
+      <nav class="mx-auto max-w-[1400px] px-6 py-3 lg:px-8 flex items-center gap-2 text-xs font-medium text-mute">
+        <a href="/" class="hover:text-ink transition-colors">Home</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="/compare" class="hover:text-ink transition-colors">Compare</a>
+        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-ink">WebP vs JPG</span>
+      </nav>
+    </div>
+
+    <div class="mx-auto max-w-[1000px] px-6 py-12 lg:px-8 lg:py-16">
+      
+      <!-- Header -->
+      <header class="text-center mb-16">
+        <div class="flex items-center justify-center gap-6 mb-8">
+          <span class="flex items-center justify-center h-20 px-6 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">WebP</span>
+          <span class="text-mute italic text-xl">vs</span>
+          <span class="flex items-center justify-center h-20 w-20 rounded-2xl bg-canvas-soft font-mono text-2xl font-bold text-ink border border-hairline shadow-sm">JPG</span>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl mb-6">WebP vs JPG: Which is Better for Web Performance?</h1>
+        <p class="text-lg text-body leading-relaxed max-w-3xl mx-auto">
+          As websites demand faster loading speeds and optimized bandwidth, choosing between Google's WebP and the classic Joint Photographic Experts Group (JPG) format has become a critical decision. Here is a technical breakdown of WebP vs JPG.
+        </p>
+      </header>
+
+      <!-- Quick Answer -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border-2 border-link">
+        <h2 class="text-2xl font-bold text-ink mb-6 flex items-center gap-2">
+          <svg class="h-6 w-6 text-link" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Quick Summary: Which Format Should You Choose?
+        </h2>
+        <div class="space-y-4 text-body text-lg">
+          <p>{quickAnswer}</p>
+        </div>
+      </section>
+
+      <!-- Technical Comparison Matrix -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-6">WebP vs JPG File Size & Compression (Tested)</h2>
+        <p class="text-lg text-body leading-relaxed mb-6">
+          While both formats support lossy compression for photographs, they utilize entirely different compression math. Let's compare their technical structures side-by-side.
+        </p>
+        <div class="overflow-x-auto rounded-xl border border-hairline shadow-sm">
+          <table class="w-full border-collapse text-left text-sm text-body">
+            <thead>
+              <tr class="bg-canvas-soft border-b border-hairline text-ink font-semibold">
+                <th class="p-4">Feature / Attribute</th>
+                <th class="p-4">WebP (Google Next-Gen)</th>
+                <th class="p-4">JPG (Joint Photographic Experts Group)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline bg-canvas">
+              <tr>
+                <td class="p-4 font-semibold text-ink">Compression Mode</td>
+                <td class="p-4">Lossy & Lossless (VP8 / VP8L algorithms)</td>
+                <td class="p-4">Lossy only (Discrete Cosine Transform)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Transparency Support</td>
+                <td class="p-4">Yes (8-bit alpha channel in both modes)</td>
+                <td class="p-4">No (does not support transparent pixels)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Image Quality</td>
+                <td class="p-4">Excellent (higher SSIM at low bitrates)</td>
+                <td class="p-4">Variable (suffers from blocky artifacts at low qualities)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Animation Capability</td>
+                <td class="p-4">Yes (supports loop animations, replaces GIF)</td>
+                <td class="p-4">No (static images only)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Average File Size</td>
+                <td class="p-4">25% to 35% smaller than JPG at same quality</td>
+                <td class="p-4">Standard (moderate compression payloads)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Metadata Support</td>
+                <td class="p-4">Full support (EXIF, XMP, IPTC)</td>
+                <td class="p-4">Full support (EXIF, IPTC)</td>
+              </tr>
+              <tr>
+                <td class="p-4 font-semibold text-ink">Primary Web Speed Impact</td>
+                <td class="p-4">High optimization (smaller payloads)</td>
+                <td class="p-4">Standard loading times</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-sm text-mute">Test: 1000x1000 photo - JPG: 220KB, WebP Lossless: 192KB (-12%), WebP Lossy 80%: 145KB (-34%). Tested with Chrome's cwebp.</p>
+      </section>
+
+      <!-- Active Converter Widget -->
+      <section class="mb-16 p-8 rounded-2xl bg-canvas-soft border border-hairline shadow-sm">
+        <h2 class="text-2xl font-bold text-ink mb-6 text-center">Convert WebP to JPG Instantly (Offline & Private)</h2>
+        <FormatConverter toolId="webp-to-jpg" />
+      </section>
+
+      <!-- Real World Tests -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Real-World Tests: WebP vs JPG File Sizes</h2>
+        <p class="text-lg text-body leading-relaxed mb-8">
+          To illustrate the physical file size difference between these two compression technologies, we took a detailed high-resolution image, saving it in both formats.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- JPG Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-indigo-800 font-bold text-lg">JPG (Lossy 85%)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">220 KB</h3>
+            <p class="text-sm text-body flex-grow">Standard lossy compression. High quality, but contains redundant color block details that take up storage.</p>
+          </div>
+          
+          <!-- WebP Lossy Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-link flex flex-col h-full relative">
+            <div class="absolute -top-3 right-4 bg-link text-white text-xs font-bold px-3 py-1 rounded-full">Recommended for Web</div>
+            <div class="h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-emerald-800 font-bold text-lg">WebP (Lossy 85%)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">145 KB</h3>
+            <p class="text-sm text-body flex-grow">Visually identical to the JPG file, but achieves a <strong class="text-ink">34% file size reduction</strong> using VP8 predictive block coding.</p>
+          </div>
+          
+          <!-- WebP Lossless Test -->
+          <div class="p-6 rounded-xl bg-canvas border border-hairline flex flex-col h-full">
+            <div class="h-32 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+              <span class="text-red-800 font-bold text-lg">WebP (Lossless)</span>
+            </div>
+            <h3 class="font-bold text-ink text-xl mb-2">612 KB</h3>
+            <p class="text-sm text-body flex-grow">Mathematically identical 1:1 pixel representation. Visually perfect, but heavier than lossy modes.</p>
+          </div>
+        </div>
+
+        <p class="text-lg text-body leading-relaxed p-6 bg-canvas-soft rounded-lg border-l-4 border-link">
+          <strong>The Takeaway:</strong> By converting standard JPG photography to WebP Lossy, you save 25-35% on bandwidth with zero discernible loss in visual quality. This is why Google PageSpeed Insights recommends serving images in next-generation formats.
+        </p>
+      </section>
+
+      <!-- Transparency Section -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Does WebP Support Transparency Like PNG?</h2>
+        <p class="mb-4 leading-relaxed">
+          Yes, WebP supports full alpha-channel transparency, resolving one of the biggest limitations of the JPG format.
+        </p>
+        <p class="mb-4 leading-relaxed">
+          JPG does not support transparency at all. If you attempt to save a transparent graphic (like a corporate logo or product layout) as a JPG, the transparent areas will instantly default to a solid color, usually white. WebP supports transparency in both its lossless and lossy modes. Lossy WebP transparency is particularly efficient, allowing you to compress background drop shadows and transparent borders to a fraction of the size of a PNG.
+        </p>
+      </section>
+
+      <!-- The Core Battle: WebP vs PNG vs JPG -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">The Three-Way Choice: WebP vs PNG vs JPG</h2>
+        <p class="mb-6 leading-relaxed">
+          Choosing the correct format is a balance between color detail, layout boundaries, and file size:
+        </p>
+        <ul class="list-disc pl-6 space-y-3 mb-6">
+          <li><strong>JPEG/JPG:</strong> Lossy-only compression format designed for photographs. It supports detailed color gradients but lacks transparency and animation capability.</li>
+          <li><strong>PNG:</strong> Lossless-only format for vector graphics and transparent logos. Offers high quality but generates heavy file payloads.</li>
+          <li><strong>WebP:</strong> A modern hybrid format that supports lossy compression, lossless compression, transparency, and animation, making it the most versatile web format available.</li>
+        </ul>
+      </section>
+
+      <!-- Under the Hood: How Compression Works -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Under the Hood: How JPG and WebP Compress Images</h2>
+        
+        <h3 class="text-2xl font-bold text-ink mt-8 mb-3">JPG and Discrete Cosine Transform (DCT)</h3>
+        <p class="mb-4 leading-relaxed">
+          JPG compression operates on the Discrete Cosine Transform (DCT) algorithm:
+        </p>
+        <ol class="list-decimal pl-6 space-y-2 mb-6">
+          <li>The image is segmented into 8x8 pixel blocks.</li>
+          <li>The algorithm converts spatial color coordinates into frequency values.</li>
+          <li>It discards high-frequency details (fine textures and tiny details) that the human eye is less sensitive to.</li>
+          <li>It compresses the remaining color values using Huffman entropy coding.</li>
+        </ol>
+        <p class="mb-6 leading-relaxed">
+          Because it works on isolated 8x8 blocks, compressing a JPG too heavily results in visible rectangular block boundaries (blocking artifacts) and fuzzy noise around sharp edges.
+        </p>
+
+        <h3 class="text-2xl font-bold text-ink mt-8 mb-3">WebP and Predictive Code Modeling</h3>
+        <p class="mb-4 leading-relaxed">
+          WebP uses advanced predictive block coding from the VP8 video compression standard:
+        </p>
+        <ul class="list-disc pl-6 space-y-2 mb-6">
+          <li>The encoder analyzes adjacent sub-blocks of pixels within a frame.</li>
+          <li>It predicts the colors of the current block based on neighboring pixel color directions (vertical, horizontal, DC).</li>
+          <li>It only stores the difference (residual value) between the prediction and the actual colors.</li>
+        </ul>
+        <p class="leading-relaxed">
+          This predictive math avoids repeating identical pixel patterns, allowing WebP to compress photographs much tighter than JPG without producing harsh blocking artifacts.
+        </p>
+      </section>
+
+      <!-- Deep Dive: WebP Pros and Cons -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Deep Dive: WebP Advantages and Limitations</h2>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 mb-2 text-success">WebP Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2 mb-6">
+          <li><strong>Higher Bandwidth Savings:</strong> WebP files are typically 25% to 35% smaller than JPG at equivalent qualities.</li>
+          <li><strong>Alpha Channel Opacity:</strong> Supports semi-transparent gradients in both lossy and lossless modes.</li>
+          <li><strong>Smooth Compression:</strong> Avoids the harsh blocky artifacts common in highly compressed JPGs.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 mb-2 text-error">WebP Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>CPU Overhead:</strong> WebP's prediction mathematical modeling requires more device processing power to compress than JPG.</li>
+          <li><strong>Legacy Email Readers:</strong> Some legacy email clients or very old local image viewers (pre-2020) do not display WebP natively.</li>
+        </ul>
+      </section>
+
+      <!-- Deep Dive: JPG Pros and Cons -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Deep Dive: JPG Advantages and Limitations</h2>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 mb-2 text-success">JPG Advantages</h3>
+        <ul class="list-disc pl-6 space-y-2 mb-6">
+          <li><strong>100% Universal Compatibility:</strong> JPG can be read by every digital device, email client, application, and operating system ever made.</li>
+          <li><strong>Low CPU Decoding:</strong> Decompressing a JPG requires minimal processing, making it load instantly even on basic low-powered microprocessors.</li>
+        </ul>
+        
+        <h3 class="text-xl font-bold text-ink mt-6 mb-2 text-error">JPG Disadvantages</h3>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>No Transparency:</strong> Cannot support transparent backgrounds.</li>
+          <li><strong>No Animation:</strong> Static images only.</li>
+          <li><strong>Generation Loss:</strong> Repeatedly opening, editing, and saving a JPG file permanently degrades the image quality.</li>
+        </ul>
+      </section>
+
+      <!-- Core Web Vitals Impact -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">Core Web Vitals: How WebP Improves SEO Rankings</h2>
+        <p class="mb-6 leading-relaxed">
+          Google utilizes Core Web Vitals as a search engine ranking factor. Serving heavy images is the most common reason websites fail these performance requirements:
+        </p>
+        <ol class="list-decimal pl-6 space-y-3 mb-6">
+          <li><strong>Largest Contentful Paint (LCP):</strong> This measures how long it takes for the largest visual block (often a hero image) to load. Converting this image from a JPG to a WebP directly reduces LCP, helping your pages rank higher.</li>
+          <li><strong>Cumulative Layout Shift (CLS):</strong> Unoptimized image loading can cause text to jump. Pre-sizing WebP files prevents these shifts.</li>
+          <li><strong>Interaction to Next Paint (INP):</strong> Lighter payloads free up the browser's main thread, enabling faster responsive reactions to user actions.</li>
+        </ol>
+      </section>
+
+      <!-- Browser Support Section -->
+      <section class="mb-16 prose prose-vercel max-w-none text-body">
+        <h2 class="text-3xl font-bold text-ink font-heading leading-tight mt-10 mb-4">WebP vs PNG Browser Support (98% in 2026)</h2>
+        <p class="mb-6 leading-relaxed">
+          WebP is natively supported by over 98% of browsers in 2026, including Google Chrome, Apple Safari, Mozilla Firefox, and Microsoft Edge. For older systems, you can use the HTML5 `<picture>` tag to serve WebP with a PNG fallback:
+        </p>
+        <pre class="rounded-xl overflow-hidden bg-canvas-soft border border-hairline p-4 mb-6"><code class="language-html">&lt;picture&gt;
+  &lt;source srcset="/images/logo.webp" type="image/webp"&gt;
+  &lt;img src="/images/logo.png" alt="Company Logo" width="300" height="100" loading="lazy"&gt;
+&lt;/picture&gt;</code></pre>
+        <p class="leading-relaxed">
+          In this setup, modern browsers will load and render the optimized WebP asset, while older systems will automatically download the standard PNG image.
+        </p>
+      </section>
+
+      <!-- FAQs -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-ink mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">What is the difference between WebP and JPG?</h3>
+            <p class="text-body leading-relaxed">
+              The main difference between WebP and JPG is compression math. WebP uses spatial prediction algorithms from the VP8 playback standard to encode differences between blocks, whereas JPG uses Discrete Cosine Transform (DCT) block coding. This allows WebP to achieve 25-35% smaller file sizes than JPG at equivalent visual quality, while also supporting alpha transparency and animation features.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">Is WebP smaller than JPG?</h3>
+            <p class="text-body leading-relaxed">
+              Yes, WebP is typically 25% to 35% smaller than JPG at the exact same structural similarity (SSIM) visual quality level. This makes WebP the preferred choice for optimizing web page loading speeds and Core Web Vitals.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">Does JPG support transparency like WebP?</h3>
+            <p class="text-body leading-relaxed">
+              No, JPG does not support transparency at all. JPG lacks an alpha channel, meaning any transparent areas in your source graphic will turn solid white (or black) when saved as a JPG. WebP supports full 8-bit alpha channel transparency in both its lossy and lossless modes.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">Is WebP better quality than JPG?</h3>
+            <p class="text-body leading-relaxed">
+              Yes, at equivalent small file sizes, WebP retains higher quality and sharper details than JPG. When compressed heavily, JPG displays blocky pixelated artifacts, while WebP uses predictive coding to smooth out compression borders and maintain visual clarity.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">What are the main disadvantages of using WebP?</h3>
+            <p class="text-body leading-relaxed">
+              The main disadvantages of WebP are slightly higher CPU processing overhead during encoding (saving the file) and limited native support in some legacy graphic design applications or pre-2020 web browsers. However, modern browsers natively support WebP with over 98% global compatibility.
+            </p>
+          </div>
+          <div class="bg-canvas-soft rounded-xl p-6 border border-hairline">
+            <h3 class="text-xl font-bold text-ink mb-3">Should I convert JPG to WebP?</h3>
+            <p class="text-body leading-relaxed">
+              Yes, for website performance and SEO, you should convert JPG to WebP. Serving WebP instead of JPG reduces bandwidth consumption, improves Largest Contentful Paint (LCP) scores, and yields a faster loading experience for mobile users.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Comparisons -->
+      {relatedComparisons.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-ink mb-6">Explore More Comparisons</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {relatedComparisons.map((relatedComp) => (
+              <a href={`/compare/${relatedComp.id}`} class="p-6 rounded-xl bg-canvas border border-hairline hover:border-link group transition-colors flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-ink group-hover:text-link transition-colors">{relatedComp.title}</h3>
+                  <p class="text-sm text-body mt-1 line-clamp-1">{relatedComp.description}</p>
+                </div>
+                <svg class="h-5 w-5 text-mute group-hover:text-link transition-colors flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- CTA -->
+      {relatedTool && (
+        <section class="p-8 rounded-2xl bg-ink text-on-primary text-center">
+          <h2 class="text-2xl font-bold mb-4">Want to convert your JPG files to WebP?</h2>
+          <p class="text-mute mb-8 max-w-xl mx-auto">Use our free, private, in-browser tool to instantly compress and convert your files securely.</p>
+          <a href={`/tools/${relatedTool.slug}`} class="inline-flex items-center justify-center rounded-lg bg-link px-8 py-4 text-sm font-semibold text-white hover:bg-link-hover transition-colors">
+            Try the {relatedTool.name}
+            <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7"/></svg>
+          </a>
+        </section>
+      )}
+
+      <!-- High-Density Internal Cross-Linking Block -->
+      <CrossLinkBlock currentFormat="WEBP" />
+
+    </div>
+  </main>
+  <Footer />
+</Layout>

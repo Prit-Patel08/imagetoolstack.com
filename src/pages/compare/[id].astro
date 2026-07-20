@@ -418,35 +418,38 @@ const compareContent = {
   ]
 };
 
+import indexablePages from "../../data/indexable-pages.json";
+const isIndexable = indexablePages.comparisons.includes(comp.id);
+const robots = isIndexable ? "index, follow" : "noindex, nofollow";
+
 // Build schema
-const schema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Article",
-      "headline": comp.seoTitle,
-      "description": comp.seoDescription,
-      "author": {
-        "@type": "Organization",
-        "name": "Image Tool Stack"
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": compareContent.faqs.map(faq => ({
-        "@type": "Question",
-        "name": faq.q,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.a
-        }
-      }))
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": comp.seoTitle,
+    "description": comp.seoDescription,
+    "author": {
+      "@type": "Organization",
+      "name": "Image Tool Stack"
     }
-  ]
-};
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": compareContent.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a
+      }
+    }))
+  }
+];
 ---
 
-<Layout title={comp.seoTitle} description={comp.seoDescription}>
+<Layout title={comp.seoTitle} description={comp.seoDescription} robots={robots} schema={schema}>
   <Navbar />
   
   <main class="w-full">
@@ -734,6 +737,4 @@ const schema = {
   </main>
 
   <Footer />
-  
-  <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>
 </Layout>

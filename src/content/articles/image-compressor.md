@@ -23,7 +23,7 @@ Our on-device Image Compressor runs entirely in client-side memory:
 
 ---
 
-## The technical details of image compression math
+## Does Compressing Images Reduce Quality?
 
 To optimize images without introducing ugly artifacts, it is helpful to understand the underlying mathematics of lossy and lossless algorithms.
 
@@ -40,7 +40,7 @@ Lossless compression does not discard any pixel details. Instead, it utilizes pa
 
 ---
 
-## A comparison of modern web codecs: MozJPEG vs. WebP vs. AVIF
+## How Much Can You Compress JPG vs PNG vs WebP?
 
 When compressing images for the web, choosing the right codec has a massive impact on delivery speeds:
 
@@ -50,7 +50,7 @@ When compressing images for the web, choosing the right codec has a massive impa
 
 ---
 
-## Target limits: How to compress images to 100KB without blur
+## How to Compress Image Without Losing Quality
 
 Many official applications and upload forms require files to be under **100KB**. To hit this target while preserving readability:
 1.  **Reduce physical dimensions first**: Use a **[Bulk Image Resizer](/tools/bulk-resizer)** to scale a high-resolution photo down to a maximum width of 1200px. This removes unnecessary pixels before compression starts.

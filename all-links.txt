@@ -69,7 +69,7 @@ https://imagetoolstack.com/compare/svg-vs-png | P0 | svg vs png | Designer trans
 https://imagetoolstack.com/compare/webp-pdf | P0 | webp pdf | Document converter comparison. | Low | Low | Compare Google's web-optimized WebP with Portable Document Format.
 https://imagetoolstack.com/compare/webp-vs-heic | P0 | webp vs heic | Modern mobile comparison. | Low | Medium | Compare WebP web assets with iOS HEIC photos.
 https://imagetoolstack.com/compare/webp-vs-jpeg | P0 | webp vs jpeg | Standard query. | Low | High | Compare lossy WebP elements with standard JPEG format.
-https://imagetoolstack.com/compare/webp-vs-jpg | P0 | webp vs jpg | High volume comparison. | Low-Medium | Very High | Compare Google WebP size savings against standard JPG.
+✅ https://imagetoolstack.com/compare/webp-vs-jpg | P0 | webp vs jpg | High volume comparison. | Low-Medium | Very High | Compare Google WebP size savings against standard JPG.
 ✅ https://imagetoolstack.com/compare/webp-vs-svg | P0 | webp vs svg | Technical comparison. | Low | High | Compare compressed raster WebP with vector SVG.
 https://imagetoolstack.com/compare/avif-bmp | P0 | avif bmp | Advanced comparison. | Low | Low | Compare modern AVIF with uncompressed legacy BMP formats.
 https://imagetoolstack.com/compare/avif-eps | P0 | avif eps | Technical comparison. | Low | Low | Compare AVIF with vector EPS formats.

@@ -1,0 +1,70 @@
+---
+import ToolLayout from "../../layouts/ToolLayout.astro";
+import FormatConverter from "../../components/tools/FormatConverter.astro";
+import toolsData from "../../data/tools.json";
+import { translateTool, translateCategory } from "../../utils/i18n";
+import { generateFaqs } from "../../utils/seo-generator";
+
+const rawTool = toolsData.tools.find((t) => t.slug === "image-compressor");
+const rawCategory = toolsData.categories.find((c) => c.id === rawTool.categoryId);
+
+const locale = Astro.currentLocale || 'en';
+const tool = translateTool(rawTool, locale);
+const category = translateCategory(rawCategory, locale);
+
+const seoTitle = "Image Compressor - Compress JPG, PNG, WebP to 80% Smaller [Free]";
+const seoDescription = "Compress images online, free & offline. Reduce JPG, PNG, WebP by 80% with no quality loss. Batch support, no upload to server, 100% private.";
+
+// Build schemas for this tool
+const homeText = locale === 'es' ? 'Inicio' : 'Home';
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": tool.name + " - Image Tool Stack",
+  "url": `https://imagetoolstack.com/tools/image-compressor`,
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": homeText, "item": `https://imagetoolstack.com` },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` },
+    { "@type": "ListItem", "position": 3, "name": tool.name, "item": `https://imagetoolstack.com/tools/image-compressor` }
+  ]
+};
+
+const faqs = generateFaqs(tool);
+const faqSchema = faqs && faqs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((item: any) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+} : null;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    softwareSchema,
+    breadcrumbSchema,
+    ...(faqSchema ? [faqSchema] : [])
+  ]
+};
+---
+
+<ToolLayout tool={tool} category={category} seoTitle={seoTitle} seoDescription={seoDescription} schema={schema}>
+  <div slot="tool-interface" class="w-full">
+    <FormatConverter toolId={tool.id} />
+    <p class="text-sm mt-3">Supports JPG, PNG, WebP, AVIF. Compress up to 20 images at once. Average reduction: JPG 68%, PNG 52%, WebP 35%.</p>
+  </div>
+</ToolLayout>

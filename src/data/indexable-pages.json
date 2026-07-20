@@ -23,11 +23,34 @@
     "how-to-remove-image-metadata",
     "how-to-convert-heic-to-jpg",
     "how-to-convert-png-to-jpg",
-    "best-free-jpg-to-png-converter"
+    "best-free-jpg-to-png-converter",
+    "what-is-png",
+    "what-is-webp",
+    "image-compressor",
+    "image-tools",
+    "image-converter"
+  ],
+
+  "comparisons": [
+    "avif-vs-jpg",
+    "heic-vs-jpg",
+    "webp-vs-svg",
+    "png-vs-svg",
+    "jpg-vs-tiff",
+    "avif-vs-webp",
+    "heic-vs-png",
+    "jpg-vs-jpeg"
+  ],
+
+  "formats": [
+    "png",
+    "webp",
+    "heic"
   ],
 
   "staticPages": [
     "/",
-    "/compare/webp-vs-png"
+    "/compare/webp-vs-png",
+    "/compare/webp-vs-jpg"
   ]
 }

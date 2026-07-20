@@ -128,7 +128,11 @@ const canonicalUrl = getUrl(currentLocale);
 			}
 		</script>
 
-		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+		{schema && (Array.isArray(schema) ? schema.map(item => (
+			<script type="application/ld+json" set:html={JSON.stringify(item)} />
+		)) : (
+			<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+		))}
 
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">

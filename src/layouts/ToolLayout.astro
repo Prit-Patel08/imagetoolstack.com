@@ -24,9 +24,12 @@ import TipsAndMistakes from "../components/seo/TipsAndMistakes.astro";
 interface Props {
   tool: any;
   category: any;
+  seoTitle?: string;
+  seoDescription?: string;
+  schema?: any;
 }
 
-const { tool, category } = Astro.props;
+const { tool, category, seoTitle: customSeoTitle, seoDescription: customSeoDescription, schema: customSchema } = Astro.props;
 
 const locale = Astro.currentLocale || 'en';
 
@@ -84,8 +87,8 @@ const requestedText = locale === 'es' ? 'Solicitado' :
                       locale === 'pt' ? 'Solicitado' :
                       locale === 'id' ? 'Diminta' : 'Requested';
 
-const seoTitle = generateSeoTitle(tool);
-const seoDescription = generateSeoDescription(tool);
+const seoTitle = customSeoTitle || generateSeoTitle(tool);
+const seoDescription = customSeoDescription || generateSeoDescription(tool);
 const faqs = generateFaqs(tool);
 
 // Indexing: only finalized tools get index,follow
@@ -140,9 +143,15 @@ const relatedCategoryHeading = locale === 'es' ? `Más herramientas de ${categor
                                locale === 'de' ? `Mehr ${category.name}-Werkzeuge` :
                                locale === 'pt' ? `Mais ferramentas de ${category.name}` :
                                locale === 'id' ? `Lebih Banyak Alat ${category.name}` : `More ${category.name} Tools`;
+
+const combinedSchema = customSchema || [
+  softwareSchema,
+  breadcrumbSchema,
+  ...(faqSchema ? [faqSchema] : [])
+];
 ---
 
-<Layout title={seoTitle} description={seoDescription} robots={robots}>
+<Layout title={seoTitle} description={seoDescription} robots={robots} schema={combinedSchema}>
   <Navbar />
   
   <main class="w-full">
@@ -202,6 +211,8 @@ const relatedCategoryHeading = locale === 'es' ? `Más herramientas de ${categor
           <div class="mb-12">
             <AdSlot id="ad-below-tool" layout="horizontal" />
           </div>
+
+          <slot />
 
           <!-- SEO Components -->
           <HowItWorks tool={tool} />
@@ -342,9 +353,4 @@ const relatedCategoryHeading = locale === 'es' ? `Más herramientas de ${categor
   </script>
 
   <Footer />
-
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
-  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>}
 </Layout>

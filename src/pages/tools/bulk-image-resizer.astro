@@ -1,0 +1,70 @@
+---
+import ToolLayout from "../../layouts/ToolLayout.astro";
+import BulkResizerTool from "../../components/tools/BulkResizerTool.astro";
+import toolsData from "../../data/tools.json";
+import { translateTool, translateCategory } from "../../utils/i18n";
+import { generateFaqs } from "../../utils/seo-generator";
+
+const rawTool = toolsData.tools.find((t) => t.slug === "bulk-image-resizer");
+const rawCategory = toolsData.categories.find((c) => c.id === rawTool.categoryId);
+
+const locale = Astro.currentLocale || 'en';
+const tool = translateTool(rawTool, locale);
+const category = translateCategory(rawCategory, locale);
+
+const seoTitle = "Bulk Image Resizer - Resize Multiple Images at Once Online [Free]";
+const seoDescription = "Resize 100+ images at once online. Set width, height, or percentage. Keep aspect ratio. Works offline, no upload, JPG PNG WebP AVIF support.";
+
+// Build schemas for this tool
+const homeText = locale === 'es' ? 'Inicio' : 'Home';
+const softwareSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": tool.name + " - Image Tool Stack",
+  "url": `https://imagetoolstack.com/tools/bulk-image-resizer`,
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": homeText, "item": `https://imagetoolstack.com` },
+    { "@type": "ListItem", "position": 2, "name": category.name, "item": `https://imagetoolstack.com/category/${category.slug}` },
+    { "@type": "ListItem", "position": 3, "name": tool.name, "item": `https://imagetoolstack.com/tools/bulk-image-resizer` }
+  ]
+};
+
+const faqs = generateFaqs(tool);
+const faqSchema = faqs && faqs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((item: any) => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": { "@type": "Answer", "text": item.a }
+  }))
+} : null;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    softwareSchema,
+    breadcrumbSchema,
+    ...(faqSchema ? [faqSchema] : [])
+  ]
+};
+---
+
+<ToolLayout tool={tool} category={category} seoTitle={seoTitle} seoDescription={seoDescription} schema={schema}>
+  <div slot="tool-interface" class="w-full">
+    <BulkResizerTool toolId={tool.id} />
+    <p class="text-sm mt-3">Resize up to 100 images in 5 seconds. Preset sizes for Instagram, YouTube, Shopify. No watermark.</p>
+  </div>
+</ToolLayout>

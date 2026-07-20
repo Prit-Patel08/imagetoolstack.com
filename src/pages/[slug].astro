@@ -39,7 +39,7 @@ import indexablePages from "../data/indexable-pages.json";
 const isIndexable = indexablePages.articles.includes(entry.id);
 const robots = isIndexable ? "index, follow" : "noindex, nofollow";
 ---
-<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description} robots={robots}>
+<Layout title={`${entry.data.title} | Image Tool Stack`} description={entry.data.description} robots={robots} schema={articleSchema}>
   <Navbar />
   
   <main class="w-full">
@@ -102,6 +102,4 @@ const robots = isIndexable ? "index, follow" : "noindex, nofollow";
   </main>
 
   <Footer />
-  
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
 </Layout>

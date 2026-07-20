@@ -69,6 +69,7 @@ export default defineConfig({
         const P0_PAGES = [
           "/compare/webp-vs-png",   // High GSC, Very High
           "/compare/png-vs-jpg",    // High GSC
+          "/compare/webp-vs-jpg",
           "/compare/avif-vs-jpg",   // Growing
           "/compare/heic-vs-jpg",   // Very High
           "/compare/webp-vs-svg",
