@@ -66,9 +66,14 @@
     "webp-vs-svg"
   ],
   "formats": [
+    "avif",
+    "bmp",
+    "gif",
+    "heic",
+    "jpg",
     "png",
-    "webp",
-    "heic"
+    "svg",
+    "webp"
   ],
   "staticPages": [
     "/",
