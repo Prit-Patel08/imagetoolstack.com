@@ -46,6 +46,11 @@ https://imagetoolstack.com/compare/tiff-vs-jpg
 https://imagetoolstack.com/compare/webp-vs-jpg
 https://imagetoolstack.com/compare/webp-vs-png
 https://imagetoolstack.com/compare/webp-vs-svg
+https://imagetoolstack.com/difference-between-avif-and-webp
+https://imagetoolstack.com/difference-between-heic-and-jpg
+https://imagetoolstack.com/difference-between-jpg-and-webp
+https://imagetoolstack.com/difference-between-png-and-jpg
+https://imagetoolstack.com/difference-between-png-and-webp
 https://imagetoolstack.com/formats/avif
 https://imagetoolstack.com/formats/bmp
 https://imagetoolstack.com/formats/gif
