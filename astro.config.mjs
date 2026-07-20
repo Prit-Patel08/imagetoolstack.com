@@ -37,6 +37,12 @@ export default defineConfig({
         if (page.includes('/embed/')) return false;
 
         const url = new URL(page);
+
+        // Only allow English URLs in sitemap (block non-English locale prefixes)
+        if (/^\/(es|fr|de|pt|id)(\/|$)/.test(url.pathname)) {
+          return false;
+        }
+
         let path = url.pathname.replace(/\/$/, '') || '/';
 
         // Strip locale prefix /es, /fr, /de, /pt, /id for matching
