@@ -73,6 +73,7 @@ https://imagetoolstack.com/tools/heic-to-jpg
 https://imagetoolstack.com/tools/image-compressor
 https://imagetoolstack.com/tools/image-redactor
 https://imagetoolstack.com/tools/image-resizer
+https://imagetoolstack.com/tools/image-upscaler
 https://imagetoolstack.com/tools/jpg-to-png
 https://imagetoolstack.com/tools/metadata-viewer
 https://imagetoolstack.com/tools/png-to-jpg
