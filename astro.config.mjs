@@ -3,6 +3,12 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { remarkInternalLinks } from './src/plugins/remark-internal-links.mjs';
+import fs from 'fs';
+
+// Read approved indexable pages directly from the JSON database
+const indexableData = JSON.parse(
+  fs.readFileSync('./src/data/indexable-pages.json', 'utf8')
+);
 
 // https://astro.build/config
 export default defineConfig({
@@ -37,71 +43,30 @@ export default defineConfig({
         const stripLocale = (p) => p.replace(/^\/(es|fr|de|pt|id)(?=\/|$)/, '') || '/';
         const cleanPath = stripLocale(path);
 
-        // === YOUR P1 - CORE IMAGE MONEY PAGES (12) - from all-links.txt ===
-        // Removed pdf-to-jpg, pdf-to-png, image-to-pdf for image-only focus
-        const P1_TOOLS = [
-          "image-compressor",   // 165k
-          "image-resizer",      // 201k
-          "bulk-image-resizer", // ✅ done
-          "bulk-resizer",      // ✅ done
-          "heic-to-jpg",       // ✅ 90k
-          "png-to-jpg",        // ✅ 110k
-          "jpg-to-png",        // ✅ 74k
-          "exif-remover",      // ✅ privacy intent
-          "crop-image",        // high comp core
-          "image-redactor",    // P1
-          "metadata-viewer",   // P1
-          "image-upscaler"
-        ];
+        // 1. Match static pages
+        if (indexableData.staticPages.includes(cleanPath)) return true;
 
-        // === YOUR P1 ARTICLES (7) - Image-only focus, removed PDF articles ===
-        const P1_ARTICLES = [
-          "best-bulk-image-resizer-free",
-          "best-free-image-resizer-online",
-          "best-image-compressor-online",
-          "how-to-remove-image-metadata",
-          "how-to-convert-heic-to-jpg",
-          "how-to-convert-png-to-jpg",
-          "best-free-jpg-to-png-converter"
-        ];
+        // 2. Match tools router (/tools/[slug])
+        if (cleanPath.startsWith('/tools/')) {
+          const slug = cleanPath.replace('/tools/', '');
+          return indexableData.tools.includes(slug);
+        }
 
-        // === YOUR P0 - TOPICAL AUTHORITY BUILDERS (15) - highest GSC impression ===
-        const P0_PAGES = [
-          "/compare/webp-vs-png",   // High GSC, Very High
-          "/compare/png-vs-jpg",    // High GSC
-          "/compare/webp-vs-jpg",
-          "/compare/avif-vs-jpg",   // Growing
-          "/compare/heic-vs-jpg",   // Very High
-          "/compare/webp-vs-svg",
-          "/compare/png-vs-svg",
-          "/compare/jpg-vs-tiff",
-          "/compare/avif-vs-webp",  // Key next-gen
-          "/compare/heic-vs-png",
-          "/compare/jpg-vs-jpeg",   // High vol, low diff
-          "/formats/png",           // P0
-          "/formats/webp",
-          "/formats/heic",
-          "/what-is-png",
-          "/what-is-webp"
-        ];
+        // 3. Match comparisons router (/compare/[id])
+        if (cleanPath.startsWith('/compare/')) {
+          const id = cleanPath.replace('/compare/', '');
+          return indexableData.comparisons.includes(id);
+        }
 
-        // Static money pages
-        const STATIC = ["/", "/image-compressor", "/image-tools", "/image-converter"];
+        // 4. Match formats router (/formats/[slug])
+        if (cleanPath.startsWith('/formats/')) {
+          const slug = cleanPath.replace('/formats/', '');
+          return indexableData.formats.includes(slug);
+        }
 
-        // Match static pages and P0 pages
-        if (STATIC.includes(cleanPath)) return true;
-        if (P0_PAGES.includes(cleanPath)) return true;
-
-        // Match tools
-        const toolMatch = cleanPath.match(/^\/tools\/([^/]+)$/);
-        if (toolMatch && P1_TOOLS.includes(toolMatch[1])) return true;
-
-        // Match root-level articles
+        // 5. Match root-level articles (/[slug])
         const articleSlug = cleanPath.replace(/^\//, '');
-        if (P1_ARTICLES.includes(articleSlug)) return true;
-
-        // Block everything else (about, privacy, terms, pdf, timezone, utility)
-        return false;
+        return indexableData.articles.includes(articleSlug);
       },
       serialize(item) {
         item.lastmod = new Date();
