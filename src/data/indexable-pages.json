@@ -1,6 +1,5 @@
 {
   "_comment": "Pages that pass AGENTS.md quality tests and are approved for Google indexing. All other pages will be noindex, nofollow and excluded from sitemap.",
-  
   "tools": [
     "image-compressor",
     "bulk-image-resizer",
@@ -15,7 +14,6 @@
     "metadata-viewer",
     "image-upscaler"
   ],
-
   "articles": [
     "best-bulk-image-resizer-free",
     "best-free-image-resizer-online",
@@ -30,27 +28,52 @@
     "image-tools",
     "image-converter"
   ],
-
   "comparisons": [
     "avif-vs-jpg",
-    "heic-vs-jpg",
-    "webp-vs-svg",
-    "png-vs-svg",
-    "jpg-vs-tiff",
     "avif-vs-webp",
+    "eps-vs-svg",
+    "heic-eps",
+    "heic-jxl",
+    "heic-pdf",
+    "heic-vs-jpg",
     "heic-vs-png",
-    "jpg-vs-jpeg"
+    "heif-vs-jpeg",
+    "jpeg2000-vs-jpeg",
+    "jpg-eps",
+    "jpg-jxl",
+    "jpg-pdf",
+    "jpg-vs-heic",
+    "jpg-vs-jpeg",
+    "jpg-vs-tiff",
+    "merge-pdf-vs-split-pdf",
+    "pdf-to-png-vs-pdf-to-jpg",
+    "pdf-vs-png",
+    "png-bmp",
+    "png-heic",
+    "png-ico",
+    "png-pdf",
+    "png-psd",
+    "png-vs-svg",
+    "png8-vs-png24",
+    "svg-eps",
+    "svg-tiff",
+    "svg-vs-jpg",
+    "svg-vs-png",
+    "tiff-jxl",
+    "tiff-psd",
+    "tiff-vs-jpeg",
+    "tiff-vs-jpg",
+    "webp-vs-svg"
   ],
-
   "formats": [
     "png",
     "webp",
     "heic"
   ],
-
   "staticPages": [
     "/",
-    "/compare/webp-vs-png",
-    "/compare/webp-vs-jpg"
+    "/compare/png-vs-jpg",
+    "/compare/webp-vs-jpg",
+    "/compare/webp-vs-png"
   ]
 }
