@@ -64,8 +64,13 @@ https://imagetoolstack.com/formats/jpg
 https://imagetoolstack.com/formats/png
 https://imagetoolstack.com/formats/svg
 https://imagetoolstack.com/formats/webp
+https://imagetoolstack.com/how-to-compress-images-without-losing-quality
 https://imagetoolstack.com/how-to-convert-heic-to-jpg
 https://imagetoolstack.com/how-to-convert-png-to-jpg
+https://imagetoolstack.com/how-to-fix-blurry-photos-for-print
+https://imagetoolstack.com/how-to-make-images-load-faster
+https://imagetoolstack.com/how-to-optimize-images-for-seo
+https://imagetoolstack.com/how-to-optimize-images-for-shopify
 https://imagetoolstack.com/how-to-remove-image-metadata
 https://imagetoolstack.com/image-compressor
 https://imagetoolstack.com/image-converter
