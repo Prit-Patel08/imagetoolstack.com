@@ -15,43 +15,61 @@ if (!fs.existsSync(dataPath)) {
 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
 // 3. Build URL list
-const urls = [];
+let urls = [];
 
-// Static pages
-if (data.staticPages) {
-  data.staticPages.forEach(p => {
-    const cleanPath = p === '/' ? '' : p.replace(/^\//, '');
-    urls.push(`https://${HOST}/${cleanPath}`);
+const cliArgs = process.argv.slice(2).filter(arg => arg.trim().length > 0);
+
+if (cliArgs.length > 0) {
+  // If specific URLs are passed via CLI, submit ONLY those URLs
+  urls = cliArgs.map(arg => {
+    if (arg.startsWith('http://') || arg.startsWith('https://')) {
+      return arg;
+    }
+    const cleanPath = arg.replace(/^\//, '');
+    return `https://${HOST}/${cleanPath}`;
   });
+  console.log(`📌 Targeted submission mode: ${urls.length} specific URL(s) provided.`);
+} else {
+  console.log(`🌐 Full site mode: No specific URLs passed, reading all indexable pages...`);
+  // Static pages
+  if (data.staticPages) {
+    data.staticPages.forEach(p => {
+      const cleanPath = p === '/' ? '' : p.replace(/^\//, '');
+      urls.push(`https://${HOST}/${cleanPath}`);
+    });
+  }
+
+  // Tools
+  if (data.tools) {
+    data.tools.forEach(slug => {
+      urls.push(`https://${HOST}/tools/${slug}`);
+    });
+  }
+
+  // Articles
+  if (data.articles) {
+    data.articles.forEach(slug => {
+      urls.push(`https://${HOST}/${slug}`);
+    });
+  }
+
+  // Comparisons
+  if (data.comparisons) {
+    data.comparisons.forEach(id => {
+      urls.push(`https://${HOST}/compare/${id}`);
+    });
+  }
+
+  // Formats
+  if (data.formats) {
+    data.formats.forEach(slug => {
+      urls.push(`https://${HOST}/formats/${slug}`);
+    });
+  }
 }
 
-// Tools
-if (data.tools) {
-  data.tools.forEach(slug => {
-    urls.push(`https://${HOST}/tools/${slug}`);
-  });
-}
-
-// Articles
-if (data.articles) {
-  data.articles.forEach(slug => {
-    urls.push(`https://${HOST}/${slug}`);
-  });
-}
-
-// Comparisons
-if (data.comparisons) {
-  data.comparisons.forEach(id => {
-    urls.push(`https://${HOST}/compare/${id}`);
-  });
-}
-
-// Formats
-if (data.formats) {
-  data.formats.forEach(slug => {
-    urls.push(`https://${HOST}/formats/${slug}`);
-  });
-}
+// Deduplicate URLs
+urls = Array.from(new Set(urls));
 
 // 4. Send POST request to IndexNow endpoint
 async function submit() {
@@ -60,7 +78,8 @@ async function submit() {
     return;
   }
   
-  console.log(`Submitting ${urls.length} URLs to IndexNow...`);
+  console.log(`Submitting ${urls.length} URL(s) to IndexNow:`);
+  urls.forEach(u => console.log(`  - ${u}`));
   
   const payload = {
     host: HOST,
