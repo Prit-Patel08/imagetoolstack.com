@@ -15,6 +15,7 @@
     "image-upscaler"
   ],
   "articles": [
+    "avif-compression-explained",
     "best-bulk-image-resizer-free",
     "best-free-image-resizer-online",
     "best-free-jpg-to-png-converter",
@@ -29,6 +30,7 @@
     "best-image-format-for-shopify",
     "best-image-format-for-websites",
     "best-image-format-for-wordpress",
+    "core-web-vitals-image-optimization",
     "difference-between-avif-and-webp",
     "difference-between-heic-and-jpg",
     "difference-between-jpg-and-webp",
@@ -44,7 +46,10 @@
     "how-to-remove-image-metadata",
     "image-compressor",
     "image-converter",
+    "image-formats",
     "image-tools",
+    "lossy-vs-lossless-compression",
+    "webp-compression-explained",
     "what-is-png",
     "what-is-webp"
   ],

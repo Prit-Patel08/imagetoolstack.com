@@ -1,4 +1,5 @@
 https://imagetoolstack.com/
+https://imagetoolstack.com/avif-compression-explained
 https://imagetoolstack.com/best-bulk-image-resizer-free
 https://imagetoolstack.com/best-free-image-resizer-online
 https://imagetoolstack.com/best-free-jpg-to-png-converter
@@ -51,6 +52,7 @@ https://imagetoolstack.com/compare/tiff-vs-jpg
 https://imagetoolstack.com/compare/webp-vs-jpg
 https://imagetoolstack.com/compare/webp-vs-png
 https://imagetoolstack.com/compare/webp-vs-svg
+https://imagetoolstack.com/core-web-vitals-image-optimization
 https://imagetoolstack.com/difference-between-avif-and-webp
 https://imagetoolstack.com/difference-between-heic-and-jpg
 https://imagetoolstack.com/difference-between-jpg-and-webp
@@ -74,7 +76,9 @@ https://imagetoolstack.com/how-to-optimize-images-for-shopify
 https://imagetoolstack.com/how-to-remove-image-metadata
 https://imagetoolstack.com/image-compressor
 https://imagetoolstack.com/image-converter
+https://imagetoolstack.com/image-formats
 https://imagetoolstack.com/image-tools
+https://imagetoolstack.com/lossy-vs-lossless-compression
 https://imagetoolstack.com/tools/bulk-image-resizer
 https://imagetoolstack.com/tools/bulk-resizer
 https://imagetoolstack.com/tools/crop-image
@@ -87,5 +91,6 @@ https://imagetoolstack.com/tools/image-upscaler
 https://imagetoolstack.com/tools/jpg-to-png
 https://imagetoolstack.com/tools/metadata-viewer
 https://imagetoolstack.com/tools/png-to-jpg
+https://imagetoolstack.com/webp-compression-explained
 https://imagetoolstack.com/what-is-png
 https://imagetoolstack.com/what-is-webp
