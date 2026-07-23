@@ -1,7 +1,7 @@
 ---
 title: "Best Image Format for Etsy Listing Photos: 2000px & 4:5 Ratio Guide"
 description: "Master Etsy product photo requirements. Learn JPEG vs PNG, 2000px minimum resolution rules, 4:5 and 1:1 thumbnail cropping, lighting, and compression under 1MB."
-pubDate: "2026-07-2308:00:00.000Z"
+pubDate: "2026-07-23T08:00:00.000Z"
 ---
 
 # Best Image Format for Etsy Listing Photos: 2000px & 4:5 Ratio Guide
