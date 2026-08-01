@@ -250,7 +250,12 @@
     "image-tools",
     "jpeg-vs-jpeg2000-explained",
     "lossy-vs-lossless-compression",
+    "online-image-tools",
+    "remove-background-online",
+    "resize-image-online",
     "webp-compression-explained",
+    "what-is-avif",
+    "what-is-bmp",
     "what-is-png",
     "what-is-webp"
   ],
